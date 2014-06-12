@@ -22,8 +22,8 @@
 #ifndef PMENU_H_
 #define PMENU_H_
 
-#define MMAXITEMS  ( FL_MENU_MAXITEMS + 1 )  /* index 0 unused */
-
+#define FLI_MENU_MAXITEMS    128
+#define MMAXITEMS  ( FLI_MENU_MAXITEMS + 1 )  /* index 0 unused */
 
 /* make sure that the first 5 elements are the same as FL_CHOICE.
  * fdesign assumes this */
@@ -45,6 +45,16 @@ typedef struct {
     int             no_title;
     FL_PUP_CB       cb[ MMAXITEMS ];        /* item callback functions     */
 } FLI_MENU_SPEC;
+
+
+/***** Defaults *****/
+
+#define FLI_MENU_BOXTYPE     FL_BORDER_BOX
+#define FLI_MENU_COL1        FL_COL1
+#define FLI_MENU_COL2        FL_MCOL
+#define FLI_MENU_LCOL        FL_LCOL
+#define FLI_MENU_ALIGN       FL_ALIGN_CENTER
+
 
 #endif
 

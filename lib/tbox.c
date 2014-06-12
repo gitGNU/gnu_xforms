@@ -44,7 +44,7 @@ static int handle_tbox( FL_OBJECT *,
                         int,
                         void * );
 
-static GC create_gc( const FL_OBJECT *,
+static GC create_gc( FL_OBJECT *,
                      int,
                      int,
                      FL_COLOR,
@@ -934,6 +934,17 @@ fli_tbox_set_fontsize( FL_OBJECT * obj,
 }
 
 
+/*************************************
+ * Returns the default font size
+ *************************************/
+
+int
+fli_tbox_get_fontsize( FL_OBJECT * obj )
+{
+    return ( ( FLI_TBOX_SPEC * ) obj->spec )->def_size;
+}
+
+
 /**************************************
  * Sets a new font style for all lines
  * drawn with default settings
@@ -1014,6 +1025,17 @@ fli_tbox_set_fontstyle( FL_OBJECT * obj,
     fli_tbox_set_rel_xoffset( obj, old_xrel );
     fli_tbox_set_rel_yoffset( obj, old_yrel );
     sp->no_redraw = old_no_redraw;
+}
+
+
+/*************************************
+ * Returns the default font style
+ *************************************/
+
+int
+fli_tbox_get_fontstyle( FL_OBJECT * obj )
+{
+    return ( ( FLI_TBOX_SPEC * ) obj->spec )->def_style;
 }
 
 
@@ -1455,14 +1477,14 @@ fli_tbox_set_dblclick_callback( FL_OBJECT      * obj,
  ***************************************/
 
 static GC
-create_gc( const FL_OBJECT * obj,
-           int               style,
-           int               size,
-           FL_COLOR          color,
-           int               clip_x,
-           int               clip_y,
-           int               clip_w,
-           int               clip_h )
+create_gc( FL_OBJECT * obj,
+           int         style,
+           int         size,
+           FL_COLOR    color,
+           int         clip_x,
+           int         clip_y,
+           int         clip_w,
+           int         clip_h )
 {
     GC gc;
     XGCValues xgcv;

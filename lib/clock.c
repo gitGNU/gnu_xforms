@@ -30,6 +30,7 @@
 
 #include "include/forms.h"
 #include "flinternal.h"
+#include "private/pclock.h"
 
 #include <math.h>
 #include <time.h>
@@ -301,11 +302,11 @@ fl_create_clock( int          type,
 
     obj = fl_make_object( FL_CLOCK, type, x, y, w, h, s, handle_clock );
 
-    obj->boxtype   = FL_CLOCK_BOXTYPE;
-    obj->col1      = FL_CLOCK_COL1;
-    obj->col2      = FL_CLOCK_COL2;
-    obj->lcol      = FL_CLOCK_LCOL;
-    obj->align     = FL_CLOCK_ALIGN;
+    obj->boxtype   = FLI_CLOCK_BOXTYPE;
+    obj->col1      = FLI_CLOCK_COL1;
+    obj->col2      = FLI_CLOCK_COL2;
+    obj->lcol      = FLI_CLOCK_LCOL;
+    obj->align     = FLI_CLOCK_ALIGN;
     obj->automatic = obj->active = 1;
     obj->spec = sp = fl_calloc( 1, sizeof *sp );
 

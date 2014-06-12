@@ -74,7 +74,7 @@ draw_choice( FL_OBJECT * ob )
     int off1 = 0,
         off2 = 0;
 
-    c1 = ob->belowmouse ? FL_CHOICE_MCOL : ob->col1;
+    c1 = ob->belowmouse ? FLI_CHOICE_MCOL : ob->col1;
 
     fl_draw_box( ob->boxtype, ob->x, ob->y, ob->w, ob->h, c1, ob->bw );
 
@@ -136,7 +136,7 @@ draw_droplist_choice( FL_OBJECT * ob )
              dx = ob->w - dw,
              bw;
 
-    c1 = sp->below ? FL_CHOICE_MCOL : ob->col1;
+    c1 = sp->below ? FLI_CHOICE_MCOL : ob->col1;
     bw = ob->bw;
     if ( bw > 0 )
         bw -= ob->bw > 1;
@@ -500,11 +500,12 @@ fl_create_choice( int          type,
 
     obj = fl_make_object( FL_CHOICE, type, x, y, w, h, label, handle_choice );
 
-    obj->boxtype     = type == FL_NORMAL_CHOICE2 ? FL_UP_BOX : FL_CHOICE_BOXTYPE;
-    obj->col1        = FL_CHOICE_COL1;
-    obj->col2        = FL_CHOICE_COL2;
-    obj->lcol        = FL_CHOICE_LCOL;
-    obj->align       = FL_CHOICE_ALIGN;
+    obj->boxtype     = type == FL_NORMAL_CHOICE2 ?
+                               FL_UP_BOX : FLI_CHOICE_BOXTYPE;
+    obj->col1        = FLI_CHOICE_COL1;
+    obj->col2        = FLI_CHOICE_COL2;
+    obj->lcol        = FLI_CHOICE_LCOL;
+    obj->align       = FLI_CHOICE_ALIGN;
     obj->want_update = 1;
     obj->spec = sp   = fl_calloc( 1, sizeof *sp );
 

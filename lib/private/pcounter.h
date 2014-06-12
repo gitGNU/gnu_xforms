@@ -25,16 +25,22 @@
  *  private header for counter objects
  */
 
-#ifndef PCOUNTER_H
-#define PCOUNTER_H
+#ifndef PCOUNTER_H_
+#define PCOUNTER_H_
+
 
 #include "pvaluator.h"
 
-
 typedef FLI_VALUATOR_SPEC FLI_COUNTER_SPEC;
 
+#define FLI_COUNTER_BOXTYPE  FL_UP_BOX
+#define FLI_COUNTER_COL1     FL_COL1
+#define FLI_COUNTER_COL2     FL_BLUE           /* ct label     */
+#define FLI_COUNTER_LCOL     FL_LCOL           /* ct reporting */
+#define FLI_COUNTER_ALIGN    FL_ALIGN_BOTTOM
 
-#endif /* PCOUNTER_H */
+
+#endif /* PCOUNTER_H_ */
 
 
 /*

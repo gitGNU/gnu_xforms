@@ -18,11 +18,8 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file dial.h
+ *  Object Class: Dial
  */
-
-#ifndef FL_DIAL_H
-#define FL_DIAL_H
 
 typedef enum {
     FL_NORMAL_DIAL,
@@ -35,17 +32,6 @@ enum {
     FL_DIAL_CCW
 };
 
-/***** Defaults *****/
-
-#define FL_DIAL_BOXTYPE     FL_FLAT_BOX
-#define FL_DIAL_COL1        FL_COL1
-#define FL_DIAL_COL2        FL_RIGHT_BCOL
-#define FL_DIAL_LCOL        FL_LCOL
-#define FL_DIAL_ALIGN       FL_ALIGN_BOTTOM
-
-/***** Others   *****/
-
-#define FL_DIAL_TOPCOL      FL_COL1
 
 /***** Routines *****/
 
@@ -101,6 +87,3 @@ FL_EXPORT void fl_set_dial_direction( FL_OBJECT * obj,
                                       int         dir );
 
 FL_EXPORT int fl_get_dial_direction( FL_OBJECT * obj );
-
-
-#endif /* ! defined FL_DIAL_H */

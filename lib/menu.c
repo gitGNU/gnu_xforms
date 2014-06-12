@@ -360,11 +360,11 @@ fl_create_menu( int          type,
     obj = fl_make_object( FL_MENU, type, x, y, w, h, label, handle_menu );
 
     obj->boxtype = FL_FLAT_BOX;
-    obj->col1   = FL_MENU_COL1;
-    obj->col2   = FL_MENU_COL2;
-    obj->lcol   = FL_MENU_LCOL;
+    obj->col1   = FLI_MENU_COL1;
+    obj->col2   = FLI_MENU_COL2;
+    obj->lcol   = FLI_MENU_LCOL;
     obj->lstyle = FL_NORMAL_STYLE;
-    obj->align  = FL_MENU_ALIGN;
+    obj->align  = FLI_MENU_ALIGN;
 
     if ( type == FL_TOUCH_MENU )
         fl_set_object_return( obj, FL_RETURN_CHANGED );
@@ -445,7 +445,7 @@ addto_menu( FL_OBJECT  * ob,
     char *p;
 
     if (    ISPUP( sp )
-         || sp->numitems >= FL_MENU_MAXITEMS
+         || sp->numitems >= FLI_MENU_MAXITEMS
          || sp->cur_val == INT_MAX )
         return;
 
@@ -526,7 +526,7 @@ fl_set_menu( FL_OBJECT  * ob,
     t = fl_strdup( menustr );
 
     for ( c = strtok( t, "|" );
-          c && sp->numitems < FL_CHOICE_MAXITEMS;
+          c && sp->numitems < FLI_MENU_MAXITEMS;
           c = strtok( NULL, "|" ) )
     {
         FL_PUP_CB cb;
@@ -576,7 +576,7 @@ fl_addto_menu( FL_OBJECT  * ob,
     t = fl_strdup( menustr );
 
     for ( c = strtok( t, "|" );
-          c && sp->numitems < FL_CHOICE_MAXITEMS;
+          c && sp->numitems < FLI_MENU_MAXITEMS;
           c = strtok( NULL, "|" ) )
     {
         FL_PUP_CB cb;

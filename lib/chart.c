@@ -37,6 +37,8 @@
 #include <stdlib.h>
 #include "include/forms.h"
 #include "flinternal.h"
+#include "private/pchart.h"
+
 
 #ifndef M_PI
 #define M_PI    3.14159265359
@@ -605,11 +607,11 @@ fl_create_chart( int          type,
 
     obj = fl_make_object( FL_CHART, type, x, y, w, h, label, handle_chart );
 
-    obj->boxtype = FL_CHART_BOXTYPE;
-    obj->col1    = FL_CHART_COL1;
-    obj->col2    = FL_BLACK;
-    obj->align   = FL_CHART_ALIGN;
-    obj->lcol    = FL_CHART_LCOL;
+    obj->boxtype = FLI_CHART_BOXTYPE;
+    obj->col1    = FLI_CHART_COL1;
+    obj->col2    = FLI_CHART_COL2;
+    obj->align   = FLI_CHART_ALIGN;
+    obj->lcol    = FLI_CHART_LCOL;
     obj->active  = 0;
 
     sp = obj->spec = fl_calloc( 1, sizeof *sp );

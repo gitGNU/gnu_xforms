@@ -26,8 +26,8 @@
  * Private header for dial object
  */
 
-#ifndef PDIAL_H
-#define PDIAL_H
+#ifndef PDIAL_H_
+#define PDIAL_H_
 
 typedef struct {
     double a,               /* for speed                      */
@@ -45,7 +45,16 @@ typedef struct {
 } FLI_DIAL_SPEC;
 
 
-#endif /* pdial_h */
+/***** Defaults *****/
+
+#define FLI_DIAL_BOXTYPE     FL_FLAT_BOX
+#define FLI_DIAL_COL1        FL_COL1
+#define FLI_DIAL_COL2        FL_RIGHT_BCOL
+#define FLI_DIAL_LCOL        FL_LCOL
+#define FLI_DIAL_ALIGN       FL_ALIGN_BOTTOM
+
+
+#endif /* PDIAL_H_ */
 
 
 /*

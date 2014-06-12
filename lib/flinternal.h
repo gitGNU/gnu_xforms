@@ -292,14 +292,15 @@ void fli_set_winproperty( Window,
 
 void fli_init_colormap( int );
 
+int fli_get_text_width( const char *,
+                        size_t  );
+
 void fli_free_colormap( int );
 
 void fli_dump_state_info( int,
                           const char * );
 
 void fli_init_stipples( void );
-
-void fli_draw_button( FL_OBJECT * );
 
 /* for fdesign */
 
@@ -572,9 +573,7 @@ typedef struct {
     Window          win;
     GC              gc,
                     textgc;
-    GC              miscgc;
     int             isRGBColor;
-    int             isMBFont;       /* multi-byte font       */
     unsigned long   bktextcolor;
     int             newpix;
     int             fdesc;          /* font descent          */

@@ -60,10 +60,10 @@ fl_create_select( int          type,
 
     obj->boxtype = type == FL_NORMAL_SELECT ? FL_ROUNDED_BOX : FL_UP_BOX;
 
-    obj->col1        = FL_SELECT_COL1;
-    obj->col2        = FL_SELECT_COL2;
-    obj->lcol        = FL_SELECT_LCOL;
-    obj->align       = FL_SELECT_ALIGN;
+    obj->col1        = FLI_SELECT_COL1;
+    obj->col2        = FLI_SELECT_COL2;
+    obj->lcol        = FLI_SELECT_LCOL;
+    obj->align       = FLI_SELECT_ALIGN;
     obj->want_update = 1;
 
     sp = obj->spec = fl_malloc( sizeof *sp );
@@ -924,7 +924,7 @@ handle_select( FL_OBJECT * obj,
         case FL_ATTRIB :
             obj->align = fl_to_outside_lalign( obj->align );
             if ( fl_is_center_lalign( obj->align ) )
-                obj->align = FL_SELECT_ALIGN;
+                obj->align = FLI_SELECT_ALIGN;
             break;
 
         case FL_DRAW :

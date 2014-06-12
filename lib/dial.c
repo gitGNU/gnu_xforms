@@ -415,11 +415,11 @@ fl_create_dial( int          type,
     FLI_DIAL_SPEC *sp;
 
     obj = fl_make_object( FL_DIAL, type, x, y, w, h, label, handle_dial );
-    obj->col1     = FL_DIAL_COL1;
-    obj->col2     = FL_DIAL_COL2;
-    obj->align    = FL_DIAL_ALIGN;
-    obj->lcol     = FL_DIAL_LCOL;
-    obj->boxtype  = FL_DIAL_BOXTYPE;
+    obj->col1     = FLI_DIAL_COL1;
+    obj->col2     = FLI_DIAL_COL2;
+    obj->align    = FLI_DIAL_ALIGN;
+    obj->lcol     = FLI_DIAL_LCOL;
+    obj->boxtype  = FLI_DIAL_BOXTYPE;
     obj->spec     = sp = fl_calloc( 1, sizeof *sp );
 
     sp->min       = 0.0;

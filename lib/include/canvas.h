@@ -18,14 +18,8 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file canvas.h
- *
- * Header for FL_CANVAS
- *
+ *  Object Class: Canvas
  */
-
-#ifndef FL_CANVAS_H_
-#define FL_CANVAS_H_
 
 typedef enum {
     FL_NORMAL_CANVAS,
@@ -40,11 +34,6 @@ typedef int ( * FL_HANDLE_CANVAS )( FL_OBJECT *,
                                     void * );
 
 typedef int ( * FL_MODIFY_CANVAS_PROP )( FL_OBJECT * );
-
-/******************** Default *********************/
-
-#define FL_CANVAS_BOXTYPE   FL_DOWN_BOX     /* really the decoration frame */
-#define FL_CANVAS_ALIGN     FL_ALIGN_TOP
 
 /************ Interfaces    ************************/
 
@@ -122,5 +111,3 @@ FL_EXPORT void fl_canvas_yield_to_shortcut( FL_OBJECT * ob,
 #ifdef AUTOINCLUDE_GLCANVAS_H
 #include <glcanvas.h>
 #endif
-
-#endif /* ! defined FL_CANVAS_H */

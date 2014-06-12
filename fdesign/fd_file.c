@@ -100,6 +100,7 @@ save_object( FILE      * fp,
         label = get_label( obj, 0 );
         fprintf( fp, "label: %s\n", label );
         fl_free( label );
+        fprintf( fp, "react_to: %u\n", fl_get_object_mouse_buttons( obj ) );
         fprintf( fp, "shortcut: %s\n", get_shortcut_string( obj ) );
         fprintf( fp, "resize: %s\n", resize_name( obj->resize ) );
         fprintf( fp, "gravity: %s %s\n",
@@ -294,6 +295,26 @@ ff_read_alignment( FL_OBJECT * obj )
 
     if ( fd_magic == MAGIC2 )
         obj->align = new_align( obj->align );
+
+    return 0;
+}
+
+
+/***************************************
+ ***************************************/
+
+static int
+ff_read_react_to( FL_OBJECT * obj )
+{
+    int r;
+
+    if ( ( r = ff_read( "%u", &obj->react_to ) ) < 0 )
+        return ff_err( "Can't read expected object mouse buttons" );
+
+    if ( r == 0 )
+        return ff_err( "\"react_to\" key without or invalid value" );
+
+    obj->react_to &= 0x1F;
 
     return 0;
 }
@@ -566,7 +587,8 @@ static obj_attr_handlers attr_array[ ] =
     { "name",      ff_read_name      },
     { "gravity",   ff_read_gravity   },
     { "argument",  ff_read_argument  },
-    { "return",    ff_read_return    }
+    { "return",    ff_read_return    },
+    { "react_to",  ff_read_react_to  }
 };
 
 

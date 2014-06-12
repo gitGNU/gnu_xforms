@@ -1136,8 +1136,8 @@ get_free_handle( FL_OBJECT  * ob,
     static char buf[ 1024 ];
     static FL_OBJECT *freeobj[ MAXFREEOBJ ];
 
-    if ( ob->c_vdata )
-        strcpy( buf, ob->c_vdata );
+    if ( ob->fdesign_vdata )
+        strcpy( buf, ob->fdesign_vdata );
     else if ( *name )
         sprintf( buf, "freeobj_%s_handler", name );
     else if ( *ob->label )
@@ -1634,6 +1634,25 @@ output_object( FILE      * fp,
         if ( obj->lstyle != defobj->lstyle )
             fprintf( fp, "    fl_set_object_lstyle( obj, %s );\n",
                      style_name( obj->lstyle ) );
+
+        if ( obj->react_to != defobj->react_to )
+        {
+            if ( ! obj->react_to )
+                fprintf( fp, "    fl_set_object_mouse_buttons( obj, 0 );\n" );
+            else
+            {
+                int i;
+                int first = 0;
+
+                fprintf( fp, "    fl_set_object_mouse_buttons( obj, " );
+                for ( i = 0; i < 5; i++ )
+                    if ( obj->react_to & ( 1 << i ) )
+                        fprintf( fp, "%sFL_MBUTTON%d", first++ ? " | " : "",
+                                 i + 1 );
+
+                fprintf( fp, " );\n" );
+            }
+        }
 
         /* 'resize' must be checked for consistency with the gravity settings */
 

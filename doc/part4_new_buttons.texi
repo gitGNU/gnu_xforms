@@ -1,17 +1,17 @@
 @node Part IV New Buttons
 @chapter New Buttons
 
-Since button-like object is one of the most important, if not
-@emph{the} most important, classes in graphical user interfaces, Forms
-Library provides, in addition to the ones explained earlier, a few
-more routines that make create new buttons or button-like objects even
-easier. These routines take care of the communication between the main
-module and the button handler so all new button classes created using
-this scheme behave consistently. Within this scheme, the programmer
-only has to write a drawing function that draws the button. There is
-no need to handle events or messages from the main module and all
-types of buttons, radio, pushed or normal are completely taken care of
-by the generic button class. Further, @code{@ref{fl_get_button()}} and
+Since button-like objects are probably the most important classes in
+graphical user interfaces, the Forms Library provides, in addition to
+the ones explained earlier, a few more routines that make create new
+buttons or button-like objects even easier. These routines take care
+of the communication between the main module and the button handler so
+all new button classes created using this scheme behave consistently.
+Within this scheme, the programmer only has to write a drawing
+function that draws the button. There is no need to handle events
+or messages from the main module and all types of buttons, radio,
+pushed or normal are completely taken care of by the generic button
+class. Further, @code{@ref{fl_get_button()}} and
 @code{@ref{fl_set_button()}} work automatically without adding any
 code for them.
 
@@ -27,42 +27,10 @@ FL_OBJECT *fl_create_generic_button(int objclass, int type,
 @end example
 @noindent
 which can be used to create a generic button that has all the
-properties of a real button except that this generic button does not
-know what the real button looks like. The other routine
-@code{@ref{fl_add_button_class()}}, discussed below, can be used to register
-a drawing routine that completes the creation of a new button.
-
-All button or button-like objects have the following instance-specific
-structure, defined in @file{forms.h}, that can be used to obtain
-information about the current status of the button:
-@tindex FL_BUTTON_STRUCT
-@example
-typedef struct @{
-    Pixmap         pixmap;   /* for bitmap/pixmap button only */
-    Pixmap         mask;     /* for bitmap/pixmap button only */
-    unsigned int   bits_w,   /* for bitmap/pixmap button only */
-                   bits_h;
-    int            val;      /* whether it's pushed */
-    int            mousebut; /* mouse button that caused the push */
-    int            timdel;   /* time since last touch (TOUCH buttons)*/
-    int            event;    /* what event triggered the redraw */
-    long           cspecl;   /* for non-generic class specific data */
-    void         * cspec;    /* for non-generic class specific data */
-    char         * file;     /* filename for the pixmap/bitmap file */
-@} FL_BUTTON_STRUCT;
-@end example
-
-Of all its members, only @code{val} and @code{mousebut} probably will
-be consulted by the drawing function. @code{cspecl} and @code{cspecv}
-are useful for keeping track of class status other than those
-supported by the generic button (e.g., you might want to add a third
-color to a button for whatever purposes.) These two members are
-neither referenced nor changed by the generic button class.
-
-Making this structure visible somewhat breaks the Forms Library's
-convention of hiding the instance specific data but the convenience
-and consistency gained by this far outweights the compromise on data
-hiding.
+properties of a reak button except that this generic button does not
+know what the button looks like. The other routine
+@code{@ref{fl_add_button_class()}}, discussed below, can be used to
+register a drawing routine that completes the creation of a new button.
 
 The basic procedures in creating a new button-like object are as
 follows. First, just like creating any other object classes, you have
@@ -81,15 +49,20 @@ known to the button driver via the following function
 @findex fl_add_button_class()
 @anchor{fl_add_button_class()}
 @example
-void fl_add_button_class(int objclass, void (*draw)(FL_OBJECT *), void
-(*cleanup)(FL_BUTTON_SPEC *));
+typedef void ( * FL_DrawButton )( FL_OBJECT *, int );
+typedef void ( * FL_CleanupButton )( FL_OBJECT * );
+
+void fl_add_button_class(int objclass, FL_DrawButton drawit,
+                         FL_CleanupButton cleanup);
 @end example
 @noindent
 where @code{objclass} is the class ID, and @code{draw} is a function
-that will be called to draw the button. @code{cleanup} is a function
-that will be called prior to destroying the button. You need a cleanup
-function only if the drawing routine uses the @code{cspecv} field of
-@code{FL_BUTTON_STRUCT} to hold memory allocated dynamically by the new
+that will be called to draw the button (with the second argument
+set to the event type that led to the request to redraw the button).
+@code{cleanup} is a function that will be called prior to destroying
+the button. You need a cleanup function only there are some resources
+allocated for the button that must be freed before the button can be
+finally deleted.
 button.
 
 We use two examples to show how new buttons are created. The first
@@ -121,12 +94,12 @@ pushed. We also add an extra property so that when mouse moves over
 the button box, the box changes color. The following is the full
 source code that implements this:
 @example
-static void draw_nbutton(FL_OBJECT *obj) @{
+static void draw_nbutton(FL_OBJECT *obj, int event) @{
     FL_COLOR col;
+    int val = fl_get_button(obj);
 
     /* box color. If pushed we use obj->col2, otherwise use obj->col1 */
-    col = ((FL_BUTTON_STRUCT *) obj->spec)->val ?
-          obj->col2 : obj->col1;
+    col = val ? obj->col2 : obj->col1;
 
     /* if mouse is on top of the button, we change the color of
      * the button to a different color. However we only do this
@@ -137,8 +110,7 @@ static void draw_nbutton(FL_OBJECT *obj) @{
     /* If original button is an up_box and it is being pushed,
      * we draw a down_box. Otherwise, don't have to change
      * the boxtype */
-     if (   obj->boxtype == FL_UP_BOX
-         && ((FL_BUTTON_STRUCT *) obj->spec)->val)
+     if ( obj->boxtype == FL_UP_BOX && val)
          fl_draw_box(FL_DOWN_BOX, obj->x, obj->y, obj->w, obj->h,
                      col, obj->bw);
      else
@@ -148,7 +120,7 @@ static void draw_nbutton(FL_OBJECT *obj) @{
      /* draw the button label */
      fl_draw_object_label(obj);
 
-     /* if the button is a return button, draw the return symbol.
+     /* If the button is a return button, draw the return symbol.
       * Note that size and style are 0 as they are not used when
       * drawing symbols */
      if (obj->type == FL_RETURN_BUTTON)
@@ -162,8 +134,8 @@ static void draw_nbutton(FL_OBJECT *obj) @{
 Note that when drawing symbols, the style and size are irrelevent and
 set to zero in @code{@ref{fl_draw_text()}} above.
 
-Since we don't use the @code{cspecv} field to point to dynamically
-allocated memory we don't have to write a clean-up function.
+Since we don't allocate any resources for the button we don't have to
+write a clean-up function.
 
 Next, following the standard procedures of the Forms Library, we code
 a separate routine that creates the new button@footnote{A separate
@@ -253,12 +225,12 @@ put it into @file{crossbut.c}:
 
 /** How to draw it */
 
-static void draw_crossbutton(FL_OBJECT *obj) @{
+static void draw_crossbutton(FL_OBJECT *obj, int event ) @{
     FL_Coord xx, yy, ww, hh;
-    FL_BUTTON_STRUCT *sp = obj->spec;
+    int val = fl_get_button(obj);
 
     /* There is no visual change when mouse enters/leaves the box */
-    if (sp->event == FL_ENTER || sp->event == FL_LEAVE)
+    if (event == FL_ENTER || event == FL_LEAVE)
         return;
 
     /* draw the bounding box first */
@@ -271,7 +243,7 @@ static void draw_crossbutton(FL_OBJECT *obj) @{
     yy = obj->y + (obj->h - hh) / 2;
 
     /* If pushed, draw a down box with the cross */
-    if (sp->val) @{
+    if (val) @{
         fl_draw_box(FL_DOWN_BOX, xx, yy, ww, hh, obj->col1, obj->bw);
         fl_draw_text(FL_ALIGN_CENTER, xx - 2, yy - 2, ww + 4, hh + 4,
                      obj->col2, 0, 0, "@@9plus");

@@ -25,7 +25,7 @@
  *
  * Settting free object class specific attributes, in this
  * case, the handler name. We store this piece of into in
- * ob->c_vdata.
+ * ob->c_cdata.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -70,8 +70,8 @@ freeobj_adjust_spec_form( FL_OBJECT * obj )
     curobj = obj;
 
     *ori_handle_name = '\0';
-    if ( obj->c_vdata )
-        strcpy( ori_handle_name, obj->c_vdata );
+    if ( obj->c_cdata )
+        strcpy( ori_handle_name, obj->c_cdata );
 }
 
 
@@ -102,8 +102,8 @@ freeobj_reread_spec_form( FL_OBJECT * obj  FL_UNUSED_ARG )
 void
 freeobj_restore_spec( FL_OBJECT * obj )
 {
-    fli_safe_free( obj->c_vdata );
-    obj->c_vdata = fl_strdup( ori_handle_name );
+    fli_safe_free( obj->c_cdata );
+    obj->c_cdata = fl_strdup( ori_handle_name );
 }
 
 
@@ -114,8 +114,8 @@ void
 freeobj_emit_spec_fd_code( FILE      * fp,
                            FL_OBJECT * obj )
 {
-    if ( obj->c_vdata )
-        fprintf( fp, "    handler: %s\n", ( char * ) obj->c_vdata );
+    if ( obj->c_cdata )
+        fprintf( fp, "    handler: %s\n", obj->c_cdata );
 }
 
 
@@ -153,8 +153,8 @@ void
 handler_name_change_cb( FL_OBJECT * obj,
                         long        data  FL_UNUSED_ARG )
 {
-    fli_safe_free( curobj->c_vdata );
-    curobj->c_vdata = fl_strdup( fl_get_input( obj ) );
+    fli_safe_free( curobj->c_cdata );
+    curobj->c_cdata = fl_strdup( fl_get_input( obj ) );
 }
 
 
@@ -173,8 +173,8 @@ get_free_handle( FL_OBJECT  * obj,
     static char buf[ 1024 ];
     static FL_OBJECT *freeobj[ MAXFREEOBJ ];
 
-    if ( obj->c_vdata )
-        strcpy( buf, obj->c_vdata );
+    if ( obj->c_cdata )
+        strcpy( buf, obj->c_cdata );
     else if ( name && *name )
         sprintf( buf, "freeobj_%s_handle", name );
     else if ( *obj->label )

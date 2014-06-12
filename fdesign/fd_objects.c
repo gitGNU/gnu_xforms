@@ -223,7 +223,7 @@ fd_add_free( int          type,
 {
     FL_OBJECT *obj = fl_add_free( type, x, y, w, h, l, noop_handle );
 
-    obj->c_vdata = NULL;
+    obj->fdesign_vdata = NULL;
     return obj;
 }
 

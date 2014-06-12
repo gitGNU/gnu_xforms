@@ -31,6 +31,7 @@
  * fdesign assumes this
  */
 
+#define FL_CHOICE_MAXITEMS  128
 #define CMAXITEMS  ( FL_CHOICE_MAXITEMS + 1 )  /* index 0 unused */
 
 typedef struct {
@@ -49,7 +50,17 @@ typedef struct {
     unsigned int    no_title;
 } FLI_CHOICE_SPEC;
 
-#endif
+
+/***** Defaults *****/
+
+#define FLI_CHOICE_BOXTYPE   FL_ROUNDED_BOX
+#define FLI_CHOICE_COL1      FL_COL1
+#define FLI_CHOICE_COL2      FL_LCOL
+#define FLI_CHOICE_LCOL      FL_LCOL
+#define FLI_CHOICE_ALIGN     FL_ALIGN_LEFT
+#define FLI_CHOICE_MCOL      FL_MCOL
+
+#endif  /* PCHOICE_H_ */
 
 
 /*

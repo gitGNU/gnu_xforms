@@ -40,17 +40,17 @@
  ***************************************/
 
 static void
-draw_crossbutton( FL_OBJECT * ob )
+draw_crossbutton( FL_OBJECT * ob,
+                  int         event )
 {
     FL_Coord xx,
              yy,
              ww,
              hh;
-    FL_BUTTON_STRUCT *sp = ob->spec;
 
-    /* if redraw is demanded by FL_ENTER, ignore it */
+    /* If redraw is demanded by FL_ENTER, ignore it */
 
-    if ( sp->event == FL_ENTER )
+    if ( event == FL_ENTER )
         return;
 
     /* Draw the bounding box first */
@@ -65,7 +65,7 @@ draw_crossbutton( FL_OBJECT * ob )
 
     /* If pushed, draw a down box with the cross */
 
-    if ( sp->val )
+    if ( fl_get_button( ob ) )
     {
         fl_draw_box( FL_DOWN_BOX, xx, yy, ww, hh, ob->col1, ob->bw );
         fl_draw_text( FL_ALIGN_CENTER, xx - 2, yy - 2, ww + 4, hh + 4,

@@ -1558,7 +1558,16 @@ fli_internal_init( void )
     static FLI_TARGET *default_flx;
 
     if ( ! default_flx )
+    {
         default_flx = fl_calloc( 1, sizeof *default_flx );
+
+        default_flx->display = NULL;;
+        default_flx->win = None;
+        default_flx->gc = None;
+        default_flx->textgc = None;
+        default_flx->colormap = None;
+        default_flx->fs = NULL;
+    }
 
     return flx = default_flx;
 }

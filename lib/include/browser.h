@@ -18,16 +18,8 @@
 /********************** crop here for forms.h **********************/
 
 /*
- * \file browser.h
- *
- *  Object class Browser
+ *  Object Class Browser
  */
-
-#ifndef FL_BROWSER_H
-#define FL_BROWSER_H
-
-
-/***** Types    *****/
 
 typedef enum {
     FL_NORMAL_BROWSER,
@@ -37,25 +29,9 @@ typedef enum {
 	FL_DESELECTABLE_HOLD_BROWSER
 } FL_BROWSER_TYPE;
 
-/***** Defaults *****/
-
-#define FL_BROWSER_BOXTYPE  FL_DOWN_BOX
-#define FL_BROWSER_COL1     FL_COL1
-#define FL_BROWSER_COL2     FL_YELLOW
-#define FL_BROWSER_LCOL     FL_LCOL
-#define FL_BROWSER_ALIGN    FL_ALIGN_BOTTOM
-
-
-/***** Others   *****/
-
-#define FL_BROWSER_SLCOL        FL_COL1
-#define FL_BROWSER_FONTSIZE     FL_SMALL_SIZE
-
-
 /* This exists only for backward compatibility and isn't used anymore! */
 
 #define FL_BROWSER_LINELENGTH   2048
-
 
 /***** Routines *****/
 
@@ -151,11 +127,15 @@ FL_EXPORT void fl_set_browser_topline( FL_OBJECT * ob,
 FL_EXPORT void fl_set_browser_bottomline( FL_OBJECT * ob,
 										  int         line );
 
-FL_EXPORT void fl_set_browser_fontsize( FL_OBJECT * ob,
+FL_EXPORT void fl_set_browser_fontsize( FL_OBJECT * obj,
                                         int         size );
 
-FL_EXPORT void fl_set_browser_fontstyle( FL_OBJECT * ob,
+FL_EXPORT int fl_get_browser_fontsize( FL_OBJECT * obj );
+
+FL_EXPORT void fl_set_browser_fontstyle( FL_OBJECT * obj,
                                          int         style );
+
+FL_EXPORT int fl_get_browser_fontstyle( FL_OBJECT * obj );
 
 FL_EXPORT void fl_set_browser_specialkey( FL_OBJECT * ob,
                                           int         specialkey );
@@ -217,14 +197,14 @@ typedef void ( * FL_BROWSER_SCROLL_CALLBACK )( FL_OBJECT *,
 #endif
 
 FL_EXPORT void
-    fl_set_browser_hscroll_callback( FL_OBJECT *,
-                                     FL_BROWSER_SCROLL_CALLBACK,
-                                     void * );
+fl_set_browser_hscroll_callback( FL_OBJECT *,
+								 FL_BROWSER_SCROLL_CALLBACK,
+								 void * );
 
 FL_EXPORT void
-    fl_set_browser_vscroll_callback( FL_OBJECT *,
-                                     FL_BROWSER_SCROLL_CALLBACK,
-                                     void * );
+fl_set_browser_vscroll_callback( FL_OBJECT *,
+								 FL_BROWSER_SCROLL_CALLBACK,
+								 void * );
 
 FL_EXPORT int fl_get_browser_line_yoffset( FL_OBJECT *,
 										   int  );
@@ -239,5 +219,3 @@ FL_EXPORT int fl_get_browser_scrollbar_repeat( FL_OBJECT * );
 
 FL_EXPORT void fl_set_browser_scrollbar_repeat( FL_OBJECT *,
 												int  );
-
-#endif /* ! defined FL_BROWSER_H */

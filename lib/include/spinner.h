@@ -17,8 +17,9 @@
 
 /********************** crop here for forms.h **********************/
 
-#ifndef FL_SPINNER_H
-#define FL_SPINNER_H
+/**
+ *  Object Class: Spinner
+ */
 
 typedef enum {
     FL_INT_SPINNER,
@@ -67,6 +68,3 @@ FL_EXPORT FL_OBJECT * fl_get_spinner_input( FL_OBJECT * obj );
 FL_EXPORT FL_OBJECT * fl_get_spinner_up_button( FL_OBJECT * obj );
 
 FL_EXPORT FL_OBJECT * fl_get_spinner_down_button( FL_OBJECT * obj );
-
-
-#endif /* ! defined FL_SPINNER_H */

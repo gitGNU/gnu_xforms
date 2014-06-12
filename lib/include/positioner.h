@@ -18,24 +18,14 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file positioner.h
+ *  Object Class: Positioner
  */
 
-#ifndef FL_POSITIONER_H
-#define FL_POSITIONER_H
-
-
-#define FL_NORMAL_POSITIONER      0
-#define FL_OVERLAY_POSITIONER     1
-#define FL_INVISIBLE_POSITIONER   2
-
-/***** Defaults *****/
-
-#define FL_POSITIONER_BOXTYPE   FL_DOWN_BOX
-#define FL_POSITIONER_COL1      FL_COL1
-#define FL_POSITIONER_COL2      FL_RED
-#define FL_POSITIONER_LCOL      FL_LCOL
-#define FL_POSITIONER_ALIGN     FL_ALIGN_BOTTOM
+typedef enum {
+	FL_NORMAL_POSITIONER,
+	FL_OVERLAY_POSITIONER,
+	FL_INVISIBLE_POSITIONER
+} FL_POSITIONER_TYPE;
 
 typedef int ( * FL_POSITIONER_VALIDATOR )( FL_OBJECT * obj,
 										   double      x,
@@ -119,6 +109,3 @@ fl_set_positioner_validator( FL_OBJECT               * obj,
 							 FL_POSITIONER_VALIDATOR   validator );
 
 FL_EXPORT void fl_reset_positioner( FL_OBJECT * obj );
-
-
-#endif /* ! defined FL_POSITIONER_H */

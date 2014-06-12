@@ -32,6 +32,7 @@
 
 #include "include/forms.h"
 #include "flinternal.h"
+#include "private/pframe.h"
 
 
 /***************************************
@@ -165,9 +166,9 @@ fl_create_labelframe( int          type,
     ob = fl_make_object( FL_LABELFRAME, type, x, y, w, h, label,
                          handle_lframe );
     ob->boxtype = FL_NO_BOX;
-    ob->col1    = FL_FRAME_COL1;
-    ob->col2    = FL_FRAME_COL2;
-    ob->lcol    = FL_FRAME_LCOL;
+    ob->col1    = FLI_FRAME_COL1;
+    ob->col2    = FLI_FRAME_COL2;
+    ob->lcol    = FLI_FRAME_LCOL;
     ob->align   = FL_ALIGN_LEFT_TOP;
     ob->active  = 0;
 

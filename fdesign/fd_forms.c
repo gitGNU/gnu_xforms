@@ -485,10 +485,10 @@ load_fd_header( void )
          || ff_read( "%d", &fd_magic ) <= 0
          || (    fd_magic != MAGIC2 && fd_magic != MAGIC3
               && fd_magic != MAGIC4 && fd_magic != MAGIC5
-              && fd_magic != MAGIC6 ) )
+              && fd_magic != MAGIC6 && fd_magic != MAGIC7 ) )
         return ff_err( "Wrong type of file" );
 
-    if ( fd_magic < MAGIC6 )
+    if ( fd_magic < MAGIC7 )
     {
         char *tmp = ff_get_filename_copy( );
 
@@ -774,7 +774,7 @@ save_forms( const char *str )
                  "    (do not change)\n\n"
                  "Number of forms: %d\n"
                  "Unit of measure: %s\n",
-             MAGIC6, fnumb, unit_name( fdopt.unit ) );
+             MAGIC7, fnumb, unit_name( fdopt.unit ) );
 
     if ( fd_bwidth != FL_BOUND_WIDTH && fd_bwidth )
         fprintf( fp, "Border Width: %d\n", fd_bwidth );

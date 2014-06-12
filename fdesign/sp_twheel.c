@@ -33,8 +33,7 @@
 #include "fd_main.h"
 #include "fd_spec.h"
 #include "sp_twheel.h"
-#include "private/ptwheel.h"
-#include "private/pvaluator.h"
+#include "private/pthumbwheel.h"
 #include "spec/twheel_spec.h"
 
 static FD_twheelattrib * twheel_attrib;

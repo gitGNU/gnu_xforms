@@ -31,6 +31,7 @@
 #include <sys/types.h>
 #include "include/forms.h"
 #include "flinternal.h"
+#include "private/plabelbut.h"
 
 
 /********** DRAWING *************/
@@ -41,7 +42,8 @@
  ***************************************/
 
 static void
-draw_labelbutton( FL_OBJECT * ob )
+draw_labelbutton( FL_OBJECT * ob,
+                  int         event  FL_UNUSED_ARG )
 {
     FL_COLOR scol = ob->lcol;
     FL_COLOR col = ob->lcol;
@@ -52,7 +54,7 @@ draw_labelbutton( FL_OBJECT * ob )
 
     if ( ob->belowmouse )
         col = ob->col1;
-    if ( ( ( FL_BUTTON_STRUCT * ) ob->spec )->val )
+    if ( fl_get_button( ob ) )
         col = ob->col2;
 
     ob->lcol = col;
@@ -90,11 +92,11 @@ fl_create_labelbutton( int          type,
     fl_add_button_class( FL_LABELBUTTON, draw_labelbutton, NULL );
     obj = fl_create_generic_button( FL_LABELBUTTON, type, x, y, w, h, label );
 
-    obj->boxtype = FL_FLAT_BOX;
-    obj->col1    = FL_RED;
-    obj->col2    = FL_BLUE;
-    obj->align   = FL_LIGHTBUTTON_ALIGN;
-    obj->lcol    = FL_LIGHTBUTTON_LCOL;
+    obj->boxtype = FLI_LABELBUTTON_BOXTYPE;
+    obj->col1    = FLI_LABELBUTTON_COL1;
+    obj->col2    = FLI_LABELBUTTON_COL2;
+    obj->lcol    = FLI_LABELBUTTON_LCOL;
+    obj->align   = FLI_LABELBUTTON_ALIGN;
 
     return obj;
 }

@@ -18,13 +18,8 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file xyplot.h
+ *  Object Class: XYPlot
  */
-
-#ifndef FL_XYPLOT_H
-#define FL_XYPLOT_H
-
-/*  Class FL_XYPLOT */
 
 typedef enum {
     FL_NORMAL_XYPLOT,       /* solid line                        */
@@ -42,26 +37,16 @@ typedef enum {
     FL_LINEPOINTS_XYPLOT    /* line & points                     */
 } FL_XYPLOT_TYPE;
 
-enum {
+typedef enum {
     FL_LINEAR,
     FL_LOG
-};
+} FL_XYPLOT_DISPLAY_TYPE;
 
-enum {
-    FL_GRID_NONE  = 0,
-    FL_GRID_MAJOR = 1,
-    FL_GRID_MINOR = 2
-};
-
-/***** Defaults *****/
-
-#define FL_XYPLOT_BOXTYPE       FL_FLAT_BOX
-#define FL_XYPLOT_COL1          FL_COL1
-#define FL_XYPLOT_LCOL          FL_LCOL
-#define FL_XYPLOT_ALIGN         FL_ALIGN_BOTTOM
-#define FL_MAX_XYPLOTOVERLAY    32
-
-/***** Others   *****/
+typedef enum {
+    FL_GRID_NONE,
+    FL_GRID_MAJOR,
+    FL_GRID_MINOR
+} FL_XYPLOT_GRID_TYPE;
 
 FL_EXPORT FL_OBJECT * fl_create_xyplot( int          t,
                                         FL_Coord     x,
@@ -352,5 +337,3 @@ FL_EXPORT void fl_set_xyplot_mouse_buttons( FL_OBJECT    * obj,
 
 FL_EXPORT void fl_get_xyplot_mouse_buttons( FL_OBJECT    * obj,
 											unsigned int * mouse_buttons );
-
-#endif  /* ! defined FL_XYPLOT_H */

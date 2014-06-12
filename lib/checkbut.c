@@ -31,6 +31,7 @@
 #include <sys/types.h>
 #include "include/forms.h"
 #include "flinternal.h"
+#include "private/pcheckbut.h"
 
 
 /**************************************************************************
@@ -38,16 +39,16 @@
  **********************************************************************{*/
 
 static void
-draw_checkbutton( FL_OBJECT * ob )
+draw_checkbutton( FL_OBJECT * ob,
+                  int         event )
 {
     FL_Coord xx,
              yy,
              ww,
              hh,
              bw = FL_abs( ob->bw );
-    FL_BUTTON_STRUCT * sp = ob->spec;
 
-    if ( sp->event == FL_ENTER || sp->event == FL_LEAVE )
+    if ( event == FL_ENTER || event == FL_LEAVE )
         return;
 
     fl_draw_box( ob->boxtype, ob->x, ob->y, ob->w, ob->h, ob->col1, ob->bw );
@@ -56,7 +57,7 @@ draw_checkbutton( FL_OBJECT * ob )
     xx = ob->x + 4.5;
     yy = ob->y + ( ob->h - hh ) / 2;
 
-    if ( sp->val )
+    if ( fl_get_button( ob ) )
         fli_draw_checkbox( FL_DOWN_BOX, xx, yy, ww, hh, ob->col2, bw );
     else
         fli_draw_checkbox( FL_UP_BOX, xx, yy, ww, hh, ob->col1, bw );
@@ -90,14 +91,14 @@ fl_create_checkbutton( int          type,
 {
     FL_OBJECT *obj;
 
-    fl_add_button_class( FL_CHECKBUTTON, draw_checkbutton, 0 );
+    fl_add_button_class( FL_CHECKBUTTON, draw_checkbutton, NULL );
     obj = fl_create_generic_button( FL_CHECKBUTTON, type, x, y, w, h, label );
 
-    obj->boxtype = FL_CHECKBUTTON_BOXTYPE;
-    obj->col1    = FL_CHECKBUTTON_COL1;
-    obj->col2    = FL_CHECKBUTTON_COL2;
-    obj->align   = FL_CHECKBUTTON_ALIGN;
-    obj->lcol    = FL_CHECKBUTTON_LCOL;
+    obj->boxtype = FLI_CHECKBUTTON_BOXTYPE;
+    obj->col1    = FLI_CHECKBUTTON_COL1;
+    obj->col2    = FLI_CHECKBUTTON_COL2;
+    obj->align   = FLI_CHECKBUTTON_ALIGN;
+    obj->lcol    = FLI_CHECKBUTTON_LCOL;
 
     return obj;
 }

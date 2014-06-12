@@ -21,10 +21,9 @@
  * \file flps.h
  */
 
-#ifndef FLPS_H
-#define FLPS_H
-
-/* postscript stuff */
+/**
+ *  Postscript stuff
+ **/
 
 enum {
    FLPS_AUTO,                  /* switch to landscale if does not fit */
@@ -65,5 +64,3 @@ FL_EXPORT FLPS_CONTROL * flps_init( void );
 
 FL_EXPORT int fl_object_ps_dump( FL_OBJECT  * ob,
                                  const char * fname );
-
-#endif /* ! defined FLPS_H */

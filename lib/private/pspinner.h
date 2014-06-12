@@ -16,8 +16,8 @@
  */
 
 
-#ifndef PSPINNER_H
-#define PSPINNER_H
+#ifndef PSPINNER_H_
+#define PSPINNER_H_
 
 typedef struct {
     FL_OBJECT * input;
@@ -47,7 +47,7 @@ typedef struct {
 #define DEFAULT_SPINNER_PRECISION  6
 
 
-#endif /* PSPINNER_H */
+#endif /* PSPINNER_H_ */
 
 
 /*

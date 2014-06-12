@@ -18,33 +18,14 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file menu.h
+ *  Object Class: Menu 
  */
-
-#ifndef FL_MENU_H
-#define FL_MENU_H
-
-
-/************   Object Class: Menu         ************/
 
 typedef enum {
     FL_TOUCH_MENU,
     FL_PUSH_MENU,
     FL_PULLDOWN_MENU
 } FL_MENU_TYPE;
-
-/***** Defaults *****/
-
-#define FL_MENU_BOXTYPE     FL_BORDER_BOX
-#define FL_MENU_COL1        FL_COL1
-#define FL_MENU_COL2        FL_MCOL
-#define FL_MENU_LCOL        FL_LCOL
-#define FL_MENU_ALIGN       FL_ALIGN_CENTER
-
-/***** Others   *****/
-
-#define FL_MENU_MAXITEMS    128
-#define FL_MENU_MAXSTR      64        /* not used anymore! JTT */
 
 /***** Routines *****/
 
@@ -121,5 +102,3 @@ FL_EXPORT int fl_set_menu_notitle( FL_OBJECT * ob,
 FL_EXPORT int fl_set_menu_item_id( FL_OBJECT * ob,
                                    int         item,
                                    int         id );
-
-#endif /* ! defined FL_MENU_H */

@@ -42,7 +42,6 @@ typedef struct {
     FL_MODIFY_CANVAS_PROP   cleanup;
 
     Colormap                colormap;   /* colormap for the canvas       */
-    GC                      gc;
     unsigned int            mask,
                             user_mask;
     int                     depth;
@@ -72,6 +71,10 @@ typedef struct {
                              sh;            /* scrolled window size          */
 } FLI_CANVAS_SPEC;
 
+
+/******************** Default *********************/
+
+#define FLI_CANVAS_BOXTYPE   FL_DOWN_BOX     /* really the decoration frame */
 
 #endif /* PCANVAS_H */
 

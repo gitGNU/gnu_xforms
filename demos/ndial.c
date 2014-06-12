@@ -76,7 +76,7 @@ makeform( void )
         fl_set_object_boxtype( obj, FL_UP_BOX );
         fl_set_dial_bounds( obj, 0.0, 255.0 );
         fl_set_dial_value( obj, 128.0 );
-        fl_set_object_color( obj, col[ i ], FL_DIAL_COL2 );
+        fl_set_object_color( obj, col[ i ], FL_RIGHT_BCOL );
         fl_set_object_callback( obj, cb, i );
         fl_set_object_return( obj, FL_RETURN_CHANGED );
 

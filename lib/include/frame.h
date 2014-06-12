@@ -18,15 +18,10 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file frame.h
+ *  Object CLass: Frame
  */
 
-#ifndef FL_FRAME_H
-#define FL_FRAME_H
-
-/* types of frames */
-
-enum {
+typedef enum {
     FL_NO_FRAME,
     FL_UP_FRAME,
     FL_DOWN_FRAME,
@@ -36,11 +31,7 @@ enum {
     FL_ROUNDED_FRAME,
     FL_EMBOSSED_FRAME,
     FL_OVAL_FRAME
-};
-
-#define FL_FRAME_COL1   FL_BLACK   /* border color     */
-#define FL_FRAME_COL2   FL_COL1    /* label background */
-#define FL_FRAME_LCOL   FL_BLACK   /* label color      */
+} FL_FRAME_TYPE;
 
 FL_EXPORT FL_OBJECT * fl_create_frame( int          type,
                                        FL_Coord     x,
@@ -71,5 +62,3 @@ FL_EXPORT FL_OBJECT * fl_add_labelframe( int          type,
                                          FL_Coord     w,
                                          FL_Coord     h,
                                          const char * label );
-
-#endif /* ! defined FL_FRAME_H */

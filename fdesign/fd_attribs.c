@@ -275,7 +275,7 @@ save_edited_object( FL_OBJECT * obj )
 	saved_object.obj->label = fl_strdup( obj->label );
 	copy_shortcut( saved_object.obj, obj );
 
-    saved_object.obj->u_vdata = saved_object.obj->c_vdata = NULL;
+    saved_object.obj->u_vdata = saved_object.obj->fdesign_vdata = NULL;
 
     copy_superspec( saved_object.obj, obj );
     copy_iconinfo( saved_object.obj, obj );
@@ -303,7 +303,7 @@ restore_edited_object( FL_OBJECT * obj )
 	obj->label = fl_strdup( saved_object.obj->label );
 	copy_shortcut( obj, saved_object.obj );
 
-    obj->u_vdata = obj->c_vdata = NULL;
+    obj->u_vdata = obj->fdesign_vdata = NULL;
 
     copy_superspec( obj, saved_object.obj );
     superspec_to_spec( obj );

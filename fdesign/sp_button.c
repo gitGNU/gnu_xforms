@@ -35,6 +35,7 @@
 #include "fd_main.h"
 #include "fd_spec.h"
 #include "fd_iconinfo.h"
+#include "private/pbutton.h"
 #include "spec/button_spec.h"
 
 static FD_buttonattrib *bt_attrib = NULL;
@@ -133,14 +134,16 @@ button_adjust_spec_form( FL_OBJECT * obj )
 void
 button_fill_in_spec_form( FL_OBJECT * obj )
 {
-    FL_BUTTON_SPEC *sp = obj->spec;
+    FLI_BUTTON_SPEC *sp = obj->spec;
     IconInfo *info = get_iconinfo( obj );
 
-    fl_set_button( bt_attrib->react_left,   sp->react_to[ 0 ] );
-    fl_set_button( bt_attrib->react_middle, sp->react_to[ 1 ] );
-    fl_set_button( bt_attrib->react_right,  sp->react_to[ 2 ] );
-    fl_set_button( bt_attrib->react_up,     sp->react_to[ 3 ] );
-    fl_set_button( bt_attrib->react_down,   sp->react_to[ 4 ] );
+    unsigned int r = fl_get_object_mouse_buttons( obj );
+
+    fl_set_button( bt_attrib->react_left,   r & ( 1 << ( FL_MBUTTON1 - 1 ) ) );
+    fl_set_button( bt_attrib->react_middle, r & ( 1 << ( FL_MBUTTON2 - 1 ) ) );
+    fl_set_button( bt_attrib->react_right,  r & ( 1 << ( FL_MBUTTON3 - 1 ) ) );
+    fl_set_button( bt_attrib->react_up,     r & ( 1 << ( FL_MBUTTON4 - 1 ) ) );
+    fl_set_button( bt_attrib->react_down,   r & ( 1 << ( FL_MBUTTON5 - 1 ) ) );
     fl_set_button( bt_attrib->initialval,   sp->val );
 
     if ( info )
@@ -224,21 +227,10 @@ button_emit_spec_fd_code( FILE      * fp,
                           FL_OBJECT * obj )
 {
     FL_OBJECT *defobj = defobj = create_default_button( obj );
-    FL_BUTTON_SPEC *sp    = obj->spec,
-                   *defsp = defobj->spec;
+    FLI_BUTTON_SPEC *sp    = obj->spec,
+                    *defsp = defobj->spec;
     IconInfo *info,
              *definfo;
-
-    if ( memcmp( sp->react_to, defsp->react_to, sizeof sp->react_to ) )
-    {
-        unsigned int rt =   ( sp->react_to[ 0 ] &  1 )
-                          | ( sp->react_to[ 1 ] &  2 )
-                          | ( sp->react_to[ 2 ] &  4 )
-                          | ( sp->react_to[ 3 ] &  8 )
-                          | ( sp->react_to[ 4 ] & 16 );
-
-        fprintf( fp, "    mbuttons: %u\n", rt );
-    }
 
     if ( sp->val != defsp->val )
         fprintf( fp, "    value: %d\n", sp->val );
@@ -297,24 +289,13 @@ button_emit_spec_c_code( FILE      * fp,
                          FL_OBJECT * obj )
 {
     FL_OBJECT *defobj = defobj = create_default_button( obj );
-    FL_BUTTON_SPEC *sp    = obj->spec,
-                   *defsp = defobj->spec;
+    FLI_BUTTON_SPEC *sp    = obj->spec,
+                    *defsp = defobj->spec;
     IconInfo *info,
              *definfo;
 
     if ( sp->val != defsp->val )
         fprintf( fp, "    fl_set_button( obj, %d );\n", sp->val );
-
-    if ( memcmp( sp->react_to, defsp->react_to, sizeof sp->react_to ) )
-    {
-        unsigned int rt =   ( sp->react_to[ 0 ] &  1 )
-                          | ( sp->react_to[ 1 ] &  2 )
-                          | ( sp->react_to[ 2 ] &  4 )
-                          | ( sp->react_to[ 3 ] &  8 )
-                          | ( sp->react_to[ 4 ] & 16 );
-
-        fprintf( fp, "    fl_set_button_mouse_buttons( obj, %u );\n", rt );
-    }
 
     if ( ! IsIconButton( obj ) )
     {
@@ -420,10 +401,10 @@ usedata_change( FL_OBJECT * obj,
  ***************************************/
 
 void
-fullpath_cb( FL_OBJECT * ob,
+fullpath_cb( FL_OBJECT * obj,
              long        data  FL_UNUSED_ARG )
 {
-    get_iconinfo( curobj )->fullpath = fl_get_button( ob );
+    get_iconinfo( curobj )->fullpath = fl_get_button( obj );
 }
 
 
@@ -434,16 +415,14 @@ void
 react_to_button( FL_OBJECT * obj,
                  long        data )
 {
-    unsigned int mb;
-
-    fl_get_button_mouse_buttons( curobj, &mb );
+    unsigned int mb = fl_get_object_mouse_buttons( curobj );
 
     if ( fl_get_button( obj ) )
         mb |= 1 << data;
     else
         mb &= ~ ( 1 << data );
 
-    fl_set_button_mouse_buttons( curobj, mb );
+    fl_set_object_mouse_buttons( curobj, mb );
 }
 
 
@@ -553,8 +532,8 @@ lookfor_pixmapfile_cb( FL_OBJECT * ob   FL_UNUSED_ARG,
 {
     const char *fn;
     const char * def = data
-                       ? ( ( FL_BUTTON_STRUCT * ) curobj->spec )->focus_filename
-                       : ( ( FL_BUTTON_STRUCT * ) curobj->spec )->filename;
+                       ? ( ( FLI_BUTTON_SPEC * ) curobj->spec )->focus_filename
+                       : ( ( FLI_BUTTON_SPEC * ) curobj->spec )->filename;
     char buf[ 2048 ];
     char *cwd;
 

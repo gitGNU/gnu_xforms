@@ -34,6 +34,7 @@
 #include "fd/ui_theforms.h"
 #include "private/pmenu.h"
 #include "private/pchoice.h"
+#include "private/pbutton.h"
 
 /* All control panel menus, File Object Options etc. have this
  * common structures
@@ -48,10 +49,12 @@ typedef struct {
     int        * p;         /* binary value      */
 } MenuEntry;
 
-extern void exit_cb( FL_OBJECT *,
-                     long );
-extern void saveforms_cb( FL_OBJECT *,
-                          long );
+extern GC fd_gc;
+
+void exit_cb( FL_OBJECT *,
+              long );
+void saveforms_cb( FL_OBJECT *,
+                   long );
 
 /**** FileMenu ******{*/
 
@@ -100,6 +103,7 @@ exit_cb( FL_OBJECT * obj  FL_UNUSED_ARG,
             return;
     }
 
+    XFreeGC( fl_display, fd_gc );
     fl_finish( );
     exit( 0 );
 }
@@ -678,9 +682,9 @@ fix_menu_etc( FL_FORM * form,
         else if ( ISBUTTON( ob->objclass ) )
         {
             if ( save )
-                ob->u_ldata = ( ( FL_BUTTON_SPEC * ) ob->spec )->val;
+                ob->u_ldata = ( ( FLI_BUTTON_SPEC * ) ob->spec )->val;
             else
-                ( ( FL_BUTTON_SPEC * ) ob->spec )->val = ob->u_ldata;
+                ( ( FLI_BUTTON_SPEC * ) ob->spec )->val = ob->u_ldata;
         }
     }
 }

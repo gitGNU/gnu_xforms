@@ -18,13 +18,8 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file cursor.h
- *
- * Cursor defs and prototypes
+ *  Cursor defs and prototypes
  */
-
-#ifndef FL_CURSOR_H
-#define FL_CURSOR_H
 
 #include <X11/cursorfont.h>
 
@@ -60,5 +55,3 @@ FL_EXPORT int fl_create_animated_cursor( int * cur_names,
                                          int   timeout );
 
 #define fl_reset_cursor( win )   fl_set_cursor( win, FL_DEFAULT_CURSOR );
-
-#endif /* ! defined FL_CURSOR_H */

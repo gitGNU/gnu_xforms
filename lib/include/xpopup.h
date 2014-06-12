@@ -18,20 +18,14 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file xpopup.h
- *
- *  Prototypes for xpop-up menus
+ *  Object Class: XPopup
  */
-
-#ifndef FL_XPOPUP_H
-#define FL_XPOPUP_H
-
 
 #define FL_MAXPUPI     128  /* max item each pup        */
 #define FL_PUP_PADH    4    /* space between each items */
 
-typedef void ( * FL_PUP_ENTERCB )( int, void * );   /* call back prototype  */
-typedef void ( * FL_PUP_LEAVECB )( int, void * );   /* call back prototype  */
+typedef void ( * FL_PUP_ENTERCB )( int, void * );   /* callback prototype  */
+typedef void ( * FL_PUP_LEAVECB )( int, void * );   /* callback prototype  */
 
 FL_EXPORT int fl_setpup_entries( int            nm,
                                  FL_PUP_ENTRY * entries );
@@ -147,5 +141,3 @@ FL_EXPORT void fl_setpup_submenu( int m,
                                   int subm );
 
 #define fl_setpup    fl_setpup_mode
-
-#endif /* ! defined FL_XPOPUP_H */

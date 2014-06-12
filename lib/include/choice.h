@@ -18,13 +18,8 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file choice.h
- *
+ *  Object Class: Choice
  */
-
-#ifndef FL_CHOICE_H
-#define FL_CHOICE_H
-
 
 typedef enum {
     FL_NORMAL_CHOICE,
@@ -34,19 +29,6 @@ typedef enum {
 } FL_CHOICE_TYPE;
 
 #define  FL_SIMPLE_CHOICE  FL_NORMAL_CHOICE
-
-/***** Defaults *****/
-
-#define FL_CHOICE_BOXTYPE   FL_ROUNDED_BOX
-#define FL_CHOICE_COL1      FL_COL1
-#define FL_CHOICE_COL2      FL_LCOL
-#define FL_CHOICE_LCOL      FL_LCOL
-#define FL_CHOICE_ALIGN     FL_ALIGN_LEFT
-
-/***** Others   *****/
-
-#define FL_CHOICE_MCOL      FL_MCOL
-#define FL_CHOICE_MAXITEMS  128
 
 /***** Routines *****/
 
@@ -132,5 +114,3 @@ FL_EXPORT int fl_set_choice_notitle( FL_OBJECT * ob,
 
 FL_EXPORT int fl_set_choice_align_bottom( FL_OBJECT * ob,
 										  int         n );
-
-#endif /* ! defined FL_CHOICE_H */

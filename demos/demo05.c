@@ -65,7 +65,7 @@ main( int    argc,
     slider = fl_add_slider( FL_VERT_SLIDER, 40, 40, 60, 320, "" );
     fl_set_slider_bounds( slider, -1, 1 );
     fl_set_slider_value( slider, 0 );
-    fl_set_object_color( slider, FL_SLIDER_COL1, FL_GREEN );
+    fl_set_object_color( slider, FL_COL1, FL_GREEN );
     fl_set_object_callback( slider, slider_cb, ( long ) value );
 
     fl_add_button( FL_RETURN_BUTTON, 120, 290, 100, 30, "Exit" );

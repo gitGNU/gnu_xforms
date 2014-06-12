@@ -32,7 +32,13 @@ typedef struct {
 } FLI_SELECT_SPEC;
 
 
-#endif
+#define FLI_SELECT_COL1          FL_COL1
+#define FLI_SELECT_COL2          FL_MCOL
+#define FLI_SELECT_LCOL          FL_LCOL
+#define FLI_SELECT_ALIGN         FL_ALIGN_LEFT
+
+
+#endif  /* PSELECT_H_ &*/
 
 
 /*

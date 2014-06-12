@@ -419,7 +419,7 @@ handle_mouse( FL_OBJECT    * obj,
         else
             return FL_RETURN_NONE;
     }
-    else if ( sp->react_to[ key - 1 ] )
+    else if ( REACT_TO( obj, key ) )
         newval = get_newvalue( obj, mx, my );
     else
         return FL_RETURN_NONE;
@@ -491,7 +491,7 @@ handle_motion( FL_OBJECT * obj,
     /* For non-scrollbar objects we're going to update the sliders position -
        if a shift key is pressed we here fake a smaller mouse movement */
 
-    if ( ! IS_SCROLLBAR( obj ) && sp->react_to[ key - 1 ] )
+    if ( ! IS_SCROLLBAR( obj ) && key <= FL_MBUTTON3 && REACT_TO( obj, key ) )
     {
         if ( shiftkey_down( ( ( XEvent * ) ev )->xmotion.state ) )
         {
@@ -503,9 +503,9 @@ handle_motion( FL_OBJECT * obj,
             }
             
             if ( IS_HSLIDER( obj ) )
-                mx = sp->old_mx + ( mx - sp->old_mx ) * FL_SLIDER_FINE;
+                mx = sp->old_mx + ( mx - sp->old_mx ) * FLI_SLIDER_FINE;
             else
-                my = sp->old_my + ( my - sp->old_my ) * FL_SLIDER_FINE;
+                my = sp->old_my + ( my - sp->old_my ) * FLI_SLIDER_FINE;
         }
         else
             sp->was_shift = 0;
@@ -721,7 +721,7 @@ handle_slider( FL_OBJECT * ob,
             {
                 ob->align = fl_to_outside_lalign( ob->align );
                 if ( fl_is_center_lalign( ob->align ) )
-                    ob->align = FL_SLIDER_ALIGN;
+                    ob->align = FLI_SLIDER_ALIGN;
             }
             compute_bounds( ob );
             break;
@@ -792,14 +792,13 @@ create_slider( int          objclass,
 {
     FL_OBJECT *ob;
     FLI_SLIDER_SPEC *sp;
-    int i;
 
     ob = fl_make_object( objclass, type, x, y, w, h, label, handle_slider );
-    ob->boxtype = FL_SLIDER_BOXTYPE;
-    ob->col1    = FL_SLIDER_COL1;
-    ob->col2    = FL_SLIDER_COL2;
-    ob->align   = FL_SLIDER_ALIGN;
-    ob->lcol    = FL_SLIDER_LCOL;
+    ob->boxtype = FLI_SLIDER_BOXTYPE;
+    ob->col1    = FLI_SLIDER_COL1;
+    ob->col2    = FLI_SLIDER_COL2;
+    ob->align   = FLI_SLIDER_ALIGN;
+    ob->lcol    = FLI_SLIDER_LCOL;
     ob->lsize   = FL_TINY_SIZE;
     ob->spec    = sp = fl_calloc( 1, sizeof *sp );
     sp->min            = 0.0;
@@ -824,9 +823,7 @@ create_slider( int          objclass,
 
     /* Per default a slider reacts to the left mouse button only */
 
-    sp->react_to[ 0 ] = 1;
-    for ( i = 1; i < 3; i++ )
-        sp->react_to[ i ] = 0;
+    fl_set_object_mouse_buttons( ob, 1U );
 
     return ob;
 }
@@ -1188,11 +1185,7 @@ void
 fl_set_slider_mouse_buttons( FL_OBJECT    * obj,
                              unsigned int   mouse_buttons )
 {
-    FLI_SLIDER_SPEC *sp = obj->spec;
-    unsigned int i;
-
-    for ( i = 0; i < 3; i++, mouse_buttons >>= 1 )
-        sp->react_to[ i ] = mouse_buttons & 1;
+    fl_set_object_mouse_buttons( obj, mouse_buttons & 0x7 );
 }
 
 
@@ -1205,24 +1198,7 @@ void
 fl_get_slider_mouse_buttons( FL_OBJECT    * obj,
                              unsigned int * mouse_buttons )
 {
-    FLI_SLIDER_SPEC *sp;
-    int i;
-    unsigned int k;
-
-    if ( ! obj )
-    {
-        M_err( "fl_get_slider_mouse_buttons", "NULL object" );
-        return;
-    }
-
-    if ( ! mouse_buttons )
-        return;
-
-    sp = obj->spec;
-
-    *mouse_buttons = 0;
-    for ( i = 0, k = 1; i < 3; i++, k <<= 1 )
-        *mouse_buttons |= sp->react_to[ i ] ? k : 0;
+    *mouse_buttons = fl_get_object_mouse_buttons( obj );
 }
 
 

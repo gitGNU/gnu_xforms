@@ -36,8 +36,8 @@
 #include "flinternal.h"
 
 
-static int fli_mono_dither( unsigned long );
-static void fli_set_current_gc( GC );
+static int mono_dither( unsigned long );
+static void set_current_gc( GC );
 
 static GC dithered_gc;
 
@@ -59,7 +59,7 @@ fl_rectangle( int      fill,
               FL_Coord h,
               FL_COLOR col )
 {
-    int bw = fli_dithered( fl_vmode ) && fli_mono_dither( col );
+    int bw = fli_dithered( fl_vmode ) && mono_dither( col );
     GC gc = flx->gc;
     int ( * draw_as )( Display *,
                        Drawable,
@@ -78,9 +78,9 @@ fl_rectangle( int      fill,
 
     if ( bw && fill )
     {
-        fli_set_current_gc( fli_whitegc );
+        set_current_gc( fli_whitegc );
         draw_as( flx->display, flx->win, flx->gc, x, y, w, h );
-        fli_set_current_gc( dithered_gc );
+        set_current_gc( dithered_gc );
     }
 
 
@@ -88,7 +88,7 @@ fl_rectangle( int      fill,
     draw_as( flx->display, flx->win, flx->gc, x, y, w, h );
 
     if ( bw )
-        fli_set_current_gc( gc );
+        set_current_gc( gc );
 }
 
 
@@ -111,7 +111,7 @@ fl_polygon( int        fill,
             int        n,
             FL_COLOR   col )
 {
-    int bw = fli_dithered( fl_vmode ) && fli_mono_dither( col );
+    int bw = fli_dithered( fl_vmode ) && mono_dither( col );
     GC gc = flx->gc;
 
     if ( flx->win == None || n <= 0 )
@@ -207,7 +207,7 @@ fl_oval( int      fill,
          FL_Coord h,
          FL_COLOR col )
 {
-    int bw = fli_dithered( fl_vmode ) && fli_mono_dither( col );
+    int bw = fli_dithered( fl_vmode ) && mono_dither( col );
     GC gc = flx->gc;
     int ( * draw_as )( Display *,
                        Drawable,
@@ -226,9 +226,9 @@ fl_oval( int      fill,
 
     if ( bw )
     {
-        fli_set_current_gc( fli_whitegc );
+        set_current_gc( fli_whitegc );
         draw_as( flx->display, flx->win, flx->gc, x, y, w, h, 0, 360 * 64 );
-        fli_set_current_gc( dithered_gc );
+        set_current_gc( dithered_gc );
     }
 
     fl_color( bw ? FL_BLACK : col );
@@ -237,7 +237,7 @@ fl_oval( int      fill,
         draw_as( flx->display, flx->win, flx->gc, x, y, w, h, 0, 360 * 64 );
 
     if ( bw )
-        fli_set_current_gc( gc );
+        set_current_gc( gc );
 }
 
 
@@ -283,7 +283,8 @@ fl_ovalarc( int      fill,
             int      dt,
             FL_COLOR col )
 {
-    int mono = fli_dithered( fl_vmode ) && fli_mono_dither( col );
+    int mono = fli_dithered( fl_vmode ) && mono_dither( col );
+    GC gc = flx->gc;
     int ( * draw_as )( Display *,
                        Drawable,
                        GC,
@@ -301,10 +302,10 @@ fl_ovalarc( int      fill,
 
     if ( mono )
     {
-        fli_set_current_gc( fli_whitegc );
+        set_current_gc( fli_whitegc );
         draw_as( flx->display, flx->win, flx->gc, x, y, w, h,
                  t0 * 6.4, dt * 6.4 );
-        fli_set_current_gc( dithered_gc );
+        set_current_gc( dithered_gc );
     }
 
     fl_color( mono ? FL_BLACK : col );
@@ -314,7 +315,7 @@ fl_ovalarc( int      fill,
                  t0 * 6.4, dt * 6.4 );
 
     if ( mono )
-        fli_set_current_gc( fl_state[ fl_vmode ].gc[ 0 ] );
+        set_current_gc( gc );
 }
 
 
@@ -362,7 +363,7 @@ fl_pieslice( int      fill,
              FL_COLOR col )
 {
     int delta = a2 - a1,
-        bw = fli_dithered( fl_vmode ) && fli_mono_dither( col );
+        bw = fli_dithered( fl_vmode ) && mono_dither( col );
     GC gc = flx->gc;
     int ( * draw_as )( Display *,
                        Drawable,
@@ -381,10 +382,10 @@ fl_pieslice( int      fill,
 
     if ( bw )
     {
-        fli_set_current_gc( fli_whitegc );
+        set_current_gc( fli_whitegc );
         draw_as( flx->display, flx->win, flx->gc, x, y, w, h,
                  a1 * 6.4, delta * 6.4 );
-        fli_set_current_gc( dithered_gc );
+        set_current_gc( dithered_gc );
     }
 
     fl_color( bw ? FL_BLACK : col );
@@ -393,7 +394,7 @@ fl_pieslice( int      fill,
         draw_as( flx->display, flx->win, flx->gc, x, y, w, h,
                  a1 * 6.4, delta * 6.4 );
     if ( bw )
-        fli_set_current_gc( gc );
+        set_current_gc( gc );
 }
 
 
@@ -1205,7 +1206,7 @@ fli_set_additional_clipping( FL_Coord x,
  ***************************************/
 
 static void
-fli_set_current_gc( GC gc )
+set_current_gc( GC gc )
 {
     if ( flx->gc == gc )
         return;
@@ -1248,7 +1249,7 @@ fli_set_current_gc( GC gc )
  ***************************************/
 
 static int
-fli_mono_dither( unsigned long col )
+mono_dither( unsigned long col )
 {
     int bwtrick = 0;
 

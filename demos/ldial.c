@@ -87,7 +87,7 @@ makeform( void )
         fl_set_dial_bounds( dial[ i ], 0.0, 255.0 );
         fl_set_dial_angles( dial[ i ], 15.0, 345.0 );
         fl_set_dial_value( dial[ i ], 128.0 );
-        fl_set_object_color( dial[ i ], clr[ i ], FL_DIAL_COL2 );
+        fl_set_object_color( dial[ i ], clr[ i ], FL_RIGHT_BCOL );
         fl_set_object_return( dial[ i ], FL_RETURN_CHANGED );
         fl_set_object_callback( dial[ i ], dial_callback, i );
 

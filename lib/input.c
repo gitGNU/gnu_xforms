@@ -1661,11 +1661,11 @@ fl_create_input( int          type,
     set_default_keymap( 0 );
 
     obj = fl_make_object( FL_INPUT, type, x, y, w, h, label, handle_input );
-    obj->boxtype    = FL_INPUT_BOXTYPE;
-    obj->col1       = FL_INPUT_COL1;
-    obj->col2       = FL_INPUT_COL2;
-    obj->align      = FL_INPUT_ALIGN;
-    obj->lcol       = FL_INPUT_LCOL;
+    obj->boxtype    = FLI_INPUT_BOXTYPE;
+    obj->col1       = FLI_INPUT_COL1;
+    obj->col2       = FLI_INPUT_COL2;
+    obj->align      = FLI_INPUT_ALIGN;
+    obj->lcol       = FLI_INPUT_LCOL;
     obj->lsize      = fli_cntl.inputFontSize ?
                       fli_cntl.inputFontSize : FL_DEFAULT_SIZE;
     obj->set_return = fl_set_input_return;
@@ -1680,8 +1680,8 @@ fl_create_input( int          type,
     obj->click_timeout = FL_CLICK_TIMEOUT;
     obj->spec = sp     = fl_calloc( 1, sizeof *sp );
 
-    sp->textcol        = FL_INPUT_TCOL;
-    sp->curscol        = FL_INPUT_CCOL;
+    sp->textcol        = FLI_INPUT_TCOL;
+    sp->curscol        = FLI_INPUT_CCOL;
     sp->position       = -1;
     sp->endrange       = -1;
     sp->size           = 8;

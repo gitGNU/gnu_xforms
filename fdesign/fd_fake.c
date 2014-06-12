@@ -87,7 +87,7 @@ fl_create_simu_canvas( int          type,
 
     ob = fl_make_object( FL_CANVAS, type, x, y, w, h, label,
                          handle_simu_canvas );
-    ob->boxtype   = FL_CANVAS_BOXTYPE;
+    ob->boxtype   = FLI_CANVAS_BOXTYPE;
     ob->col1      = FL_NoColor;
     ob->col2      = FL_BLACK;
     ob->lcol      = FL_LCOL;
@@ -136,7 +136,7 @@ fl_create_simu_glcanvas( int          type,
 
     ob = fl_make_object( FL_GLCANVAS, type, x, y, w, h, label,
                          handle_simu_canvas );
-    ob->boxtype = FL_CANVAS_BOXTYPE;
+    ob->boxtype = FLI_CANVAS_BOXTYPE;
     ob->col1    = FL_NoColor;
     ob->col2    = FL_BLACK;
     ob->lcol    = FL_LCOL;

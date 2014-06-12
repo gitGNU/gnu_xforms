@@ -23,10 +23,6 @@
  *  Object Class: Free
  */
 
-#ifndef FL_FREE_H
-#define FL_FREE_H
-
-
 typedef enum {
     FL_NORMAL_FREE,
     FL_INACTIVE_FREE,
@@ -52,5 +48,3 @@ FL_EXPORT FL_OBJECT * fl_add_free( int            type,
                                    FL_Coord       h,
                                    const char   * label,
                                    FL_HANDLEPTR   handle );
-
-#endif /* ! defined FL_FREE_H */

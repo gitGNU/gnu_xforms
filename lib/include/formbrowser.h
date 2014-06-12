@@ -18,25 +18,18 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file formbrowser.h
- *
+ *  Object Class: Formbrowser
  */
 
-#ifndef FL_FORMBROWSER_H
-#define FL_FORMBROWSER_H
-
-enum {
+typedef enum {
     FL_NORMAL_FORMBROWSER
-};
+} FL_FORMBROWSER_TYPE;
 
-enum {
+typedef enum {
    FL_SMOOTH_SCROLL,
    FL_JUMP_SCROLL
-};
+} FL_FORMBROWSER_SCROLL;
 
-#define   FL_FORMBROWSER_BOXTYPE  FL_DOWN_BOX
-#define   FL_FORMBROWSER_COL1     FL_COL1
-#define   FL_FORMBROWSER_ALIGN    FL_ALIGN_TOP
 
 FL_EXPORT int fl_addto_formbrowser( FL_OBJECT * ob,
                                     FL_FORM   * form );
@@ -111,5 +104,3 @@ FL_EXPORT int fl_get_formbrowser_numforms( FL_OBJECT * ob );
 
 FL_EXPORT FL_FORM * fl_get_formbrowser_form( FL_OBJECT * ob,
                                              int         n );
-
-#endif /* ! defined FL_FORMBROWSER_H */

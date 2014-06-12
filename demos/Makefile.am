@@ -111,8 +111,6 @@ noinst_PROGRAMS = \
 	yesno \
 	yesno_cb
 
-#	menubar
-
 # Most of these demos link against libforms only. For them this default is
 # sufficient:
 
@@ -238,8 +236,6 @@ ll_LDADD  = ../image/libflimage.la ../lib/libforms.la \
 
 longlabel_SOURCES = longlabel.c
 menu_SOURCES = menu.c
-
-#menubar_SOURCES = menubar.c
 
 minput_SOURCES = minput.c
 minput2_SOURCES = minput2.c

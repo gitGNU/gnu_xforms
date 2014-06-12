@@ -31,6 +31,7 @@
 #include <sys/types.h>
 #include "include/forms.h"
 #include "flinternal.h"
+#include "private/plightbut.h"
 
 
 /***************************************
@@ -38,7 +39,8 @@
  ***************************************/
 
 static void
-draw_lightbutton( FL_OBJECT * ob )
+draw_lightbutton( FL_OBJECT * ob,
+                  int         event  FL_UNUSED_ARG )
 {
     int c1,
         c2,
@@ -49,10 +51,9 @@ draw_lightbutton( FL_OBJECT * ob )
              hh,
              absbw = FL_abs( ob->bw ),
              bw2;
-    FL_BUTTON_STRUCT *sp = ob->spec;
 
-    c1 = ob->belowmouse ? FL_LIGHTBUTTON_MCOL : FL_LIGHTBUTTON_TOPCOL;
-    c2 = sp->val ? ob->col2 : ob->col1;
+    c1 = ob->belowmouse ? FLI_LIGHTBUTTON_MCOL : FLI_LIGHTBUTTON_TOPCOL;
+    c2 = fl_get_button( ob ) ? ob->col2 : ob->col1;
 
     fl_draw_box( ob->boxtype, ob->x, ob->y, ob->w, ob->h, c1, ob->bw );
 
@@ -66,9 +67,9 @@ draw_lightbutton( FL_OBJECT * ob )
 
     /* Calculate and draw the light */
 
-    hh = FL_max( ob->h - 3 * absbw - 1, FL_LIGHTBUTTON_MINSIZE );
+    hh = FL_max( ob->h - 3 * absbw - 1, FLI_LIGHTBUTTON_MINSIZE );
 
-    ww = FL_max( hh / 2, FL_LIGHTBUTTON_MINSIZE );
+    ww = FL_max( hh / 2, FLI_LIGHTBUTTON_MINSIZE );
     if ( ww > ob->w / 6 )
         ww = ob->w / 6;
 
@@ -163,11 +164,11 @@ fl_create_lightbutton( int          type,
     fl_add_button_class( FL_LIGHTBUTTON, draw_lightbutton, NULL );
     ob = fl_create_generic_button( FL_LIGHTBUTTON, type, x, y, w, h, label );
 
-    ob->boxtype = FL_LIGHTBUTTON_BOXTYPE;
-    ob->col1    = FL_LIGHTBUTTON_COL1;
-    ob->col2    = FL_LIGHTBUTTON_COL2;
-    ob->align   = FL_LIGHTBUTTON_ALIGN;
-    ob->lcol    = FL_LIGHTBUTTON_LCOL;
+    ob->boxtype = FLI_LIGHTBUTTON_BOXTYPE;
+    ob->col1    = FLI_LIGHTBUTTON_COL1;
+    ob->col2    = FLI_LIGHTBUTTON_COL2;
+    ob->align   = FLI_LIGHTBUTTON_ALIGN;
+    ob->lcol    = FLI_LIGHTBUTTON_LCOL;
 
     return ob;
 }

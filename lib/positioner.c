@@ -288,9 +288,7 @@ handle_positioner( FL_OBJECT * obj,
             break;
 
         case FL_PUSH:
-            if (    key < FL_MBUTTON1
-                 || key > FL_MBUTTON5
-                 || ! sp->react_to[ key - 1 ] )
+            if ( key > FL_MBUTTON3 || ! REACT_TO( obj, key ) )
             {
                 fli_int.pushobj = NULL;
                 break;
@@ -377,15 +375,14 @@ fl_create_positioner( int          type,
 {
     FL_OBJECT * obj;
     FLI_POSITIONER_SPEC * sp;
-    int i;
 
     obj = fl_make_object( FL_POSITIONER, type, x, y, w, h, label,
                           handle_positioner );
-    obj->boxtype = FL_POSITIONER_BOXTYPE;
-    obj->col1    = FL_POSITIONER_COL1;
-    obj->col2    = FL_POSITIONER_COL2;
-    obj->align   = FL_POSITIONER_ALIGN;
-    obj->lcol    = FL_POSITIONER_LCOL;
+    obj->boxtype = FLI_POSITIONER_BOXTYPE;
+    obj->col1    = FLI_POSITIONER_COL1;
+    obj->col2    = FLI_POSITIONER_COL2;
+    obj->align   = FLI_POSITIONER_ALIGN;
+    obj->lcol    = FLI_POSITIONER_LCOL;
 
     if (    obj->type == FL_OVERLAY_POSITIONER
          || obj->type == FL_INVISIBLE_POSITIONER )
@@ -408,9 +405,7 @@ fl_create_positioner( int          type,
 
     /* Per default a positioner reacts to the left mouse button only */
 
-    sp->react_to[ 0 ] = 1;
-    for ( i = 1; i < 5; i++ )
-        sp->react_to[ i ] = 0;
+    fl_set_object_mouse_buttons( obj, 1U );
 
     fl_set_object_return( obj, FL_RETURN_CHANGED );
 
@@ -713,11 +708,7 @@ void
 fl_set_positioner_mouse_buttons( FL_OBJECT    * obj,
                                  unsigned int   mouse_buttons )
 {
-    FLI_POSITIONER_SPEC *sp = obj->spec;
-    unsigned int i;
-
-    for ( i = 0; i < 5; i++, mouse_buttons >>= 1 )
-        sp->react_to[ i ] = mouse_buttons & 1;
+    fl_set_object_mouse_buttons( obj, mouse_buttons & 0x7 );
 }
 
 
@@ -730,24 +721,7 @@ void
 fl_get_positioner_mouse_buttons( FL_OBJECT    * obj,
                                  unsigned int * mouse_buttons )
 {
-    FLI_POSITIONER_SPEC *sp;
-    int i;
-    unsigned int k;
-
-    if ( ! obj )
-    {
-        M_err( "fl_get_positioner_mouse_buttons", "NULL object" );
-        return;
-    }
-
-    if ( ! mouse_buttons )
-        return;
-
-    sp = obj->spec;
-
-    *mouse_buttons = 0;
-    for ( i = 0, k = 1; i < 5; i++, k <<= 1 )
-        *mouse_buttons |= sp->react_to[ i ] ? k : 0;
+    *mouse_buttons = fl_get_object_mouse_buttons( obj );
 }
 
 

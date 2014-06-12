@@ -40,6 +40,7 @@
 #include "fd_main.h"
 #include "fd_spec.h"
 #include "fd_iconinfo.h"
+#include "private/pslider.h"
 
 #define MAXSEL  2048
 
@@ -1753,19 +1754,20 @@ static void
 set_attribs( FL_OBJECT * obj,
              FL_OBJECT * src )
 {
-    obj->boxtype = src->boxtype;
-    obj->col1    = src->col1;
-    obj->col2    = src->col2;
-    obj->lcol    = src->lcol;
-    obj->lsize   = src->lsize;
-    obj->lstyle  = src->lstyle;
+    obj->boxtype  = src->boxtype;
+    obj->col1     = src->col1;
+    obj->col2     = src->col2;
+    obj->lcol     = src->lcol;
+    obj->lsize    = src->lsize;
+    obj->lstyle   = src->lstyle;
+    obj->react_to = src->react_to;
 
     if (    obj->objclass == FL_SLIDER
          && ! ( obj->type & FL_VERT_PROGRESS_BAR ) )
     {
         obj->align = fl_to_outside_lalign( obj->align );
         if ( fl_is_center_lalign( obj->align ) )
-            obj->align = FL_SLIDER_ALIGN;
+            obj->align = FLI_SLIDER_ALIGN;
     }
     else
         obj->align = src->align;

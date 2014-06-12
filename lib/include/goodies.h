@@ -18,13 +18,9 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file goodies.h
+ *  Goodies.h
  */
 
-#ifndef FL_GOODIES_H
-#define FL_GOODIES_H
-
-/***** Resources and misc. goodie routines ******/
 
 #define FLAlertDismissLabel     "flAlert.dismiss.label"
 #define FLAlertTitle            "flAlert.title"
@@ -283,5 +279,3 @@ FL_EXPORT int fl_goodies_atclose( FL_FORM *,
 
 FL_EXPORT int fl_show_color_chooser( const int * rgb_in,
 									 int       * rgb_out );
-
-#endif /* ! defined FL_GOODIES_H */

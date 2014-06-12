@@ -18,16 +18,9 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file Basic.h
- *
  *  Basic definitions and limits.
  *  Window system independent prototypes
- *
- *  Modify with care
  */
-
-#ifndef FL_BASIC_H
-#define FL_BASIC_H
 
 #include <math.h>
 
@@ -61,7 +54,7 @@ enum {
     FL_IGNORE      = -1
 };
 
-/* Max  directory length  */
+/* Max. directory length  */
 
 #ifndef FL_PATH_MAX
 #ifndef PATH_MAX
@@ -136,7 +129,7 @@ typedef enum {
     FL_NMENU,              /* 42 */
     FL_SPINNER,            /* 43 */
     FL_TBOX,               /* 44 */
-    FL_CLASS_END           /* sentinel */
+    FL_CLASS_END
 } FL_CLASS;
 
 #define FL_BEGIN_GROUP        10000
@@ -152,8 +145,8 @@ typedef enum {
 /* How to display a form onto screen */
 
 typedef enum {
-    FL_PLACE_FREE       =   0,      /* size remain resizable      */
-    FL_PLACE_MOUSE      =   1,      /* mouse centered on form     */
+    FL_PLACE_FREE       =   0,         /* size remain resizable      */
+    FL_PLACE_MOUSE      =   1,         /* mouse centered on form     */
     FL_PLACE_CENTER     =   2,         /* center of the screen       */
     FL_PLACE_POSITION   =   4,         /* specific position          */
     FL_PLACE_SIZE       =   8,         /* specific size              */
@@ -179,7 +172,7 @@ enum {
     FL_FULLBORDER = 1,      /* normal                                  */
     FL_TRANSIENT,           /* set TRANSIENT_FOR property              */
     FL_NOBORDER             /* use override_redirect to supress decor. */
- };
+};
 
 /* All box types */
 
@@ -210,7 +203,7 @@ typedef enum {
     FL_BOTTOMTAB_UPBOX,
     FL_SELECTED_BOTTOMTAB_UPBOX,
  
-    FL_MAX_BOX_STYLES               /* sentinel */
+    FL_MAX_BOX_STYLES
 } FL_BOX_TYPE;
 
 #define FL_IS_UPBOX( t )    (    ( t ) == FL_UP_BOX           \
@@ -296,7 +289,7 @@ enum {
 
 
 /*  Some special color indices for FL private colormap. It does not matter
- *  what the value of each enum is, but it must start from 0 and be
+ *  what the value of each enum is, but they must start from 0 and be
  *  consecutive. */
 
 typedef enum {
@@ -497,7 +490,7 @@ typedef enum {
 
 #define FL_DOGERBLUE        FL_DODGERBLUE
 
-/* Events that a form reacts to  */
+/* Events that a form reacts to */
 
 typedef enum {
     FL_NOEVENT,                /*  0 No event */
@@ -541,7 +534,7 @@ typedef enum {
 } FL_EVENTS;
 
 
-/* Resize policies */
+/* Resizing policies */
 
 typedef enum {
     FL_RESIZE_NONE,
@@ -603,6 +596,7 @@ typedef struct {
 
 typedef enum {
     FL_INVALID_STYLE = -1,
+
     FL_NORMAL_STYLE,
     FL_BOLD_STYLE,
     FL_ITALIC_STYLE,
@@ -659,7 +653,7 @@ typedef enum {
 #define FL_NORMAL_FONT2   FL_NORMAL_FONT
 #define FL_DEFAULT_FONT   FL_SMALL_FONT
 
-#define FL_BOUND_WIDTH  ( FL_Coord ) 1     /* Border width of boxes */
+#define FL_BOUND_WIDTH  ( ( FL_Coord ) 1 )    /* Border width of boxes */
 
 /* Definition of basic struct that holds an object */
 
@@ -739,7 +733,7 @@ struct FL_OBJECT_ {
     FL_OBJECT      * nc;             /* next child */
 
     FL_pixmap      * flpixmap;       /* pixmap double buffering stateinfo */
-    int              use_pixmap;     /* true to use pixmap double buffering*/
+    int              use_pixmap;     /* if true use pixmap double buffering*/
 
     /* Some interaction flags */
 
@@ -757,11 +751,12 @@ struct FL_OBJECT_ {
     int              redraw;
     int              visible;
     int              is_under;       /* if (partially) hidden by other object */
-    int              clip;
+    unsigned int     react_to;       /* mouse buttons to react to */
     unsigned long    click_timeout;
     void           * c_vdata;        /* for class use */
     char           * c_cdata;        /* for class use */
     long             c_ldata;        /* for class use */
+	void           * fdesign_vdata;  /* for fdesigns exclusive use */
     FL_COLOR         dbl_background; /* double buffer background */
     char           * tooltip;
     int              tipID;
@@ -770,6 +765,8 @@ struct FL_OBJECT_ {
     int              want_update;
 };
 
+#define REACT_TO( obj, key ) \
+   ( ( ( obj )->react_to & ( 1U << ( ( key ) - 1 ) ) ) ? 1 : 0 )
 
 /* Callback function for an entire form */
 
@@ -1341,6 +1338,11 @@ FL_EXPORT void fl_deactivate_object( FL_OBJECT * ob );
 
 FL_EXPORT int fl_object_is_active( FL_OBJECT * obj );
 
+FL_EXPORT void fl_set_object_mouse_buttons( FL_OBJECT    * obj,
+											unsigned int   mouse_buttons );
+
+FL_EXPORT unsigned int fl_get_object_mouse_buttons( FL_OBJECT * obj );
+
 FL_EXPORT int fl_enumerate_fonts( void ( * output )( const char * s ),
                                   int  shortform );
 
@@ -1627,6 +1629,4 @@ typedef const char * ( * FL_VAL_FILTER )( FL_OBJECT *,
 
 FL_EXPORT int fl_is_same_object( FL_OBJECT * obj1,
 								 FL_OBJECT * obj2 );
-
-#endif /* ! defined FL_BASIC_H */
 

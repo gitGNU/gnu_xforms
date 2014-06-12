@@ -18,25 +18,13 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file thumbwheel.h
+ *  Object ClassL Thumbwheel
  */
 
-#ifndef FL_THUMBWHEEL_H
-#define FL_THUMBWHEEL_H
-
-
-enum {
+typedef enum {
     FL_VERT_THUMBWHEEL,
     FL_HOR_THUMBWHEEL
-};
-
-/* defaults */
-
-#define FL_THUMBWHEEL_COL1      FL_COL1
-#define FL_THUMBWHEEL_COL2      FL_COL1
-#define FL_THUMBWHEEL_LCOL      FL_BLACK
-#define FL_THUMBWHEEL_BOXTYPE   FL_BORDER_BOX
-#define FL_THUMBWHEEL_ALIGN     FL_ALIGN_BOTTOM
+} FL_TUMBWHEEL_TYPE;
 
 FL_EXPORT double fl_get_thumbwheel_value( FL_OBJECT * ob );
 
@@ -75,5 +63,3 @@ FL_EXPORT FL_OBJECT * fl_add_thumbwheel( int          type,
                                          FL_Coord     w,
                                          FL_Coord     h,
                                          const char * label );
-
-#endif /* ! defined FL_THUMBWHEEL_H */

@@ -34,20 +34,7 @@
 #include <stdlib.h>
 #include "include/forms.h"
 #include "flinternal.h"
-
-
-/* Extra information need for input boxes. */
-
-typedef struct
-{
-    double time_left;       /* the time (sec) left to wait */
-    double timer;           /* total duration              */
-    long sec,               /* start time                  */
-         usec;
-    int on,
-        up;
-    FL_TIMER_FILTER filter;
-} SPEC;
+#include "private/ptimer.h"
 
 
 /***************************************
@@ -92,14 +79,14 @@ draw_timer( FL_OBJECT * ob )
 {
     FL_COLOR col;
     char *str;
-    SPEC *sp = ob->spec;
+    FLI_TIMER_SPEC *sp = ob->spec;
 
     if ( ob->type == FL_HIDDEN_TIMER )
         return;
 
     if ( ! sp->on || sp->time_left > 0.0 )
         col = ob->col1;
-    else if ( ( int ) ( sp->time_left / FL_TIMER_BLINKRATE ) % 2 )
+    else if ( ( int ) ( sp->time_left / FLI_TIMER_BLINKRATE ) % 2 )
         col = ob->col1;
     else
         col = ob->col2;
@@ -129,7 +116,7 @@ handle_timer( FL_OBJECT * ob,
               int         key  FL_UNUSED_ARG,
               void      * ev   FL_UNUSED_ARG )
 {
-    SPEC *sp = ob->spec;
+    FLI_TIMER_SPEC *sp = ob->spec;
     long sec,
          usec;
     double lasttime_left;
@@ -195,8 +182,8 @@ handle_timer( FL_OBJECT * ob,
                 ret = FL_RETURN_CHANGED | FL_RETURN_END;
                 break;
             }
-            else if ( ( int ) ( lasttime_left / FL_TIMER_BLINKRATE ) !=
-                                ( int ) ( sp->time_left / FL_TIMER_BLINKRATE ) )
+            else if ( ( int ) ( lasttime_left / FLI_TIMER_BLINKRATE ) !=
+                              ( int ) ( sp->time_left / FLI_TIMER_BLINKRATE ) )
                 fl_redraw_object( ob );
 
             update_only = 0;
@@ -224,18 +211,18 @@ fl_create_timer( int          type,
                  const char * l )
 {
     FL_OBJECT *ob;
-    SPEC *sp;
+    FLI_TIMER_SPEC *sp;
 
     ob = fl_make_object( FL_TIMER, type, x, y, w, h, l, handle_timer );
 
-    ob->boxtype   = FL_TIMER_BOXTYPE;
-    ob->col1      = FL_TIMER_COL1;
-    ob->col2      = FL_TIMER_COL2;
+    ob->boxtype   = FLI_TIMER_BOXTYPE;
+    ob->col1      = FLI_TIMER_COL1;
+    ob->col2      = FLI_TIMER_COL2;
     if ( type != FL_VALUE_TIMER )
-        ob->align     = FL_TIMER_ALIGN;
+        ob->align = FLI_TIMER_ALIGN;
     else
         ob->align     = FL_ALIGN_LEFT;
-    ob->lcol      = FL_TIMER_LCOL;
+    ob->lcol      = FLI_TIMER_LCOL;
     ob->spec = sp = fl_calloc( 1, sizeof *sp );
 
     fl_set_timer( ob, 0.0 );       /* disabled timer */
@@ -274,7 +261,7 @@ void
 fl_set_timer( FL_OBJECT * ob,
               double      total )
 {
-    SPEC *sp = ob->spec;
+    FLI_TIMER_SPEC *sp = ob->spec;
 
     sp->time_left = sp->timer = total;
     sp->on = total > 0.0;
@@ -292,7 +279,7 @@ fl_set_timer( FL_OBJECT * ob,
 double
 fl_get_timer( FL_OBJECT * ob )
 {
-    SPEC *sp = ob->spec;
+    FLI_TIMER_SPEC *sp = ob->spec;
 
     return sp->time_left > 0.0 ? sp->time_left : 0.0;
 }
@@ -305,7 +292,7 @@ void
 fl_set_timer_countup( FL_OBJECT * ob,
                       int         yes )
 {
-    ( ( SPEC * ) ob->spec )->up = yes;
+    ( ( FLI_TIMER_SPEC * ) ob->spec )->up = yes;
 }
 
 
@@ -316,7 +303,7 @@ FL_TIMER_FILTER
 fl_set_timer_filter( FL_OBJECT       * ob,
                      FL_TIMER_FILTER   filter )
 {
-    SPEC *sp = ob->spec;
+    FLI_TIMER_SPEC *sp = ob->spec;
     FL_TIMER_FILTER old = sp->filter;
 
     if ( filter != sp->filter )
@@ -334,7 +321,7 @@ fl_set_timer_filter( FL_OBJECT       * ob,
 void
 fl_suspend_timer( FL_OBJECT * ob )
 {
-    ( ( SPEC * ) ob->spec )->on = 0;
+    ( ( FLI_TIMER_SPEC * ) ob->spec )->on = 0;
     fl_set_object_automatic( ob, 0 );
 }
 
@@ -345,7 +332,7 @@ fl_suspend_timer( FL_OBJECT * ob )
 void
 fl_resume_timer( FL_OBJECT * ob )
 {
-    SPEC *sp = ob->spec;
+    FLI_TIMER_SPEC *sp = ob->spec;
     long sec, usec;
     double elapsed;
 

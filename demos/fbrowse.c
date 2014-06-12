@@ -127,20 +127,22 @@ create_form( void )
 
     obj = fl_add_lightbutton( FL_RADIO_BUTTON, x, 565, dx, dy, "Tiny" );
     fl_set_object_callback( obj, set_size, FL_TINY_SIZE );
+    fl_set_button( obj, FL_NORMAL_SIZE == fl_get_browser_fontsize( fdui->br ) );
     x += dx;
 
     obj = fl_add_lightbutton( FL_RADIO_BUTTON, x , 565, dx, dy, "Small" );
     fl_set_object_callback( obj, set_size, FL_SMALL_SIZE );
-    fl_set_button( obj, FL_SMALL_SIZE == FL_BROWSER_FONTSIZE );
+    fl_set_button( obj, FL_SMALL_SIZE == fl_get_browser_fontsize( fdui->br ) );
     x += dx;
 
     obj = fl_add_lightbutton( FL_RADIO_BUTTON, x , 565, dx, dy, "Normal" );
     fl_set_object_callback( obj, set_size, FL_NORMAL_SIZE );
-    fl_set_button( obj, FL_NORMAL_SIZE == FL_BROWSER_FONTSIZE );
+    fl_set_button( obj, FL_NORMAL_SIZE == fl_get_browser_fontsize( fdui->br ) );
     x += dx;
 
     obj = fl_add_lightbutton( FL_RADIO_BUTTON, x , 565, dx, dy, "Large" );
     fl_set_object_callback( obj, set_size, FL_LARGE_SIZE );
+    fl_set_button( obj, FL_NORMAL_SIZE == fl_get_browser_fontsize( fdui->br ) );
     x += dx + 4;
 
     obj = fl_add_button( FL_NORMAL_BUTTON, x, 565, dx, dy, "Hide/Show" );

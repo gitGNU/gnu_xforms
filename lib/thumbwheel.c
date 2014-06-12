@@ -38,7 +38,7 @@
 #include "flinternal.h"
 
 #include <math.h>
-#include "private/ptwheel.h"
+#include "private/pthumbwheel.h"
 
 #ifndef M_PI
 #define M_PI    3.14159265359
@@ -486,11 +486,11 @@ fl_create_thumbwheel( int          type,
 
     obj = fl_make_object( FL_THUMBWHEEL, type, x, y, w, h, label,
                           handle_thumbwheel );
-    obj->col1    = FL_THUMBWHEEL_COL1;
-    obj->col2    = FL_THUMBWHEEL_COL2;
-    obj->lcol    = FL_THUMBWHEEL_LCOL;
-    obj->align   = FL_THUMBWHEEL_ALIGN;
-    obj->boxtype = FL_THUMBWHEEL_BOXTYPE;
+    obj->col1    = FLI_THUMBWHEEL_COL1;
+    obj->col2    = FLI_THUMBWHEEL_COL2;
+    obj->lcol    = FLI_THUMBWHEEL_LCOL;
+    obj->align   = FLI_THUMBWHEEL_ALIGN;
+    obj->boxtype = FLI_THUMBWHEEL_BOXTYPE;
     obj->wantkey = FL_KEY_SPECIAL;
     obj->spec    = NULL;
 

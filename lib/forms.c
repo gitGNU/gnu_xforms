@@ -33,6 +33,7 @@
 #include <ctype.h>
 #include "include/forms.h"
 #include "flinternal.h"
+#include "private/plightbut.h"
 #include "private/flvasprintf.h"
 
 
@@ -1371,9 +1372,12 @@ fl_show_form_window( FL_FORM * form )
         if ( obj->objclass == FL_FORMBROWSER )
             fl_redraw_object( obj );
 
+    /* Check if there's an object we can make the object that has the focus,
+       ot must be an input object and be active and visible */
+
     if ( ! form->focusobj )
         for ( obj = form->first; obj; obj = obj->next )
-            if ( obj->input && obj->active )
+            if ( obj->input && obj->active && obj->visible )
             {
                 fl_set_focus_object( form, obj );
                 break;
@@ -2126,7 +2130,7 @@ fl_fit_object_label( FL_OBJECT * obj,
         sw += FL_min( 0.6 * obj->h, 0.6 * obj->w ) - 1;
 
     if ( obj->objclass == FL_BUTTON && obj->type == FL_LIGHTBUTTON )
-        sw += FL_LIGHTBUTTON_MINSIZE + 1;
+        sw += FLI_LIGHTBUTTON_MINSIZE + 1;
 
     if (    sw <= obj->w - 2 * ( bw + xmargin )
          && sh <= obj->h - 2 * ( bw + ymargin ) )
@@ -2274,7 +2278,7 @@ fl_adjust_form_size( FL_FORM * form )
             sw += FL_min( 0.6 * obj->h, 0.6 * obj->w ) - 1;
 
         if ( obj->objclass == FL_BUTTON && obj->type == FL_LIGHTBUTTON )
-            sw += FL_LIGHTBUTTON_MINSIZE + 1;
+            sw += FLI_LIGHTBUTTON_MINSIZE + 1;
 
         if (    sw <= obj->w - 2 * ( bw + 1 )
              && sh <= obj->h - 2 * ( bw + 1 ))

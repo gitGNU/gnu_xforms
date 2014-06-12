@@ -26,8 +26,8 @@
  *  private header for xyplot object
  */
 
-#ifndef PXYPLOT_H
-#define PXYPLOT_H
+#ifndef PXYPLOT_H_
+#define PXYPLOT_H_
 
 
 #define MAX_MAJOR         50
@@ -145,11 +145,18 @@ typedef struct {
     short              external_data;
     int                start_x;
     int                start_y;
-    int                react_to[ 3 ];
 } FLI_XYPLOT_SPEC;
 
 
-#endif /* PXYPLOT.H */
+#define FLI_XYPLOT_BOXTYPE       FL_FLAT_BOX
+#define FLI_XYPLOT_COL1          FL_COL1
+#define FLI_XYPLOT_COL2          FL_BLACK
+#define FLI_XYPLOT_LCOL          FL_BLACK
+#define FLI_XYPLOT_ALIGN         FL_ALIGN_BOTTOM
+#define FLI_MAX_XYPLOTOVERLAY    32
+
+
+#endif /* PXYPLOT_H_ */
 
 
 /*

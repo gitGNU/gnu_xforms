@@ -887,20 +887,24 @@ ff_read_sp_angles( FL_OBJECT * obj  FL_UNUSED_ARG,
 
 
 /***************************************
+ * Note: a 'react_to' field was part of some object specs before version 1.4,
+ * afterward it became part of the object structure itself. This function
+ * thus is only needed for being able to read in fd files from old versions.
  ***************************************/
 
 static int 
-ff_read_sp_mbuttons( FL_OBJECT * obj  FL_UNUSED_ARG,
-                     SuperSPEC * sp )
+ff_read_sp_mbuttons( FL_OBJECT * obj,
+                     SuperSPEC * sp   FL_UNUSED_ARG )
 {
     int r;
 
-    if ( ( r = ff_read( "%d", &sp->mbuttons ) ) < 0 )
+    if ( ( r = ff_read( "%u", &obj->react_to ) ) < 0 )
         return ff_err( "Can't read expected object mbuttons setting" );
 
     if ( r == 0 )
         return ff_err( "\"mbuttons\" key with no or invalid value" );
 
+    obj->react_to &= 0x1F;
     return 0;
 }
 
@@ -1113,7 +1117,7 @@ ff_read_sp_handler( FL_OBJECT * obj,
     if ( r == 0 )
         return ff_err( "\"handler\" key with no or invalid value" );
 
-    obj->c_vdata = p;
+    obj->fdesign_vdata = p;
 
     return 0;
 }

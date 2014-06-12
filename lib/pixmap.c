@@ -33,7 +33,7 @@
 
 #include "include/forms.h"
 #include "flinternal.h"
-#include XPM_H_LOCATION
+#include "private/ppixmap.h"
 
 
 #if FL_DEBUG >= ML_ERR
@@ -49,17 +49,6 @@
 #define CHECK( obj, f )
 #endif
 
-
-typedef struct {
-    XpmAttributes * xpma;
-    GC              gc;
-    int             align;
-    int             dx,
-                    dy;
-    int             show_focus;
-    unsigned int    focus_w,    /* these should be in button_spec */
-                    focus_h;
-} PixmapSPEC;
 
 static XpmAttributes *xpmattrib;
 
@@ -103,9 +92,9 @@ cleanup_xpma_struct( XpmAttributes * xpma )
  ***************************************/
 
 static void
-free_pixmap( FL_BUTTON_STRUCT * sp )
+free_pixmap( FLI_BUTTON_SPEC * sp )
 {
-    PixmapSPEC *psp = sp->cspecv;
+    FLI_PIXMAP_SPEC *psp = sp->cspecv;
 
     fl_free_pixmap( sp->pixmap );
     fl_free_pixmap( sp->mask );
@@ -121,7 +110,7 @@ free_pixmap( FL_BUTTON_STRUCT * sp )
  ***************************************/
 
 static void
-free_focuspixmap( FL_BUTTON_STRUCT * sp )
+free_focuspixmap( FLI_BUTTON_SPEC * sp )
 {
     fl_free_pixmap( sp->focus_pixmap );
     fl_free_pixmap( sp->focus_mask );
@@ -136,13 +125,13 @@ free_focuspixmap( FL_BUTTON_STRUCT * sp )
  ***************************************/
 
 static void
-change_pixmap( FL_BUTTON_STRUCT * sp,
-               Window             win,
-               Pixmap             p,
-               Pixmap             shape_mask,
-               int                del )
+change_pixmap( FLI_BUTTON_SPEC * sp,
+               Window            win,
+               Pixmap            p,
+               Pixmap            shape_mask,
+               int               del )
 {
-    PixmapSPEC *psp = sp->cspecv;
+    FLI_PIXMAP_SPEC *psp = sp->cspecv;
 
     if ( p == None || win == None )
         return;
@@ -176,11 +165,11 @@ change_pixmap( FL_BUTTON_STRUCT * sp,
  ***************************************/
 
 static void
-change_focuspixmap( FL_BUTTON_STRUCT * sp,
-                    Window             win  FL_UNUSED_ARG,
-                    Pixmap             p,
-                    Pixmap             shape_mask,
-                    int                del )
+change_focuspixmap( FLI_BUTTON_SPEC * sp,
+                    Window            win  FL_UNUSED_ARG,
+                    Pixmap            p,
+                    Pixmap            shape_mask,
+                    int               del )
 {
     if ( del )
         free_focuspixmap( sp );
@@ -197,8 +186,8 @@ static void
 show_pixmap( FL_OBJECT * obj,
              int         focus )
 {
-    FL_BUTTON_STRUCT *sp = obj->spec;
-    PixmapSPEC *psp = sp->cspecv;
+    FLI_BUTTON_SPEC *sp = obj->spec;
+    FLI_PIXMAP_SPEC *psp = sp->cspecv;
     int dest_x,
         dest_y,
         dest_w,
@@ -407,7 +396,7 @@ handle_pixmap( FL_OBJECT * obj,
                int         key  FL_UNUSED_ARG,
                void      * ev   FL_UNUSED_ARG )
 {
-    FL_BUTTON_STRUCT *sp = obj->spec;
+    FLI_BUTTON_SPEC *sp = obj->spec;
 
 #if FL_DEBUG >= ML_DEBUG
     M_info( "handle_pixmap", fli_event_name( event ) );
@@ -425,8 +414,9 @@ handle_pixmap( FL_OBJECT * obj,
 
         case FL_FREEMEM:
             free_pixmap( obj->spec );
-            if ( ( ( PixmapSPEC * ) sp->cspecv )->gc )
-                XFreeGC( flx->display, ( ( PixmapSPEC * ) sp->cspecv )->gc );
+            if ( ( ( FLI_PIXMAP_SPEC * ) sp->cspecv )->gc )
+                XFreeGC( flx->display,
+                         ( ( FLI_PIXMAP_SPEC * ) sp->cspecv )->gc );
             fli_safe_free( sp->cspecv );
             fli_safe_free( obj->spec );
             break;
@@ -449,17 +439,17 @@ fl_create_pixmap( int          type,
                   const char * label )
 {
     FL_OBJECT *obj;
-    FL_BUTTON_STRUCT *sp;
-    PixmapSPEC *psp;
+    FLI_BUTTON_SPEC *sp;
+    FLI_PIXMAP_SPEC *psp;
 
     obj = fl_make_object( FL_PIXMAP, type, x, y, w, h, label, handle_pixmap );
 
-    obj->boxtype = FL_BITMAP_BOXTYPE;
-    obj->col1    = FL_BITMAP_COL1;
-    obj->col2    = FL_BITMAP_COL2;
-    obj->lcol    = FL_BITMAP_LCOL;
-    obj->align   = FL_BITMAP_ALIGN;
-    obj->active  = type != FL_NORMAL_BITMAP;
+    obj->boxtype = FLI_PIXMAP_BOXTYPE;
+    obj->col1    = FLI_PIXMAP_COL1;
+    obj->col2    = FLI_PIXMAP_COL2;
+    obj->lcol    = FLI_PIXMAP_LCOL;
+    obj->align   = FLI_PIXMAP_ALIGN;
+    obj->active  = type != FL_NORMAL_PIXMAP;
     obj->spec    = sp = fl_calloc( 1, sizeof *sp );
 
     sp->bits_w = 0;
@@ -554,7 +544,7 @@ fl_set_pixmap_pixmap( FL_OBJECT * obj,
                       Pixmap      id,
                       Pixmap      mask )
 {
-    FL_BUTTON_STRUCT *sp;
+    FLI_BUTTON_SPEC *sp;
     FL_Coord w = 0,
              h = 0;
 
@@ -581,7 +571,7 @@ fl_get_pixmap_pixmap( FL_OBJECT * obj,
                       Pixmap    * p,
                       Pixmap    * m )
 {
-    FL_BUTTON_STRUCT *sp;
+    FLI_BUTTON_SPEC *sp;
 
     if (    ! IsValidClass( obj, FL_PIXMAP )
          && ! IsValidClass( obj, FL_PIXMAPBUTTON ) )
@@ -667,7 +657,7 @@ fl_set_pixmap_file( FL_OBJECT  * obj,
 {
     Pixmap p = None,
            shape_mask = None;
-    FL_BUTTON_STRUCT *sp;
+    FLI_BUTTON_SPEC *sp;
     int hotx, hoty;
     Window win;
 
@@ -684,7 +674,7 @@ fl_set_pixmap_file( FL_OBJECT  * obj,
     if ( p != None )
     {
         change_pixmap( sp, win, p, shape_mask, 0 );
-        ( ( PixmapSPEC * ) sp->cspecv )->xpma = xpmattrib;
+        ( ( FLI_PIXMAP_SPEC * ) sp->cspecv )->xpma = xpmattrib;
         fl_redraw_object( obj );
     }
 }
@@ -706,18 +696,19 @@ fl_set_pixmap_file( FL_OBJECT  * obj,
  ***************************************/
 
 static void
-draw_pixmapbutton( FL_OBJECT * obj )
+draw_pixmapbutton( FL_OBJECT * obj,
+                   int         event )
 {
-    FL_BUTTON_STRUCT *sp = obj->spec;
-    PixmapSPEC *psp = sp->cspecv;
+    FLI_BUTTON_SPEC *sp = obj->spec;
+    FLI_PIXMAP_SPEC *psp = sp->cspecv;
 
     /* Draw it like a "normal button */
 
-    fli_draw_button( obj );
+    draw_normal_button( obj, event );
 
     /* Add the pixmap on top of it */
 
-    switch ( sp->event )
+    switch ( event )
     {
         case FL_ENTER:
             if ( psp->show_focus )
@@ -744,9 +735,10 @@ draw_pixmapbutton( FL_OBJECT * obj )
  ***************************************/
 
 static void
-cleanup_pixmapbutton( FL_BUTTON_STRUCT *sp )
+cleanup_pixmapbutton( FL_OBJECT * obj )
 {
-    PixmapSPEC *psp = sp->cspecv;
+    FLI_BUTTON_SPEC *sp = obj->spec;
+    FLI_PIXMAP_SPEC *psp = sp->cspecv;
 
     if ( psp->gc )
     {
@@ -781,8 +773,8 @@ fl_create_pixmapbutton( int          type,
 {
     FL_OBJECT *obj;
     static int class_init;
-    FL_BUTTON_STRUCT *sp;
-    PixmapSPEC *psp;
+    FLI_BUTTON_SPEC *sp;
+    FLI_PIXMAP_SPEC *psp;
 
     if ( ! class_init )
     {
@@ -793,11 +785,11 @@ fl_create_pixmapbutton( int          type,
 
     obj = fl_create_generic_button( FL_PIXMAPBUTTON, type, x, y, w, h, label );
 
-    obj->boxtype = FL_PIXMAPBUTTON_BOXTYPE;
-    obj->col1    = FL_PIXMAPBUTTON_COL1;
-    obj->col2    = FL_PIXMAPBUTTON_COL2;
-    obj->align   = FL_PIXMAPBUTTON_ALIGN;
-    obj->lcol    = FL_PIXMAPBUTTON_LCOL;
+    obj->boxtype = FLI_PIXMAPBUTTON_BOXTYPE;
+    obj->col1    = FLI_PIXMAPBUTTON_COL1;
+    obj->col2    = FLI_PIXMAPBUTTON_COL2;
+    obj->align   = FLI_PIXMAPBUTTON_ALIGN;
+    obj->lcol    = FLI_PIXMAPBUTTON_LCOL;
 
     sp = obj->spec;   /* allocated in fl_create_generic_button() */
 
@@ -839,7 +831,7 @@ void
 fl_set_pixmap_data( FL_OBJECT   * obj,
                     char       ** bits )
 {
-    FL_BUTTON_STRUCT *sp;
+    FLI_BUTTON_SPEC *sp;
     Window win;
     Pixmap p,
            shape_mask = None;
@@ -858,7 +850,7 @@ fl_set_pixmap_data( FL_OBJECT   * obj,
     if ( p != None )
     {
         change_pixmap( sp, win, p, shape_mask, 0 );
-        ( ( PixmapSPEC * ) sp->cspecv )->xpma = xpmattrib;
+        ( ( FLI_PIXMAP_SPEC * ) sp->cspecv )->xpma = xpmattrib;
         fl_redraw_object( obj );
     }
 
@@ -891,8 +883,8 @@ fl_set_pixmap_align( FL_OBJECT * obj,
                      int         xmargin,
                      int         ymargin )
 {
-    FL_BUTTON_STRUCT *sp;
-    PixmapSPEC *psp;
+    FLI_BUTTON_SPEC *sp;
+    FLI_PIXMAP_SPEC *psp;
 
     CHECK( obj, "fl_set_pixmap_align" );
 
@@ -916,8 +908,8 @@ fl_set_pixmapbutton_focus_pixmap( FL_OBJECT * obj,
                                   Pixmap      id,
                                   Pixmap      mask )
 {
-    FL_BUTTON_STRUCT *sp = obj->spec;
-    PixmapSPEC *psp = sp->cspecv;
+    FLI_BUTTON_SPEC *sp = obj->spec;
+    FLI_PIXMAP_SPEC *psp = sp->cspecv;
     int w,
         h;
 
@@ -940,8 +932,8 @@ void
 fl_set_pixmapbutton_focus_data( FL_OBJECT  * obj,
                                 char      ** bits )
 {
-    FL_BUTTON_STRUCT *sp;
-    PixmapSPEC *psp;
+    FLI_BUTTON_SPEC *sp;
+    FLI_PIXMAP_SPEC *psp;
     Window win;
     Pixmap p,
            shape_mask = None;
@@ -962,7 +954,7 @@ fl_set_pixmapbutton_focus_data( FL_OBJECT  * obj,
     if ( p != None )
     {
         change_focuspixmap( sp, win, p, shape_mask, 0 );
-        ( ( PixmapSPEC * ) sp->cspecv )->xpma = xpmattrib;
+        ( ( FLI_PIXMAP_SPEC * ) sp->cspecv )->xpma = xpmattrib;
     }
 }
 
@@ -976,11 +968,11 @@ fl_set_pixmapbutton_focus_file( FL_OBJECT  * obj,
 {
     Pixmap p,
            shape_mask = None;
-    FL_BUTTON_STRUCT *sp;
+    FLI_BUTTON_SPEC *sp;
     int hotx,
         hoty;
     Window win;
-    PixmapSPEC *psp;
+    FLI_PIXMAP_SPEC *psp;
 
     if ( ! flx->display )
         return;
@@ -1006,8 +998,8 @@ void
 fl_set_pixmapbutton_focus_outline( FL_OBJECT * obj,
                                    int         yes_no )
 {
-    FL_BUTTON_STRUCT *sp;
-    PixmapSPEC *psp;
+    FLI_BUTTON_SPEC *sp;
+    FLI_PIXMAP_SPEC *psp;
 
     CHECK( obj, "fl_set_pixmapbutton_focus_outline" );
 

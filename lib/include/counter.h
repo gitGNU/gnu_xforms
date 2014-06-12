@@ -18,28 +18,13 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file counter.h
+ *  Object Class: Counter
  */
-
-#ifndef FL_COUNTER_H
-#define FL_COUNTER_H
 
 typedef enum {
     FL_NORMAL_COUNTER,
     FL_SIMPLE_COUNTER
 } FL_COUNTER_TYPE;
-
-/***** Defaults *****/
-
-#define FL_COUNTER_BOXTYPE  FL_UP_BOX
-#define FL_COUNTER_COL1     FL_COL1
-#define FL_COUNTER_COL2     FL_BLUE           /* ct label     */
-#define FL_COUNTER_LCOL     FL_LCOL           /* ct reporting */
-#define FL_COUNTER_ALIGN    FL_ALIGN_BOTTOM
-
-/***** Others *****/
-
-#define FL_COUNTER_BW       FL_BOUND_WIDTH
 
 /***** Routines *****/
 
@@ -106,5 +91,3 @@ FL_EXPORT int fl_get_counter_speedjump( FL_OBJECT * ob );
 
 FL_EXPORT void fl_set_counter_speedjump( FL_OBJECT * ob,
                                          int         yes_no );
-
-#endif /* ! defined FL_COUNTER_H */

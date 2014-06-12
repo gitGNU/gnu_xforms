@@ -33,30 +33,32 @@
 #include <sys/types.h>
 #include "include/forms.h"
 #include "flinternal.h"
+#include "private/pbutton.h"
 
 
 /***************************************
  ***************************************/
 
 static void
-draw_scrollbutton( FL_OBJECT * ob )
+draw_scrollbutton( FL_OBJECT * ob,
+                   int         event )
 {
     FL_COLOR c1;
     FL_Coord abw = FL_abs( ob->bw );
     FL_Coord extra = abw;
-    FL_BUTTON_STRUCT *sp = ob->spec;
     int btype = FLI_TRIANGLE_UPBOX8;
     char *label = ob->label;
     int x = ob->x,
         y = ob->y,
         w = ob->w,
         h = ob->h;
+    int val = fl_get_button( ob );
 
     if (    ob->col2 != FL_COL1
-         && ( sp->event == FL_ENTER || sp->event == FL_LEAVE ) )
+         && ( event == FL_ENTER || event == FL_LEAVE ) )
         return;
 
-    if ( sp->event == FL_DRAW )
+    if ( event == FL_DRAW )
         fl_draw_box( ob->boxtype, x, y, w, h, ob->col1, ob->bw );
 
     if ( *label == '#' )
@@ -75,15 +77,15 @@ draw_scrollbutton( FL_OBJECT * ob )
     }
 
     if ( *label == '2' )
-        btype = sp->val ? FLI_TRIANGLE_DOWNBOX2 : FLI_TRIANGLE_UPBOX2;
+        btype = val ? FLI_TRIANGLE_DOWNBOX2 : FLI_TRIANGLE_UPBOX2;
     else if ( *label == '4' )
-        btype = sp->val ? FLI_TRIANGLE_DOWNBOX4 : FLI_TRIANGLE_UPBOX4;
+        btype = val ? FLI_TRIANGLE_DOWNBOX4 : FLI_TRIANGLE_UPBOX4;
     else if ( *label == '6' )
-        btype = sp->val ? FLI_TRIANGLE_DOWNBOX6 : FLI_TRIANGLE_UPBOX6;
+        btype = val ? FLI_TRIANGLE_DOWNBOX6 : FLI_TRIANGLE_UPBOX6;
     else if ( *label == '8' )
-        btype = sp->val ? FLI_TRIANGLE_DOWNBOX8 : FLI_TRIANGLE_UPBOX8;
+        btype = val ? FLI_TRIANGLE_DOWNBOX8 : FLI_TRIANGLE_UPBOX8;
 
-    c1 = ( ob->belowmouse && sp->event != FL_RELEASE ) ? FL_MCOL : ob->col2;
+    c1 = ( ob->belowmouse && event != FL_RELEASE ) ? FL_MCOL : ob->col2;
     fli_draw_tbox( btype, x + extra, y + extra, w - 2 * extra, h - 2 * extra,
                    c1, abw );
 }
@@ -103,7 +105,7 @@ fl_create_scrollbutton( int          type,
 {
     FL_OBJECT *ob;
 
-    fl_add_button_class( FL_SCROLLBUTTON, draw_scrollbutton, 0 );
+    fl_add_button_class( FL_SCROLLBUTTON, draw_scrollbutton, NULL );
     ob = fl_create_generic_button( FL_SCROLLBUTTON, type, x, y, w, h, label );
     ob->boxtype = FL_UP_BOX;
     ob->col1    = FL_COL1;

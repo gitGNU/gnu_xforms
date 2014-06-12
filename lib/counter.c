@@ -516,14 +516,13 @@ fl_create_counter( int          type,
     FLI_COUNTER_SPEC *sp;
 
     ob = fl_make_object( FL_COUNTER, type, x, y, w, h, label, handle_counter );
-    ob->boxtype     = FL_COUNTER_BOXTYPE;
-    ob->col1        = FL_COUNTER_COL1;
-    ob->col2        = FL_COUNTER_COL2;
-    ob->align       = FL_COUNTER_ALIGN;
-    ob->lcol        = FL_COUNTER_LCOL;
+    ob->boxtype     = FLI_COUNTER_BOXTYPE;
+    ob->col1        = FLI_COUNTER_COL1;
+    ob->col2        = FLI_COUNTER_COL2;
+    ob->align       = FLI_COUNTER_ALIGN;
+    ob->lcol        = FLI_COUNTER_LCOL;
     ob->want_motion = 1;
     ob->want_update = 1;
-//    ob->bw          = FL_COUNTER_BW;
 
     sp = ob->spec     = fl_calloc( 1, sizeof *sp );
     sp->min           = -1000000.0;

@@ -731,72 +731,43 @@ get_shared_cmap( int vmode )
 void
 fli_create_gc( Window win )
 {
-    GC *flgcs,
-       *flgce;
-    FL_State *fs = fl_state + fl_vmode;
+    flx->gc = fl_state[ fl_vmode ].gc;
 
-    /* If gc for this visual exists, do switch */
-
-    if ( fl_state[ fl_vmode ].gc[ 0 ] )
+    if ( ! flx->gc )
     {
-        flx->gc = fl_state[ fl_vmode ].gc[ 0 ];
-        flx->textgc = fl_state[ fl_vmode ].textgc[ 0 ];
+        flx->gc = XCreateGC( flx->display, win, 0, NULL );
+        XSetStipple( flx->display, flx->gc, FLI_INACTIVE_PATTERN );
+        XSetGraphicsExposures( flx->display, flx->gc, 0 );
+    }
 
-        if ( fl_state[ fl_vmode ].cur_fnt )
-            XSetFont( flx->display, flx->textgc,
-                      fl_state[ fl_vmode ].cur_fnt->fid );
-        return;
+    flx->textgc = fl_state[ fl_vmode ].textgc;
+
+    if ( ! flx->textgc )
+    {
+        flx->textgc = XCreateGC( flx->display, win, 0, NULL );
+        XSetStipple( flx->display, flx->textgc, FLI_INACTIVE_PATTERN );
+        XSetGraphicsExposures( flx->display, flx->textgc, 0 );
     }
 
     /* Check if we need to dither */
 
     fli_dithered( fl_vmode ) = fli_depth( fl_vmode ) <= 2;
 
-    /* Need to create new GCs */
-
-    M_warn( "fli_create_gc", "For %s", fli_vclass_name( fl_vmode ) );
-
-    if ( ! fli_gray_pattern[ 1 ] )
-    {
-        M_err( "fli_create_gc", "gray pattern not initialized" );
-        exit( 1 );
-    }
-
-    flgcs = fs->gc;
-    flgce = flgcs + sizeof fs->gc / sizeof *fs->gc;
-    for ( ; flgcs < flgce; flgcs++ )
-    {
-        *flgcs = XCreateGC( flx->display, win, 0, 0 );
-        XSetStipple( flx->display, *flgcs, FLI_INACTIVE_PATTERN );
-        XSetGraphicsExposures( flx->display, *flgcs, 0 );
-    }
-
-    flx->gc = fl_state[ fl_vmode ].gc[ 0 ];
-
-    /* Initialize text gc */
-
-    flgcs = fs->textgc;
-    flgce = flgcs + sizeof fs->textgc / sizeof *fs->textgc;
-    for ( ; flgcs < flgce; flgcs++ )
-    {
-        *flgcs = XCreateGC( flx->display, win, 0, 0 );
-        XSetStipple( flx->display, *flgcs, FLI_INACTIVE_PATTERN );
-        XSetGraphicsExposures( flx->display, *flgcs, 0 );
-    }
-
-    flx->textgc = fl_state[ fl_vmode ].textgc[ 0 ];
-
     /* Initialize a dimmed GC */
 
-    fl_state[ fl_vmode ].dimmedGC = XCreateGC( flx->display, win, 0, 0 );
-    XSetStipple( flx->display, fl_state[ fl_vmode ].dimmedGC,
-                 FLI_INACTIVE_PATTERN );
-    XSetGraphicsExposures( flx->display, fl_state[ fl_vmode ].dimmedGC, 0 );
-    XSetFillStyle( flx->display, fl_state[ fl_vmode ].dimmedGC, FillStippled );
+    if ( ! fl_state[ fl_vmode ].dimmedGC )
+    {
+        fl_state[ fl_vmode ].dimmedGC = XCreateGC( flx->display, win, 0, NULL );
+        XSetStipple( flx->display, fl_state[ fl_vmode ].dimmedGC,
+                     FLI_INACTIVE_PATTERN );
+        XSetGraphicsExposures( flx->display, fl_state[ fl_vmode ].dimmedGC, 0 );
+        XSetFillStyle( flx->display, fl_state[ fl_vmode ].dimmedGC,
+                       FillStippled );
+    }
 
     /* Special for B&W and 2bits displays */
 
-    if ( fli_dithered( fl_vmode ) )
+    if ( fli_dithered( fl_vmode ) && ! fli_whitegc )
     {
         int i;
 
@@ -1103,7 +1074,6 @@ void
 fli_textcolor( FL_COLOR col )
 {
     static int vmode = -1;
-    static int switched;
     static GC textgc;
 
     if (    flx->textcolor != col
@@ -1123,14 +1093,13 @@ fli_textcolor( FL_COLOR col )
             flx->textgc = fl_state[ vmode ].dimmedGC;
             XSetFont( flx->display, flx->textgc,
                       fl_state[ vmode ].cur_fnt->fid );
-            switched = 1;
         }
-        else if ( switched )
+        else if ( textgc )
         {
             flx->textgc = textgc;
             XSetFont( flx->display, flx->textgc,
                       fl_state[ vmode ].cur_fnt->fid );
-            switched = 0;
+            textgc = None;
         }
 
         p = fl_get_pixel( col );

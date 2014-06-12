@@ -38,10 +38,6 @@
 #include "flimage_int.h"
 #include "private/flsnprintf.h"
 
-#ifndef FLPS_H
-#include "flps.h"
-#endif
-
 #include "private/pflps.h"
 #include <stdio.h>
 #include <stdlib.h>

@@ -18,13 +18,8 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file clipbd.h
- *
- * prototypes for clipboard stuff
+ * Prototypes for clipboard stuff
  */
-
-#ifndef FL_CLIPBD_H
-#define FL_CLIPBD_H
 
 typedef Atom FL_CPTYPE;
 
@@ -43,5 +38,3 @@ FL_EXPORT int fl_stuff_clipboard( FL_OBJECT            * ob,
 FL_EXPORT int fl_request_clipboard( FL_OBJECT       * ob,
                                     long              type,
                                     FL_SELECTION_CB   got_it_callback );
-
-#endif /* ! defined FL_CLIPBD_H */

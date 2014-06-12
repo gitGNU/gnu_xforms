@@ -28,8 +28,8 @@
  *  most common tasks. Also the struct has redundant stuff in it.
  */
 
-#ifndef PVALUATOR_H
-#define PVALUATOR_H
+#ifndef PVALUATOR_H_
+#define PVALUATOR_H_
 
 /* The special information for valuators. the size of this structure
  * probably can be reduced quite a bit. */
@@ -74,7 +74,6 @@ typedef struct {
     int           timeout_id;
     int           mouse_off_knob;
     int           was_shift;
-    int           react_to[ 3 ];
 } FLI_VALUATOR_SPEC;
 
 enum
@@ -83,7 +82,8 @@ enum
     VALUE_DRAW     = 2,
 };
 
-#endif /* PVALUTOR_H */
+
+#endif /* PVALUTOR_H_ */
 
 
 /*

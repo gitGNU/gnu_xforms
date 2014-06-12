@@ -32,6 +32,7 @@
 
 #include "include/forms.h"
 #include "flinternal.h"
+#include "private/ptext.h"
 
 
 /***************************************
@@ -83,11 +84,11 @@ fl_create_text( int          type,
 
     obj = fl_make_object( FL_TEXT, type, x, y, w, h, label, handle_text );
 
-    obj->boxtype = FL_TEXT_BOXTYPE;
-    obj->col1    = FL_TEXT_COL1;
-    obj->col2    = FL_TEXT_COL2;
-    obj->lcol    = FL_TEXT_LCOL;
-    obj->align   = FL_TEXT_ALIGN;
+    obj->boxtype = FLI_TEXT_BOXTYPE;
+    obj->col1    = FLI_TEXT_COL1;
+    obj->col2    = FLI_TEXT_COL2;
+    obj->lcol    = FLI_TEXT_LCOL;
+    obj->align   = FLI_TEXT_ALIGN;
     obj->active  = 0;
 
     return obj;

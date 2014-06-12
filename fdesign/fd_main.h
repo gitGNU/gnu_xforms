@@ -34,13 +34,14 @@
 #define TRUE    ( ! FALSE )
 #endif
 
-/* since MAGIC4 all coordinates are relative to the top-left */
+/* since MAGIC4 all coordinates are relative to the top-left corner */
 
 #define MAGIC2   12321
 #define MAGIC3   12322
 #define MAGIC4   13000
 #define MAGIC5   14000     /* since XForms 1.0.92 */
 #define MAGIC6   15000     /* since XForms 1.0.94pre4 */
+#define MAGIC7   16000     /* since XForms 1.4 */
 
 
 /* general limits */
@@ -112,7 +113,7 @@ extern FD_Opt fdopt;
 
 /******** in fd_main.c    *********/
 
-extern long main_window;    /* The identifier of the main window */
+extern Window main_window;    /* The identifier of the main window */
 extern FL_Coord winw,
                 winh;
 extern int changed;         /* Whether the file has changed. */
@@ -723,7 +724,6 @@ typedef struct {
                      dstep;
     int              prec;
     int              direction;
-    int              mbuttons;
     int              int_val;
     int              align;
     int              dx,

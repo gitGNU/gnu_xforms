@@ -23,27 +23,11 @@
  *  Object Class: Timer
  */
 
-#ifndef FL_TIMER_H
-#define FL_TIMER_H
-
-
 typedef enum {
     FL_NORMAL_TIMER,
     FL_VALUE_TIMER,
     FL_HIDDEN_TIMER
 } FL_TIMER_TYPE;
-
-/***** Defaults *****/
-
-#define FL_TIMER_BOXTYPE    FL_DOWN_BOX
-#define FL_TIMER_COL1       FL_COL1
-#define FL_TIMER_COL2       FL_RED
-#define FL_TIMER_LCOL       FL_LCOL
-#define FL_TIMER_ALIGN      FL_ALIGN_CENTER
-
-/***** Others   *****/
-
-#define FL_TIMER_BLINKRATE  0.2
 
 /***** Routines *****/
 
@@ -77,5 +61,3 @@ FL_EXPORT FL_TIMER_FILTER fl_set_timer_filter( FL_OBJECT       * ob,
 FL_EXPORT void fl_suspend_timer( FL_OBJECT * ob );
 
 FL_EXPORT void fl_resume_timer( FL_OBJECT * ob );
-
-#endif /* ! defined FL_TIMER_H */

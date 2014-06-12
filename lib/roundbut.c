@@ -31,6 +31,7 @@
 #include <sys/types.h>
 #include "include/forms.h"
 #include "flinternal.h"
+#include "private/proundbut.h"
 
 
 /***************************************
@@ -38,18 +39,18 @@
  ***************************************/
 
 static void
-draw_roundbutton( FL_OBJECT * ob )
+draw_roundbutton( FL_OBJECT * ob,
+                  int         event )
 {
     int c1;
     FL_Coord xx,
              yy,
              rr;
-    FL_BUTTON_STRUCT *sp = ob->spec;
 
-    if ( sp->event == FL_ENTER || sp->event == FL_LEAVE )
+    if ( event == FL_ENTER || event == FL_LEAVE )
         return;
 
-    c1 = ob->belowmouse ? FL_ROUNDBUTTON_MCOL : FL_ROUNDBUTTON_TOPCOL;
+    c1 = ob->belowmouse ? FLI_ROUNDBUTTON_MCOL : FLI_ROUNDBUTTON_TOPCOL;
 
     fl_draw_box( ob->boxtype, ob->x, ob->y, ob->w, ob->h, c1, ob->bw );
 
@@ -60,7 +61,7 @@ draw_roundbutton( FL_OBJECT * ob )
     fl_circf( xx, yy, rr, ob->col1 );
     fl_circ( xx, yy, rr, FL_BLACK );
 
-    if ( sp->val )
+    if ( fl_get_button( ob ) )
     {
         fl_circf( xx, yy, ( int ) ( 0.8 * rr ), ob->col2 );
         fl_circ(  xx, yy, ( int ) ( 0.8 * rr ), FL_BLACK );
@@ -94,14 +95,14 @@ fl_create_roundbutton( int          type,
 {
     FL_OBJECT *ob;
 
-    fl_add_button_class( FL_ROUNDBUTTON, draw_roundbutton, 0 );
+    fl_add_button_class( FL_ROUNDBUTTON, draw_roundbutton, NULL );
     ob = fl_create_generic_button( FL_ROUNDBUTTON, type, x, y, w, h, label );
 
-    ob->boxtype = FL_ROUNDBUTTON_BOXTYPE;
-    ob->col1    = FL_ROUNDBUTTON_COL1;
-    ob->col2    = FL_ROUNDBUTTON_COL2;
-    ob->align   = FL_ROUNDBUTTON_ALIGN;
-    ob->lcol    = FL_ROUNDBUTTON_LCOL;
+    ob->boxtype = FLI_ROUNDBUTTON_BOXTYPE;
+    ob->col1    = FLI_ROUNDBUTTON_COL1;
+    ob->col2    = FLI_ROUNDBUTTON_COL2;
+    ob->align   = FLI_ROUNDBUTTON_ALIGN;
+    ob->lcol    = FLI_ROUNDBUTTON_LCOL;
 
     return ob;
 }

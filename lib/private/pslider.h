@@ -27,13 +27,12 @@
  */
 
 
-#ifndef PSLIDER_H
-#define PSLIDER_H
+#ifndef PSLIDER_H_
+#define PSLIDER_H_
 
 #include "pvaluator.h"
 
 typedef FLI_VALUATOR_SPEC FLI_SLIDER_SPEC;
-
 
 #define MINKNOB_SB     16       /* scrollbar        */
 #define MINKNOB_SL     14       /* regular sliders  */
@@ -53,7 +52,18 @@ typedef FLI_VALUATOR_SPEC FLI_SLIDER_SPEC;
                                || ( bt ) == FL_ROUNDED_BOX )
 
 
-#endif /* PSLIDER_H */
+#define FLI_SLIDER_BW1       FL_BOUND_WIDTH
+#define FLI_SLIDER_BW2       FL_abs( FL_BOUND_WIDTH )
+#define FLI_SLIDER_BOXTYPE   FL_DOWN_BOX
+#define FLI_SLIDER_COL1      FL_COL1
+#define FLI_SLIDER_COL2      FL_COL1
+#define FLI_SLIDER_LCOL      FL_LCOL
+#define FLI_SLIDER_ALIGN     FL_ALIGN_BOTTOM
+
+#define FLI_SLIDER_FINE      0.25
+
+
+#endif /* PSLIDER_H_ */
 
 
 /*

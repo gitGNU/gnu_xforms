@@ -17,9 +17,9 @@
 
 /********************** crop here for forms.h **********************/
 
-
-#ifndef FL_POPUP_H
-#define FL_POPUP_H
+/**
+ *   Object Class: Popup
+ */
 
 typedef struct FL_POPUP_ FL_POPUP;
 typedef struct FL_POPUP_ENTRY_ FL_POPUP_ENTRY;
@@ -126,33 +126,33 @@ typedef struct {
 
 /* Popup policies */
 
-enum {
+typedef enum {
     FL_POPUP_NORMAL_SELECT,
     FL_POPUP_DRAG_SELECT
-};
+} FL_POPUP_POLICY;
 
 /* Popup states */
 
-enum {
+typedef enum {
     FL_POPUP_NONE     = 0,
     FL_POPUP_DISABLED = 1,               /* entry is disabled */
     FL_POPUP_HIDDEN   = 2,               /* entry is temporarily hidden */
     FL_POPUP_CHECKED  = 4                /* tooogle/radio item is in on state */
-};
+} FL_POPUP_STATE;
 
 /* Popup entry types */
 
-enum {
+typedef enum {
     FL_POPUP_NORMAL,                     /* normal popup entry */
     FL_POPUP_TOGGLE,                     /* toggle ("binary") popup entry */
     FL_POPUP_RADIO,                      /* radio popup entry */
     FL_POPUP_SUB,                        /* sub-popup popup entry */
     FL_POPUP_LINE                        /* line popup entry */
-};
+} FL_POPUP_ENTRY_TYPE;
 
 /* Popup color types */
 
-enum {
+typedef enum {
     FL_POPUP_BACKGROUND_COLOR,
     FL_POPUP_HIGHLIGHT_COLOR,
     FL_POPUP_TITLE_COLOR,
@@ -160,7 +160,7 @@ enum {
     FL_POPUP_HIGHLIGHT_TEXT_COLOR,
     FL_POPUP_DISABLED_TEXT_COLOR,
     FL_POPUP_RADIO_COLOR
-};
+} FL_POPUP_COLOR_TYPE;
 
 FL_EXPORT FL_POPUP *fl_popup_add( Window,
                                   const char * );
@@ -189,7 +189,7 @@ FL_EXPORT int fl_popup_delete( FL_POPUP * );
 
 FL_EXPORT int fl_popup_entry_delete( FL_POPUP_ENTRY * );
 
-FL_EXPORT FL_POPUP_RETURN *fl_popup_do( FL_POPUP * );
+FL_EXPORT FL_POPUP_RETURN * fl_popup_do( FL_POPUP * );
 
 FL_EXPORT void fl_popup_set_position( FL_POPUP *,
                                       int,
@@ -319,5 +319,3 @@ FL_EXPORT int fl_popup_get_min_width( FL_POPUP * );
 
 FL_EXPORT int fl_popup_set_min_width( FL_POPUP *,
                                       int );
-
-#endif /* ! defined FL_POPUP_H */

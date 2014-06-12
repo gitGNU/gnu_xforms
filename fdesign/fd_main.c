@@ -83,7 +83,7 @@ print_version( int die )
 
 char xform_header[ 128 ] = "forms.h";
 char glcanvas_header[ 128 ] = "glcanvas.h";
-long main_window = 0;       /* The main screen window */
+Window main_window = None;       /* The main screen window */
 FL_Coord winw,
          winh;
 
@@ -1035,7 +1035,7 @@ main( int    argc,
 
     /* GC is valid only after at least one window is created */
 
-    fd_gc = fl_state[ fl_vmode ].gc[ 8 ];
+    fd_gc = XCreateGC( fl_display, main_window, 0, NULL );
 
     main_loop( );
 

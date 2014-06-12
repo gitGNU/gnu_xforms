@@ -18,14 +18,8 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file slider.h
- *
- * Object Class: Slider
+ *  Object Class: Slider
  */
-
-#ifndef FL_SLIDER_H
-#define FL_SLIDER_H
-
 
 #define FL_HOR_FLAG     1
 #define FL_SCROLL_FLAG  16
@@ -69,21 +63,8 @@ typedef enum {
     FL_HOR_BASIC_SLIDER       = FL_HOR_BROWSER_SLIDER  | FL_SCROLL_FLAG
 } FL_SLIDER_TYPE;
 
-/***** Defaults *****/
 
-#define FL_SLIDER_BW1       FL_BOUND_WIDTH
-#define FL_SLIDER_BW2       FL_abs( FL_BOUND_WIDTH )
-#define FL_SLIDER_BOXTYPE   FL_DOWN_BOX
-#define FL_SLIDER_COL1      FL_COL1
-#define FL_SLIDER_COL2      FL_COL1
-#define FL_SLIDER_LCOL      FL_LCOL
-#define FL_SLIDER_ALIGN     FL_ALIGN_BOTTOM
-
-/***** Others   *****/
-
-#define FL_SLIDER_FINE      0.25
 #define FL_SLIDER_WIDTH     0.10
-
 #define FL_SLIDER_MAX_PREC  10
 
 /***** Routines *****/
@@ -164,5 +145,3 @@ FL_EXPORT void fl_set_slider_mouse_buttons( FL_OBJECT    * obj,
 FL_EXPORT void fl_get_slider_mouse_buttons( FL_OBJECT    * obj,
 											unsigned int * mouse_buttons );
 
-
-#endif /* ! defined FL_SLIDER_H */

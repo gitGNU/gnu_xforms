@@ -18,14 +18,8 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file chart.h
- *
- * Object Class: Chart
- *
+ *  Object Class: Chart
  */
-
-#ifndef FL_CHART_H
-#define FL_CHART_H
 
 typedef enum {
     FL_BAR_CHART,
@@ -38,13 +32,6 @@ typedef enum {
 } FL_CHART_TYPE;
 
 #define FL_FILLED_CHART  FL_FILL_CHART  /* for backward compatibility */
-
-/***** Defaults *****/
-
-#define FL_CHART_BOXTYPE    FL_BORDER_BOX
-#define FL_CHART_COL1       FL_COL1
-#define FL_CHART_LCOL       FL_LCOL
-#define FL_CHART_ALIGN      FL_ALIGN_BOTTOM
 
 /***** Others   *****/
 
@@ -112,5 +99,3 @@ FL_EXPORT void fl_set_chart_baseline( FL_OBJECT * ob,
                                       int         iYesNo );
 
 #define fl_set_chart_lcol   fl_set_chart_lcolor
-
-#endif /* ! defined FL_CHART_H */

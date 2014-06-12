@@ -24,9 +24,6 @@
  *
  */
 
-#ifndef FL_XBASIC_H
-#define FL_XBASIC_H
-
 /* Draw mode */
 
 enum {
@@ -95,8 +92,8 @@ typedef struct {
     int             rgb_bits;           /* primary color resolution */
     int             dithered;           /* true if dithered color */
     int             pcm;                /* true if colormap is not shared */
-    GC              gc[ 16 ];           /* working GC */
-    GC              textgc[ 16 ];       /* GC used exclusively for text */
+    GC              gc;                 /* working GC */
+    GC              textgc;             /* GC used exclusively for text */
     GC              dimmedGC;           /* A GC having a checkboard stipple */
     unsigned long   lut[ FL_MAX_COLS ]; /* secondary lookup table */
     unsigned int    rshift,
@@ -884,13 +881,3 @@ typedef struct {
 } FL_RGB2PIXEL_;
 
 #define FL_RGB2PIXEL  FL_RGB2PIXEL_
-
-#endif /* ! defined FL_XBASIC_H */
-
-
-/*
- * Local variables:
- * tab-width: 4
- * indent-tabs-mode: nil
- * End:
- */

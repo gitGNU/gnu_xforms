@@ -54,10 +54,10 @@ typedef struct {
     FL_OBJECT * drobj[ 3 ];
 } FD_drawfree;
 
-extern FD_drawfree * create_form_drawfree( void );
+static FD_drawfree * create_form_drawfree( void );
 
 static FD_drawfree * drawui;
-extern void draw_initialize( FD_drawfree * );
+static void draw_initialize( FD_drawfree * );
 
 static int max_w = 150,
            max_h = 150;
@@ -79,8 +79,8 @@ main( int    argc,
                   FL_FULLBORDER, "FreeObject" );
     fl_do_forms( );
 
-	fl_free( drawui );
     fl_finish( );
+	fl_free( drawui );
     return 0;
 }
 
@@ -101,8 +101,8 @@ draw_triangle( int           fill,
                unsigned long col )
 {
      XPoint xpoint[ 4 ];
-     GC gc = fl_state[ fl_vmode ].gc[ 0 ];
      Window win = fl_winget( );
+     GC gc = XCreateGC( dpy, win, 0, NULL );
 
      xpoint[ 0 ].x = x;
      xpoint[ 1 ].x = x + w / 2;
@@ -122,6 +122,8 @@ draw_triangle( int           fill,
          xpoint[ 3 ].y = xpoint[ 0 ].y;
          XDrawLines( dpy, win, gc, xpoint, 4, CoordModeOrigin );
      }
+
+     XFreeGC( dpy, gc );
 }
 
 
@@ -149,7 +151,8 @@ static DrawFigure saved_figure[ 800 ],
 /***************************************
  ***************************************/
 
-void draw_initialize( FD_drawfree * ui )
+static void
+draw_initialize( FD_drawfree * ui )
 {
     fl_set_form_minsize( ui->drawfree, 530, 490);
     fl_set_object_gravity( ui->colgrp, WestGravity, WestGravity );
@@ -342,7 +345,7 @@ freeobject_handler( FL_OBJECT * ob,
 /***************************************
  ***************************************/
 
-FD_drawfree *
+static FD_drawfree *
 create_form_drawfree( void )
 {
     FL_OBJECT *obj;

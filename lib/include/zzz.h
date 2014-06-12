@@ -17,15 +17,15 @@
 
 /********************** crop here for forms.h **********************/
 
-/* the following (fl_fheight) etc. were never documented and were
+/* The following (fl_fheight) etc. were never documented and were
    removed from V0.89, but apparently this broke some applications that
    were using them. Put them back in 10/22/00 */
 
-#define fl_textgc      fl_textgc_( )
 #define fl_gc          fl_gc_( )
-#define fl_cur_win     fl_cur_win_( )
+#define fl_textgc      fl_textgc_( )
 #define fl_fheight     fl_fheight_( )
 #define fl_fdesc       fl_fdesc_( )
+#define fl_cur_win     fl_cur_win_( )
 #define fl_cur_fs      fl_cur_fs_( )
 
 FL_EXPORT GC fl_gc_( void );

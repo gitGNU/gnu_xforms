@@ -273,7 +273,7 @@ fli_draw_string( int           align,
 
         /* Determine the width (in pixel) of the line) */
 
-        width = XTextWidth( flx->fs, line->str, line->len );
+        width = fli_get_text_width( line->str, line->len );
 
         if ( width > max_pixels )
         {
@@ -391,9 +391,9 @@ fli_draw_string( int           align,
                region (the -1 in the calculation  of wsel is a fudge factor
                to make it look a bit better) */
 
-            xsel = line->x + XTextWidth( flx->fs, line->str, start );
+            xsel = line->x + fli_get_text_width( line->str, start );
 
-            wsel = XTextWidth( flx->fs, line->str + start, len ) - 1;
+            wsel = fli_get_text_width( line->str + start, len ) - 1;
             if ( xsel + wsel > x + w )
                 wsel = x + w - xsel;
 
@@ -446,8 +446,7 @@ fli_draw_string( int           align,
         if (    curspos >= line->index
              && curspos <= line->index + line->len )
         {
-            int tt = XTextWidth( flx->fs, line->str,
-                                 curspos - line->index );
+            int tt = fli_get_text_width( line->str, curspos - line->index );
 
             fl_rectf( line->x + tt, line->y - flx->fasc,
                       2, flx->fheight, curscol );
@@ -665,7 +664,7 @@ fli_get_pos_in_string( int          align,
 
     /* Calculate width and start x-coordinate of the line */
 
-    width = XTextWidth( flx->fs, line->str, line->len );
+    width = fli_get_text_width( line->str, line->len );
 
     switch ( horalign )
     {
@@ -710,7 +709,7 @@ fli_get_pos_in_string( int          align,
 
     *xp = ( double ) ( xpos * line->len ) / width;
 
-    xlen = XTextWidth( flx->fs, line->str, ++*xp );
+    xlen = fli_get_text_width( line->str, ++*xp );
 
     /* If we don't have hit it directly search to the left or right */
 
@@ -719,7 +718,7 @@ fli_get_pos_in_string( int          align,
         do
         {
             *xp -= 1;
-            xlen = XTextWidth( flx->fs, line->str, *xp );
+            xlen = fli_get_text_width( line->str, *xp );
         }
         while ( *xp > 0 && xlen > xpos );
         *xp += 1;
@@ -728,7 +727,7 @@ fli_get_pos_in_string( int          align,
         do
         {
             *xp += 1;
-            xlen = XTextWidth( flx->fs, line->str, *xp );
+            xlen = fli_get_text_width( line->str, *xp );
         }
         while ( *xp < lines->len && xlen < xpos );
 
@@ -1081,7 +1080,7 @@ do_underline_all( FL_Coord        x,
     if ( ! XGetFontProperty( flx->fs, XA_UNDERLINE_POSITION, ul_pos ) )
         *ul_pos = has_desc( str ) ? ( 1 + flx->fdesc ) : 1;
 
-    ul_width = XTextWidth( flx->fs, str, n );
+    ul_width = fli_get_text_width( str, n );
 
     /* Draw it */
 

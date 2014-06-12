@@ -18,12 +18,8 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file box.h
- *
+ *  Object Class: Box
  */
-
-#ifndef FL_BOX_H
-#define FL_BOX_H
 
 /* Type is already defined in Basic.h */
 
@@ -40,5 +36,3 @@ FL_EXPORT FL_OBJECT * fl_add_box( int          type,
                                   FL_Coord     w,
                                   FL_Coord     h,
                                   const char * label );
-
-#endif /* ! defined FL_BOX_H */

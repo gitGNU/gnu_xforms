@@ -18,27 +18,14 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file select.h
+ *  Object CLass: Select
  */
 
-#ifndef FL_SELECT_H
-#define FL_SELECT_H
-
-
-/* Select object types */
-
-enum {
+typedef enum {
     FL_NORMAL_SELECT,
     FL_MENU_SELECT,
     FL_DROPLIST_SELECT
-};
-
-/* Defaults */
-
-#define FL_SELECT_COL1          FL_COL1
-#define FL_SELECT_COL2          FL_MCOL
-#define FL_SELECT_LCOL          FL_LCOL
-#define FL_SELECT_ALIGN         FL_ALIGN_LEFT
+} FL_SELECT_TYPE;
 
 FL_EXPORT FL_OBJECT *fl_create_select( int,
                                        FL_Coord,
@@ -123,5 +110,3 @@ FL_EXPORT int fl_set_select_text_align( FL_OBJECT *,
 
 FL_EXPORT int fl_set_select_policy( FL_OBJECT *,
                                     int );
-
-#endif /* ! defined FL_SELECT_H */

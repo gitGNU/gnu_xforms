@@ -31,6 +31,7 @@
 #include <sys/types.h>
 #include "include/forms.h"
 #include "flinternal.h"
+#include "private/pround3d.h"
 
 
 /***************************************
@@ -38,20 +39,20 @@
  ***************************************/
 
 static void
-draw_round3dbutton( FL_OBJECT * ob )
+draw_round3dbutton( FL_OBJECT * ob,
+                    int         event )
 {
     int c1;
     FL_Coord xx,
              yy,
              rr,
              bw = FL_abs( ob->bw );
-    FL_BUTTON_STRUCT *sp = ob->spec;
 
     if (    ob->boxtype == FL_NO_BOX
-         && ( sp->event == FL_ENTER || sp->event == FL_LEAVE ) )
+         && ( event == FL_ENTER || event == FL_LEAVE ) )
         return;
 
-    c1 = ob->belowmouse ? FL_ROUND3DBUTTON_MCOL : FL_ROUND3DBUTTON_TOPCOL;
+    c1 = ob->belowmouse ? FLI_ROUND3DBUTTON_MCOL : FLI_ROUND3DBUTTON_TOPCOL;
 
     fl_draw_box(ob->boxtype, ob->x, ob->y, ob->w, ob->h, c1, ob->bw);
 
@@ -77,7 +78,7 @@ draw_round3dbutton( FL_OBJECT * ob )
         fl_arc( xx, yy, rr - bw / 2, 0, 3600, FL_BLACK );
 #endif
 
-    if ( sp->val )
+    if ( fl_get_button( ob ) )
         fl_circf( xx, yy, ( int ) FL_max( 1, 0.85 * rr - 1.0 - 0.5 * bw ),
                   ob->col2 );
 
@@ -109,14 +110,14 @@ fl_create_round3dbutton( int          type,
 {
     FL_OBJECT *ob;
 
-    fl_add_button_class( FL_ROUND3DBUTTON, draw_round3dbutton, 0 );
+    fl_add_button_class( FL_ROUND3DBUTTON, draw_round3dbutton, NULL );
     ob = fl_create_generic_button( FL_ROUND3DBUTTON, type, x, y, w, h, label );
 
-    ob->boxtype = FL_ROUND3DBUTTON_BOXTYPE;
-    ob->col1    = FL_ROUND3DBUTTON_COL1;
-    ob->col2    = FL_ROUND3DBUTTON_COL2;
-    ob->align   = FL_ROUND3DBUTTON_ALIGN;
-    ob->lcol    = FL_ROUND3DBUTTON_LCOL;
+    ob->boxtype = FLI_ROUND3DBUTTON_BOXTYPE;
+    ob->col1    = FLI_ROUND3DBUTTON_COL1;
+    ob->col2    = FLI_ROUND3DBUTTON_COL2;
+    ob->align   = FLI_ROUND3DBUTTON_ALIGN;
+    ob->lcol    = FLI_ROUND3DBUTTON_LCOL;
 
     return ob;
 }

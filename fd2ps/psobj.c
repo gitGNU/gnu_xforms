@@ -32,7 +32,10 @@
 
 #include "include/forms.h"
 #include "fd2ps.h"
-#include "flinternal.h"     /* for UPBOX8 etc */
+#include "flinternal.h"
+#include "private/proundbut.h"
+#include "private/pround3d.h"
+#include "private/plightbut.h"
 #include <math.h>
 #include <stdlib.h>
 
@@ -741,11 +744,11 @@ flps_draw_lightbutton( FL_OBJECT * ob )
     /* Calculate and draw the light */
 
     hh = ob->h - 3 * absbw - 1;
-    if ( hh < FL_LIGHTBUTTON_MINSIZE )
-        hh = FL_LIGHTBUTTON_MINSIZE;
+    if ( hh < FLI_LIGHTBUTTON_MINSIZE )
+        hh = FLI_LIGHTBUTTON_MINSIZE;
     ww = hh / 2;
-    if ( ww < FL_LIGHTBUTTON_MINSIZE )
-        ww = FL_LIGHTBUTTON_MINSIZE;
+    if ( ww < FLI_LIGHTBUTTON_MINSIZE )
+        ww = FLI_LIGHTBUTTON_MINSIZE;
     if ( ww > ob->w / 6 )
         ww = ob->w / 6;
 
@@ -830,7 +833,7 @@ flps_draw_roundbutton( FL_OBJECT * ob )
     float bw = FL_abs( ob->bw );
 
     ps_draw_box( ob->boxtype, ob->x, ob->y, ob->w, ob->h,
-                 FL_ROUNDBUTTON_TOPCOL, ob->bw );
+                 FLI_ROUNDBUTTON_TOPCOL, ob->bw );
 
     rr = 0.3 * FL_min( ob->w, ob->h );
     rr = rr + 0.5;
@@ -910,7 +913,7 @@ flps_draw_round3dbutton( FL_OBJECT * ob )
     ALLSPEC *sp = ob->spec;
 
     ps_draw_box( ob->boxtype, ob->x, ob->y, ob->w, ob->h,
-                 FL_ROUND3DBUTTON_TOPCOL, ob->bw );
+                 FLI_ROUND3DBUTTON_TOPCOL, ob->bw );
 
     rr = 0.3 * FL_min( ob->h, ob->w );
     xx = ob->x + 1.5 * ( bw < 2 ? 2 : bw ) + rr + 1;

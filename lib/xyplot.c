@@ -1998,12 +1998,12 @@ handle_xyplot( FL_OBJECT * ob,
 
         case FL_PUSH:
         case FL_MOTION:
-            if ( sp->react_to[ key - 1 ] )
+            if ( REACT_TO( ob, key ) )
                 ret = handle_mouse( ob, mx, my );
             break;
 
         case FL_RELEASE:
-            if (    ! sp->react_to[ key - 1 ]
+            if (    ! REACT_TO( ob, key )
                  || ! ( sp->active || sp->inspect ) )
                 break;
 
@@ -2159,7 +2159,7 @@ init_spec( FL_OBJECT * obj )
     sp->talign = sp->interpolate = sp->thickness = NULL;
     sp->symbol = NULL;
 
-    allocate_spec( sp, FL_MAX_XYPLOTOVERLAY );
+    allocate_spec( sp, FLI_MAX_XYPLOTOVERLAY );
 
     sp->title          = strdup( "" );
     sp->xlabel         = strdup( "" );
@@ -2199,7 +2199,8 @@ init_spec( FL_OBJECT * obj )
     sp->axtic[ MAX_MAJOR ] = sp->aytic[ MAX_MAJOR ] = NULL;
 
     sp->mark_active    = 1;
-    sp->react_to[ 0 ]  = 1;
+
+    fl_set_object_mouse_buttons( obj, 1U );
 }
 
 
@@ -2217,11 +2218,12 @@ fl_create_xyplot( int          t,
     FL_OBJECT *obj = fl_make_object( FL_XYPLOT, t, x, y, w, h, l,
                                      handle_xyplot );
 
-    obj->boxtype    = FL_XYPLOT_BOXTYPE;
-    obj->col2       = obj->lcol = FL_BLACK;
-    obj->col1       = FL_COL1;
+    obj->boxtype    = FLI_XYPLOT_BOXTYPE;
+    obj->col1       = FLI_XYPLOT_COL1;
+    obj->col2       = FLI_XYPLOT_COL2;
+    obj->lcol       = FLI_XYPLOT_LCOL;
     obj->lsize      = FL_TINY_SIZE;
-    obj->align      = FL_XYPLOT_ALIGN;
+    obj->align      = FLI_XYPLOT_ALIGN;
     obj->spec       = fl_calloc( 1, sizeof( FLI_XYPLOT_SPEC ) );
 
     init_spec( obj );
@@ -4020,11 +4022,7 @@ void
 fl_set_xyplot_mouse_buttons( FL_OBJECT    * obj,
                              unsigned int   mouse_buttons )
 {
-    FLI_XYPLOT_SPEC *sp = obj->spec;
-    unsigned int i;
-
-    for ( i = 0; i < 3; i++, mouse_buttons >>= 1 )
-        sp->react_to[ i ] = mouse_buttons & 1;
+    fl_set_object_mouse_buttons( obj, mouse_buttons );
 }
 
 
@@ -4037,24 +4035,7 @@ void
 fl_get_xyplot_mouse_buttons( FL_OBJECT    * obj,
                              unsigned int * mouse_buttons )
 {
-    FLI_XYPLOT_SPEC *sp;
-    int i;
-    unsigned int k;
-
-    if ( ! obj )
-    {
-        M_err( "fl_get_xyplot_mouse_buttons", "NULL object" );
-        return;
-    }
-
-    if ( ! mouse_buttons )
-        return;
-
-    sp = obj->spec;
-
-    *mouse_buttons = 0;
-    for ( i = 0, k = 1; i < 3; i++, k <<= 1 )
-        *mouse_buttons |= sp->react_to[ i ] ? k : 0;
+    *mouse_buttons = fl_get_object_mouse_buttons( obj );
 }
 
 

@@ -585,7 +585,7 @@ fl_create_generic_canvas( int          canvas_class,
     int i;
 
     ob = fl_make_object( canvas_class, type, x, y, w, h, label, handle_canvas );
-    ob->boxtype = FL_CANVAS_BOXTYPE;
+    ob->boxtype = FLI_CANVAS_BOXTYPE;
     ob->col1 = FL_NoColor;       /* indicates no background */
     ob->col2 = FL_BLACK;
 
@@ -600,7 +600,6 @@ fl_create_generic_canvas( int          canvas_class,
         sp->visual = fli_visual( vmode );
         sp->depth = fli_depth( vmode );
         sp->colormap = sp->xswa.colormap = fli_colormap( vmode );
-        sp->gc = fl_state[ vmode ].gc[ 7 ];     /* NOT USED */
     }
 
     sp->winname = NULL;

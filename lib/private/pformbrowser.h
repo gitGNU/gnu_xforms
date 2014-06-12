@@ -20,8 +20,8 @@
  * \file pformbrowser.h
  */
 
-#ifndef PFORMBROWSER_H
-#define PFORMBROWSER_H
+#ifndef PFORMBROWSER_H_
+#define PFORMBROWSER_H_
 
 typedef struct {
     FL_OBJECT  * canvas;
@@ -62,7 +62,13 @@ typedef struct {
 #define memmove( a, b, c )   bcopy( b, a, c )
 #endif
 
-#endif
+
+#define   FL_FORMBROWSER_BOXTYPE  FL_DOWN_BOX
+#define   FL_FORMBROWSER_COL1     FL_COL1
+#define   FL_FORMBROWSER_ALIGN    FL_ALIGN_TOP
+
+
+#endif  /* PFORMBROWSER_H_ */
 
 
 /*

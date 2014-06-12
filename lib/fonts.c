@@ -717,6 +717,19 @@ get_fname( const char * str,
 
 
 /***************************************
+ * Returns the width of a string when rendered using the current default
+ * font
+ ***************************************/
+
+int
+fli_get_text_width( const char * str,
+                    size_t       len )
+{
+    return XTextWidth( flx->fs, str, len );
+}
+
+
+/***************************************
  * Some compatibility stuff, i.e. functions that were never documented
  * and were removed from V0.89, but apparently this broke some applications
  * that were using them. Put back in 10/22/00.

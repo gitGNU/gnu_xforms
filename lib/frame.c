@@ -30,6 +30,7 @@
 
 #include "include/forms.h"
 #include "flinternal.h"
+#include "private/pframe.h"
 
 
 /***************************************
@@ -80,9 +81,9 @@ fl_create_frame( int          type,
     obj = fl_make_object( FL_FRAME, type, x, y, w, h, label, handle_frame );
 
     obj->boxtype = FL_NO_BOX;
-    obj->col1    = FL_FRAME_COL1;
-    obj->col2    = FL_FRAME_COL2;
-    obj->lcol    = FL_FRAME_LCOL;
+    obj->col1    = FLI_FRAME_COL1;
+    obj->col2    = FLI_FRAME_COL2;
+    obj->lcol    = FLI_FRAME_LCOL;
     obj->align   = FL_ALIGN_CENTER;
     obj->active  = 0;
 

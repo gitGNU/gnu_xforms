@@ -17,11 +17,11 @@
 
 /********************** crop here for forms.h **********************/
 
+/**
+ *  Object Class: Scrollbar
+ */
 
-#ifndef FL_SCROLLBAR_H
-#define FL_SCROLLBAR_H
-
-enum {
+typedef enum {
     FL_VERT_SCROLLBAR,
     FL_HOR_SCROLLBAR,
 
@@ -36,14 +36,14 @@ enum {
 
     FL_HOR_BASIC_SCROLLBAR  = FL_HOR_PLAIN_SCROLLBAR,
     FL_VERT_BASIC_SCROLLBAR = FL_VERT_PLAIN_SCROLLBAR
-};
+} FL_SCROLLBAR_TYPE;
 
-enum {
+typedef enum {
 	FL_NORMAL_SCROLLBAR,
 	FL_THIN_SCROLLBAR,
 	FL_NICE_SCROLLBAR,
 	FL_PLAIN_SCROLLBAR
-};
+} FL_SCROLLBAR_SUBTYPE;
 
 #define FL_SCROLLBAR_ALIGN   FL_ALIGN_BOTTOM
 
@@ -98,5 +98,3 @@ FL_EXPORT int fl_get_scrollbar_repeat( FL_OBJECT * obj );
 
 FL_EXPORT void fl_set_scrollbar_repeat( FL_OBJECT * obj,
 										int         millisec );
-
-#endif /* ! defined FL_SCROLLBAR_H */

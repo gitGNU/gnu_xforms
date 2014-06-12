@@ -28,6 +28,7 @@ noinst_HEADERS = \
 	input.h \
 	menu.h \
 	nmenu.h \
+	pixmap.h \
 	positioner.h \
 	scrollbar.h \
 	select.h \

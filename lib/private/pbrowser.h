@@ -64,7 +64,8 @@ typedef struct {
     double                     old_hp;                          
 } FLI_BROWSER_SPEC;
 
-#endif
+
+#endif  /* PBROWSER_H_ */
 
 
 /*

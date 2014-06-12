@@ -18,24 +18,14 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file clock.h
+ *  Obecjt Class: Clock
  */
-
-#ifndef FL_CLOCK_H
-#define FL_CLOCK_H
 
 enum {
     FL_ANALOG_CLOCK,
     FL_DIGITAL_CLOCK
 };
 
-#define FL_CLOCK_BOXTYPE   FL_UP_BOX
-#define FL_CLOCK_COL1      FL_INACTIVE_COL
-#define FL_CLOCK_COL2      FL_BOTTOM_BCOL
-#define FL_CLOCK_LCOL      FL_BLACK
-#define FL_CLOCK_ALIGN     FL_ALIGN_BOTTOM
-
-#define FL_CLOCK_TOPCOL  FL_COL1
 
 FL_EXPORT FL_OBJECT * fl_create_clock( int          type,
                                        FL_Coord     x,
@@ -61,5 +51,3 @@ FL_EXPORT long fl_set_clock_adjustment( FL_OBJECT * ob,
 
 FL_EXPORT void fl_set_clock_ampm( FL_OBJECT * ob,
                                   int         y );
-
-#endif /* ! defined FL_CLOCK_H */

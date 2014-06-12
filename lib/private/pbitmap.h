@@ -16,24 +16,30 @@
  */
 
 
-/**
- * \file ptwheel.h
- *
- *  This file is part of the XForms library package.
- *  Copyright (c) 1995-1997  T.C. Zhao and Mark Overmars
- *  All rights reserved.
- *
- * private header for slider object
- */
+#ifndef PBITMAP_H
+#define PBITMAP_H
 
-#ifndef PTWHEEL_H
-#define PTWHEEL_H
+#include "private/pbutton.h"
 
-#include "pvaluator.h"
 
-typedef FLI_VALUATOR_SPEC FLI_THUMBWHEEL_SPEC;
+/* Bitmap defaults */
 
-#endif /* PTWHEEL_H */
+#define FLI_BITMAP_BOXTYPE   FL_NO_BOX
+#define FLI_BITMAP_COL1      FL_COL1     /* background of bitmap */
+#define FLI_BITMAP_COL2      FL_COL1     /* not used currently   */
+#define FLI_BITMAP_LCOL      FL_LCOL     /* foreground of bitmap */
+#define FLI_BITMAP_ALIGN     FL_ALIGN_BOTTOM
+
+/* Bitmap button defaults */
+
+#define FLI_BITMAPBUTTON_BOXTYPE     FL_UP_BOX
+#define FLI_BITMAPBUTTON_COL1        FL_COL1         /* bitmap background  */
+#define FLI_BITMAPBUTTON_COL2        FL_BLUE         /* "focus" color       */
+#define FLI_BITMAPBUTTON_LCOL        FL_LCOL         /* bitmap foreground   */
+#define FLI_BITMAPBUTTON_ALIGN       FL_ALIGN_BOTTOM
+
+
+#endif /* PBITMAP_H */
 
 
 /*

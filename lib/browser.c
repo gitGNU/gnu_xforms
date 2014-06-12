@@ -1126,14 +1126,25 @@ fl_get_browser( FL_OBJECT * ob )
  ***************************************/
 
 void
-fl_set_browser_fontsize( FL_OBJECT * ob,
+fl_set_browser_fontsize( FL_OBJECT * obj,
                          int         size )
 {
-    FLI_BROWSER_SPEC *sp = ob->spec;
+    FLI_BROWSER_SPEC *sp = obj->spec;
 
     fli_tbox_set_fontsize( sp->tb, size );
-    redraw_scrollbar( ob );
-    fl_redraw_object( ob );
+    redraw_scrollbar( obj );
+    fl_redraw_object( obj );
+}
+
+
+/***************************************
+ * Returns the font size to be used per default
+ ***************************************/
+
+int
+fl_get_browser_fontsize( FL_OBJECT * obj )
+{
+    return fli_tbox_get_fontsize( ( ( FLI_BROWSER_SPEC * ) obj->spec )->tb );
 }
 
 
@@ -1142,14 +1153,25 @@ fl_set_browser_fontsize( FL_OBJECT * ob,
  ***************************************/
 
 void
-fl_set_browser_fontstyle( FL_OBJECT * ob,
+fl_set_browser_fontstyle( FL_OBJECT * obj,
                           int         style )
 {
-    FLI_BROWSER_SPEC *sp = ob->spec;
+    FLI_BROWSER_SPEC *sp = obj->spec;
 
     fli_tbox_set_fontstyle( sp->tb, style );
-    redraw_scrollbar( ob );
-    fl_redraw_object( ob );
+    redraw_scrollbar( obj );
+    fl_redraw_object( obj );
+}
+
+
+/***************************************
+ * Returns the font style to be used per default
+ ***************************************/
+
+int
+fl_get_browser_fontstyle( FL_OBJECT * obj )
+{
+    return fli_tbox_get_fontstyle( ( ( FLI_BROWSER_SPEC * ) obj->spec )->tb );
 }
 
 

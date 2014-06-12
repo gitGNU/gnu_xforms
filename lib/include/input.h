@@ -18,14 +18,8 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file input.h
+ *  Object Class: Input
  */
-
-#ifndef FL_INPUT_H
-#define FL_INPUT_H
-
-
-/***** Types    *****/
 
 typedef enum {
     FL_NORMAL_INPUT,
@@ -39,28 +33,15 @@ typedef enum {
 
 /* for date input */
 
-enum {
+typedef enum {
     FL_INPUT_MMDD,
     FL_INPUT_DDMM
-};
+} FL_DATE_INPUT_FORMAT;
 
-enum {
+typedef enum {
     FL_NORMAL_INPUT_MODE,
     FL_DOS_INPUT_MODE
-};
-
-/***** Defaults *****/
-
-#define FL_INPUT_BOXTYPE    FL_DOWN_BOX
-#define FL_INPUT_COL1       FL_COL1
-#define FL_INPUT_COL2       FL_MCOL
-#define FL_INPUT_LCOL       FL_LCOL
-#define FL_INPUT_ALIGN      FL_ALIGN_LEFT
-
-/***** Others   *****/
-
-#define FL_INPUT_TCOL       FL_LCOL
-#define FL_INPUT_CCOL       FL_BLUE
+} FL_INPUT_MODE;
 
 #define FL_RINGBELL         ( 1 << 4 )
 
@@ -182,7 +163,7 @@ FL_EXPORT int fl_validate_input( FL_OBJECT *obj );
 
 #define fl_set_input_shortcut   fl_set_object_shortcut
 
-/* edit keys. */
+/* edit keys */
 
 typedef struct {
     /* basic editing */
@@ -225,5 +206,3 @@ FL_EXPORT void fl_get_input_editkeymap( FL_EditKeymap * keymap );
 FL_EXPORT void fl_set_default_editkeymap( void );
 
 FL_EXPORT int fl_set_input_mode( int mode );
-
-#endif /* ! defined FL_INPUT_H */

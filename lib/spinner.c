@@ -328,8 +328,8 @@ fl_create_spinner( int          type,
     fl_set_object_callback( sp->up,    spinner_callback,  1 );
     fl_set_object_callback( sp->down,  spinner_callback, -1 );
 
-    fl_set_button_mouse_buttons( sp->up,   1 );
-    fl_set_button_mouse_buttons( sp->down, 1 );
+    fl_set_object_mouse_buttons( sp->up,   1 );
+    fl_set_object_mouse_buttons( sp->down, 1 );
 
     fl_set_object_lcolor( sp->up,   FL_BLUE );
     fl_set_object_lcolor( sp->down, FL_BLUE );

@@ -232,6 +232,7 @@ fl_make_object( int            objclass,
     obj->how_return         = FL_RETURN_ALWAYS;
     obj->returned           = 0;
     obj->is_under           = 0;
+    obj->react_to           = 0x1F;
 
     return obj;
 }
@@ -1994,8 +1995,7 @@ fli_find_object( FL_OBJECT * obj,
                  FL_Coord    mx,
                  FL_Coord    my )
 {
-    while ( obj )
-    {
+    for ( ; obj; obj = obj->next )
         if (    obj->objclass != FL_BEGIN_GROUP
              && obj->objclass != FL_END_GROUP
              && obj->visible
@@ -2022,9 +2022,6 @@ fli_find_object( FL_OBJECT * obj,
             if ( find == FLI_FIND_KEYSPECIAL && obj->wantkey & FL_KEY_SPECIAL )
                 return obj;
         }
-
-        obj = obj->next;
-    }
 
     return NULL;
 }
@@ -2084,7 +2081,7 @@ fli_find_first( FL_FORM  * form,
 
 
 /***************************************
- * Returns the last object of the type find
+ * Returns the last object of type 'find'
  ***************************************/
 
 FL_OBJECT *
@@ -2756,7 +2753,7 @@ fli_handle_object( FL_OBJECT * obj,
         return;
 
     /* If 'enter_it' is set the object is inserted into the object queue and
-       it's 'returned' member is modified. If not, just the handler for
+       its 'returned' member is modified. If not, just the handler for
        the object is called, but it doesn't appear in the queue and the
        'returned' member remains unmodified. Also don't enter the object
        into the queue if it's form doesn't exist or the forms window isn't
@@ -2764,9 +2761,7 @@ fli_handle_object( FL_OBJECT * obj,
 
     if ( enter_it && obj->form && obj->form->window )
     {
-        int res;
-
-        if ( ( res = handle_object( obj, event, mx, my, key, xev, 0 ) ) )
+        if ( handle_object( obj, event, mx, my, key, xev, 0 ) )
             fli_object_qenter( obj, event );
     }
     else
@@ -3871,6 +3866,43 @@ fli_mouse_wheel_to_keypress( int  * ev,
     }
 
     return 1;
+}
+
+
+/***************************************
+ * Function allows to set up to which mouse
+ * buttons the object will react to.
+ ***************************************/
+
+void
+fl_set_object_mouse_buttons( FL_OBJECT    * obj,
+                             unsigned int   mouse_buttons )
+{
+    if ( ! obj )
+    {
+        M_err( "fl_set_object_mouse_buttons", "NULL object" );
+        return;
+    }
+
+    obj->react_to = mouse_buttons & 0x1FU;
+}
+
+
+/***************************************
+ * Function returns a value indicating which mouse buttons
+ * the object reacts to.
+ ***************************************/
+
+unsigned int
+fl_get_object_mouse_buttons( FL_OBJECT * obj )
+{
+    if ( ! obj )
+    {
+        M_err( "fl_get_object_mouse_buttons", "NULL object" );
+        return 0;
+    }
+
+    return obj->react_to;
 }
 
 

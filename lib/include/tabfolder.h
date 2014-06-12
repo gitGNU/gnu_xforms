@@ -18,19 +18,16 @@
 /********************** crop here for forms.h **********************/
 
 /**
- * \file tabfolder.h
+ *  Object Clas: Tabfolder
  */
 
-#ifndef FL_FOLDER_H
-#define FL_FOLDER_H
-
-enum {
+typedef enum {
     FL_TOP_TABFOLDER,       /* tab on top */
     FL_BOTTOM_TABFOLDER,
     FL_LEFT_TABFOLDER,
     FL_RIGHT_TABFOLDER,
     FL_NORMAL_TABFOLDER = FL_TOP_TABFOLDER
-};
+} FL_TABFOLDER_TYPE;
 
 enum {
     FL_NO,
@@ -126,5 +123,3 @@ FL_EXPORT int fl_set_tabfolder_offset( FL_OBJECT * obj,
                                        int         offset );
 
 FL_EXPORT int fl_get_tabfolder_offset( FL_OBJECT * obj );
-
-#endif /* ! defined FL_FOLDER_H */

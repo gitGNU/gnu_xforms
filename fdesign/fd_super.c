@@ -33,6 +33,7 @@
 #include "fd_main.h"
 #include "fd_spec.h"
 
+#include "private/pbutton.h"
 #include "private/pslider.h"
 #include "private/pbrowser.h"
 #include "private/ppositioner.h"
@@ -201,12 +202,7 @@ spec_to_superspec( FL_OBJECT * obj )
               || obj->objclass == FL_PIXMAP
               || obj->objclass == FL_BITMAP )
     {
-        FL_BUTTON_SPEC *sp = obj->spec;
-
-        ssp->mbuttons = 0;
-        for ( i = 0; i < 5; i++ )
-            if ( sp->react_to[ i ] )
-                ssp->mbuttons |= 1 << i; 
+        FLI_BUTTON_SPEC *sp = obj->spec;
 
         ssp->int_val = sp->val;
     }
@@ -370,12 +366,7 @@ superspec_to_spec( FL_OBJECT * obj )
               || obj->objclass == FL_PIXMAP
               || obj->objclass == FL_BITMAP )
     {
-        FL_BUTTON_SPEC *sp = obj->spec;
-
-        for ( i = 0; i < 5; i++ )
-            sp->react_to[ i ] = ( ssp->mbuttons & ( 1 << i ) ) != 0;
-        if ( ISBUTTON( obj->objclass ) )
-            fl_set_button_mouse_buttons( obj, ssp->mbuttons );
+        FLI_BUTTON_SPEC *sp = obj->spec;
 
         sp->val = ssp->int_val;
 

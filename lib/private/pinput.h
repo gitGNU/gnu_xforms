@@ -77,6 +77,15 @@ typedef struct {
 } FLI_INPUT_SPEC;
 
 
+#define FLI_INPUT_BOXTYPE    FL_DOWN_BOX
+#define FLI_INPUT_COL1       FL_COL1
+#define FLI_INPUT_COL2       FL_MCOL
+#define FLI_INPUT_LCOL       FL_LCOL
+#define FLI_INPUT_ALIGN      FL_ALIGN_LEFT
+#define FLI_INPUT_TCOL       FL_LCOL
+#define FLI_INPUT_CCOL       FL_BLUE
+
+
 #endif /* INPUT_H */
 
 

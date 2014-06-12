@@ -42,7 +42,7 @@ is_blank( char c )
 IconInfo *
 get_iconinfo( FL_OBJECT * obj )
 {
-	IconInfo *info = obj->c_vdata;
+	IconInfo *info = obj->fdesign_vdata;
 
     if (    obj->objclass != FL_PIXMAPBUTTON
          && obj->objclass != FL_BITMAPBUTTON
@@ -52,7 +52,7 @@ get_iconinfo( FL_OBJECT * obj )
 
 	if ( ! info )
 	{
-		info = obj->c_vdata = fl_malloc( sizeof *info );
+		info = obj->fdesign_vdata = fl_malloc( sizeof *info );
 
         info->use_data        = 0;
 		info->show_focus      = 1;
@@ -82,7 +82,7 @@ copy_iconinfo( FL_OBJECT * target,
 	IconInfo *si = get_iconinfo( src ),
 		     *ti;
 
-	fli_safe_free( target->c_vdata );
+	fli_safe_free( target->fdesign_vdata );
 
 	if ( ! si )
 		return;
@@ -98,7 +98,7 @@ copy_iconinfo( FL_OBJECT * target,
 void
 free_iconinfo( FL_OBJECT * obj )
 {
-	fli_safe_free( obj->c_vdata );
+	fli_safe_free( obj->fdesign_vdata );
 }
 
 
