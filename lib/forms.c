@@ -1373,7 +1373,7 @@ fl_show_form_window( FL_FORM * form )
             fl_redraw_object( obj );
 
     /* Check if there's an object we can make the object that has the focus,
-       ot must be an input object and be active and visible */
+       it must be an input object and be active and visible */
 
     if ( ! form->focusobj )
         for ( obj = form->first; obj; obj = obj->next )
