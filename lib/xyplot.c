@@ -2218,13 +2218,15 @@ fl_create_xyplot( int          t,
     FL_OBJECT *obj = fl_make_object( FL_XYPLOT, t, x, y, w, h, l,
                                      handle_xyplot );
 
-    obj->boxtype    = FLI_XYPLOT_BOXTYPE;
-    obj->col1       = FLI_XYPLOT_COL1;
-    obj->col2       = FLI_XYPLOT_COL2;
-    obj->lcol       = FLI_XYPLOT_LCOL;
-    obj->lsize      = FL_TINY_SIZE;
-    obj->align      = FLI_XYPLOT_ALIGN;
-    obj->spec       = fl_calloc( 1, sizeof( FLI_XYPLOT_SPEC ) );
+    obj->boxtype      = FLI_XYPLOT_BOXTYPE;
+    obj->col1         = FLI_XYPLOT_COL1;
+    obj->col2         = FLI_XYPLOT_COL2;
+    obj->lcol         = FLI_XYPLOT_LCOL;
+    obj->lsize        = FL_TINY_SIZE;
+    obj->align        = FLI_XYPLOT_ALIGN;
+    obj->set_react_to = fl_set_xyplot_mouse_buttons;
+
+    obj->spec         = fl_calloc( 1, sizeof( FLI_XYPLOT_SPEC ) );
 
     init_spec( obj );
     fl_set_object_return( obj, FL_RETURN_END_CHANGED );
@@ -4018,11 +4020,11 @@ fl_set_xyplot_log_minor_ytics( FL_OBJECT * obj,
  * buttons the xyplot object will react.
  ***************************************/
 
-void
+unsigned int
 fl_set_xyplot_mouse_buttons( FL_OBJECT    * obj,
                              unsigned int   mouse_buttons )
 {
-    fl_set_object_mouse_buttons( obj, mouse_buttons );
+    return obj->react_to = mouse_buttons & 0x1F;
 }
 
 

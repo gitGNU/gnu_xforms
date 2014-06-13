@@ -491,6 +491,8 @@ fl_create_generic_button( int          objclass,
         obj->how_return = FL_RETURN_CHANGED;
     }
 
+    obj->set_react_to = fl_set_button_mouse_buttons;
+
     sp = obj->spec = fl_calloc( 1, sizeof *sp );
 
     sp->event     = FL_DRAW;
@@ -611,21 +613,19 @@ fl_add_button( int          type,
 
 
 /***************************************
- * Function allows to set up to which mouse
- * buttons the button object will react.
+ * Don't use this function, instead use fl_set_object_mouse_buttons().
  ***************************************/
 
-void
+unsigned int
 fl_set_button_mouse_buttons( FL_OBJECT    * obj,
                              unsigned int   mouse_buttons )
 {
-    fl_set_object_mouse_buttons( obj, mouse_buttons );
+    return obj->react_to = mouse_buttons & 0x1F;
 }
 
 
 /***************************************
- * Function returns a value via 'mouse_buttons', indicating
- * which mouse buttons the button object will react to.
+ * Don't use this function, instead use fl_get_object_mouse_buttons().
  ***************************************/
 
 void

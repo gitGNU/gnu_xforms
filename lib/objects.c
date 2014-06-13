@@ -229,10 +229,13 @@ fl_make_object( int            objclass,
     obj->nc                 = NULL;
     obj->group_id           = 0;
     obj->set_return         = NULL;
+    obj->set_react_to       = NULL;
     obj->how_return         = FL_RETURN_ALWAYS;
     obj->returned           = 0;
     obj->is_under           = 0;
-    obj->react_to           = 0x1F;
+    obj->react_to           =   FL_MBUTTON1_BIT | FL_MBUTTON2_BIT
+                              | FL_MBUTTON3_BIT | FL_MBUTTON4_BIT
+                              | FL_MBUTTON5_BIT;
 
     return obj;
 }
@@ -3821,6 +3824,8 @@ void
 fli_set_object_visibility( FL_OBJECT * obj,
                            int         vis )
 {
+    vis = vis ? 1 : 0;
+
     if ( obj )        /* let's be careful... */
     {
         obj->visible = vis;
@@ -3874,22 +3879,25 @@ fli_mouse_wheel_to_keypress( int  * ev,
  * buttons the object will react to.
  ***************************************/
 
-void
+unsigned int
 fl_set_object_mouse_buttons( FL_OBJECT    * obj,
                              unsigned int   mouse_buttons )
 {
     if ( ! obj )
     {
         M_err( "fl_set_object_mouse_buttons", "NULL object" );
-        return;
+        return 0;
     }
 
-    obj->react_to = mouse_buttons & 0x1FU;
+    if ( obj->set_react_to )
+        return obj->set_react_to( obj, mouse_buttons );
+
+    return obj->react_to = mouse_buttons & 0x1F;
 }
 
 
 /***************************************
- * Function returns a value indicating which mouse buttons
+ * Function returns value indicating which mouse buttons
  * the object reacts to.
  ***************************************/
 

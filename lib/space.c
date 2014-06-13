@@ -57,7 +57,7 @@ fli_de_space( char * s )
 
 
 /***************************************
- * remove trailing space
+ * Remove trailing space
  ***************************************/
 
 char *
@@ -95,7 +95,7 @@ fli_de_space_de( char * p )
 
 
 /***************************************
- * remove non-alphanumericals from string
+ * Remove non-alphanumericals from string
  ***************************************/
 
 char *

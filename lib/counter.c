@@ -467,7 +467,7 @@ handle_counter( FL_OBJECT * ob,
 
         case FL_PUSH:
         case FL_UPDATE:
-            if ( key != FL_MBUTTON1 )
+            if ( ! REACT_TO( ob, key ) )
                 break;
 
             if (    ( ret |= handle_mouse( ob, event, mx, my ) )
@@ -476,7 +476,7 @@ handle_counter( FL_OBJECT * ob,
             break;
 
         case FL_RELEASE:
-            if ( key != FL_MBUTTON1 )
+            if ( ! REACT_TO( ob, key ) )
                 break;
 
             ret |= handle_mouse( ob, event, mx, my );
@@ -486,6 +486,10 @@ handle_counter( FL_OBJECT * ob,
             break;
 
         case FL_MOTION:
+            if ( key != FL_MBUTTON1 )
+                break;
+            /* fallthrough */
+
         case FL_ENTER:
         case FL_LEAVE:
             show_focus_obj( ob, mx, my );
@@ -542,6 +546,8 @@ fl_create_counter( int          type,
     /* Set default return policy for the object */
 
     fl_set_object_return( ob, FL_RETURN_CHANGED );
+
+    fl_set_object_mouse_buttons( ob, FL_MBUTTON1_BIT );
 
     return ob;
 }

@@ -343,6 +343,9 @@ handle_choice( FL_OBJECT * ob,
             break;
 
         case FL_PUSH:
+            if ( ! REACT_TO( ob, key ) )
+                break;
+
             if ( key == FL_MBUTTON2 || key == FL_MBUTTON3 )
             {
                 sp->counter = 0;
@@ -375,6 +378,9 @@ handle_choice( FL_OBJECT * ob,
             break;
 
         case FL_UPDATE:
+            if ( ! REACT_TO( ob, key ) )
+                break;
+
             if (    ( key == FL_MBUTTON2 || key == FL_MBUTTON3 )
                  && ++sp->counter % 15 == 0 )
             {
@@ -388,6 +394,9 @@ handle_choice( FL_OBJECT * ob,
             break;
 
         case FL_MOTION:
+            if ( ! REACT_TO( ob, key ) )
+                break;
+
             if ( sp->numitems == 0 || ob->type != FL_DROPLIST_CHOICE )
                 break;
 
@@ -407,6 +416,9 @@ handle_choice( FL_OBJECT * ob,
             break;
                 
         case FL_RELEASE:
+            if ( ! REACT_TO( ob, key ) )
+                break;
+
             if ( sp->numitems == 0 )
                 break;
 

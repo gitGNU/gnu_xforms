@@ -753,21 +753,33 @@ handle_slider( FL_OBJECT * ob,
             break;
 
         case FL_PUSH :
+            if ( ! REACT_TO( ob, key ) )
+                break;
+
             if ( ! ( ob->type & FL_VERT_PROGRESS_BAR ) )
                 ret |= handle_push( ob, mx, my, key, ev );
             break;
 
         case FL_MOTION :
+            if ( ! REACT_TO( ob, key ) )
+                break;
+
             if ( ! ( ob->type & FL_VERT_PROGRESS_BAR ) )
                 ret |= handle_motion( ob, mx, my, key, ev );
             break;
 
         case FL_UPDATE :
+            if ( ! REACT_TO( ob, key ) )
+                break;
+
             if ( ! ( ob->type & FL_VERT_PROGRESS_BAR ) )
                 ret |= handle_update( ob, mx, my, key );
             break;
 
         case FL_RELEASE :
+            if ( ! REACT_TO( ob, key ) )
+                break;
+
             if ( ! ( ob->type & FL_VERT_PROGRESS_BAR ) )
                 ret |= handle_release( ob, mx, my, key, ev );
             break;
@@ -790,17 +802,20 @@ create_slider( int          objclass,
                FL_Coord     h,
                const char * label )
 {
-    FL_OBJECT *ob;
+    FL_OBJECT *obj = fl_make_object( objclass, type, x, y, w, h, label,
+                                     handle_slider );
     FLI_SLIDER_SPEC *sp;
 
-    ob = fl_make_object( objclass, type, x, y, w, h, label, handle_slider );
-    ob->boxtype = FLI_SLIDER_BOXTYPE;
-    ob->col1    = FLI_SLIDER_COL1;
-    ob->col2    = FLI_SLIDER_COL2;
-    ob->align   = FLI_SLIDER_ALIGN;
-    ob->lcol    = FLI_SLIDER_LCOL;
-    ob->lsize   = FL_TINY_SIZE;
-    ob->spec    = sp = fl_calloc( 1, sizeof *sp );
+    obj->boxtype      = FLI_SLIDER_BOXTYPE;
+    obj->col1         = FLI_SLIDER_COL1;
+    obj->col2         = FLI_SLIDER_COL2;
+    obj->align        = FLI_SLIDER_ALIGN;
+    obj->lcol         = FLI_SLIDER_LCOL;
+    obj->lsize        = FL_TINY_SIZE;
+    obj->set_react_to = fl_set_slider_mouse_buttons;
+
+    obj->spec = sp = fl_calloc( 1, sizeof *sp );
+
     sp->min            = 0.0;
     sp->max            = 1.0;
     sp->val            = sp->start_val = 0.5;
@@ -813,19 +828,19 @@ create_slider( int          objclass,
     sp->was_shift      = 0;
     sp->cross_over     = 0;
     sp->old_mx = sp->old_my = 0;
-    if ( IS_SCROLLBAR( ob ) )
+    if ( IS_SCROLLBAR( obj ) )
         sp->slsize    *= 1.5;
 
     sp->ldelta         = 0.1;
     sp->rdelta         = 0.05;
 
-    fl_set_object_dblbuffer( ob, 1 );
+    fl_set_object_dblbuffer( obj, 1 );
 
     /* Per default a slider reacts to the left mouse button only */
 
-    fl_set_object_mouse_buttons( ob, 1U );
+    fl_set_object_mouse_buttons( obj, 1U );
 
-    return ob;
+    return obj;
 }
 
 
@@ -1181,11 +1196,11 @@ fl_set_slider_repeat( FL_OBJECT * ob,
  * buttons the slider object will react.
  ***************************************/
 
-void
+unsigned int
 fl_set_slider_mouse_buttons( FL_OBJECT    * obj,
                              unsigned int   mouse_buttons )
 {
-    fl_set_object_mouse_buttons( obj, mouse_buttons & 0x7 );
+    return obj->react_to = mouse_buttons & 0x1F;
 }
 
 

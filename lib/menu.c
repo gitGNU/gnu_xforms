@@ -280,11 +280,13 @@ handle_menu( FL_OBJECT * ob,
             break;
 
         case FL_PUSH:
+            if ( ! REACT_TO( ob, key ) )
+                break;
+
             /* Touch menus and push menus without a title don't do anything
                on a button press */
 
-            if (    key != FL_MBUTTON1
-                 || ( ob->type == FL_PUSH_MENU && sp->no_title ) )
+            if ( ob->type == FL_PUSH_MENU && sp->no_title )
                 break;
 
             if ( ob->type == FL_TOUCH_MENU )
@@ -299,13 +301,15 @@ handle_menu( FL_OBJECT * ob,
             break;
 
         case FL_RELEASE :
+            if ( ! REACT_TO( ob, key ) )
+                break;
+
             /* Button release is only important for push menus without a
                title, all others get started by a button press or by just
                moving the mouse on top of it (and they also don't expect
                a release - that gets eaten by the popup handler) */
 
-            if (    key != FL_MBUTTON1
-                 || ! ( ob->type == FL_PUSH_MENU && sp->no_title )
+            if (    ! ( ob->type == FL_PUSH_MENU && sp->no_title )
                  || mx < ob->x
                  || mx > ob->x + ob->w
                  || my < ob->y
@@ -373,6 +377,8 @@ fl_create_menu( int          type,
 
     sp = obj->spec = fl_calloc( 1, sizeof *sp );
     sp->extern_menu = -1;
+
+    fl_set_object_mouse_buttons( obj, FL_MBUTTON1_BIT );
 
     return obj;
 }

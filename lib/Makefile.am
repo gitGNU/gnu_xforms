@@ -44,7 +44,6 @@ libforms_la_SOURCES = \
 	clock.c \
 	cmd_br.c \
 	colsel.c \
-	combo.c \
 	counter.c \
 	cursor.c \
 	dial.c \

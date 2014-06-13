@@ -219,8 +219,8 @@ FL_EXPORT void fl_add_button_class( int              bclass,
                                     FL_DrawButton    drawit,
                                     FL_CleanupButton cleanup );
 
-FL_EXPORT void fl_set_button_mouse_buttons( FL_OBJECT    * ob,
-                                            unsigned int   buttons );
+FL_EXPORT unsigned int fl_set_button_mouse_buttons( FL_OBJECT    * ob,
+                                                    unsigned int   buttons );
 
 FL_EXPORT void fl_get_button_mouse_buttons( FL_OBJECT    * ob,
                                             unsigned int * buttons );

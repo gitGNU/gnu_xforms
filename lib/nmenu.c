@@ -70,6 +70,8 @@ fl_create_nmenu( int          type,
 
     fl_set_object_return( obj, FL_RETURN_END_CHANGED );
 
+    fl_set_object_mouse_buttons( obj, FL_MBUTTON1_BIT );
+
     return obj;
 }
 
@@ -770,8 +772,12 @@ handle_nmenu( FL_OBJECT * obj,
                 break;
             /* fall through */
 
-        case FL_SHORTCUT :
         case FL_PUSH :
+            if ( ! REACT_TO( obj, key ) )
+                break;
+            /* fall through */
+
+        case FL_SHORTCUT :
             if ( ! sp->popup || ! sp->popup->entries )
                 break;
             obj->pushed = 1;

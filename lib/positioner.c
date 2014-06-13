@@ -391,6 +391,8 @@ fl_create_positioner( int          type,
         obj->boxtype = FL_NO_BOX;
     }
 
+    obj->set_react_to = fl_set_positioner_mouse_buttons;
+
     obj->spec = sp = fl_calloc( 1, sizeof *sp );
 
     sp->xmin = 0.0;
@@ -704,11 +706,11 @@ fl_set_positioner_return( FL_OBJECT    * obj,
  * buttons the positioner object will react.
  ***************************************/
 
-void
+unsigned int
 fl_set_positioner_mouse_buttons( FL_OBJECT    * obj,
                                  unsigned int   mouse_buttons )
 {
-    fl_set_object_mouse_buttons( obj, mouse_buttons & 0x7 );
+    return obj->react_to = mouse_buttons & 0x1F;
 }
 
 

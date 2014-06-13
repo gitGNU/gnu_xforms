@@ -87,6 +87,10 @@
 #endif
 
 
+#define REACT_TO( obj_, key_ ) \
+   ( ( ( obj_ )->react_to & ( 1U << ( ( key_ ) - 1 ) ) ) ? 1 : 0 )
+
+
 /* If we want to have gamma correction as a built-in feature.
  * Probably useless */
 

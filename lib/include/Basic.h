@@ -120,15 +120,13 @@ typedef enum {
     FL_MENUBAR,            /* 33 */
     FL_TEXTBOX,            /* 34, for internal use only */
     FL_LABELBUTTON,        /* 35 */
-    FL_COMBOBOX,           /* 36 */
-    FL_IMAGECANVAS,        /* 37 */
-    FL_THUMBWHEEL,         /* 38 */
-    FL_COLORWHEEL,         /* 39 */
-    FL_FORMBROWSER,        /* 40 */
-    FL_SELECT,             /* 41 */
-    FL_NMENU,              /* 42 */
-    FL_SPINNER,            /* 43 */
-    FL_TBOX,               /* 44 */
+    FL_THUMBWHEEL,         /* 36 */
+    FL_COLORWHEEL,         /* 37 */
+    FL_FORMBROWSER,        /* 38 */
+    FL_SELECT,             /* 39 */
+    FL_NMENU,              /* 40 */
+    FL_SPINNER,            /* 41 */
+    FL_TBOX,               /* 42 */
     FL_CLASS_END
 } FL_CLASS;
 
@@ -275,6 +273,14 @@ enum {
 #define FL_RIGHTMOUSE        FL_RIGHT_MOUSE
 #define FL_SCROLLUPMOUSE     FL_SCROLLUP_MOUSE
 #define FL_SCROLLDOWNMOUSE   FL_SCROLLDOWN_MOUSE
+
+enum {
+    FL_MBUTTON1_BIT =  1,
+    FL_MBUTTON2_BIT =  2,
+    FL_MBUTTON3_BIT =  4,
+    FL_MBUTTON4_BIT =  8,
+    FL_MBUTTON5_BIT = 16
+};
 
 /* Flags for when to return an object */
 
@@ -719,6 +725,9 @@ struct FL_OBJECT_ {
     void             ( * set_return )( FL_OBJECT *,
                                        unsigned int );
 
+    unsigned int     ( * set_react_to )( FL_OBJECT *,
+                                         unsigned int );
+
     /* Re-configure preference */
 
     unsigned int     resize;         /* what to do if WM resizes the FORM     */
@@ -764,9 +773,6 @@ struct FL_OBJECT_ {
     int              want_motion;
     int              want_update;
 };
-
-#define REACT_TO( obj, key ) \
-   ( ( ( obj )->react_to & ( 1U << ( ( key ) - 1 ) ) ) ? 1 : 0 )
 
 /* Callback function for an entire form */
 
@@ -1338,8 +1344,9 @@ FL_EXPORT void fl_deactivate_object( FL_OBJECT * ob );
 
 FL_EXPORT int fl_object_is_active( FL_OBJECT * obj );
 
-FL_EXPORT void fl_set_object_mouse_buttons( FL_OBJECT    * obj,
-											unsigned int   mouse_buttons );
+FL_EXPORT unsigned int
+    fl_set_object_mouse_buttons( FL_OBJECT    * obj,
+								 unsigned int   mouse_buttons );
 
 FL_EXPORT unsigned int fl_get_object_mouse_buttons( FL_OBJECT * obj );
 

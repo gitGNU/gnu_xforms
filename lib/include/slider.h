@@ -37,8 +37,8 @@ typedef enum {
     FL_VERT_BROWSER_SLIDER   = 6,
     FL_HOR_BROWSER_SLIDER    = FL_VERT_BROWSER_SLIDER  | FL_HOR_FLAG,
 
-	FL_VERT_PROGRESS_BAR     = 8,
-	FL_HOR_PROGRESS_BAR      = FL_VERT_PROGRESS_BAR    | FL_HOR_FLAG,
+    FL_VERT_PROGRESS_BAR     = 8,
+    FL_HOR_PROGRESS_BAR      = FL_VERT_PROGRESS_BAR    | FL_HOR_FLAG,
 
     /* The following are for use with scrollbars only! */
 
@@ -138,10 +138,12 @@ FL_EXPORT void fl_set_slider_filter( FL_OBJECT     * ob,
 FL_EXPORT int fl_get_slider_repeat( FL_OBJECT * obj );
 
 FL_EXPORT void fl_set_slider_repeat( FL_OBJECT * obj,
-									 int         millisec );
+                                     int         millisec );
 
-FL_EXPORT void fl_set_slider_mouse_buttons( FL_OBJECT    * obj,
-											unsigned int   mouse_buttons );
+FL_EXPORT unsigned int
+    fl_set_slider_mouse_buttons( FL_OBJECT    * obj,
+                                 unsigned int   mouse_buttons );
+
 FL_EXPORT void fl_get_slider_mouse_buttons( FL_OBJECT    * obj,
-											unsigned int * mouse_buttons );
+                                            unsigned int * mouse_buttons );
 

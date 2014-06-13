@@ -200,7 +200,8 @@ draw_dial( FL_OBJECT * obj )
 static int
 handle_mouse( FL_OBJECT * obj,
               FL_Coord    mousex,
-              FL_Coord    mousey )
+              FL_Coord    mousey,
+              int         key )
 {
     FLI_DIAL_SPEC *sp = obj->spec;
     double oldv,
@@ -211,13 +212,16 @@ handle_mouse( FL_OBJECT * obj,
            angle,
            range = sp->max - sp->min;
 
+    if ( key == FL_MBUTTON4 || key == FL_MBUTTON5 )
+        return FL_RETURN_NONE;
+
     oldv = sp->val;
     olda = ( oldv - sp->b ) / sp->a;
 
-    /* convert to sane FL_coordinate system, i.e., +y up */
+    /* Convert to sane FL_coordinate system, i.e., +y up */
 
-    mx =   mousex - ( obj->x + obj->w * 0.5 );
-    my = - mousey + ( obj->y + obj->h * 0.5 );
+    mx =   mousex - ( obj->x + 0.5 * obj->w );
+    my = - mousey + ( obj->y + 0.5 * obj->h );
 
     /* Don't react to clicks very close to center */
 
@@ -251,7 +255,7 @@ handle_mouse( FL_OBJECT * obj,
     }
 
     if ( sp->step != 0.0 )
-        val = ( int ) ( val / sp->step + 0.5 ) * sp->step;
+        val = FL_nint( val / sp->step ) * sp->step;
 
     /* Allow a resolution of about 0.2 degrees */
 
@@ -278,18 +282,17 @@ handle_mouse_wheel( FL_OBJECT * obj,
     FLI_DIAL_SPEC *sp = obj->spec;
     double val,
            step,
-           oldv = sp->val,
            range = sp->max - sp->min;
 
     if ( key != FL_MBUTTON4 && key != FL_MBUTTON5 )
         return FL_RETURN_NONE;
 
-    step = sp->step > 0.0 ? 10.0 * sp->step : 0.1 * range;
+    step = sp->step > 0.0 ? ( 5.0 * sp->step ) : ( 0.05 * range );
 
     if ( shiftkey_down( ( ( XButtonEvent * ) xev )->state ) )
-        step *= 0.1;
+        step *= 0.5;
     else if ( controlkey_down( ( ( XButtonEvent * ) xev )->state ) )
-        step *= 2.5;
+        step *= 2;
 
     if ( sp->direction == FL_DIAL_CW )
         step = key == FL_MBUTTON4 ? - step : step;
@@ -297,6 +300,9 @@ handle_mouse_wheel( FL_OBJECT * obj,
         step = key == FL_MBUTTON4 ? step : - step;
 
     val = sp->val + step;
+
+    if ( sp->step != 0.0 )
+        val = FL_nint( val / sp->step ) * sp->step;
 
     if ( sp->cross_over )
     {
@@ -306,14 +312,9 @@ handle_mouse_wheel( FL_OBJECT * obj,
             val += range;
     }
     else
-    {
-        if ( val > sp->max )
-            val = sp->max;
-        else if ( val < sp->min )
-            val = sp->min;
-    }
+        val = fli_clamp( val, sp->min, sp->max );
         
-    if ( val != oldv )
+    if ( val != sp->val )
     {
         sp->val = val;
         fl_redraw_object( obj );
@@ -356,22 +357,22 @@ handle_dial( FL_OBJECT * obj,
             break;
 
         case FL_PUSH:
-            if ( key != FL_MBUTTON1 )
+            if ( ! REACT_TO( obj, key ) )
                 break;
             sp->start_val = sp->val;
             /* fall through */
 
         case FL_MOTION:
-            if ( key != FL_MBUTTON1 )
+            if ( ! REACT_TO( obj, key ) )
                 break;
 
-            if (    ( ret = handle_mouse( obj, mx, my ) )
+            if (    ( ret = handle_mouse( obj, mx, my, key ) )
                  && ! ( obj->how_return & FL_RETURN_END_CHANGED ) )
                 sp->start_val = sp->val;
             break;
 
         case FL_RELEASE:
-            if ( key == FL_MBUTTON2 || key == FL_MBUTTON3 )
+            if ( ! REACT_TO( obj, key ) )
                 break;
 
             ret = handle_mouse_wheel( obj, ev, key ) | FL_RETURN_END;
@@ -421,6 +422,7 @@ fl_create_dial( int          type,
     obj->lcol     = FLI_DIAL_LCOL;
     obj->boxtype  = FLI_DIAL_BOXTYPE;
     obj->spec     = sp = fl_calloc( 1, sizeof *sp );
+    obj->react_to = FL_MBUTTON1_BIT | FL_MBUTTON4_BIT | FL_MBUTTON5_BIT;
 
     sp->min       = 0.0;
     sp->max       = 1.0;

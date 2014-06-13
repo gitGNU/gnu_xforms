@@ -1645,10 +1645,10 @@ output_object( FILE      * fp,
                 int first = 0;
 
                 fprintf( fp, "    fl_set_object_mouse_buttons( obj, " );
-                for ( i = 0; i < 5; i++ )
-                    if ( obj->react_to & ( 1 << i ) )
-                        fprintf( fp, "%sFL_MBUTTON%d", first++ ? " | " : "",
-                                 i + 1 );
+                for ( i = FL_MBUTTON1; i <= FL_MBUTTON5; i++ )
+                    if ( REACT_TO( obj, i ) )
+                        fprintf( fp, "%sFL_MBUTTON%d_BIT",
+                                 first++ ? " | " : "", i );
 
                 fprintf( fp, " );\n" );
             }

@@ -947,21 +947,27 @@ handle_select( FL_OBJECT * obj,
 
         case FL_SHORTCUT :
             obj->pushed = 1;
-            key = FL_MBUTTON1;
             fl_popup_get_size( sp->popup, &w, &h );
             fl_popup_set_position( sp->popup,
                                    obj->form->x + obj->x + ( obj->w - w ) / 2,
                                    obj->form->y + obj->y + obj->h );
             sret |= FL_RETURN_END;
-            /* fall through */
+
+            if ( handle_push( obj, FL_MBUTTON1 ) )
+                sret |= FL_RETURN_CHANGED;
+            break;
 
         case FL_PUSH :
+            if ( ! REACT_TO( obj, key ) )
+                break;
+
             if ( handle_push( obj, key ) )
                 sret |= FL_RETURN_CHANGED;
             break;
 
         case FL_RELEASE :
-            if ( key != FL_MBUTTON2 && key != FL_MBUTTON3 )
+            if (    ! REACT_TO( obj, key )
+                 || ( key != FL_MBUTTON2 && key != FL_MBUTTON3 ) )
                 break;
 
             if ( sp->timeout_id != -1 )
@@ -975,7 +981,8 @@ handle_select( FL_OBJECT * obj,
             break;
 
         case FL_UPDATE:
-            if (    ( key == FL_MBUTTON2 || key == FL_MBUTTON3 )
+            if (    REACT_TO( obj, key )
+                 && ( key == FL_MBUTTON2 || key == FL_MBUTTON3 )
                  && sp->timeout_id == -1 )
             {
                 const FL_POPUP_ENTRY *old_entry = sp->sel ?

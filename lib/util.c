@@ -159,7 +159,6 @@ static FLI_VN_PAIR flclass[ ] =
     VN( FL_SCROLLBAR     ),
     VN( FL_SCROLLBUTTON  ),
     VN( FL_MENUBAR       ),
-    VN( FL_IMAGECANVAS   ),
     VN( FL_TEXTBOX       ),
     VN( FL_SPINNER       ),
     { -1, NULL }
