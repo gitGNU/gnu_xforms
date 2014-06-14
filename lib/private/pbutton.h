@@ -21,17 +21,20 @@
 
 
 typedef struct {
-    Pixmap         pixmap,
-                   mask;
-    unsigned int   bits_w,
-                   bits_h;
     int            val;             /* state of button (on/off) */
     int            mousebut;        /* mouse button that caused the push     */
     int            timdel;          /* time since last touch (TOUCH buttons) */
     int            event;           /* what event triggers redraw            */
     int            is_pushed;       /* set while drawn as pushed down        */
-    long           cspecl;          /* reserved for class specfic stuff      */
-    void         * cspecv;          /* misc. things                          */
+
+    /* All of the following members are for pixmap and butmap buttons (or
+       objects!) and actually should better be in a structure just for
+       these... */
+
+    Pixmap         pixmap,
+                   mask;
+    unsigned int   bits_w,
+                   bits_h;
     char         * filename;
     Pixmap         focus_pixmap,
                    focus_mask;

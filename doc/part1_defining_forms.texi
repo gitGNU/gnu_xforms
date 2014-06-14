@@ -1361,7 +1361,7 @@ pre-defined. The following table gives their names:
 12 charter-medium-r
 13 charter-bold-r
 14 charter-medium-i
-15 Symbol
+15 charter-bold-i
 @end example
 
 The other 32 fonts (numbers 16-47) can be filled in by the application

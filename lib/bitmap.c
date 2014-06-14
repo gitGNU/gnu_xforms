@@ -211,7 +211,6 @@ fl_create_bitmap( int          type,
     sp = obj->spec = fl_calloc( 1, sizeof *sp );
 
     sp->pixmap   = sp->mask = sp->focus_pixmap = sp->focus_mask = None;
-    sp->cspecv   = NULL;
     sp->filename = sp->focus_filename = NULL;
 
     return obj;

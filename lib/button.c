@@ -498,12 +498,11 @@ fl_create_generic_button( int          objclass,
     sp->event     = FL_DRAW;
     sp->is_pushed = 0;
     sp->pixmap    = sp->mask = sp->focus_pixmap = sp->focus_mask = None;
-    sp->cspecv    = NULL;
     sp-> filename = sp->focus_filename = NULL;
     sp->is_pushed = 0;
     sp->mousebut  = 0;
 
-    /* Per default a button (unfortunately) reacts to all mouse buttons */
+    /* Per default a button reacts to all mouse buttons */
 
     fl_set_object_mouse_buttons( obj, 0x1FU );
 

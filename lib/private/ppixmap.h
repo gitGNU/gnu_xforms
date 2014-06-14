@@ -30,7 +30,7 @@ typedef struct {
     int             dx,
                     dy;
     int             show_focus;
-    unsigned int    focus_w,    /* these should be in button_spec?b */
+    unsigned int    focus_w,
                     focus_h;
 } FLI_PIXMAP_SPEC;
 
