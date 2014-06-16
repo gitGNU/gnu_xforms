@@ -360,10 +360,6 @@ int fli_draw_string( int,
 
 int fli_get_max_pixels_line( void );
 
-int fli_get_string_widthTABfs( XFontStruct *,
-                               const char *,
-                               int );
-
 void fli_init_font( void );
 
 void fli_canonicalize_rect( FL_Coord *,
@@ -575,8 +571,10 @@ typedef struct fli_context_ {
 typedef struct {
     Display       * display;
     Window          win;
-    GC              gc,
-                    textgc;
+    GC              gc;
+#if ! defined ENABLE_XFT
+    GC              textgc;
+#endif
     int             isRGBColor;
     unsigned long   bktextcolor;
     int             newpix;
@@ -584,7 +582,11 @@ typedef struct {
     int             fasc;           /* font ascent           */
     int             fheight;        /* font height           */
     Colormap        colormap;
+#if defined ENABLE_XFT
+    XftFont       * fs;
+#else
     XFontStruct   * fs;
+#endif
     unsigned long   color;          /* last color. cache     */
     unsigned long   textcolor;      /* last textcolor. cache */
     unsigned long   bkcolor;
@@ -777,7 +779,11 @@ int fli_get_visible_forms_index( FL_FORM * );
 
 void fli_recount_auto_objects( void );
 
+#if defined ENABLE_XFT
+int fli_get_tabpixels( XftFont * );
+#else
 int fli_get_tabpixels( XFontStruct * );
+#endif
 
 int fli_get_default_scrollbarsize( FL_OBJECT * );
 
@@ -1103,7 +1109,39 @@ void fli_set_ul_property( int prop,
 
 int fli_is_valid_dir( const char * name );
 
+#if defined ENABLE_XFT
+int fli_font_index_compare( const void * arg1,
+                            const void * arg2 );
+
+char * fli_convert_to_full_xlfd( const char * pattern );
+
+char * fli_get_fname( const FL_FONT * font,
+                      int             size );
+
+int fli_get_string_width( XftFont    * f,
+                          const char * s,
+                          int          len );
+
+int fli_get_string_widthTABfs( XftFont    * fs,
+                               const char * s,
+                               int          len );
+
+XftFont * fli_get_font_struct( int style,
+                               int size );
+
+char * fli_cv_fname( const FL_FONT * f );
+
+#else
+
+int fli_get_string_widthTABfs( XFontStruct *,
+                               const char *,
+                               int );
+
+#endif
+
+
 #endif /* ! defined FL_INTERNAL_H */
+
 
 
 /*

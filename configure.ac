@@ -137,6 +137,16 @@ AC_CHECK_LIB(c, fopen)
 
 AC_CHECK_HEADERS([sys/select.h])
 
+# Check whether we want to build with support for TrueType fonts
+
+AC_ARG_ENABLE(xft,
+  [AS_HELP_STRING([--disable-xft],[Do not build with TrueType font (Xft) support])])
+if test x$enable_xft != xyes ; then
+  AC_CHECK_LIB(Xft, XftFontOpen, [enable_xft=yes], [XFORMS_LIB_ERROR(libXft, Xft)])
+fi
+AM_CONDITIONAL(ENABLE_XFT, [test x$enable_xft = xyes])
+
+
 # Check whether we want to build the gl code
 
 AC_ARG_ENABLE(gl,

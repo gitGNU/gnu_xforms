@@ -84,7 +84,11 @@ enum {
 
 typedef struct {
     XVisualInfo   * xvinfo;
+#if defined ENABLE_XFT
+    XftFont       * cur_fnt;            /* current font */
+#else
     XFontStruct   * cur_fnt;            /* current font in default GC */
+#endif
     Colormap        colormap;           /* colormap valid for xvinfo */
     Window          trailblazer;        /* a valid window for xvinfo */
     int             vclass,             /* visual class and color depth */
@@ -170,6 +174,39 @@ struct FL_pixmap_ {
 
 /* Fonts related */
 
+#if defined ENABLE_XFT
+
+typedef struct {
+	int       size;
+	XftFont * font;
+} FL_SIZED_FONT;
+
+typedef struct {
+    size_t          index;
+	char          * name;
+	int             slant;
+	int             weight;
+	double          scale;
+	FL_SIZED_FONT * sized_fonts;
+	size_t          size_count;
+} FL_FONT;
+
+typedef enum {
+	FL_SLANT_ROMAN   = XFT_SLANT_ROMAN,
+	FL_SLANT_ITALIC  = XFT_SLANT_ITALIC,
+	FL_SLANT_OBLIQUE = XFT_SLANT_OBLIQUE
+} FL_FONT_SLANT;
+
+typedef enum {
+	FL_WEIGHT_LIGHT    = XFT_WEIGHT_LIGHT,
+	FL_WEIGHT_MEDIUM   = XFT_WEIGHT_MEDIUM,
+	FL_WEIGHT_DEMIBOLD = XFT_WEIGHT_DEMIBOLD,
+	FL_WEIGHT_BOLD     = XFT_WEIGHT_BOLD,
+	FL_WEIGHT_BLACK    = XFT_WEIGHT_BLACK
+} FL_FONT_WEIGHT;
+
+#else  /* X11 fonts */
+
 #define FL_MAX_FONTSIZES         10
 #define FL_MAX_FONTNAME_LENGTH   80
 
@@ -179,6 +216,8 @@ typedef struct {
     short         nsize;                                /* cached so far */
     char          fname[ FL_MAX_FONTNAME_LENGTH + 1 ];  /* without size info */
 } FL_FONT;
+
+#endif
 
 /* Some basic drawing routines */
 
@@ -374,8 +413,13 @@ FL_EXPORT void fl_draw_frame( int      style,
  * Interfaces
  */
 
+#if defined ENABLE_XFT
+FL_EXPORT XftFont *fl_get_fontstruct( int style,
+									  int size );
+#else
 FL_EXPORT XFontStruct *fl_get_fontstruct( int style,
                                           int size );
+#endif
 
 #define fl_get_font_struct    fl_get_fontstruct
 #define fl_get_fntstruct      fl_get_font_struct

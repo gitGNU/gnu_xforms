@@ -740,6 +740,7 @@ fli_create_gc( Window win )
         XSetGraphicsExposures( flx->display, flx->gc, 0 );
     }
 
+#if ! defined ENABLE_XFT
     flx->textgc = fl_state[ fl_vmode ].textgc;
 
     if ( ! flx->textgc )
@@ -748,6 +749,7 @@ fli_create_gc( Window win )
         XSetStipple( flx->display, flx->textgc, FLI_INACTIVE_PATTERN );
         XSetGraphicsExposures( flx->display, flx->textgc, 0 );
     }
+#endif
 
     /* Check if we need to dither */
 
@@ -783,9 +785,11 @@ fli_create_gc( Window win )
         }
     }
 
+#if ! defined ENABLE_XFT
     if ( fl_state[ fl_vmode ].cur_fnt )
         XSetFont( flx->display, flx->textgc,
                   fl_state[ fl_vmode ].cur_fnt->fid );
+#endif
 }
 
 
@@ -1073,7 +1077,12 @@ fli_free_newpixel( unsigned long pixel )
 void
 fli_textcolor( FL_COLOR col )
 {
+#if defined ENABLE_XFT
+    flx->textcolor = col;
+#else
     static int vmode = -1;
+
+
     static GC textgc;
 
     if (    flx->textcolor != col
@@ -1106,6 +1115,7 @@ fli_textcolor( FL_COLOR col )
         XSetForeground( flx->display, flx->textgc, p );
         fli_free_newpixel( p );
     }
+#endif
 }
 
 
@@ -1138,7 +1148,9 @@ fli_bk_textcolor( FL_COLOR col )
     {
         unsigned long p = fl_get_pixel( col );
         flx->bktextcolor = col;
+#if ! defined ENABLE_XFT
         XSetBackground( flx->display, flx->textgc, p );
+#endif
         fli_free_newpixel( p );
     }
 }

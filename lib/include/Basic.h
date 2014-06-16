@@ -29,6 +29,9 @@
 #include <X11/Xatom.h>
 #include <X11/keysym.h>
 #include <X11/Xresource.h>
+#if defined ENABLE_XFT
+#include <X11/Xft/Xft.h>
+#endif
 
 #if defined __GNUC__
 #define FL_UNUSED_ARG __attribute__ ((unused))
@@ -622,6 +625,7 @@ typedef enum {
     FL_MISCBOLD_STYLE,
     FL_MISCITALIC_STYLE,
     FL_SYMBOL_STYLE,
+    FL_MISCBOLDITALIC_STYLE = FL_SYMBOL_STYLE,
 
     /* modfier masks. Need to fit a short  */
 
@@ -637,12 +641,14 @@ typedef enum {
 
 /* Standard sizes in XForms */
 
-#define FL_TINY_SIZE        8
-#define FL_SMALL_SIZE      10
-#define FL_NORMAL_SIZE     12
-#define FL_MEDIUM_SIZE     14
-#define FL_LARGE_SIZE      18
-#define FL_HUGE_SIZE       24
+typedef enum {
+    FL_TINY_SIZE   =  8,
+    FL_SMALL_SIZE  = 10,
+    FL_NORMAL_SIZE = 12,
+    FL_MEDIUM_SIZE = 14,
+    FL_LARGE_SIZE  = 18,
+    FL_HUGE_SIZE   = 24
+} FL_DEFAULT_FONT_SIZES;
 
 #define FL_DEFAULT_SIZE   FL_SMALL_SIZE
 

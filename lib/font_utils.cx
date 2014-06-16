@@ -1,0 +1,299 @@
+/* -*- c -*-
+ *
+ *  This file is part of the XForms library package.
+ *
+ *  XForms is free software; you can redistribute it and/or modify it
+ *  under the terms of the GNU Lesser General Public License as
+ *  published by the Free Software Foundation; either version 2.1, or
+ *  (at your option) any later version.
+ *
+ *  XForms is distributed in the hope that it will be useful, but
+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with XForms.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "include/forms.h"
+#include "flinternal.h"
+
+
+/***************************************
+ * Function called (by qsort) in sorting the list of fonts by index
+ ***************************************/
+
+int
+fli_font_index_compare( const void * arg1,
+						const void * arg2 )
+{
+	return ( ( FL_FONT * ) arg1 )->index < ( ( FL_FONT * ) arg2 )->index ?
+		   -1 : 1;
+}
+
+
+/***************************************
+ * Function called (by qsort) in sorting a list of font names
+ ***************************************/
+
+static int
+compare_font_names( const void * arg1,
+					const void * arg2 )
+{
+	return strcmp( * ( char * const * ) arg1, * ( char * const * ) arg2 );
+}
+
+
+/***************************************
+ * Tries to convert a (possibly shortend) XLFD name or an alias name to
+ * the full name (which is needed by XftFontOpenXlfd()) and returns an
+ * allocated string with the full name on success, otherwise a NULL
+ * pointer. The font name has the pixel size and resolution fields
+ * set to '*' and the 10th of points field to '?'.
+ ***************************************/
+
+char *
+fli_convert_to_full_xlfd( const char * pattern )
+{
+	int i, j;
+	int nnames = INT_MAX;
+	int available;
+	char ** font_list;
+	char **list;
+	char * value = NULL;
+	char *result = NULL;
+	XftFont * font;
+	char *quest;
+	char *sp, *sp2;
+	int cnt = 0;
+
+	/* Get a list of all fonts fitting the pattern */
+
+	if ( ! ( font_list =
+			         XListFonts( fl_display, pattern, nnames, &available ) ) )
+		return NULL;
+
+	/* Copy the pointers in the list (X11 could get upset if we mess
+	   around with the list it returned) and sort them */
+
+	list = fl_malloc( available * sizeof *list );
+	memcpy( list, font_list, available * sizeof *list );
+
+	qsort( list, available, sizeof *list, compare_font_names );
+
+	/* Now try to get the "real" name of the font, Xft doesn't like
+	   alialises etc. Stop when the first one has been found. */
+
+	for ( i = 0; ! value && i < available; i++ )
+	{
+		XFontStruct * info = XLoadQueryFont( fl_display, list[ i ] );
+
+		for ( j = 0; j < info->n_properties; j++ )
+		{
+
+			char *atom = XGetAtomName( fl_display,
+									   info->properties[ j ].name );
+
+			if ( ! strcmp( "FONT", atom ) )
+				value = XGetAtomName( fl_display,
+									 info->properties[ j ].card32 );
+
+			XFree( atom );
+		}
+
+		XFreeFontInfo( NULL, info, 1 );
+	}
+
+	fl_free( list );
+	XFreeFontNames( font_list );
+
+	/* Bail out if there was no fitting file name */
+
+	if ( ! value )
+		return NULL;
+
+	/* Get a copy of the result */
+
+	result = fl_strdup( value );
+	XFree( value );
+
+	/* Now look for the pixel size field in the XLFD name and replace it
+	   by a '*', it's the one after the 7th dash */
+
+	sp = result;
+
+	while ( cnt < 7 )
+		if ( *sp++ == '-' )
+			cnt++;
+
+	*sp++ = '*';
+	sp2 = sp;
+	while ( *sp2 != '-' )
+		sp2++;
+	if ( sp2 != sp )
+		memmove( sp, sp2, strlen( sp2 ) + 1 );
+
+	/* And replace the following 10th of points field also by a '*', but
+	   remember its position, we'll replace it by a '?' if the font can
+	   be loaded. */
+
+	quest = ++sp;
+
+	*sp++ = '*';
+	sp2 = sp;
+	while ( *sp2 != '-' )
+		sp2++;
+	if ( sp2 != sp )
+		memmove( sp, sp2, strlen( sp2 ) + 1 );
+
+	*++sp = '*';
+	sp2 = ++sp;
+	while ( *sp2 != '-' )
+		sp2++;
+	if ( sp2 != sp )
+		memmove( sp, sp2, strlen( sp2 ) + 1 );
+
+	*++sp = '*';
+	sp2 = ++sp;
+	while ( *sp2 != '-' )
+		sp2++;
+	if ( sp2 != sp )
+		memmove( sp, sp2, strlen( sp2 ) + 1 );
+
+
+	/* Try to load the font */
+
+	if ( ( font = XftFontOpenXlfd( fl_display, fl_screen, value ) ) )
+	{
+		XftFontClose( fl_display, font );
+		*quest = '?';
+	}
+	else
+		fli_safe_free( result );
+
+	return result;
+}
+
+
+/***************************************
+ * Given an XLFD font name (with a '?' at the 10th of a point field) and a
+ * size (in points), assemble the complete name with the size inserted
+ ***************************************/
+
+char *
+fli_get_fname( const FL_FONT * font,
+			   int             size )
+{
+	char * n = fl_malloc( strlen( font->name ) + 20 );
+    size_t len = strchr( font->name, '?' ) - font->name - 1;
+
+	strncpy( n, font->name, len );
+	sprintf( n, "%d\n",
+			 FL_nint( 10 * global_font_scale * font->scale * size ) );
+	return strcat( n, font->name + len + 1 );
+}
+
+
+/***************************************
+ ***************************************/
+
+int
+fli_get_string_width( XftFont    * f,
+					  const char * s,
+					  int          len )
+{
+	XGlyphInfo extents;
+	XftTextExtents8( fl_display, f, ( XftChar8 * ) s, len, &extents );
+
+    return extents.xOff;
+}
+
+
+/***************************************
+ ***************************************/
+
+int
+fli_get_string_widthTABfs( XftFont    * f,
+                           const char * s,
+                           int          len )
+{
+    int w,
+        tab;
+    const char * p,
+               * q;
+
+    tab = fli_get_tabpixels( f );
+
+    for ( w = 0, q = s; *q && ( p = strchr( q, '\t' ) ) && ( p - s ) < len;
+          q = p + 1 )
+    {
+        w += fli_get_string_width( f, q, p - q );
+        w = ( ( w / tab ) + 1 ) * tab;
+    }
+
+    return w += fli_get_string_width( f, q, len - ( q - s ) );
+}
+
+
+
+/***************************************
+ ***************************************/
+
+XftFont *
+fli_get_font_struct( int style,
+					 int size )
+{
+	XftFont * f= fl_get_font_struct( style, size );
+
+	if ( ! f )
+	{
+		M_warn( "fli_get_string_width",
+				"Invalid index, using replacement font" );
+		f = fl_get_font_struct( style & FL_BOLDITALIC_STYLE, size );
+	}
+
+	return f;
+}
+
+
+/***************************************
+ * Convert X font names to more conventional names by stripping the
+ * auxiliary info.
+ ***************************************/
+
+char *
+fli_cv_fname( const FL_FONT * f )
+{
+	char * fname = fl_strdup( f->name );
+    char *q,
+         *p;
+
+    /* Remove all the garbages from head */
+
+    for ( q = fname; *q && ! isalnum( ( unsigned char ) *q ); q++ )
+        /* empty */ ;
+
+    /* Remove all the garbage from the end, starting from '?' */
+
+    if ( ( p = strchr( fname, '?' ) ) )
+        *--p = '\0';
+
+    /* Remove all remaining garbages */
+
+    for ( p = fname + strlen( fname ) - 1;
+          p > q && ! isalnum( ( unsigned char ) *p ); p-- )
+        /* empty */ ;
+
+    *++p = '\0';
+
+    return memmove( fname, q, strlen( q ) + 1 );
+}
+
+

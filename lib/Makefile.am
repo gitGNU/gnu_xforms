@@ -8,17 +8,26 @@ endif
 
 CLEANFILES = forms.h xforms.5
 
-EXTRA_DIST = xforms.man dirent_vms.h vms_readdir.c
+EXTRA_DIST = xforms.man dirent_vms.h vms_readdir.c \
+	         ttfonts.cx font_utils.cx xformts.cx
 
 SUBDIRS = bitmaps fd include private
 
+if ENABLE_XFT
+INCLUDES = -DMAKING_FORMS -DENABLE_XFT $(X_CFLAGS) $(BWC) $$(pkg-config --cflags freetype2)
+else
 INCLUDES = -DMAKING_FORMS $(X_CFLAGS) $(BWC)
+endif
 
 lib_LTLIBRARIES = libforms.la
 
 libforms_la_LDFLAGS = -no-undefined -version-info @SO_VERSION@
 
+if ENABLE_XFT
+libforms_la_LIBADD =  $(X_LIBS) $(XPM_LIB) -lX11 -lXft
+else
 libforms_la_LIBADD =  $(X_LIBS) $(XPM_LIB) -lX11
+endif
 
 nodist_libforms_la_SOURCES = config.h
 

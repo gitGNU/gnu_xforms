@@ -1,0 +1,680 @@
+/* -*- c -*-
+ *
+ *  This file is part of the XForms library package.
+ *
+ *  XForms is free software; you can redistribute it and/or modify it
+ *  under the terms of the GNU Lesser General Public License as
+ *  published by the Free Software Foundation; either version 2.1, or
+ *  (at your option) any later version.
+ *
+ *  XForms is distributed in the hope that it will be useful, but
+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with XForms.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
+#include "private/flvasprintf.h"
+#include <string.h>
+#include <ctype.h>
+
+
+
+static double global_font_scale = 1.0;
+
+static const char *default_families[ ] = { "DejaVu Sans",
+										   "DejaVu Mono Sans",
+										   "DejaVu Serif",       
+										   "Century Schoolbook L" };
+
+struct FONT_STYLE {
+	int slant;
+	int weight;
+} default_styles[ ] =
+    { { XFT_SLANT_ROMAN,  XFT_WEIGHT_MEDIUM },
+      { XFT_SLANT_ROMAN,  XFT_WEIGHT_BOLD   },
+      { XFT_SLANT_ITALIC, XFT_WEIGHT_MEDIUM },
+      { XFT_SLANT_ITALIC, XFT_WEIGHT_BOLD   }  };
+
+static FL_FONT * fl_fonts = NULL;
+static size_t font_count = 0;
+
+static size_t num_families = sizeof default_families / sizeof *default_families;
+static size_t num_styles = sizeof default_styles / sizeof *default_styles;
+
+
+/***************************************
+ ***************************************/
+
+void
+fli_init_font( void )
+{
+	size_t i, j;
+	size_t num_families  = sizeof default_families / sizeof *default_families;
+	size_t num_styles = sizeof default_styles / sizeof *default_styles;
+
+	if ( fl_fonts )
+		return;
+
+	fl_fonts = fl_malloc( ( num_families * num_styles ) * sizeof *fl_fonts );
+
+	font_count = 0;
+	for ( i = 0; i < num_families; i++ )
+		for ( j = 0; j < num_styles; j++ )
+		{
+			fl_fonts[ font_count ].index = font_count;
+			fl_fonts[ font_count ].name = fl_strdup( default_families[ i ] );
+		
+			fl_fonts[ font_count ].slant  = default_styles[ j ].slant;
+			fl_fonts[ font_count ].weight = default_styles[ j ].weight;
+			fl_fonts[ font_count ].scale = 1.0;
+
+			fl_fonts[ font_count ].sized_fonts = NULL;
+			fl_fonts[ font_count ].size_count = 0;
+
+			font_count++;
+		}
+}
+
+
+/***************************************
+ * Function returns a pointer to the entry in the font list for
+ * the given index (most often the style), or NULL on failure
+ ***************************************/
+
+FL_FONT *
+fl_get_font_from_index( size_t index )
+{
+	size_t i;
+	size_t num_families  = sizeof default_families / sizeof *default_families;
+	size_t num_styles = sizeof default_styles / sizeof *default_styles;
+
+	if ( index < num_families * num_styles )
+		return fl_fonts + index;
+
+	for ( i = num_families * num_styles; i < font_count; ++i )
+		if ( index == fl_fonts[ i ].index )
+			return fl_fonts + i;
+
+	return NULL;
+}
+
+
+/***************************************
+ ***************************************/
+
+void
+fl_set_global_font_scaling_factor( double factor )
+{
+	if ( factor <= 0 )
+	{
+		M_warn( "fl_set_global_font_scaling_factor", "Invalid scaling factor" );
+		return;
+	}
+
+	global_font_scale = factor;
+}
+
+
+/***************************************
+ ***************************************/
+
+void
+fl_set_font_scaling_factor( int    index,
+						   double factor )
+{
+	FL_FONT * f = fl_get_font_from_index( index );
+
+	if ( ! f )
+	{
+		M_warn( "fl_set_font_scaling_facor", "Invalid font index" );
+		return;
+	}
+
+	if ( factor <= 0 )
+	{
+		M_warn( "fl_set_font_scaling_factor", "Invalid scaling factor" );
+		return;
+	}
+
+	f->scale = factor;
+}
+	
+
+/***************************************
+ * Returns the name of the indexed font
+ ***************************************/
+
+const char *
+fl_get_font_name( int index )
+{
+	FL_FONT * f = fl_get_font_from_index( index );
+
+	return f ? f->name : NULL;
+}
+
+
+/***************************************
+ * Add a new X11 (bitmap) font (indexed by n) or change the existing font
+ * at that index.
+ ***************************************/
+
+int
+fl_set_font_name( int          index,
+                  const char * name )
+{
+	FL_FONT * font;
+	char * full_name;
+
+	if ( ! name || ! *name )
+    {
+        M_warn( "fl_set_font_name", "Missing font name" );
+        return -1;
+    }
+
+    if ( ! flx || ! flx->display )
+	{
+		M_warn( "fl_set_font_name", "Can't load font before initialization" );
+        return 1;
+	}
+
+	if ( ! ( full_name = fli_convert_to_full_xlfd( name ) ) )
+	{
+        M_warn( "fl_set_font_name", "Invalid font name" );
+		return -1;
+	}
+
+	/* Now that we have a tested name we can either replace an existing
+	   font entry or create a new one. */
+
+	if ( ( font = fl_get_font_from_index( index ) ) )
+	{
+		size_t i;
+
+		for ( i = 0; i < font->size_count; i++ )
+			XftFontClose( fl_display, font->sized_fonts[ i ].font );
+
+		fli_safe_free( font->sized_fonts );
+		font->size_count = 0;
+
+		fl_free( font->name );
+
+		font->name = full_name;
+		font->slant = font->weight = -1;
+		font->scale = 1.0;
+	}
+	else
+	{
+		fl_fonts = fl_realloc( fl_fonts,
+							   ( font_count + 1 ) * sizeof *fl_fonts );
+
+		fl_fonts[ font_count ].index       = index;
+		fl_fonts[ font_count ].name        = full_name;
+		fl_fonts[ font_count ].slant       = fl_fonts[ font_count ].weight = -1;
+		fl_fonts[ font_count ].sized_fonts = NULL;
+		fl_fonts[ font_count ].size_count  = 0;
+		fl_fonts[ font_count++ ].scale     = 1.0;
+
+		qsort( fl_fonts, font_count, sizeof *fl_fonts, fli_font_index_compare );
+	}
+
+	return 0;
+}
+
+
+/***************************************
+ * Add a new font or change an existing font.
+ ***************************************/
+
+int
+fl_set_font_name_f( int          index,
+                    const char * fmt,
+                    ... )
+{
+    char *buf;
+    int ret;
+
+    EXPAND_FORMAT_STRING( buf, fmt );
+    ret = fl_set_font_name( index, buf );
+    fl_free( buf );
+    return ret;
+}
+
+
+/***************************************
+ * Add a new True Type (or similar) font (indexed by n) or change the
+ * existing font at that index.
+ ***************************************/
+
+int
+fl_set_ttfont_name( int              index,
+					const char     * name,
+				    FL_FONT_SLANT    slant,
+					FL_FONT_WEIGHT   weight )
+{
+	XftFont * font;
+	FL_FONT *f;
+
+	if ( ! name || ! *name )
+    {
+        M_warn( "fl_set_font_name", "Missing font name" );
+        return -1;
+    }
+
+	if (    slant != FL_SLANT_ROMAN
+		 && slant != FL_SLANT_ITALIC
+		 && slant != FL_SLANT_OBLIQUE )
+	{
+        M_warn( "fl_set_font_name", "Invalid slant for font" );
+        return -1;
+    }
+		
+	if (    weight != FL_WEIGHT_LIGHT
+		 && weight != FL_WEIGHT_MEDIUM
+		 && weight != FL_WEIGHT_DEMIBOLD
+		 && weight != FL_WEIGHT_BOLD
+		 && weight != FL_WEIGHT_BLACK )
+	{
+        M_warn( "fl_set_font_name", "Invalid weigt for font" );
+        return -1;
+    }
+
+    if ( ! flx || ! flx->display )
+	{
+		M_warn( "fl_set_font_name", "Can't load font before initialization" );
+        return 1;
+	}
+
+	font =XftFontOpen( fl_display, fl_screen,
+					   XFT_FAMILY, XftTypeString, name,
+					   XFT_SIZE,   XftTypeDouble,  ( double ) FL_DEFAULT_SIZE,
+					   XFT_SLANT,  XftTypeInteger, slant,
+					   XFT_WEIGHT, XftTypeInteger, weight,
+					   NULL );
+
+	if ( ! font )
+	{
+        M_warn( "fl_set_font_name", "Invalid font name" );
+		return -1;
+	}
+
+	XftFontClose( fl_display, font );
+
+	/* Now that we have a tested name we can either replace an existing
+	   font entry or create a new one. */
+
+	if ( ( f = fl_get_font_from_index( index ) ) )
+	{
+		size_t i;
+
+		for ( i = 0; i < f->size_count; i++ )
+			XftFontClose( fl_display, f->sized_fonts[ i ].font );
+
+		fli_safe_free( f->sized_fonts );
+		f->size_count = 0;
+
+		fl_free( f->name );
+
+		f->name   = fl_strdup( name );
+		f->slant  = slant;
+		f->weight = weight;
+	}
+	else
+	{
+		fl_fonts = fl_realloc( fl_fonts,
+							   ( font_count + 1 ) * sizeof *fl_fonts );
+
+		fl_fonts[ font_count ].index        = index;
+		fl_fonts[ font_count ].name         = fl_strdup( name );
+		fl_fonts[ font_count ].slant        = slant;
+		fl_fonts[ font_count ].weight       = weight;
+		fl_fonts[ font_count ].scale        = 1;
+		fl_fonts[ font_count ].sized_fonts  = NULL;
+		fl_fonts[ font_count++ ].size_count = 0;
+
+		qsort( fl_fonts, font_count, sizeof *fl_fonts, fli_font_index_compare );
+	}
+
+	return 0;
+}
+
+
+/***************************************
+ * List all fonts
+ ***************************************/
+
+int
+fl_enumerate_fonts( void ( * output )( const char *s ),
+                    int  shortform )
+{
+    size_t i;
+	int n;
+
+    for ( n = i = 0; output && i < font_count; i++, n++ )
+	{
+		char * name = shortform
+			          ? fli_cv_fname( fl_fonts + i )
+			          : fl_strdup( fl_fonts[ i ].name );
+		output( name  );
+		fl_free( name );
+	}
+
+    return n;
+}
+
+
+/***************************************
+ ***************************************/
+
+XftFont *
+fl_get_font_stract( int style,
+					int size )
+{
+	FL_FONT *f;
+	size_t i;
+	size_t cnt;
+
+	/* Remove bits for special font styles (shadow, embossed, engraved) */
+
+	style %= FL_SHADOW_STYLE;
+
+	/* Style must be non-negative and in the list of indices */
+
+	if ( style < 0 || ! ( f = fl_get_font_from_index( style ) ) )
+	{
+		M_err( "fl_get_font_strauct", "Invalid style argument" );
+		return NULL;
+	}
+
+	/* Size must be positive */
+
+    if ( size <= 0 )
+    {
+        M_info( "fl_get_font_struct", "Invalid size argument" );
+		return NULL;
+	}
+ 
+	/* If font is already loaded return it directly */
+
+	for ( i = 0; i < f->size_count; i++ )
+		if ( f->sized_fonts[ i ].size == size )
+			return f->sized_fonts[ i ].font;
+
+	cnt = f->size_count;
+
+	/* Increase the length of the list for loaded fonts */
+
+	f->sized_fonts = realloc( f->sized_fonts,
+							  ( cnt + 1 ) * sizeof *f->sized_fonts );
+
+	/* This is a normal Xft font if its slant (and weight) are non-negative,
+	   so load it with XftFontOpen(). Otherwise it's an X11 font and we need
+	   to insert the size into the name and load it using XftFontOpenXlfd()
+	   (woch possibly could fail!) */
+
+	if ( f->slant != -1 )
+		f->sized_fonts[ cnt ].font =
+			XftFontOpen( fl_display, fl_screen,
+						 XFT_FAMILY, XftTypeString, f->name,
+						 XFT_SIZE,   XftTypeDouble,
+						 global_font_scale * f->scale * size,
+						 XFT_SLANT,  XftTypeInteger, f->slant,
+						 XFT_WEIGHT, XftTypeInteger, f->weight,
+						 NULL );
+	else
+	{
+		char * name = fli_get_fname( f, size );
+
+		f->sized_fonts[ cnt ].font = XftFontOpenXlfd( fl_display, fl_screen,
+													  name );
+		fl_free( name );
+
+		if ( ! f->sized_fonts[ cnt ].font )
+		{
+			f->sized_fonts = realloc( f->sized_fonts,
+									  cnt * sizeof *f->sized_fonts );
+			return NULL;
+		}
+	}
+
+	f->sized_fonts[ cnt ].size = size;
+
+	return f->sized_fonts[ f->size_count++ ].font;
+}
+
+
+/***************************************
+ * Make a certain font the current one.
+ ***************************************/
+
+void
+fl_set_font( int index,
+             int size )
+{
+	XftFont * f;
+
+    f = fl_get_font_struct( index, size );
+
+	if ( ! f )
+	{
+		M_warn( "fl_set_font", "Invalid index, using replacement font" );
+		f = fl_get_font_struct( index & FL_BOLDITALIC_STYLE, size );
+	}
+
+    /* cur_font is always the one in current GC */
+
+    if ( fl_state[ fl_vmode ].cur_fnt == f )
+        return;
+
+    fl_state[ fl_vmode ].cur_fnt = flx->fs = f;
+
+    /* Basic font info (no need to send a string, we just want the maximum
+       ascent and descent) */
+
+    flx->fheight = f->height;
+	flx->fasc    = f->ascent;
+	flx->fdesc   = f->descent;
+}
+
+
+/***************************************
+ ***************************************/
+
+int
+fl_get_string_width( int          style,
+                     int          size,
+                     const char * s,
+                     int          len )
+{
+	XftFont * f = fli_get_font_struct( style, size );
+
+	return f ? fli_get_string_width( f, s, len ) : 0;
+}
+
+
+/***************************************
+ ***************************************/
+
+int
+fl_get_string_widthTAB( int          style,
+                        int          size,
+                        const char * s,
+                        int          len )
+{
+	XftFont * f = fli_get_font_struct( style, size );
+
+    return f ? fli_get_string_widthTABfs( f, s, len ) : 0;
+}
+
+
+/***************************************
+ * Function returns the height of the string, calculated from adding the
+ * largest ascent and descent of all its characters in the string, via 'asc'
+ * and 'desc' (but which both can be NULL pointers), the maximum ascent
+ * and descent.
+ ***************************************/
+
+int
+fl_get_string_height( int          style,
+                      int          size,
+                      const char * s      FL_UNUSED_ARG,
+                      int          len    FL_UNUSED_ARG,
+                      int *        asc,
+                      int *        desc )
+{
+	XftFont * f = fli_get_font_struct( style, size );
+
+	if ( ! f )
+		return 0;
+
+    if ( asc )
+        *asc = f->ascent;
+    if ( desc )
+        *desc = f->descent;
+
+    return f->height;
+}
+
+
+/***************************************
+ * Returns the width of a string when rendered using the current
+ * default font
+ ***************************************/
+
+int
+fli_get_text_width( const char * str,
+                    size_t       len )
+{
+    return fli_get_string_width( flx->fs, str, len );
+}
+
+
+/***************************************
+ * Returns font height and, via 'asc' and 'desc' (but which both can be NULL
+ * pointers), the fonts ascent and descent.
+ ***************************************/
+
+int
+fl_get_char_height( int   style,
+                    int   size,
+                    int * asc,
+                    int * desc )
+{
+	XftFont * f = fli_get_font_struct( style, size );
+
+	if ( ! f )
+		return 0;
+
+    if ( asc )
+        *asc = f->ascent;
+    if ( desc )
+        *desc = f->descent;
+
+    return f->height;
+}
+
+
+/***************************************
+ * Function returns the width of the widest character in the requested font
+ ***************************************/
+
+int
+fl_get_char_width( int style,
+                   int size )
+{
+	XftFont * f = fli_get_font_struct( style, size );
+
+	return f ? f->max_advance_width : 0;
+}
+
+
+/***************************************
+ ***************************************/
+
+void
+fl_get_string_dimension( int          style,
+                         int          size,
+                         const char * s,
+                         int          len,
+                         int *        width,
+                         int *        height )
+{
+    const char *p,
+               *q;
+    int h,
+        maxw = 0,
+        maxh = 0;
+	XftFont * f = fli_get_font_struct( style, size );
+
+	if ( f )
+	{
+		h = f->height;
+		
+		for ( q = s; *q && ( p = strchr( q, '\n' ) ); q = p + 1 )
+		{
+			maxw = FL_max( maxw,
+						   fli_get_string_width( f, q, p - q ) );
+			maxh += h;
+		}
+
+		maxw = FL_max( maxw, fli_get_string_width( f, q, len - ( q - s ) ) );
+		maxh += h;
+
+		*width  = maxw;
+		*height = maxh;
+	}
+	else
+	{
+		*width  = 0;
+		*height = 0;
+	}
+}
+
+
+/***************************************
+ ***************************************/
+
+static char * tabstop = "aaaaaaa ";
+static size_t tabstopNchar = 8;
+
+void
+fl_set_tabstop( const char * s )
+{
+    static int set;
+
+    if ( s )
+    {
+        if ( set )
+            fl_free( tabstop );
+        tabstop = fl_strdup( s );
+        tabstopNchar = strlen( tabstop );
+        set = 1;
+    }
+}
+
+
+/***************************************
+ ***************************************/
+
+int
+fli_get_tabpixels( XftFont * f )
+{
+	if ( ! f )
+	{
+		M_warn( "fli_get_tabpixels", "NULL font argument" );
+		return 0;
+	}
+
+    return fli_get_string_width( f, tabstop, tabstopNchar );
+}
+
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * indent-tabs-mode: nil
+ * End:
+ */

@@ -238,6 +238,7 @@ if test x$enable_warnings = xyes ; then
 fi
 
 ### We might want to disable debug
+
 AC_ARG_ENABLE(debug,
   [  --enable-debug          enable debug information],,
   [ if test $xforms_devel_version = yes && test $ac_cv_c_compiler_gnu = yes ; then
