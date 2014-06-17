@@ -213,7 +213,7 @@ mode2type( unsigned int   mode,
     if ( S_ISDIR( mode ) )
         *type = FT_DIR;
     else if ( S_ISREG( mode ) )
-        *type = FT_FILE;
+        *type = FT_REG;
     else if ( S_ISLNK( mode ) )
         *type = FT_LINK;
     else if ( S_ISSOCK(mode ) )
@@ -289,7 +289,7 @@ fselect( struct _finddata_t * c_file,
     if ( c_file->attrib & _A_SUBDIR )
         type = FT_DIR;
     else
-        type = FT_FILE;
+        type = FT_REG;
 
     if ( ! ffilter )
         ret = 1;
@@ -1018,7 +1018,7 @@ static int
 default_filter( const char * name  FL_UNUSED_ARG,
                 int          type )
 {
-    return type == FT_FILE || type == FT_DIR || type == FT_LINK;
+    return type == FT_REG || type == FT_DIR || type == FT_LINK;
 }
 
 

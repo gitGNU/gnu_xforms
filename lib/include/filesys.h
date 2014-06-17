@@ -24,14 +24,14 @@
 /*  File types */
 
 enum {
-    xxxxxxxxFT_FILE,
-    xxxxxxxxFT_DIR,
-    xxxxxxxxFT_LINK,
-    xxxxxxxxFT_SOCK,
-    xxxxxxxxFT_FIFO,
-    xxxxxxxxFT_BLK,
-    xxxxxxxxFT_CHR,
-    xxxxxxxxFT_OTHER
+    FT_REG,
+    FT_DIR,
+    FT_LINK,
+    FT_SOCK,
+    FT_FIFO,
+    FT_BLK,
+    FT_CHR,
+    FT_OTHER
 };
 
 typedef struct {

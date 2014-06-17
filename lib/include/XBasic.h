@@ -97,7 +97,12 @@ typedef struct {
     int             dithered;           /* true if dithered color */
     int             pcm;                /* true if colormap is not shared */
     GC              gc;                 /* working GC */
+#if defined ENABLE_XFT
+	XftDraw       * textdraw;           /* for drawing texts */
+	XftDraw       * bgdraw;             /* for drawing background of text */
+#else
     GC              textgc;             /* GC used exclusively for text */
+#endif
     GC              dimmedGC;           /* A GC having a checkboard stipple */
     unsigned long   lut[ FL_MAX_COLS ]; /* secondary lookup table */
     unsigned int    rshift,

@@ -431,6 +431,21 @@ fl_get_font_struct( int style,
  ***************************************/
 
 int
+fli_get_string_width( XftFont    * fs,
+                      const char * s,
+                      int          len )
+{
+    return XTextWidth( fs, s, len );
+}
+
+
+/***************************************
+ * Similar to fl_get_string_xxxGC except that there is no side effects.
+ * Must not free the fontstruct as structure FL_FONT caches the
+ * structure for possible future use.
+ ***************************************/
+
+int
 fl_get_string_width( int          style,
                      int          size,
                      const char * s,
@@ -438,7 +453,8 @@ fl_get_string_width( int          style,
 {
     XFontStruct *fs = fl_get_font_struct( style, size );
 
-    return fli_no_connection ? ( len * size ) : XTextWidth( fs, s, len );
+    return fli_no_connection ?
+           ( len * size ) : fli_get_string_width( fs, s, len );
 }
 
 

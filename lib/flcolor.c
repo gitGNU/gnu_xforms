@@ -740,7 +740,18 @@ fli_create_gc( Window win )
         XSetGraphicsExposures( flx->display, flx->gc, 0 );
     }
 
-#if ! defined ENABLE_XFT
+#if defined ENABLE_XFT
+    if ( ! ( flx->textdraw = fl_state[ fl_vmode ].textdraw ) )
+        flx->textdraw = XftDrawCreate( flx->display,
+                                       win,
+                                       fl_state[ fl_vmode ].xvinfo->visual,
+                                       fl_state[ fl_vmode ].colormap );
+
+    if ( ! ( flx->bgdraw = fl_state[ fl_vmode ].bgdraw ) )
+        flx->bgdraw = XftDrawCreate( flx->display, win,
+                                     fl_state[ fl_vmode ].xvinfo->visual,
+                                     fl_state[ fl_vmode ].colormap );
+#else
     flx->textgc = fl_state[ fl_vmode ].textgc;
 
     if ( ! flx->textgc )
@@ -923,8 +934,8 @@ fli_free_colormap( int vmode )
 
 
 static unsigned long
-get_rgb_pixel( FL_COLOR packed,
-               int *    newpix );
+get_rgb_pixel( FL_COLOR   packed,
+               int      * newpix );
 
 
 /***************************************
@@ -1078,11 +1089,26 @@ void
 fli_textcolor( FL_COLOR col )
 {
 #if defined ENABLE_XFT
-    flx->textcolor = col;
+    static FL_COLOR last_allocated = ULONG_MAX;
+    XRenderColor xrcol;
+
+    if ( col != last_allocated )
+    {
+        if ( last_allocated != ULONG_MAX )
+            XftColorFree( flx->display,
+                          fl_state[ fl_vmode ].xvinfo->visual,
+                          fl_state[ fl_vmode ].colormap,
+                          &flx->textcolor );
+
+
+        fli_get_xrender_color( col, &xrcol );
+        XftColorAllocValue( flx->display,
+                            fl_state[ fl_vmode ].xvinfo->visual,
+                            fl_state[ fl_vmode ].colormap,
+                            &xrcol, &flx->textcolor );
+    }
 #else
     static int vmode = -1;
-
-
     static GC textgc;
 
     if (    flx->textcolor != col
@@ -1389,7 +1415,7 @@ fl_get_icm_color( FL_COLOR col,
 
 
 /***************************************
- * query real colormap. r,g,b returned is the current color used
+ * Query real colormap. r,g,b returned is the current color used
  ***************************************/
 
 unsigned long
@@ -1414,6 +1440,35 @@ fl_getmcolor( FL_COLOR i,
 
     return exact.pixel;
 }
+
+
+/***************************************
+ * Query real colormap. Returns this as a XRenderColor
+ ***************************************/
+
+#if defined ENABLE_XFT
+unsigned long
+fli_get_xrendercolor( FL_COLOR       i,
+                      XRenderColor * xrc )
+{
+    XColor exact;
+
+    if ( ( exact.pixel = fl_get_pixel( i ) ) >= max_server_cols )
+    {
+        xrc->red = xrc->green = xrc->blue = 0;
+        return ( unsigned long ) -1;
+    }
+
+    XQueryColor( flx->display, fli_map( fl_vmode ), &exact );
+
+    xrc->red   = exact.red   & 0xffff;
+    xrc->green = exact.green & 0xffff;
+    xrc->blue  = exact.blue  & 0xffff;
+    xrc->alpha = 0;
+
+    return exact.pixel;
+}
+#endif
 
 
 /*** End of Colormap routines  *******}***************/
@@ -1521,8 +1576,8 @@ rgb2pixel( unsigned int r,
     FL_State *s = fl_state + fl_vmode;
 
     /* This one drops bits and looks bad if primary color resolution is less
-       than 6, but server calculates color this way. A better way  should be
-       r = ((float) r * ((1L << s->rbits) - 1) / 255.0 + 0.1); */
+       than 6, but the server calculates color this way. A better way should
+       be    r = ((float) r * ((1L << s->rbits) - 1) / 255.0 + 0.1); */
 
     if ( s->rbits < 8 )
     {

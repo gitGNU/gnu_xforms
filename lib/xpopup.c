@@ -139,10 +139,18 @@ static int pup_bw_is_set = 0;
 
 static PopUP *menu_rec = NULL;
 
+#if defined ENABLE_XFT
+static XftFont *pup_font_struct = NULL;        /* popup main text font */
+#else
 static XFontStruct *pup_font_struct = NULL;        /* popup main text font */
+#endif
 static int pup_ascent = 0,                         /* font properties */
            pup_desc = 0;
+#if defined ENABLE_XFT
+static XftFont *pup_title_font_struct = NULL;  /* popup title text font */
+#else
 static XFontStruct *pup_title_font_struct = NULL;  /* popup title text font */
+#endif
 static int pup_title_ascent = 0,
            pup_title_desc   = 0;
 static Cursor pup_defcursor = 0;
@@ -161,22 +169,34 @@ static int pup_internal_showpup_call = 0;
 static void
 init_pupfont( void )
 {
+#if ! defined ENABLE_XFT        
     XCharStruct chs;
     int junk;
+#endif
 
     if ( ! pup_title_font_struct )
     {
         pup_title_font_struct = fl_get_fntstruct( pup_title_font_style,
                                                   pup_title_font_size );
+#if defined ENABLE_XFT        
+        pup_title_ascent = pup_title_font_struct->ascent;
+        pup_title_desc   = pup_title_font_struct->descent;
+#else
         XTextExtents( pup_title_font_struct, "qjQb", 4, &junk,
                       &pup_title_ascent, &pup_title_desc, &chs );
+#endif
     }
 
     if ( ! pup_font_struct )
     {
         pup_font_struct = fl_get_fntstruct( pup_font_style, pup_font_size );
+#if defined ENABLE_XFT        
+        pup_ascent = pup_font_struct->ascent;
+        pup_desc   = pup_font_struct->descent;
+#else
         XTextExtents( pup_font_struct, "qjQb", 4, &junk, &pup_ascent,
                       &pup_desc, &chs );
+#endif
     }
 }
 
@@ -274,7 +294,8 @@ reset_max_width( PopUP * m )
         b = t = fl_strdup( m->title );
         while ( ( b = strchr( b, '\b' ) ) )
             memmove( b, b + 1, strlen( b ) );
-        m->title_width = XTextWidth( pup_title_font_struct, t, strlen( t ) );
+        m->title_width = fli_get_string_width( pup_title_font_struct,
+                                               t, strlen( t ) );
         fl_free( t );
     }
     else
@@ -479,8 +500,8 @@ parse_entry( int          n,
             b = t = fl_strdup( c );
             while ( ( b = strchr( b, '\b' ) ) )
                 memmove( b, b + 1, strlen( b ) );
-            m->title_width = XTextWidth( pup_title_font_struct,
-                                         t, strlen( t ) );
+            m->title_width = fli_get_string_width( pup_title_font_struct,
+                                                   t, strlen( t ) );
             fl_free( t );
             fl_free( item );
             m->item[ m->nitems ] = NULL;
@@ -497,9 +518,8 @@ parse_entry( int          n,
             while ( ( b = strchr( b, '\b' ) ) )
                 memmove( b, b + 1, strlen( b ) );
             m->maxw = FL_max( m->maxw,
-                              fl_get_string_widthTAB( pup_font_style,
-                                                      pup_font_size,
-                                                      t, strlen( t ) ) );
+                              fli_get_string_widthTABfs( pup_font_struct,
+                                                         t, strlen( t ) ) );
             fl_free( t );
             m->nitems++;
         }
@@ -1579,7 +1599,8 @@ fl_setpup_title( int          nm,
     b = t = fl_strdup( title ? title : "" );
     while ( ( b = strchr( b, '\b' ) ) )
         memmove( b, b + 1, strlen( b ) );
-    m->title_width = XTextWidth( pup_title_font_struct, t, strlen( t ) );
+    m->title_width = fli_get_string_width( pup_title_font_struct,
+                                           t, strlen( t ) );
     fl_free( t );
 }
 
@@ -1885,16 +1906,45 @@ draw_title( Display  * d,
 
     fl_set_font( pup_title_font_style, pup_title_font_size );
     fli_textcolor( pup_text_color );
+#if defined ENABLE_XFT
+    d = d;
+
+    XftDrawChange( flx->textdraw, w );
+
+    XftDrawString8( flx->textdraw, &flx->textcolor, flx->fs, x - 1, y - 1,
+                    ( XftChar8 const * ) t, n );
+    XftDrawString8( flx->textdraw, &flx->textcolor, flx->fs, x,     y - 1,
+                    ( XftChar8 const * ) t, n );
+    XftDrawString8( flx->textdraw, &flx->textcolor, flx->fs, x + 1, y - 1,
+                    ( XftChar8 const * ) t, n );
+    XftDrawString8( flx->textdraw, &flx->textcolor, flx->fs, x - 1, y,
+                    ( XftChar8 const * ) t, n );
+    XftDrawString8( flx->textdraw, &flx->textcolor, flx->fs, x + 1, y,
+                    ( XftChar8 const * ) t, n );
+    XftDrawString8( flx->textdraw, &flx->textcolor, flx->fs, x - 1, y + 1,
+                    ( XftChar8 const * ) t, n );
+    XftDrawString8( flx->textdraw, &flx->textcolor, flx->fs, x, y + 1,
+                    ( XftChar8 const * ) t, n );
+    XftDrawString8( flx->textdraw, &flx->textcolor, flx->fs, x + 1, y + 1,
+                    ( XftChar8 const * ) t, n );
+#else
     XDrawString( d, w, flx->textgc, x - 1, y - 1, t, n );
-    XDrawString( d, w, flx->textgc, x, y - 1, t, n );
+    XDrawString( d, w, flx->textgc, x,     y - 1, t, n );
     XDrawString( d, w, flx->textgc, x + 1, y - 1, t, n );
-    XDrawString( d, w, flx->textgc, x - 1, y, t, n );
-    XDrawString( d, w, flx->textgc, x + 1, y, t, n );
+    XDrawString( d, w, flx->textgc, x - 1, y,     t, n );
+    XDrawString( d, w, flx->textgc, x + 1, y,     t, n );
     XDrawString( d, w, flx->textgc, x - 1, y + 1, t, n );
-    XDrawString( d, w, flx->textgc, x, y + 1, t, n );
+    XDrawString( d, w, flx->textgc, x, y + 1,     t, n );
     XDrawString( d, w, flx->textgc, x + 1, y + 1, t, n );
+#endif
+
     fli_textcolor( FL_WHITE );
+#if defined ENABLE_XFT
+    XftDrawString8( flx->textdraw, &flx->textcolor, flx->fs, x, y,
+                    ( XftChar8 const * ) t, n );
+#else
     XDrawString( d, w, flx->textgc, x, y, t, n );
+#endif
 
     fl_free( t );
 }

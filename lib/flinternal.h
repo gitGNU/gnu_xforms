@@ -385,7 +385,12 @@ void fli_check_key_focus( const char *,
 
 void fli_free_cmdline_args( void );
 
-FL_RECT * fli_get_underline_rect( XFontStruct *,
+FL_RECT * fli_get_underline_rect(
+#if defined ENABLE_XFT
+                                  XftFont     *,
+#else
+                                  XFontStruct *,
+#endif
                                   FL_Coord,
                                   FL_Coord,
                                   const char *,
@@ -554,7 +559,7 @@ typedef struct fli_context_ {
                          vscb;              /* default scrollbar      */
     long                 ext_request_size;  /* extended request size  */
     int                  tooltip_time;
-#ifdef XlibSpecificationRelease
+#if defined XlibSpecificationRelease
     XIM                  xim;               /* input method           */
     XIC                  xic;               /* input context          */
 #else
@@ -572,7 +577,10 @@ typedef struct {
     Display       * display;
     Window          win;
     GC              gc;
-#if ! defined ENABLE_XFT
+#if defined ENABLE_XFT
+    XftDraw       * textdraw;
+    XftDraw       * bgdraw;
+#else
     GC              textgc;
 #endif
     int             isRGBColor;
@@ -584,11 +592,12 @@ typedef struct {
     Colormap        colormap;
 #if defined ENABLE_XFT
     XftFont       * fs;
+    XftColor        textcolor;
 #else
     XFontStruct   * fs;
+    unsigned long   textcolor;      /* last textcolor. cache */
 #endif
     unsigned long   color;          /* last color. cache     */
-    unsigned long   textcolor;      /* last textcolor. cache */
     unsigned long   bkcolor;
     int             screen;
 } FLI_TARGET;
@@ -1131,12 +1140,16 @@ XftFont * fli_get_font_struct( int style,
 
 char * fli_cv_fname( const FL_FONT * f );
 
+unsigned long fli_get_xrendercolor( FL_COLOR       i,
+                                    XRenderColor * xrd );
 #else
+int fli_get_string_width( XFontStruct * f,
+                          const char  * s,
+                          int           len );
 
 int fli_get_string_widthTABfs( XFontStruct *,
                                const char *,
                                int );
-
 #endif
 
 

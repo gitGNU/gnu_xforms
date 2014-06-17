@@ -693,18 +693,18 @@ fl_dashedlinestyle( const char * dash,
  */
  
 enum {
-    FLI_GLOBAL_CLIP = 0,
-    FLI_NORMAL_CLIP = 1,
-    FLI_TEXT_CLIP   = 2,
-    FLI_GC_CLIP     = 3
+    GLOBAL_CLIP = 0,
+    NORMAL_CLIP = 1,
+    TEXT_CLIP   = 2,
+    GC_CLIP     = 3
 };
 
 
-static int fli_is_clipped[ ] = { 0, 0, 0, 0 };
-static FL_RECT fli_clip_rect[ ] = { { 0, 0, 0, 0 },
-                                    { 0, 0, 0, 0 },
-                                    { 0, 0, 0, 0 },
-                                    { 0, 0, 0, 0 } };
+static int clipped_flags[ ] = { 0, 0, 0, 0 };
+static FL_RECT clip_rect[ ] = { { 0, 0, 0, 0 },
+                                { 0, 0, 0, 0 },
+                                { 0, 0, 0, 0 },
+                                { 0, 0, 0, 0 } };
 
 
 #define SET_RECT( t, a, b, c, d )  \
@@ -725,6 +725,14 @@ static FL_RECT fli_clip_rect[ ] = { { 0, 0, 0, 0 },
    } while ( 0 )
 
 
+#define RECT_AS_POLYGON( r )                                               \
+      { { ( r )->x,                    ( r )->y                     },    \
+        { ( r )->x + ( r )->width - 1, ( r )->y                     },    \
+        { ( r )->x + ( r )->width - 1, ( r )->y + ( r )->height - 1 },    \
+        { ( r )->x,                    ( r )->y + ( r )->height - 1 } }
+
+
+
 /***************************************
  * Returns if global clipping is switched on - in which case
  * the region for global clipping can be obtained via a call
@@ -734,7 +742,7 @@ static FL_RECT fli_clip_rect[ ] = { { 0, 0, 0, 0 },
 int
 fl_is_global_clipped( void )
 {
-    return fli_is_clipped[ FLI_GLOBAL_CLIP ];
+    return clipped_flags[ GLOBAL_CLIP ];
 }
 
 
@@ -748,8 +756,8 @@ static int
 is_clipped( int type,
             int include_global )
 {
-    return    fli_is_clipped[ type ]
-           || ( include_global && fli_is_clipped[ FLI_GLOBAL_CLIP ] );
+    return    clipped_flags[ type ]
+           || ( include_global && clipped_flags[ GLOBAL_CLIP ] );
 }
 
 
@@ -776,16 +784,16 @@ fli_set_global_clipping( FL_Coord x,
         return;
     }
 
-    SET_RECT( fli_clip_rect[ FLI_GLOBAL_CLIP ], x, y, w, h );
+    SET_RECT( clip_rect[ GLOBAL_CLIP ], x, y, w, h );
 
     /* If normal clipping is already on intersect the new global and the
        normal clip area and set clipping to the result. If normal clipping
        is off just use the rectangle specified by the arguments. */
 
-    if ( fli_is_clipped[ FLI_NORMAL_CLIP ] )
+    if ( clipped_flags[ NORMAL_CLIP ] )
     {
-        FL_RECT * r = fli_intersect_rects( fli_clip_rect + FLI_GLOBAL_CLIP,
-                                           fli_clip_rect + FLI_NORMAL_CLIP );
+        FL_RECT * r = fli_intersect_rects( clip_rect + GLOBAL_CLIP,
+                                           clip_rect + NORMAL_CLIP );
         
         if ( r )
         {
@@ -801,34 +809,54 @@ fli_set_global_clipping( FL_Coord x,
     }
     else
         XSetClipRectangles( flx->display, flx->gc, 0, 0,
-                            &fli_clip_rect[ FLI_GLOBAL_CLIP ], 1, Unsorted );
+                            &clip_rect[ GLOBAL_CLIP ], 1, Unsorted );
 
     /* The same again for text clipping */
 
-    if ( fli_is_clipped[ FLI_TEXT_CLIP ] )
+    if ( clipped_flags[ TEXT_CLIP ] )
     {
-        FL_RECT * r = fli_intersect_rects( fli_clip_rect + FLI_GLOBAL_CLIP,
-                                           fli_clip_rect + FLI_TEXT_CLIP );
+        FL_RECT * r = fli_intersect_rects( clip_rect + GLOBAL_CLIP,
+                                           clip_rect + TEXT_CLIP );
 
         if ( r )
         {
+#if defined ENABLE_XFT
+            XftDrawSetClipRectangles( flx->textdraw, 0, 0, r, 1 );
+            XftDrawSetClipRectangles( flx->bgdraw, 0, 0, r, 1 );
+#else
             XSetClipRectangles( flx->display, flx->textgc, 0, 0, r, 1,
                                 Unsorted );
+#endif
             fli_safe_free( r );
         }
         else
         {
             FL_RECT n = { 0, 0, 0, 0 };
 
+#if defined ENABLE_XFT
+            XftDrawSetClipRectangles( flx->textdraw, 0, 0, &n, 1 );
+            XftDrawSetClipRectangles( flx->bgdraw, 0, 0, &n, 1 );
+#else
+
             XSetClipRectangles( flx->display, flx->textgc, 0, 0, &n, 1,
                                 Unsorted );
+#endif
         }
     }
     else
+    {
+#if defined ENABLE_XFT
+        XftDrawSetClipRectangles( flx->textdraw, 0, 0,
+                                  clip_rect + GLOBAL_CLIP, 1 );
+        XftDrawSetClipRectangles( flx->bgdraw, 0, 0,
+                                  clip_rect + GLOBAL_CLIP, 1 );
+#else
         XSetClipRectangles( flx->display, flx->textgc, 0, 0,
-                            fli_clip_rect + FLI_GLOBAL_CLIP, 1, Unsorted );
+                            clip_rect + GLOBAL_CLIP, 1, Unsorted );
+#endif
+    }
 
-    fli_is_clipped[ FLI_GLOBAL_CLIP ] = 1;
+    clipped_flags[ GLOBAL_CLIP ] = 1;
 }
 
 
@@ -839,29 +867,47 @@ fli_set_global_clipping( FL_Coord x,
 void
 fli_unset_global_clipping( void )
 {
-    if ( ! fli_is_clipped[ FLI_GLOBAL_CLIP ] )
+    if ( ! clipped_flags[ GLOBAL_CLIP ] )
         return;
 
-    SET_RECT( fli_clip_rect[ FLI_GLOBAL_CLIP ], 0, 0, 0, 0 );
+    SET_RECT( clip_rect[ GLOBAL_CLIP ], 0, 0, 0, 0 );
 
     /* If normal clipping is also on set the clipping rectangle to that set
        for normal clipping, otherwise switch clipping off completely. */
 
-    if ( fli_is_clipped[ FLI_NORMAL_CLIP ] )
+    if ( clipped_flags[ NORMAL_CLIP ] )
         XSetClipRectangles( flx->display, flx->gc, 0, 0,
-                            fli_clip_rect + FLI_NORMAL_CLIP, 1, Unsorted );
+                            clip_rect + NORMAL_CLIP, 1, Unsorted );
     else
         XSetClipMask( flx->display, flx->gc, None );
 
     /* Same for text clipping */
 
-    if ( fli_is_clipped[ FLI_TEXT_CLIP ] )
+    if ( clipped_flags[ TEXT_CLIP ] )
+    {
+#if defined ENABLE_XFT
+        XftDrawSetClipRectangles( flx->textdraw, 0, 0,
+                                  clip_rect + TEXT_CLIP, 1 );
+        XftDrawSetClipRectangles( flx->bgdraw, 0, 0,
+                                  clip_rect + TEXT_CLIP, 1 );
+#else
         XSetClipRectangles( flx->display, flx->textgc, 0, 0,
-                            fli_clip_rect + FLI_TEXT_CLIP, 1, Unsorted );
+                            clip_rect + TEXT_CLIP, 1, Unsorted );
+#endif
+    }
     else
-        XSetClipMask( flx->display, flx->textgc, None );
+    {
+#if defined ENABLE_XFT
+        XRectangle r = { 0, 0, SHRT_MAX, SHRT_MAX };
 
-    fli_is_clipped[ FLI_GLOBAL_CLIP ] = 0;
+        XftDrawSetClipRectangles( flx->textdraw, 0, 0, &r, 1 );
+        XftDrawSetClipRectangles( flx->bgdraw, 0, 0, &r, 1 );
+#else
+        XSetClipMask( flx->display, flx->textgc, None );
+#endif
+    }
+
+    clipped_flags[ GLOBAL_CLIP ] = 0;
 }
 
 
@@ -873,7 +919,7 @@ fli_unset_global_clipping( void )
 FL_RECT *
 fli_get_global_clip_rect( void )
 {
-    return fli_clip_rect + FLI_GLOBAL_CLIP;
+    return clip_rect + GLOBAL_CLIP;
 }
 
 
@@ -888,8 +934,8 @@ fl_get_global_clipping( FL_Coord * x,
                         FL_Coord * w,
                         FL_Coord * h )
 {
-    GET_RECT( fli_clip_rect[ FLI_GLOBAL_CLIP ], x, y, w, h );
-    return fli_is_clipped[ FLI_GLOBAL_CLIP ];
+    GET_RECT( clip_rect[ GLOBAL_CLIP ], x, y, w, h );
+    return clipped_flags[ GLOBAL_CLIP ];
 }
 
 
@@ -902,18 +948,18 @@ static void
 unset_clipping( int type,
                 GC  gc )
 {
-    if ( ! fli_is_clipped[ type ] )
+    if ( ! clipped_flags[ type ] )
         return;
 
-    SET_RECT( fli_clip_rect[ type ], 0, 0, 0, 0 );
+    SET_RECT( clip_rect[ type ], 0, 0, 0, 0 );
 
-    if ( fli_is_clipped[ FLI_GLOBAL_CLIP ] )
+    if ( clipped_flags[ GLOBAL_CLIP ] )
         XSetClipRectangles( flx->display, gc, 0, 0,
-                            fli_clip_rect + FLI_GLOBAL_CLIP, 1, Unsorted );
+                            clip_rect + GLOBAL_CLIP, 1, Unsorted );
     else
         XSetClipMask( flx->display, gc, None );
 
-    fli_is_clipped[ type ] = 0;
+    clipped_flags[ type ] = 0;
 }
 
 
@@ -939,12 +985,12 @@ set_clipping( int      type,
         return;
     }
 
-    SET_RECT( fli_clip_rect[ type ], x, y, w, h );
+    SET_RECT( clip_rect[ type ], x, y, w, h );
 
-    if ( fli_is_clipped[ FLI_GLOBAL_CLIP ] )
+    if ( clipped_flags[ GLOBAL_CLIP ] )
     {
-        FL_RECT * r = fli_intersect_rects( fli_clip_rect + FLI_GLOBAL_CLIP,
-                                           fli_clip_rect + type );
+        FL_RECT * r = fli_intersect_rects( clip_rect + GLOBAL_CLIP,
+                                           clip_rect + type );
         
         if ( r )
         {
@@ -959,10 +1005,10 @@ set_clipping( int      type,
         }
     }
     else
-        XSetClipRectangles( flx->display, gc, 0, 0, &fli_clip_rect[ type ],
+        XSetClipRectangles( flx->display, gc, 0, 0, &clip_rect[ type ],
                             1, Unsorted );
 
-    fli_is_clipped[ type ] = 1;
+    clipped_flags[ type ] = 1;
 }
 
 
@@ -984,16 +1030,16 @@ get_clipping( int        type,
               FL_Coord * w,
               FL_Coord * h )
 {
-    if (    ! ( include_global && fli_is_clipped[ FLI_GLOBAL_CLIP ] )
-         && fli_is_clipped[ type ] )
-        GET_RECT( fli_clip_rect[ type ], x, y, w, h );
-    else if ( include_global && fli_is_clipped[ FLI_GLOBAL_CLIP ] )
+    if (    ! ( include_global && clipped_flags[ GLOBAL_CLIP ] )
+         && clipped_flags[ type ] )
+        GET_RECT( clip_rect[ type ], x, y, w, h );
+    else if ( include_global && clipped_flags[ GLOBAL_CLIP ] )
     {
-        if ( fli_is_clipped[ type ] )
+        if ( clipped_flags[ type ] )
         {
             FL_RECT * r =
-                fli_intersect_rects( fli_clip_rect + FLI_GLOBAL_CLIP,
-                                     fli_clip_rect + type );
+                fli_intersect_rects( clip_rect + GLOBAL_CLIP,
+                                     clip_rect + type );
             
             if ( r )
             {
@@ -1002,7 +1048,7 @@ get_clipping( int        type,
             }
         }
         else
-            GET_RECT( fli_clip_rect[ FLI_GLOBAL_CLIP ], x, y, w, h );
+            GET_RECT( clip_rect[ GLOBAL_CLIP ], x, y, w, h );
     }
 
     return is_clipped( type, include_global );
@@ -1019,7 +1065,7 @@ get_clipping( int        type,
 int
 fl_is_clipped( int include_global )
 {
-    return is_clipped( FLI_NORMAL_CLIP, include_global );
+    return is_clipped( NORMAL_CLIP, include_global );
 }
 
 
@@ -1036,7 +1082,7 @@ fl_set_clipping( FL_Coord x,
                  FL_Coord w,
                  FL_Coord h )
 {
-    set_clipping( FLI_NORMAL_CLIP, flx->gc, x, y, w, h );
+    set_clipping( NORMAL_CLIP, flx->gc, x, y, w, h );
 }
 
 
@@ -1048,7 +1094,7 @@ fl_set_clipping( FL_Coord x,
 void
 fl_unset_clipping( void )
 {
-    unset_clipping( FLI_NORMAL_CLIP, flx->gc );
+    unset_clipping( NORMAL_CLIP, flx->gc );
 }
 
 
@@ -1068,7 +1114,7 @@ fl_get_clipping( int        include_global,
                  FL_Coord * w,
                  FL_Coord * h )
 {
-    return get_clipping( FLI_NORMAL_CLIP, include_global, x, y, w, h );
+    return get_clipping( NORMAL_CLIP, include_global, x, y, w, h );
 }
 
 
@@ -1082,7 +1128,7 @@ fl_get_clipping( int        include_global,
 int
 fl_is_text_clipped( int include_global )
 {
-    return is_clipped( FLI_TEXT_CLIP, include_global );
+    return is_clipped( TEXT_CLIP, include_global );
 }
 
 
@@ -1099,19 +1145,87 @@ fl_set_text_clipping( FL_Coord x,
                       FL_Coord w,
                       FL_Coord h )
 {
-    set_clipping( FLI_TEXT_CLIP, flx->textgc, x, y, w, h );
+#if defined ENABLE_XFT
+    if ( w < 0 || h < 0 )
+    {
+        fl_unset_text_clipping( );
+        return;
+    }
+
+    SET_RECT( clip_rect[ TEXT_CLIP ], x, y, w, h );
+
+    if ( clipped_flags[ GLOBAL_CLIP ] )
+    {
+        FL_RECT * r = fli_intersect_rects( clip_rect + GLOBAL_CLIP,
+                                           clip_rect + TEXT_CLIP );
+        
+        if ( r )
+        {
+            XftDrawSetClipRectangles( flx->textdraw, 0, 0, r, 1 );
+            XftDrawSetClipRectangles( flx->bgdraw, 0, 0, r, 1 );
+
+            fli_safe_free( r );
+        }
+        else
+        {
+            XRectangle n = { 0, 0, 0, 0 };
+
+            XftDrawSetClipRectangles( flx->textdraw, 0, 0, &n, 1 );
+            XftDrawSetClipRectangles( flx->bgdraw, 0, 0, &n, 1 );
+        }
+    }
+    else
+    {
+        XftDrawSetClipRectangles( flx->textdraw, 0, 0,
+                                  clip_rect + TEXT_CLIP, 1 );
+        XftDrawSetClipRectangles( flx->bgdraw, 0, 0,
+                                  clip_rect + TEXT_CLIP , 1 );
+    }
+
+    clipped_flags[ TEXT_CLIP ] = 1;
+#else
+    set_clipping( TEXT_CLIP, flx->textgc, x, y, w, h );
+#endif
 }
 
 
 /***************************************
- * Function for switching of text clipping. Note that global clipping
+ * Function for switching off text clipping. Note that global clipping
  * will be retained.
  ***************************************/
 
 void
 fl_unset_text_clipping( void )
 {
-    unset_clipping( FLI_TEXT_CLIP, flx->textgc );
+#if defined ENABLE_XFT
+    SET_RECT( clip_rect[ TEXT_CLIP ], 0, 0, 0, 0 );
+
+    if ( clipped_flags[ GLOBAL_CLIP ] )
+    {
+        XPoint xp[ ] = RECT_AS_POLYGON( clip_rect + GLOBAL_CLIP );
+        Region reg = XPolygonRegion( xp, 4, EvenOddRule );
+
+        XftDrawSetClip( flx->textdraw, reg );
+        XftDrawSetClip( flx->bgdraw, reg );
+        XDestroyRegion( reg );
+    }
+    else
+    {
+        XPoint xp[ ] = { { 0,        0        },
+                         { SHRT_MAX, 0        },
+                         { SHRT_MAX, SHRT_MAX },
+                         { 0,        SHRT_MAX } };
+        Region reg = XPolygonRegion( xp, 4, EvenOddRule );
+
+        XftDrawSetClip( flx->textdraw, reg );
+        XftDrawSetClip( flx->bgdraw, reg );
+        XDestroyRegion( reg );
+    }
+
+    clipped_flags[ TEXT_CLIP ] = 0;
+#else
+    unset_clipping( TEXT_CLIP, flx->textgc );
+#endif
 }
 
 
@@ -1131,7 +1245,7 @@ fl_get_text_clipping( int        include_global,
                       FL_Coord * w,
                       FL_Coord * h )
 {
-    return get_clipping( FLI_TEXT_CLIP, include_global, x, y, w, h );
+    return get_clipping( TEXT_CLIP, include_global, x, y, w, h );
 }
 
 
@@ -1149,8 +1263,8 @@ fl_set_gc_clipping( GC       gc,
                     FL_Coord w,
                     FL_Coord h )
 {
-    fli_is_clipped[ FLI_GC_CLIP ] = 1;
-    set_clipping( FLI_GC_CLIP, gc, x, y, w, h );
+    clipped_flags[ GC_CLIP ] = 1;
+    set_clipping( GC_CLIP, gc, x, y, w, h );
 }
 
 
@@ -1162,8 +1276,8 @@ fl_set_gc_clipping( GC       gc,
 void
 fl_unset_gc_clipping( GC gc )
 {
-    fli_is_clipped[ FLI_GC_CLIP ] = 1;
-    unset_clipping( FLI_GC_CLIP, gc );
+    clipped_flags[ GC_CLIP ] = 1;
+    unset_clipping( GC_CLIP, gc );
 }
 
 
@@ -1184,10 +1298,9 @@ fli_set_additional_clipping( FL_Coord x,
 
     SET_RECT( rect, x, y, w, h );
 
-    if ( fli_is_clipped[ FLI_NORMAL_CLIP ] )
+    if ( clipped_flags[ NORMAL_CLIP ] )
     {
-        FL_RECT * r = fli_intersect_rects( fli_clip_rect + FLI_NORMAL_CLIP,
-                                           &rect );
+        FL_RECT * r = fli_intersect_rects( clip_rect + NORMAL_CLIP, &rect );
 
         if ( r )
         {
@@ -1214,11 +1327,10 @@ set_current_gc( GC gc )
     flx->gc    = gc;
     flx->color = FL_NoColor;
 
-    if (    fli_is_clipped[ FLI_GLOBAL_CLIP ]
-         && fli_is_clipped[ FLI_NORMAL_CLIP ] )
+    if ( clipped_flags[ GLOBAL_CLIP ] && clipped_flags[ NORMAL_CLIP ] )
     {
-        FL_RECT * r = fli_intersect_rects( fli_clip_rect + FLI_GLOBAL_CLIP,
-                                           fli_clip_rect + FLI_NORMAL_CLIP );
+        FL_RECT * r = fli_intersect_rects( clip_rect + GLOBAL_CLIP,
+                                           clip_rect + NORMAL_CLIP );
         
         if ( r )
         {
@@ -1232,12 +1344,12 @@ set_current_gc( GC gc )
             XSetClipRectangles( flx->display, gc, 0, 0, &n, 1, Unsorted );
         }
     }
-    else if ( fli_is_clipped[ FLI_GLOBAL_CLIP ] )
+    else if ( clipped_flags[ GLOBAL_CLIP ] )
         XSetClipRectangles( flx->display, gc, 0, 0,
-                            fli_clip_rect + FLI_GLOBAL_CLIP, 1, Unsorted );
-    else if ( fli_is_clipped[ FLI_NORMAL_CLIP ] )
+                            clip_rect + GLOBAL_CLIP, 1, Unsorted );
+    else if ( clipped_flags[ NORMAL_CLIP ] )
         XSetClipRectangles( flx->display, gc, 0, 0,
-                            fli_clip_rect + FLI_NORMAL_CLIP, 1, Unsorted );
+                            clip_rect + NORMAL_CLIP, 1, Unsorted );
     else
         XSetClipMask( flx->display, gc, None );
 }

@@ -973,7 +973,12 @@ fli_set_ul_property( int prop,
  ***************************************/
 
 XRectangle *
-fli_get_underline_rect( XFontStruct * fs,
+fli_get_underline_rect(
+#if defined ENABLE_XFT
+                        XftFont     * fs,
+#else
+                        XFontStruct * fs,
+#endif
                         FL_Coord      x,
                         FL_Coord      y,
                         const char  * cstr,
@@ -988,9 +993,16 @@ fli_get_underline_rect( XFontStruct * fs,
     char *str = ( char * ) cstr;
     int ch = *( str + n );
     int pre;                /* stuff in front of the string, such as ^H */
+#if defined ENABLE_XFT
+    XGlyphInfo extents;
 
+    XFontExtents8( fl_display, fs, "_", 1, &extents );
+    ul_thickness = extents.height;
+
+    ul_pos = fs->descent + ul_thickness / 4 + 1;
+else
     if ( UL_thickness < 0 )
-        XGetFontProperty( flx->fs, XA_UNDERLINE_THICKNESS, &ul_thickness );
+        XGetFontProperty( fs, XA_UNDERLINE_THICKNESS, &ul_thickness );
     else
         ul_thickness = UL_thickness;
 
@@ -999,13 +1011,13 @@ fli_get_underline_rect( XFontStruct * fs,
 
     if ( ! XGetFontProperty( fs, XA_UNDERLINE_POSITION, &ul_pos ) )
         ul_pos = DESC( ch ) ? ( 1 + flx->fdesc ) : 1;
+#endif
 
-    /* If the character is narrow, use the width of g otherwise use the width
+    /* If the character is narrow, use the width of h otherwise use the width
        of D. Of course, if UL_width == proportional, this really does not
        matter */
 
-    ul_width = XTextWidth( fs, NARROW( ch ) ? "h" : "D", 1 );
-    ul_rwidth = XTextWidth( fs, str + n, 1 );
+    ul_rwidth = fli_get_string_width( fs, str + n, 1 );
 
     pre = str[ 0 ] == *fl_ul_magic_char;
 
