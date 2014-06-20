@@ -91,8 +91,6 @@ static const char *default_fonts[ ] =
 
 static FL_FONT fl_fonts[ FL_MAXFONTS ];
 
-static const char *cv_fname( const char * );
-
 #define DEFAULTF1  "fixed"
 #define DEFAULTF2  "6x13"
 
@@ -657,40 +655,6 @@ fli_get_tabpixels( XFontStruct * fs )
 {
     return   XTextWidth( fs, *tabstop, *tabstopNchar )
            + XTextWidth( fs, " ", 1 );
-}
-
-
-/***************************************
- * Convert X font names to more conventional names by stripping the
- * auxiliary info.
- ***************************************/
-
-static const char *
-cv_fname( const char *f )
-{
-    static char fname[ FL_MAX_FONTNAME_LENGTH + 1 ];
-    char *q,
-         *p;
-
-    /* Remove all the garbages from head */
-
-    for ( q = strcpy( fname, f ); *q && ! isalnum( ( unsigned char ) *q ); q++ )
-        /* empty */ ;
-
-    /* Remove all the garbage from the end, starting from '?' */
-
-    if ( ( p = strchr( fname, '?' ) ) )
-        *--p = '\0';
-
-    /* Remove all remaining garbages */
-
-    for ( p = fname + strlen( fname ) - 1;
-          p > q && ! isalnum( ( unsigned char ) *p ); p-- )
-        /* empty */ ;
-
-    *++p = '\0';
-
-    return q;
 }
 
 

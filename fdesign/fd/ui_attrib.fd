@@ -1,4 +1,4 @@
-Magic: 15000
+Magic: 16000
 
 Internal Form Definition File
     (do not change)
@@ -25,6 +25,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: 
+react_to: 31
 shortcut: 
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -43,6 +44,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Accept
+react_to: 31
 shortcut: ^M
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -61,6 +63,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Cancel
+react_to: 31
 shortcut: #C^[
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -79,6 +82,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Undo
+react_to: 31
 shortcut: #R
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -97,6 +101,7 @@ style: FL_BOLD_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: 
+react_to: 31
 shortcut: 
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -121,6 +126,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: 
+react_to: 31
 shortcut: 
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -143,6 +149,7 @@ style: FL_BOLD_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Misc.
+react_to: 31
 shortcut: 
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -161,6 +168,7 @@ style: FL_BOLD_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Font
+react_to: 31
 shortcut: 
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -179,6 +187,7 @@ style: FL_BOLD_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Basic Attributes
+react_to: 31
 shortcut: 
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -197,6 +206,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Type
+react_to: 31
 shortcut: #T
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -215,6 +225,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: BoxType
+react_to: 31
 shortcut: #B
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -233,6 +244,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Name
+react_to: 31
 shortcut: #N
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -251,6 +263,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Callback
+react_to: 31
 shortcut: #K
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -269,6 +282,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Argument
+react_to: 31
 shortcut: #M
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -287,6 +301,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Shortcut
+react_to: 31
 shortcut: #H
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -305,6 +320,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Label
+react_to: 31
 shortcut: #L
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -323,6 +339,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Font
+react_to: 31
 shortcut: #F
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -341,6 +358,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Style
+react_to: 31
 shortcut: #Y
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -359,6 +377,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Size
+react_to: 31
 shortcut: #Z
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -377,6 +396,7 @@ style: FL_BOLD_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Color
+react_to: 31
 shortcut: 
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -395,6 +415,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: LabelColor
+react_to: 31
 shortcut: #O
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -413,6 +434,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Color1
+react_to: 31
 shortcut: #1
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -431,6 +453,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Color 2
+react_to: 31
 shortcut: #2
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -449,6 +472,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: LabelAlign
+react_to: 31
 shortcut: #G
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -467,6 +491,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: NW Gravity
+react_to: 31
 shortcut: #W
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -485,6 +510,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: SE Gravity
+react_to: 31
 shortcut: #E
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -503,6 +529,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: In/Out
+react_to: 31
 shortcut: #U
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity
@@ -521,6 +548,7 @@ style: FL_NORMAL_STYLE
 size: FL_DEFAULT_SIZE
 lcol: FL_BLACK
 label: Resize
+react_to: 31
 shortcut: #I
 resize: FL_RESIZE_ALL
 gravity: FL_NoGravity FL_NoGravity

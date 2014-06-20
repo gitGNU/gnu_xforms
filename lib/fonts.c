@@ -23,6 +23,9 @@
 #include "include/forms.h"
 #include "flinternal.h"
 
+static const char *
+cv_fname( const char *f );
+
 
 /* Include different sources if true type font support is enabled
    or just X11 fonts are to be used */
@@ -34,6 +37,44 @@
 #include "xfonts.cx"
 #endif
 
+
+
+/***************************************
+ * Convert X font names to more conventional names by stripping the
+ * auxiliary info.
+ ***************************************/
+
+static const char *
+cv_fname( const char *f )
+{
+    static char * fname = NULL;
+    char *q,
+         *p;
+
+    if ( fname )
+        fl_free( fname );
+    fname = fl_strdup( f );
+
+    /* Remove all the garbages from head */
+
+    for ( q = strcpy( fname, f ); *q && ! isalnum( ( unsigned char ) *q ); q++ )
+        /* empty */ ;
+
+    /* Remove all the garbage from the end, starting from '?' */
+
+    if ( ( p = strchr( fname, '?' ) ) )
+        *--p = '\0';
+
+    /* Remove all remaining garbages */
+
+    for ( p = fname + strlen( fname ) - 1;
+          p > q && ! isalnum( ( unsigned char ) *p ); p-- )
+        /* empty */ ;
+
+    *++p = '\0';
+
+    return q;
+}
 
 
 /***************************************

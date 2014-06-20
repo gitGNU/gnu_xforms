@@ -115,6 +115,7 @@ draw_choice( FL_OBJECT * ob )
 
         fl_set_text_clipping( ob->x + absbw, ob->y,
                               ob->w - 2 * absbw, ob->h );
+
         fl_draw_text( sp->align, ob->x - off1, ob->y, ob->w - off2,
                       ob->h, ob->col2, sp->fontstyle, sp->fontsize,
                       str + ( str && ( *str == '\010' ) ) );

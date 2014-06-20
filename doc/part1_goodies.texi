@@ -901,9 +901,11 @@ typedef struct @{
 @noindent
 where @code{type} is one of the following file types
 @table @code
+@tindex FT_REG
+@item FT_REG
+a regular file (note: in older versions instead
 @tindex FT_FILE
-@item FT_FILE
-a regular file
+@code{FT_FILE} was used!)
 @tindex FT_DIR
 @item FT_DIR
 a directory
