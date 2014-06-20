@@ -3342,6 +3342,7 @@ close_popup( FL_POPUP * popup,
     if ( popup->parent )
         grab( popup->parent );
 
+    fl_winset( None );
     XDestroyWindow( flx->display, popup->win );
 
     XSync( flx->display, False );

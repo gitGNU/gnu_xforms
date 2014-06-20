@@ -819,7 +819,7 @@ fl_draw_text_cursor( int          align,   /* alignment in box */
 
 #define D( x, y, c )                                      \
     fli_draw_text_cursor( align, x, y, w, h, str,         \
-                          style,size, c, bc, 0, bk, -1 )
+                          style, size, c, bc, 0, bk, -1 )
 
 void
 fli_draw_text_inside( int          align,
@@ -879,7 +879,15 @@ fli_draw_text_inside( int          align,
     /* Take care of special effects stuff  */
 
     if ( special == FL_SHADOW_STYLE )
+#if defined ENABLE_XFT
+    {
+        int dist = size / 12 + 1;
+
+        D( x + dist, y + dist, FL_BOTTOM_BCOL );
+    }
+#else
         D( x + 2, y + 2, FL_BOTTOM_BCOL );
+#endif
     else if ( special == FL_ENGRAVED_STYLE )
     {
         D( x - 1, y,     FL_RIGHT_BCOL );
@@ -1026,8 +1034,7 @@ fli_get_underline_rect(
 
     XftTextExtents8( fl_display, fs,
                      ( const XftChar8 * ) str + n, 1, &extents );
-    ul_pos =   fs->ascent - extents.y + extents.height
-             + ul_thickness / 4 + 1;
+    ul_pos = extents.height - extents.y + ul_thickness / 4 + 1;
 #else
     if ( UL_thickness < 0 )
         XGetFontProperty( fs, XA_UNDERLINE_THICKNESS, &ul_thickness );
@@ -1110,24 +1117,43 @@ do_underline_all( FL_Coord        x,
     if ( flx->win == None )
         return;
 
-//    if ( UL_thickness < 0 )
-//        XGetFontProperty( flx->fs, XA_UNDERLINE_THICKNESS, ul_thickness );
-//    else
-//        *ul_thickness = UL_thickness;
-//
-//    if ( *ul_thickness == 0 || *ul_thickness > 100 )
-//        *ul_thickness = strstr( fli_curfnt, "bold" ) ? 2 : 1;
-//
-//    if ( ! XGetFontProperty( flx->fs, XA_UNDERLINE_POSITION, ul_pos ) )
-//        *ul_pos = has_desc( str ) ? ( 1 + flx->fdesc ) : 1;
-//
-//    ul_width = fli_get_text_width( str, n );
-//
-//    /* Draw it */
-//
-//    if ( ul_width > 0 && *ul_thickness > 0 )
-//        XFillRectangle( flx->display, flx->win, flx->gc, x, y + *ul_pos,
-//                        ul_width, *ul_thickness );
+    if ( UL_thickness < 0 )
+#if defined ENABLE_XFT
+    {
+        XGlyphInfo extents;
+
+        XftTextExtents8( fl_display, flx->fs, ( const XftChar8 * ) "_", 1,
+                         &extents );
+        *ul_thickness = extents.height;
+    }
+#else
+    	XGetFontProperty( flx->fs, XA_UNDERLINE_THICKNESS, ul_thickness );
+#endif
+    else
+        *ul_thickness = UL_thickness;
+
+    if ( *ul_thickness == 0 || *ul_thickness > 100 )
+        *ul_thickness = strstr( fli_curfnt, "bold" ) ? 2 : 1;
+
+#if defined ENABLE_XFT
+    {
+        XGlyphInfo extents;
+        XftTextExtents8( fl_display, flx->fs,
+                         ( const XftChar8 * ) str, n, &extents );
+        *ul_pos = extents.height - extents.y + *ul_thickness / 4 + 1;
+    }
+#else
+    if ( ! XGetFontProperty( flx->fs, XA_UNDERLINE_POSITION, ul_pos ) )
+        *ul_pos = has_desc( str ) ? ( 1 + flx->fdesc ) : 1;
+#endif
+
+    ul_width = fli_get_text_width( str, n );
+
+    /* Draw it */
+
+    if ( ul_width > 0 && *ul_thickness > 0 )
+        XFillRectangle( flx->display, flx->win, flx->gc, x, y + *ul_pos,
+                        ul_width, *ul_thickness );
 }
 
 

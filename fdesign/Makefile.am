@@ -8,10 +8,15 @@ SUBDIRS = fd spec xpm
 
 man_MANS = fdesign.1
 
+
 fdesign.1:
 	cp -p $(srcdir)/fdesign.man fdesign.1
 
+if ENABLE_XFT
+INCLUDES = -DENABLE_XFT -I./xpm $(X_CFLAGS)
+else
 INCLUDES = -I./xpm $(X_CFLAGS)
+endif
 
 bin_PROGRAMS = fdesign
 

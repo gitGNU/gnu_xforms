@@ -341,6 +341,7 @@ fl_winclose( Window win )
     XEvent xev;
 
     XUnmapWindow( flx->display, win );
+    fl_winset( None );
     XDestroyWindow( flx->display, win );
 
     XSync( flx->display, 0 );

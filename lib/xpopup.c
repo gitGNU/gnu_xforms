@@ -545,6 +545,7 @@ close_pupwin( PopUP * pup )
 {
     if ( pup->win )
     {
+        fl_winset( None );
         XDestroyWindow( flx->display, pup->win );
         wait_for_close( pup->win );
         pup->win = None;

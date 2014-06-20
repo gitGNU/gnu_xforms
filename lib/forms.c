@@ -1440,6 +1440,7 @@ close_form_window( Window win )
     XEvent xev;
 
     XUnmapWindow( flx->display, win );
+    fl_winset( None );
     XDestroyWindow( flx->display, win );
     XSync( flx->display, 0 );
 
@@ -1594,12 +1595,8 @@ fl_hide_form( FL_FORM * form )
 
     /* If the forms window is None it already has been closed */
 
-
     if ( owin )
-    {
-        fl_winset( None );
         close_form_window( owin );
-    }
 
     /* Move the form from the part of the list for visible forms to the
        part of hidden forms at the end of the array */

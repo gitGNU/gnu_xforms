@@ -99,6 +99,9 @@ fl_get_font_from_index( size_t index )
 {
 	size_t i;
 
+    if ( index >= font_count )
+        return NULL;
+
 	if ( index < num_families * num_styles )
 		return fl_fonts + index;
 
@@ -106,7 +109,7 @@ fl_get_font_from_index( size_t index )
 		if ( index == fl_fonts[ i ].index )
 			return fl_fonts + i;
 
-    return 0;
+    return NULL;
 }
 
 
@@ -158,9 +161,62 @@ fl_set_font_scaling_factor( int    index,
 const char *
 fl_get_font_name( int index )
 {
+    static char * name = NULL;
+
 	FL_FONT * f = fl_get_font_from_index( index );
 
-	return f ? f->name : NULL;
+    if ( ! f )
+        return NULL;
+
+    if ( f->slant == -1 || f->weight == -1 )
+    {
+        fli_safe_free( name );
+        name = fl_strdup( f->name );
+    }
+    else
+    {
+        name = fl_realloc( name, strlen( f->name ) + 25 );
+        strcpy( name, f->name );
+
+        switch ( f->slant )
+        {
+            case XFT_SLANT_ROMAN :
+                strcat( name, ": Roman, " );
+                break;
+
+            case XFT_SLANT_ITALIC :
+                strcat( name, ": Italc, " );
+                break;
+
+            case XFT_SLANT_OBLIQUE :
+                strcat( name, ": Oblique, " );
+        }
+
+        switch ( f->weight )
+        {
+            case XFT_WEIGHT_LIGHT :
+                strcat( name, "Light" );
+                break;
+
+            case XFT_WEIGHT_MEDIUM :
+                strcat( name, "Medium" );
+                break;
+
+            case XFT_WEIGHT_DEMIBOLD :
+                strcat( name, "Demibold" );
+                break;
+
+            case XFT_WEIGHT_BOLD :
+                strcat( name, "Bold" );
+                break;
+
+            case XFT_WEIGHT_BLACK :
+                strcat( name, "Black" );
+                break;
+        }
+    }
+
+	return name;
 }
 
 
