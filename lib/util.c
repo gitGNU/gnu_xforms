@@ -40,7 +40,7 @@
 /***************************************
  * Returns if two objects are the same - not of any use normally,
  * but seems to help with the Python port (so don't use it for
- * anything else, it might be gone if it should not needed for
+ * anything else, it might go if it should not be needed for
  * the Python port anymore) 
  ***************************************/
 
@@ -49,18 +49,6 @@ fl_is_same_object( FL_OBJECT * obj1,
                    FL_OBJECT * obj2 )
 {
     return obj1 == obj2;
-}
-
-
-/***************************************
- * Sets the form window
- ***************************************/
-
-void
-fli_set_form_window( FL_FORM * form )
-{
-    if ( form && form->window != None )
-        flx->win = form->window;
 }
 
 

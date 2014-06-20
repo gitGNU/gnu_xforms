@@ -39,6 +39,7 @@ typedef struct {
     int            is_separator;     /* is this a separator line? */
     int            is_special;       /* does it need special GC? */
     GC             specialGC;        /* GC for if not default font/color */
+    FL_COLOR       special_color;
     int            incomp_esc;       /* text has incomplete escape sequence */
 } TBOX_LINE;
 
@@ -63,10 +64,13 @@ typedef struct {
     int               def_align;     /* default alignment */
     int               def_height;    /* height of line with default font size */
     GC                defaultGC;     /* text drawing GC */
+    FL_COLOR          default_color; /* text drawing GC */
     GC                backgroundGC;  /* background GC */
     GC                selectGC;      /* background for selection GC */
     GC                nonselectGC;   /* for text of non-selectable lines */
+    FL_COLOR          nonselect_color;
     GC                bw_selectGC;   /* b&w selection text GC */
+    FL_COLOR          bw_select_color;
     int               specialkey;   /* Key that indicates a special symbol */
     FL_CALLBACKPTR    callback;      /* double and triple click callback */
     long              callback_data; /* data for callback */

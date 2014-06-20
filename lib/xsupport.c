@@ -141,7 +141,7 @@ fl_get_form_mouse( FL_FORM      * form,
 
 
 /***************************************
- * warp mouse to (mx, my) relative to root window
+ * Warp mouse to (mx, my) relative to root window
  ***************************************/
 
 void
@@ -280,8 +280,8 @@ fli_create_object_pixmap( FL_OBJECT * obj )
          || NON_SQB( obj ) )
         return;
 
-    /* If we already got a pixmap that fits the objects properties just
-       switch to it */
+    /* If we already have a pixmap that fits the objects properties just
+       switch to that */
 
     if (    p
          && p->pixmap

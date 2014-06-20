@@ -2325,7 +2325,7 @@ redraw( FL_FORM * form,
     /* Set the window (or drawable) to be drawn and, if necessary, set up
        a pixmap for the form */
 
-    fli_set_form_window( form );
+    fl_winset( form->window );
     fli_create_form_pixmap( form );
 
     for ( obj = bg_object( form ); obj; obj = obj->next )

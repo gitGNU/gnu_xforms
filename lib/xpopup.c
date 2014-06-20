@@ -81,6 +81,8 @@ typedef struct
     char           * title;         /* Menu title                   */
     Window           win;           /* menu window                  */
     Cursor           cursor;        /* cursor for the pup           */
+    FL_COLOR         active_color;
+    FL_COLOR         inactive_color;
     GC               gc_active;     /* GC for main text             */
     GC               gc_inactive;   /* GC for inactive text         */
     MenuItem       * item[ FL_MAXPUPI + 1 ];
@@ -215,6 +217,7 @@ init_pup( PopUP * m )
     m->title_width  = 0;
     m->win          = None;
     m->gc_active    = m->gc_inactive = None;
+    m->active_color = m->inactive_color = FL_NOCOLOR;
     m->bw           = pup_bw;
     m->title        = NULL;
     m->item[ 0 ]    = NULL;
@@ -568,14 +571,15 @@ fli_init_pup( void )
 
     for ( mr = menu_rec; mr < menu_rec + fl_maxpup; mr++ )
     {
-        mr->used       = 0;
-        mr->title      = NULL;
-        mr->win        = None;
-        mr->cursor     = None;
-        mr->gc_active  = mr->gc_inactive = None;
-        mr->menu_cb    = NULL;
-        mr->enter_cb   = mr->leave_cb = NULL;
-        mr->enter_data = mr->leave_data = NULL;
+        mr->used         = 0;
+        mr->title        = NULL;
+        mr->win          = None;
+        mr->cursor       = None;
+        mr->gc_active    = mr->gc_inactive = None;
+        mr->active_color = mr->inactive_color = FL_NOCOLOR;
+        mr->menu_cb      = NULL;
+        mr->enter_cb     = mr->leave_cb = NULL;
+        mr->enter_data   = mr->leave_data = NULL;
 
         for ( i = 0; i <= FL_MAXPUPI; i++ )
             mr->item[ i ] = NULL;
@@ -1814,12 +1818,14 @@ draw_item( PopUP * m,
     char *str;
     MenuItem *item;
     GC gc;
+    FL_COLOR color;
 
     if ( j < 0 || j >= m->nitems )
         return;
 
     item = m->item[ j ];
     gc = ( item->mode & FL_PUP_GREY ) ? m->gc_inactive : m->gc_active;
+    color = ( item->mode & FL_PUP_GREY ) ? m->inactive_color : m->active_color;
     str = item->str;
 
     if ( ! ( item->mode & FL_PUP_GREY ) )
@@ -1851,7 +1857,8 @@ draw_item( PopUP * m,
     /* show text */
 
     j = str[ 0 ] == '\010';
-    fli_draw_stringTAB( m->win, gc,
+
+    fli_draw_stringTAB( m->win, color,
                         m->lpad + 2 * bw, y + m->padh + pup_ascent,
                         pup_font_style, pup_font_size, str + j,
                         strlen( str ) - j, 0 );
@@ -2140,13 +2147,14 @@ fl_showpup( int n )
             XGCValues xgcv;
 
             xgcv.foreground     = fl_get_flcolor( pup_text_color );
-            xgcv.font           = pup_font_struct->fid;
             xgcv.stipple        = FLI_INACTIVE_PATTERN;
-            vmask               = GCForeground | GCFont | GCStipple;
+            vmask               = GCForeground | GCStipple;
 
             /* GC for main text */
 
             m->gc_active = XCreateGC( flx->display, m->win, vmask, &xgcv );
+
+            m->active_color = pup_text_color;
 
             /* GC for inactive text */
 
@@ -2157,6 +2165,8 @@ fl_showpup( int n )
 
             if ( fli_dithered( fl_vmode ) )
                 XSetFillStyle( flx->display, m->gc_inactive, FillStippled );
+
+            m->inactive_color = FL_INACTIVE;
         }
 
         XSetWMColormapWindows( flx->display, fl_root, &m->win, 1 );
@@ -2294,6 +2304,7 @@ fl_setpup_maxpup( int n )
         menu_rec[ i ].cursor = None;
 
         menu_rec[ i ].gc_active = menu_rec[ i ].gc_inactive = None;
+        menu_rec[ i ].active_color = menu_rec[ i ].inactive_color = FL_NOCOLOR;
 
         for ( j = 0; j <= FL_MAXPUPI; j++ )
             menu_rec[ i ].item[ j ] = NULL;

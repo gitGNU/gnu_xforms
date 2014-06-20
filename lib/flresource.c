@@ -1149,7 +1149,7 @@ fl_initialize( int        * na,
 
     fl_vmode = fli_initialize_program_visual( );
     fli_init_colormap( fl_vmode );
-    fli_init_font( );
+    fli_init_fonts( );
     fli_init_context( );
 
 #ifdef XlibSpecificationRelease

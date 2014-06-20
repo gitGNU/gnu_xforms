@@ -282,7 +282,7 @@ Window fli_create_window( Window,
                           Colormap,
                           const char * );
 
-void fli_create_gc( Window );
+void fli_create_gc( Drawable );
 
 enum {
     FLI_COMMAND_PROP = 1,
@@ -328,8 +328,8 @@ int fli_get_pos_in_string( int,
                            int *,
                            int * );
 
-int fli_draw_stringTAB( Window,
-                        GC,
+int fli_draw_stringTAB( Drawable,
+                        FL_COLOR,
                         int,
                         int,
                         int,
@@ -360,7 +360,7 @@ int fli_draw_string( int,
 
 int fli_get_max_pixels_line( void );
 
-void fli_init_font( void );
+void fli_init_fonts( void );
 
 void fli_canonicalize_rect( FL_Coord *,
                             FL_Coord *,
@@ -467,8 +467,6 @@ typedef struct fli_win_ {
 } FLI_WIN;
 
 extern FLI_WIN * fl_app_win;
-
-void fli_set_form_window( FL_FORM * );
 
 void fli_unmap_canvas_window( FL_OBJECT * );
 
@@ -584,18 +582,18 @@ typedef struct {
     GC              textgc;
 #endif
     int             isRGBColor;
-    unsigned long   bktextcolor;
     int             newpix;
     int             fdesc;          /* font descent          */
     int             fasc;           /* font ascent           */
     int             fheight;        /* font height           */
-    Colormap        colormap;
 #if defined ENABLE_XFT
     XftFont       * fs;
     XftColor        textcolor;
+    XftColor        bktextcolor;
 #else
     XFontStruct   * fs;
     unsigned long   textcolor;      /* last textcolor. cache */
+    unsigned long   bktextcolor;
 #endif
     unsigned long   color;          /* last color. cache     */
     unsigned long   bkcolor;

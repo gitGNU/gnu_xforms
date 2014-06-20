@@ -26,7 +26,7 @@
 static double global_font_scale = 1.0;
 
 static const char *default_families[ ] = { "DejaVu Sans",
-										   "DejaVu Mono Sans",
+										   "DejaVu Sans Mono",
 										   "DejaVu Serif",       
 										   "Century Schoolbook L" };
 
@@ -50,11 +50,9 @@ static size_t num_styles = sizeof default_styles / sizeof *default_styles;
  ***************************************/
 
 void
-fli_init_font( void )
+fli_init_fonts( void )
 {
 	size_t i, j;
-	size_t num_families  = sizeof default_families / sizeof *default_families;
-	size_t num_styles = sizeof default_styles / sizeof *default_styles;
 
 	if ( fl_fonts )
 		return;
@@ -77,7 +75,18 @@ fli_init_font( void )
 
 			font_count++;
 		}
+
+    flx->textdraw = fl_state[ fl_vmode ].textdraw =
+                           XftDrawCreate( flx->display, fl_root,
+                                          fl_state[ fl_vmode ].xvinfo->visual,
+                                          fl_state[ fl_vmode ].colormap );
+
+    flx->bgdraw = fl_state[ fl_vmode ].bgdraw =
+                           XftDrawCreate( flx->display, fl_root,
+                                          fl_state[ fl_vmode ].xvinfo->visual,
+                                          fl_state[ fl_vmode ].colormap );
 }
+
 
 
 /***************************************
@@ -89,8 +98,6 @@ FL_FONT *
 fl_get_font_from_index( size_t index )
 {
 	size_t i;
-	size_t num_families  = sizeof default_families / sizeof *default_families;
-	size_t num_styles = sizeof default_styles / sizeof *default_styles;
 
 	if ( index < num_families * num_styles )
 		return fl_fonts + index;
@@ -99,7 +106,7 @@ fl_get_font_from_index( size_t index )
 		if ( index == fl_fonts[ i ].index )
 			return fl_fonts + i;
 
-	return NULL;
+    return 0;
 }
 
 
@@ -370,7 +377,7 @@ fl_enumerate_fonts( void ( * output )( const char *s ),
  ***************************************/
 
 XftFont *
-fl_get_font_stract( int style,
+fl_get_font_struct( int style,
 					int size )
 {
 	FL_FONT *f;
@@ -385,7 +392,7 @@ fl_get_font_stract( int style,
 
 	if ( style < 0 || ! ( f = fl_get_font_from_index( style ) ) )
 	{
-		M_err( "fl_get_font_strauct", "Invalid style argument" );
+		M_err( "fl_get_font_struct", "Invalid style argument (%x)", style );
 		return NULL;
 	}
 

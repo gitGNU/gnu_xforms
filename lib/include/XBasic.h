@@ -419,14 +419,14 @@ FL_EXPORT void fl_draw_frame( int      style,
  */
 
 #if defined ENABLE_XFT
-FL_EXPORT XftFont *fl_get_fontstruct( int style,
-									  int size );
+FL_EXPORT XftFont *fl_get_font_struct( int style,
+									   int size );
 #else
-FL_EXPORT XFontStruct *fl_get_fontstruct( int style,
-                                          int size );
+FL_EXPORT XFontStruct *fl_get_font_struct( int style,
+										   int size );
 #endif
 
-#define fl_get_font_struct    fl_get_fontstruct
+#define fl_get_fontstruct     fl_get_fonts_truct
 #define fl_get_fntstruct      fl_get_font_struct
 
 FL_EXPORT Window fl_get_mouse( FL_Coord  * x,

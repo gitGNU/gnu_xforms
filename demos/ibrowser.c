@@ -583,7 +583,7 @@ supported_image_filter( const char * name,
                         int          type )
 {
     return    type == FT_DIR
-           || ( type == FT_FILE && flimage_is_supported( name ) > 0 );
+           || ( type == FT_REG && flimage_is_supported( name ) > 0 );
 }
 
 

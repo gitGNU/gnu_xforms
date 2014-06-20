@@ -398,8 +398,6 @@ handle_pixmap( FL_OBJECT * obj,
                int         key  FL_UNUSED_ARG,
                void      * ev   FL_UNUSED_ARG )
 {
-    FLI_BUTTON_SPEC *sp = obj->spec;
-
 #if FL_DEBUG >= ML_DEBUG
     M_info( "handle_pixmap", fli_event_name( event ) );
 #endif
@@ -702,7 +700,6 @@ static void
 draw_pixmapbutton( FL_OBJECT * obj,
                    int         event )
 {
-    FLI_BUTTON_SPEC *sp = obj->spec;
     FLI_PIXMAP_SPEC *psp = obj->c_vdata;
 
     /* Draw it like a "normal button */
@@ -740,7 +737,6 @@ draw_pixmapbutton( FL_OBJECT * obj,
 static void
 cleanup_pixmapbutton( FL_OBJECT * obj )
 {
-    FLI_BUTTON_SPEC *sp = obj->spec;
     FLI_PIXMAP_SPEC *psp = obj->c_vdata;
 
     if ( psp->gc )
@@ -773,7 +769,6 @@ fl_create_pixmapbutton( int          type,
 {
     FL_OBJECT *obj;
     static int class_init;
-    FLI_BUTTON_SPEC *sp;
     FLI_PIXMAP_SPEC *psp;
 
     if ( ! class_init )
@@ -790,8 +785,6 @@ fl_create_pixmapbutton( int          type,
     obj->col2    = FLI_PIXMAPBUTTON_COL2;
     obj->align   = FLI_PIXMAPBUTTON_ALIGN;
     obj->lcol    = FLI_PIXMAPBUTTON_LCOL;
-
-    sp = obj->spec;   /* allocated in fl_create_generic_button() */
 
     obj->c_vdata = psp = fl_calloc( 1, sizeof *psp );
 
@@ -883,12 +876,10 @@ fl_set_pixmap_align( FL_OBJECT * obj,
                      int         xmargin,
                      int         ymargin )
 {
-    FLI_BUTTON_SPEC *sp;
     FLI_PIXMAP_SPEC *psp;
 
     CHECK( obj, "fl_set_pixmap_align" );
 
-    sp = obj->spec;
     psp = obj->c_vdata;
     if ( align != psp->align || xmargin != psp->dx || ymargin != psp->dy )
     {

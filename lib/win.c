@@ -509,8 +509,8 @@ fl_get_wingeometry( Window     win,
 
 
 /***************************************
- * If one of the forms is destoryed we want to know about it
- * All window notices the Close window manager command
+ * If one of the forms is destoryed we want to know about it.
+ * All the window notices is the Close window manager command.
  ***************************************/
 
 static void
@@ -847,7 +847,14 @@ fl_winbackground( Window         win,
 void
 fl_winset( Window win )
 {
-    flx->win = win;
+    if ( flx->win != win )
+    {
+        flx->win = win;
+#if defined ENABLE_XFT
+        XftDrawChange( flx->textdraw, win );
+        XftDrawChange( flx->bgdraw, win );
+#endif
+    }
 }
 
 

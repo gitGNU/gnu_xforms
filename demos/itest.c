@@ -82,7 +82,7 @@ static int
 image_file_filter( const char * name,
                    int          type )
 {
-     return type == FT_FILE && flimage_is_supported( name );
+     return type == FT_REG && flimage_is_supported( name );
 }
 
 

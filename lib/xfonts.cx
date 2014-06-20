@@ -107,7 +107,7 @@ static const char *cv_fname( const char * );
  ***************************************/
 
 void
-fli_init_font( void )
+fli_init_fonts( void )
 {
     FL_FONT *flf;
     const char *const *f = default_fonts;
@@ -431,9 +431,9 @@ fl_get_font_struct( int style,
  ***************************************/
 
 int
-fli_get_string_width( XftFont    * fs,
-                      const char * s,
-                      int          len )
+fli_get_string_width( XFontStruct * fs,
+                      const char  * s,
+                      int           len )
 {
     return XTextWidth( fs, s, len );
 }

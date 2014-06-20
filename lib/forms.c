@@ -1543,7 +1543,7 @@ fl_hide_form( FL_FORM * form )
     }
 
     form->visible = FL_BEING_HIDDEN;
-    fli_set_form_window( form );
+    fl_winset( form->window );
 
     /* Checking mouseobj->form is necessary as it might be deleted from a
        form */
@@ -1594,11 +1594,12 @@ fl_hide_form( FL_FORM * form )
 
     /* If the forms window is None it already has been closed */
 
-    if ( owin )
-        close_form_window( owin );
 
-    if ( flx->win == owin )
-        flx->win = None;
+    if ( owin )
+    {
+        fl_winset( None );
+        close_form_window( owin );
+    }
 
     /* Move the form from the part of the list for visible forms to the
        part of hidden forms at the end of the array */

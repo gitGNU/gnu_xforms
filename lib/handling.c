@@ -429,7 +429,7 @@ fli_handle_form( FL_FORM * form,
         return;
 
     if ( event != FL_STEP )
-        fli_set_form_window( form );
+        fl_winset( form->window );
 
     if ( fli_int.query_age > 0 && fli_int.mouseform )
     {
@@ -559,7 +559,7 @@ fli_handle_form( FL_FORM * form,
             obj = fli_find_first( form, FLI_FIND_AUTOMATIC, 0, 0 );
 
             if ( obj )
-                fli_set_form_window( form );    /* set only if required */
+                fl_winset( form->window );     /* set only if required */
 
             while ( obj )
             {
@@ -1567,7 +1567,6 @@ fli_internal_init( void )
 #if ! defined ENABLE_XFT
         default_flx->textgc = None;
 #endif
-        default_flx->colormap = None;
         default_flx->fs = NULL;
     }
 

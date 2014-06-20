@@ -252,6 +252,12 @@ static FLI_IMAP fli_imap[ FL_MAX_COLS ] =
 #define flmapsize ( ( int ) ( sizeof fli_imap / sizeof *fli_imap ) )
 
 
+#if defined ENABLE_XFT
+unsigned long
+fli_get_xrender_color( FL_COLOR       i,
+                       XRenderColor * xrc );
+#endif
+
 /***************************************
  ***************************************/
 
@@ -259,7 +265,7 @@ const char *
 fli_query_colorname( FL_COLOR col )
 {
     FLI_IMAP *flmap;
-    static char buf[ 32 ];
+    static char buf[ 128 ];
 
     for ( flmap = fli_imap; flmap < fli_imap + FL_BUILT_IN_COLS + 1; flmap++ )
         if ( col == flmap->index )
@@ -283,7 +289,7 @@ fli_query_colorname( FL_COLOR col )
  ***************************************/
 
 long
-fli_query_namedcolor( const char *s )
+fli_query_namedcolor( const char * s )
 {
     FLI_IMAP *flmap;
 
@@ -593,7 +599,7 @@ get_private_cmap( int vmode )
     for ( i = FL_BUILT_IN_COLS; i < FL_MAX_COLS; i++ )
         lut[ i ] = i;
 
-    M_warn( "get_private_cmap", "%s %s succesful",
+    M_info( "get_private_cmap", "%s %s succesful",
             fli_vclass_name( vmode ), ok ? "" : "not" );
 
     return ok;
@@ -729,34 +735,23 @@ get_shared_cmap( int vmode )
  ***************************************/
 
 void
-fli_create_gc( Window win )
+fli_create_gc( Drawable drawable )
 {
     flx->gc = fl_state[ fl_vmode ].gc;
 
     if ( ! flx->gc )
     {
-        flx->gc = XCreateGC( flx->display, win, 0, NULL );
+        flx->gc = XCreateGC( flx->display, drawable, 0, NULL );
         XSetStipple( flx->display, flx->gc, FLI_INACTIVE_PATTERN );
         XSetGraphicsExposures( flx->display, flx->gc, 0 );
     }
 
-#if defined ENABLE_XFT
-    if ( ! ( flx->textdraw = fl_state[ fl_vmode ].textdraw ) )
-        flx->textdraw = XftDrawCreate( flx->display,
-                                       win,
-                                       fl_state[ fl_vmode ].xvinfo->visual,
-                                       fl_state[ fl_vmode ].colormap );
-
-    if ( ! ( flx->bgdraw = fl_state[ fl_vmode ].bgdraw ) )
-        flx->bgdraw = XftDrawCreate( flx->display, win,
-                                     fl_state[ fl_vmode ].xvinfo->visual,
-                                     fl_state[ fl_vmode ].colormap );
-#else
+#if ! defined ENABLE_XFT
     flx->textgc = fl_state[ fl_vmode ].textgc;
 
     if ( ! flx->textgc )
     {
-        flx->textgc = XCreateGC( flx->display, win, 0, NULL );
+        flx->textgc = XCreateGC( flx->display, drawable, 0, NULL );
         XSetStipple( flx->display, flx->textgc, FLI_INACTIVE_PATTERN );
         XSetGraphicsExposures( flx->display, flx->textgc, 0 );
     }
@@ -770,7 +765,8 @@ fli_create_gc( Window win )
 
     if ( ! fl_state[ fl_vmode ].dimmedGC )
     {
-        fl_state[ fl_vmode ].dimmedGC = XCreateGC( flx->display, win, 0, NULL );
+        fl_state[ fl_vmode ].dimmedGC = XCreateGC( flx->display, drawable,
+                                                   0, NULL );
         XSetStipple( flx->display, fl_state[ fl_vmode ].dimmedGC,
                      FLI_INACTIVE_PATTERN );
         XSetGraphicsExposures( flx->display, fl_state[ fl_vmode ].dimmedGC, 0 );
@@ -778,18 +774,18 @@ fli_create_gc( Window win )
                        FillStippled );
     }
 
-    /* Special for B&W and 2bits displays */
+    /* Special for B&W and 2-bit displays */
 
     if ( fli_dithered( fl_vmode ) && ! fli_whitegc )
     {
         int i;
 
-        fli_whitegc = XCreateGC( flx->display, win, 0, 0 );
+        fli_whitegc = XCreateGC( flx->display, drawable, 0, NULL );
         XSetForeground( flx->display, fli_whitegc, fl_get_flcolor( FL_WHITE ) );
 
         for ( i = 0; i < 3; i++ )
         {
-            fli_bwgc[ i ] = XCreateGC( flx->display, win, 0, 0 );
+            fli_bwgc[ i ] = XCreateGC( flx->display, drawable, 0, NULL );
             XSetStipple( flx->display, fli_bwgc[ i ], fli_gray_pattern[ i ] );
             XSetGraphicsExposures( flx->display, fli_bwgc[ i ], 0 );
             XSetFillStyle( flx->display, fli_bwgc[ i ], FillStippled );
@@ -1076,7 +1072,8 @@ fli_free_newpixel( unsigned long pixel )
 {
     if ( flx->newpix )
     {
-        XFreeColors( flx->display, flx->colormap, &pixel, 1, 0 );
+        XFreeColors( flx->display, fl_state[ fl_vmode ].colormap,
+                     &pixel, 1, 0 );
         flx->newpix = 0;
     }
 }
@@ -1089,12 +1086,13 @@ void
 fli_textcolor( FL_COLOR col )
 {
 #if defined ENABLE_XFT
-    static FL_COLOR last_allocated = ULONG_MAX;
-    XRenderColor xrcol;
+    static FL_COLOR last_allocated = FL_NOCOLOR;
 
-    if ( col != last_allocated )
+    if ( col != FL_NOCOLOR && col != last_allocated )
     {
-        if ( last_allocated != ULONG_MAX )
+        XRenderColor xrcol;
+
+        if ( last_allocated != FL_NOCOLOR )
             XftColorFree( flx->display,
                           fl_state[ fl_vmode ].xvinfo->visual,
                           fl_state[ fl_vmode ].colormap,
@@ -1106,6 +1104,8 @@ fli_textcolor( FL_COLOR col )
                             fl_state[ fl_vmode ].xvinfo->visual,
                             fl_state[ fl_vmode ].colormap,
                             &xrcol, &flx->textcolor );
+
+        last_allocated = col;
     }
 #else
     static int vmode = -1;
@@ -1170,15 +1170,37 @@ fl_bk_color( FL_COLOR col )
 void
 fli_bk_textcolor( FL_COLOR col )
 {
+#if defined ENABLE_XFT
+    static FL_COLOR last_allocated = ULONG_MAX;
+
+    if ( col != last_allocated )
+    {
+        XRenderColor xrcol;
+
+        if ( last_allocated != ULONG_MAX )
+            XftColorFree( flx->display,
+                          fl_state[ fl_vmode ].xvinfo->visual,
+                          fl_state[ fl_vmode ].colormap,
+                          &flx->bktextcolor );
+
+
+        fli_get_xrender_color( col, &xrcol );
+        XftColorAllocValue( flx->display,
+                            fl_state[ fl_vmode ].xvinfo->visual,
+                            fl_state[ fl_vmode ].colormap,
+                            &xrcol, &flx->bktextcolor );
+
+        last_allocated = col;
+    }
+#else
     if ( flx->bktextcolor != col )
     {
         unsigned long p = fl_get_pixel( col );
         flx->bktextcolor = col;
-#if ! defined ENABLE_XFT
         XSetBackground( flx->display, flx->textgc, p );
-#endif
         fli_free_newpixel( p );
     }
+#endif
 }
 
 
@@ -1323,7 +1345,6 @@ fl_mapcolor( FL_COLOR col,
     if ( ! XAllocColor( flx->display, fli_colormap( fl_vmode ), &exact ) )
         M_warn( "fl_mapcolor", "Something is wrong - will proceed" );
 
-
 #if FL_DEBUG >= ML_DEBUG
     M_warn( "fl_mapcolor", "(%d %d %d)<->(%d %d %d)",
             r, g, b, cur_map[ j ].red, cur_map[ j ].green, cur_map[ j ].blue );
@@ -1356,7 +1377,7 @@ fl_mapcolorname( FL_COLOR     col,
 
 
 /***************************************
- * change internal colormap before initialization. This way,
+ * Change internal colormap before initialization. This way,
  * FORMS default color can be changed
  ***************************************/
 
@@ -1386,7 +1407,7 @@ fl_set_icm_color( FL_COLOR col,
 
 
 /***************************************
- * query internal  colormap
+ * Query internal  colormap
  ***************************************/
 
 void
@@ -1448,8 +1469,8 @@ fl_getmcolor( FL_COLOR i,
 
 #if defined ENABLE_XFT
 unsigned long
-fli_get_xrendercolor( FL_COLOR       i,
-                      XRenderColor * xrc )
+fli_get_xrender_color( FL_COLOR       i,
+                       XRenderColor * xrc )
 {
     XColor exact;
 
@@ -1464,7 +1485,7 @@ fli_get_xrendercolor( FL_COLOR       i,
     xrc->red   = exact.red   & 0xffff;
     xrc->green = exact.green & 0xffff;
     xrc->blue  = exact.blue  & 0xffff;
-    xrc->alpha = 0;
+    xrc->alpha = 0xffff;
 
     return exact.pixel;
 }
