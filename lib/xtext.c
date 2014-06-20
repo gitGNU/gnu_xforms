@@ -56,7 +56,6 @@ static void do_underline_all( FL_Coord,
 #if defined ENABLE_XFT
 static void
 draw_string( Display        * display,
-             Drawable         drawable,
              XftFont        * font,
              FL_COLOR         fg_color,
              int              x,
@@ -371,7 +370,7 @@ fli_draw_string( int           align,
         /* Draw the text */
 
 #if defined ENABLE_XFT
-        draw_string( flx->display, flx->win, font, forecol, line->x, line->y,
+        draw_string( flx->display, font, forecol, line->x, line->y,
                      ( const XftChar8 * ) line->str, line->len, img );
 #else
         drawIt( flx->display, flx->win, flx->textgc,
@@ -424,7 +423,7 @@ fli_draw_string( int           align,
                       flx->fheight, forecol );
 
 #if defined ENABLE_XFT
-            draw_string( flx->display, flx->win, font, backcol, xsel, line->y,
+            draw_string( flx->display, font, backcol, xsel, line->y,
                          ( const XftChar8 * ) ( line->str + start ), len, img );
 #else
             fli_textcolor( backcol );
@@ -1202,8 +1201,8 @@ fli_draw_stringTAB( Drawable     win,
           q = p + 1 )
     {
 #if defined ENABLE_XFT
-        draw_string( flx->display, win, fs, color,
-                     x + w, y, ( const XftChar8 * ) q, s - q, img );
+        draw_string( flx->display, fs, color, x + w, y,
+                     ( const XftChar8 * ) q, s - q, img );
 #else
         drawIt( flx->display, win, gc, x + w, y, ( char * ) q, p - q );
 #endif
@@ -1211,8 +1210,8 @@ fli_draw_stringTAB( Drawable     win,
     }
 
 #if defined ENABLE_XFT
-    draw_string( flx->display, win, fs, color,
-                 x + w, y, ( const XftChar8 * ) q, s - q + len, img );
+    draw_string( flx->display, fs, color, x + w, y,
+                 ( const XftChar8 * ) q, s - q + len, img );
 #else
     drawIt( flx->display, win, gc, x + w, y, ( char * ) q, s - q + len );
 
@@ -1228,7 +1227,6 @@ fli_draw_stringTAB( Drawable     win,
 #if defined ENABLE_XFT
 static void
 draw_string( Display        * display,
-             Drawable         drawable,
              XftFont        * font,
              FL_COLOR         fg_color,
              int              x,

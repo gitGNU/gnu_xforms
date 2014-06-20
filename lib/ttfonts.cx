@@ -448,7 +448,11 @@ fl_get_font_struct( int style,
 
 	if ( style < 0 || ! ( f = fl_get_font_from_index( style ) ) )
 	{
-		M_err( "fl_get_font_struct", "Invalid style argument (%x)", style );
+        if ( fli_no_connection )
+            M_info( "fl_get_font_struct", "Invalid style argument" );
+        else
+            M_warn( "fl_get_font_struct", "Invalid style argument" );
+
 		return NULL;
 	}
 
