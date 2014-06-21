@@ -252,7 +252,7 @@ static FLI_IMAP fli_imap[ FL_MAX_COLS ] =
 #define flmapsize ( ( int ) ( sizeof fli_imap / sizeof *fli_imap ) )
 
 
-#if defined ENABLE_XFT
+#if ENABLE_XFT
 unsigned long
 fli_get_xrender_color( FL_COLOR       i,
                        XRenderColor * xrc );
@@ -746,7 +746,7 @@ fli_create_gc( Drawable drawable )
         XSetGraphicsExposures( flx->display, flx->gc, 0 );
     }
 
-#if ! defined ENABLE_XFT
+#if ! ENABLE_XFT
     flx->textgc = fl_state[ fl_vmode ].textgc;
 
     if ( ! flx->textgc )
@@ -792,7 +792,7 @@ fli_create_gc( Drawable drawable )
         }
     }
 
-#if ! defined ENABLE_XFT
+#if ! ENABLE_XFT
     if ( fl_state[ fl_vmode ].cur_fnt )
         XSetFont( flx->display, flx->textgc,
                   fl_state[ fl_vmode ].cur_fnt->fid );
@@ -1085,7 +1085,7 @@ fli_free_newpixel( unsigned long pixel )
 void
 fli_textcolor( FL_COLOR col )
 {
-#if defined ENABLE_XFT
+#if ENABLE_XFT
     static FL_COLOR last_allocated = FL_NOCOLOR;
 
     if ( col != FL_NOCOLOR && col != last_allocated )
@@ -1170,7 +1170,7 @@ fl_bk_color( FL_COLOR col )
 void
 fli_bk_textcolor( FL_COLOR col )
 {
-#if defined ENABLE_XFT
+#if ENABLE_XFT
     static FL_COLOR last_allocated = ULONG_MAX;
 
     if ( col != last_allocated )
@@ -1467,7 +1467,7 @@ fl_getmcolor( FL_COLOR i,
  * Query real colormap. Returns this as a XRenderColor
  ***************************************/
 
-#if defined ENABLE_XFT
+#if ENABLE_XFT
 unsigned long
 fli_get_xrender_color( FL_COLOR       i,
                        XRenderColor * xrc )
@@ -1506,7 +1506,7 @@ fl_get_visual_depth( void )
 
 
 /***************************************
- * print out the current state info. For debugging only
+ * Print out the current state info. For debugging only
  ***************************************/
 
 #if FL_DEBUG >= ML_WARN
@@ -1520,7 +1520,8 @@ fli_dump_state_info( int          mode,
     if ( fli_cntl.debug )
     {
         fprintf( stderr, "In %s", where );
-        fprintf( stderr, " VClass: %s", fli_vclass_name( fli_class( mode ) ) );
+        fprintf( stderr, " VClass: %s (%d)",
+                 fli_vclass_name( fli_class( mode ) ), mode );
         fprintf( stderr, " VisualID: 0x%lx", fs->xvinfo->visualid );
         fprintf( stderr, " Depth: %d %d",
                  fli_depth( mode ), fs->xvinfo->depth );

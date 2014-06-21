@@ -81,3 +81,5 @@ extern "C"
 #define FL_EXPORT __declspec( dllimport ) extern
 #endif              /* MAKING_FORMS */
 #endif              /* FL_WIN32 */
+
+#define ENABLE_XFT  @WITH_XFT@

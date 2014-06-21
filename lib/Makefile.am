@@ -14,7 +14,7 @@ EXTRA_DIST = xforms.man dirent_vms.h vms_readdir.c \
 SUBDIRS = bitmaps fd include private
 
 if ENABLE_XFT
-INCLUDES = -DMAKING_FORMS -DENABLE_XFT $(X_CFLAGS) $(BWC) $$(pkg-config --cflags freetype2)
+INCLUDES = -DMAKING_FORMS $(X_CFLAGS) $(BWC) $$(pkg-config --cflags freetype2)
 else
 INCLUDES = -DMAKING_FORMS $(X_CFLAGS) $(BWC)
 endif

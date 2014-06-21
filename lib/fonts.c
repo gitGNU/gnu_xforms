@@ -30,7 +30,7 @@ cv_fname( const char *f );
 /* Include different sources if true type font support is enabled
    or just X11 fonts are to be used */
 
-#if defined ENABLE_XFT
+#if ENABLE_XFT
 #include "ttfonts.cx"
 #include "font_utils.cx"
 #else
@@ -123,7 +123,7 @@ fl_cur_win_( void )
 /***************************************
  ***************************************/
 
-#if defined ENABLE_XFT
+#if ENABLE_XFT
 XftFont *
 #else
 XFontStruct *

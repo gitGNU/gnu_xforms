@@ -84,7 +84,7 @@ enum {
 
 typedef struct {
     XVisualInfo   * xvinfo;
-#if defined ENABLE_XFT
+#if ENABLE_XFT
     XftFont       * cur_fnt;            /* current font */
 #else
     XFontStruct   * cur_fnt;            /* current font in default GC */
@@ -97,7 +97,7 @@ typedef struct {
     int             dithered;           /* true if dithered color */
     int             pcm;                /* true if colormap is not shared */
     GC              gc;                 /* working GC */
-#if defined ENABLE_XFT
+#if ENABLE_XFT
 	XftDraw       * textdraw;           /* for drawing texts */
 	XftDraw       * bgdraw;             /* for drawing background of text */
 #else
@@ -179,7 +179,7 @@ struct FL_pixmap_ {
 
 /* Fonts related */
 
-#if defined ENABLE_XFT
+#if ENABLE_XFT
 
 typedef struct {
 	int       size;
@@ -418,7 +418,7 @@ FL_EXPORT void fl_draw_frame( int      style,
  * Interfaces
  */
 
-#if defined ENABLE_XFT
+#if ENABLE_XFT
 FL_EXPORT XftFont *fl_get_font_struct( int style,
 									   int size );
 #else

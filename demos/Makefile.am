@@ -9,7 +9,11 @@ SUBDIRS = fd
 
 SUFFIXES = .fd .c
 
+if ENABLE_XFT
+INCLUDES = $$(pkg-config --cflags freetype2) -I$(top_srcdir) -I$(top_srcdir)/lib $(X_CFLAGS)
+else
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/lib $(X_CFLAGS)
+endif
 
 if BUILD_GL
 GL = gl glwin

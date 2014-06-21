@@ -820,7 +820,7 @@ fli_set_global_clipping( FL_Coord x,
 
         if ( r )
         {
-#if defined ENABLE_XFT
+#if ENABLE_XFT
             XftDrawSetClipRectangles( flx->textdraw, 0, 0, r, 1 );
             XftDrawSetClipRectangles( flx->bgdraw, 0, 0, r, 1 );
 #else
@@ -831,9 +831,9 @@ fli_set_global_clipping( FL_Coord x,
         }
         else
         {
-            FL_RECT n = { 0, 0, 0, 0 };
+            XRectangle n = { 0, 0, 0, 0 };
 
-#if defined ENABLE_XFT
+#if ENABLE_XFT
             XftDrawSetClipRectangles( flx->textdraw, 0, 0, &n, 1 );
             XftDrawSetClipRectangles( flx->bgdraw, 0, 0, &n, 1 );
 #else
@@ -845,7 +845,7 @@ fli_set_global_clipping( FL_Coord x,
     }
     else
     {
-#if defined ENABLE_XFT
+#if ENABLE_XFT
         XftDrawSetClipRectangles( flx->textdraw, 0, 0,
                                   clip_rect + GLOBAL_CLIP, 1 );
         XftDrawSetClipRectangles( flx->bgdraw, 0, 0,
@@ -885,7 +885,7 @@ fli_unset_global_clipping( void )
 
     if ( clipped_flags[ TEXT_CLIP ] )
     {
-#if defined ENABLE_XFT
+#if ENABLE_XFT
         XftDrawSetClipRectangles( flx->textdraw, 0, 0,
                                   clip_rect + TEXT_CLIP, 1 );
         XftDrawSetClipRectangles( flx->bgdraw, 0, 0,
@@ -897,7 +897,7 @@ fli_unset_global_clipping( void )
     }
     else
     {
-#if defined ENABLE_XFT
+#if ENABLE_XFT
         XRectangle r = { 0, 0, SHRT_MAX, SHRT_MAX };
 
         XftDrawSetClipRectangles( flx->textdraw, 0, 0, &r, 1 );
@@ -1145,7 +1145,7 @@ fl_set_text_clipping( FL_Coord x,
                       FL_Coord w,
                       FL_Coord h )
 {
-#if defined ENABLE_XFT
+#if ENABLE_XFT
     if ( w < 0 || h < 0 )
     {
         fl_unset_text_clipping( );
@@ -1197,35 +1197,29 @@ fl_set_text_clipping( FL_Coord x,
 void
 fl_unset_text_clipping( void )
 {
-#if defined ENABLE_XFT
+#if ENABLE_XFT
     SET_RECT( clip_rect[ TEXT_CLIP ], 0, 0, 0, 0 );
 
     if ( clipped_flags[ GLOBAL_CLIP ] )
     {
-        XPoint xp[ ] = RECT_AS_POLYGON( clip_rect + GLOBAL_CLIP );
-        Region reg = XPolygonRegion( xp, 4, EvenOddRule );
-
-        XftDrawSetClip( flx->textdraw, reg );
-        XftDrawSetClip( flx->bgdraw, reg );
-        XDestroyRegion( reg );
+        XftDrawSetClipRectangles( flx->textdraw, 0, 0,
+                                  clip_rect + GLOBAL_CLIP, 1 );
+        XftDrawSetClipRectangles( flx->bgdraw, 0, 0,
+                                  clip_rect + GLOBAL_CLIP, 1 );
     }
     else
     {
-        XPoint xp[ ] = { { 0,        0        },
-                         { SHRT_MAX, 0        },
-                         { SHRT_MAX, SHRT_MAX },
-                         { 0,        SHRT_MAX } };
-        Region reg = XPolygonRegion( xp, 4, EvenOddRule );
+        XRectangle r = { 0, 0, SHRT_MAX, SHRT_MAX };
 
-        XftDrawSetClip( flx->textdraw, reg );
-        XftDrawSetClip( flx->bgdraw, reg );
-        XDestroyRegion( reg );
+        XftDrawSetClipRectangles( flx->textdraw, 0, 0, &r, 1 );
+        XftDrawSetClipRectangles( flx->bgdraw, 0, 0, &r, 1 );
     }
 
-    clipped_flags[ TEXT_CLIP ] = 0;
 #else
     unset_clipping( TEXT_CLIP, flx->textgc );
 #endif
+
+    clipped_flags[ TEXT_CLIP ] = 0;
 }
 
 
@@ -1312,6 +1306,20 @@ fli_set_additional_clipping( FL_Coord x,
     }
 
     fl_set_clipping( rect.x, rect.y, rect.width, rect.height );
+}
+
+
+/***************************************
+ ***************************************/
+
+void
+fli_apply_clipping_to_gc( GC gc )
+{
+    if ( clipped_flags[ GLOBAL_CLIP ] )
+        XSetClipRectangles( flx->display, gc, 0, 0,
+                            clip_rect + GLOBAL_CLIP, 1, Unsorted );
+    else
+        XSetClipMask( flx->display, gc, None );
 }
 
 

@@ -1251,10 +1251,12 @@ flimage_sdisplay( FL_IMAGE * im,
         if ( im->gc )
             XFreeGC( im->xdisplay, im->gc );
 
+#if ! ENABLE_XFT
         if ( im->textgc )
             XFreeGC( im->xdisplay, im->textgc );
 
         im->gc = im->textgc = None;
+#endif
     }
 
     if ( ! im->gc )

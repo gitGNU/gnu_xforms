@@ -141,14 +141,14 @@ static int pup_bw_is_set = 0;
 
 static PopUP *menu_rec = NULL;
 
-#if defined ENABLE_XFT
+#if ENABLE_XFT
 static XftFont *pup_font_struct = NULL;        /* popup main text font */
 #else
 static XFontStruct *pup_font_struct = NULL;        /* popup main text font */
 #endif
 static int pup_ascent = 0,                         /* font properties */
            pup_desc = 0;
-#if defined ENABLE_XFT
+#if ENABLE_XFT
 static XftFont *pup_title_font_struct = NULL;  /* popup title text font */
 #else
 static XFontStruct *pup_title_font_struct = NULL;  /* popup title text font */
@@ -171,7 +171,7 @@ static int pup_internal_showpup_call = 0;
 static void
 init_pupfont( void )
 {
-#if ! defined ENABLE_XFT        
+#if ! ENABLE_XFT        
     XCharStruct chs;
     int junk;
 #endif
@@ -180,7 +180,7 @@ init_pupfont( void )
     {
         pup_title_font_struct = fl_get_fntstruct( pup_title_font_style,
                                                   pup_title_font_size );
-#if defined ENABLE_XFT        
+#if ENABLE_XFT        
         pup_title_ascent = pup_title_font_struct->ascent;
         pup_title_desc   = pup_title_font_struct->descent;
 #else
@@ -192,7 +192,7 @@ init_pupfont( void )
     if ( ! pup_font_struct )
     {
         pup_font_struct = fl_get_fntstruct( pup_font_style, pup_font_size );
-#if defined ENABLE_XFT        
+#if ENABLE_XFT        
         pup_ascent = pup_font_struct->ascent;
         pup_desc   = pup_font_struct->descent;
 #else
@@ -1914,7 +1914,7 @@ draw_title( Display  * d,
 
     fl_set_font( pup_title_font_style, pup_title_font_size );
     fli_textcolor( pup_text_color );
-#if defined ENABLE_XFT
+#if ENABLE_XFT
     d = d;
 
     XftDrawChange( flx->textdraw, w );
@@ -1947,7 +1947,7 @@ draw_title( Display  * d,
 #endif
 
     fli_textcolor( FL_WHITE );
-#if defined ENABLE_XFT
+#if ENABLE_XFT
     XftDrawString8( flx->textdraw, &flx->textcolor, flx->fs, x, y,
                     ( XftChar8 const * ) t, n );
 #else

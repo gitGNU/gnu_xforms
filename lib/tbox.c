@@ -667,7 +667,7 @@ fli_tbox_add_chars( FL_OBJECT  * obj,
     strcpy( tl->fulltext, old_fulltext );
     strcat( tl->fulltext, new_text );
     tl->text = tl->fulltext + ( old_text - old_fulltext );
-    tl->len = strlen( tl->text ); //new_len;
+    tl->len = strlen( tl->text );
 
     fli_safe_free( old_fulltext );
 
@@ -1706,12 +1706,6 @@ draw_tbox( FL_OBJECT * obj )
     fl_draw_box( obj->boxtype, obj->x, obj->y, obj->w, obj->h,
                  obj->col1, obj->bw );
 
-    XFillRectangle( flx->display, FL_ObjWin( obj ),
-                    sp->backgroundGC,
-                    obj->x + sp->x - ( LEFT_MARGIN > 0 ),
-                    obj->y + sp->y + sp->w - sp->yoffset,
-                    sp->w + ( LEFT_MARGIN > 0 ), sp->h );
-
     if ( sp->num_lines == 0 )
         return;
 
@@ -1749,11 +1743,13 @@ draw_tbox( FL_OBJECT * obj )
         /* Draw background of line in selection color if necessary*/
 
         if ( tl->selected )
+        {
+            fli_apply_clipping_to_gc( sp->selectGC );
             XFillRectangle( flx->display, FL_ObjWin( obj ), sp->selectGC,
                             obj->x + sp->x - ( LEFT_MARGIN > 0 ),
                             obj->y + sp->y + tl->y - sp->yoffset,
                             sp->w + ( LEFT_MARGIN > 0 ), tl->h );
-
+        }
 
         /* If there's no text or the text isn't visible within the textbox
            nothing needs to be drawn */
@@ -1809,12 +1805,14 @@ draw_tbox( FL_OBJECT * obj )
                          FL_WHITE : tl->color );
 
         if ( activeGC != sp->bw_selectGC )
-            fl_set_text_clipping( obj->x + sp->x, obj->y + sp->y,
+            fl_set_text_clipping( obj->x + sp->x,
+                                  obj->y + sp->y,
                                   sp->w, sp->h );
         else
             fl_set_text_clipping( obj->x + sp->x - ( LEFT_MARGIN > 0 ),
                                   obj->y + sp->y,
                                   sp->w + ( LEFT_MARGIN > 0 ), sp->h );
+
 
         fli_draw_stringTAB( FL_ObjWin( obj ), active_color,
                             obj->x + sp->x - sp->xoffset + tl->x,

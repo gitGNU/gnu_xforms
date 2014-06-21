@@ -145,6 +145,11 @@ if test x$disable_xft == xno ; then
   AC_CHECK_LIB(Xft, XftFontOpen, [enable_xft=yes], [XFORMS_LIB_ERROR(libXft, Xft)])
 fi
 AM_CONDITIONAL(ENABLE_XFT, [test x$enable_xft == xyes])
+if test x$enable_xft == xyes; then
+	AC_SUBST(WITH_XFT, 1)
+else
+	AC_SUBST(WITH_XFT, 0)
+fi
 
 
 # Check whether we want to build the gl code

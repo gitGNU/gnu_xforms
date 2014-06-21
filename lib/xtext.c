@@ -53,7 +53,7 @@ static void do_underline_all( FL_Coord,
                               unsigned long *,
                               unsigned long * );
 
-#if defined ENABLE_XFT
+#if ENABLE_XFT
 static void
 draw_string( Display        * display,
              XftFont        * font,
@@ -135,8 +135,8 @@ fli_get_max_pixels_line( void )
  * Arguments:
  *  align       Alignment of the text relative to the box
  *  x, ym w, h  postion and size of box
- *  clip        0 = no clipping is to be used at all
- *              1 = clipping is to be done by this function
+ *  clip         0 = no clipping is to be used at all
+ *               1 = clipping is to be done by this function
  *              -1 = clipping is done but already has been set externally
  *  backcol     color to be used for selected text
  *  forecol     color for (unselected) text
@@ -188,7 +188,7 @@ fli_draw_string( int           align,
         vertalign;
     char * str = NULL,
          * p = NULL;
-#if defined ENABLE_XFT
+#if ENABLE_XFT
     XftFont * font = fl_get_font_struct( style, size );
 #else
     DrawString drawIt = img ? XDrawImageString : XDrawString;
@@ -369,7 +369,7 @@ fli_draw_string( int           align,
 
         /* Draw the text */
 
-#if defined ENABLE_XFT
+#if ENABLE_XFT
         draw_string( flx->display, font, forecol, line->x, line->y,
                      ( const XftChar8 * ) line->str, line->len, img );
 #else
@@ -422,7 +422,7 @@ fli_draw_string( int           align,
             fl_rectf( xsel, line->y - flx->fasc, wsel,
                       flx->fheight, forecol );
 
-#if defined ENABLE_XFT
+#if ENABLE_XFT
             draw_string( flx->display, font, backcol, xsel, line->y,
                          ( const XftChar8 * ) ( line->str + start ), len, img );
 #else
@@ -507,7 +507,7 @@ fli_draw_string( int           align,
 
     fli_safe_free( str );
 
-    /* Reset clipping if required */
+    /* Reset clipping if we set it */
 
     if ( clip > 0 )
         fl_unset_text_clipping( );
@@ -878,7 +878,7 @@ fli_draw_text_inside( int          align,
     /* Take care of special effects stuff  */
 
     if ( special == FL_SHADOW_STYLE )
-#if defined ENABLE_XFT
+#if ENABLE_XFT
     {
         int dist = size / 12 + 1;
 
@@ -1007,7 +1007,7 @@ fli_set_ul_property( int prop,
 
 XRectangle *
 fli_get_underline_rect(
-#if defined ENABLE_XFT
+#if ENABLE_XFT
                         XftFont     * fs,
 #else
                         XFontStruct * fs,
@@ -1025,7 +1025,7 @@ fli_get_underline_rect(
                   ul_thickness = 0;
     int ch = *( str + n );
     int pre;                /* stuff in front of the string, such as ^H */
-#if defined ENABLE_XFT
+#if ENABLE_XFT
     XGlyphInfo extents;
 
     XftTextExtents8( fl_display, fs, ( const XftChar8 * ) "_", 1, &extents );
@@ -1117,7 +1117,7 @@ do_underline_all( FL_Coord        x,
         return;
 
     if ( UL_thickness < 0 )
-#if defined ENABLE_XFT
+#if ENABLE_XFT
     {
         XGlyphInfo extents;
 
@@ -1134,7 +1134,7 @@ do_underline_all( FL_Coord        x,
     if ( *ul_thickness == 0 || *ul_thickness > 100 )
         *ul_thickness = strstr( fli_curfnt, "bold" ) ? 2 : 1;
 
-#if defined ENABLE_XFT
+#if ENABLE_XFT
     {
         XGlyphInfo extents;
         XftTextExtents8( fl_display, flx->fs,
@@ -1174,7 +1174,7 @@ fli_draw_stringTAB( Drawable     win,
     int w, tab;
     const char *p,
                *q;
-#if defined ENABLE_XFT
+#if ENABLE_XFT
     XftFont * fs = fl_get_font_struct( style, size );
 #else
     GC gc = XCreateGC( flx->display, win, 0, NULL );
@@ -1188,7 +1188,7 @@ fli_draw_stringTAB( Drawable     win,
 
     tab = fli_get_tabpixels( fs );
 
-#if ! defined ENABLE_XFT
+#if ! ENABLE_XFT
     XSetFont( flx->display, gc, fs->fid );
     XSetForeground( flx->display, gc, fl_get_flcolor( color ) );
 
@@ -1200,7 +1200,7 @@ fli_draw_stringTAB( Drawable     win,
     for ( w = 0, q = s; *q && ( p = strchr( q, '\t' ) ) && p - s < len;
           q = p + 1 )
     {
-#if defined ENABLE_XFT
+#if ENABLE_XFT
         draw_string( flx->display, fs, color, x + w, y,
                      ( const XftChar8 * ) q, s - q, img );
 #else
@@ -1209,7 +1209,7 @@ fli_draw_stringTAB( Drawable     win,
         w = ( ( w + fli_get_string_width( fs, q, p - q ) ) / tab + 1 ) * tab;
     }
 
-#if defined ENABLE_XFT
+#if ENABLE_XFT
     draw_string( flx->display, fs, color, x + w, y,
                  ( const XftChar8 * ) q, s - q + len, img );
 #else
@@ -1224,7 +1224,7 @@ fli_draw_stringTAB( Drawable     win,
 }
 
 
-#if defined ENABLE_XFT
+#if ENABLE_XFT
 static void
 draw_string( Display        * display,
              XftFont        * font,

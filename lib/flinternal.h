@@ -386,7 +386,7 @@ void fli_check_key_focus( const char *,
 void fli_free_cmdline_args( void );
 
 FL_RECT * fli_get_underline_rect(
-#if defined ENABLE_XFT
+#if ENABLE_XFT
                                   XftFont     *,
 #else
                                   XFontStruct *,
@@ -451,6 +451,9 @@ void fli_set_additional_clipping( FL_Coord,
                                   FL_Coord );
 
 FL_RECT * fli_get_global_clip_rect( void );
+
+
+void fli_apply_clipping_to_gc( GC gc );
 
 
 /* Application windows */
@@ -575,7 +578,7 @@ typedef struct {
     Display       * display;
     Window          win;
     GC              gc;
-#if defined ENABLE_XFT
+#if ENABLE_XFT
     XftDraw       * textdraw;
     XftDraw       * bgdraw;
 #else
@@ -586,7 +589,7 @@ typedef struct {
     int             fdesc;          /* font descent          */
     int             fasc;           /* font ascent           */
     int             fheight;        /* font height           */
-#if defined ENABLE_XFT
+#if ENABLE_XFT
     XftFont       * fs;
     XftColor        textcolor;
     XftColor        bktextcolor;
@@ -786,7 +789,7 @@ int fli_get_visible_forms_index( FL_FORM * );
 
 void fli_recount_auto_objects( void );
 
-#if defined ENABLE_XFT
+#if ENABLE_XFT
 int fli_get_tabpixels( XftFont * );
 #else
 int fli_get_tabpixels( XFontStruct * );
@@ -1116,7 +1119,7 @@ void fli_set_ul_property( int prop,
 
 int fli_is_valid_dir( const char * name );
 
-#if defined ENABLE_XFT
+#if ENABLE_XFT
 int fli_font_index_compare( const void * arg1,
                             const void * arg2 );
 

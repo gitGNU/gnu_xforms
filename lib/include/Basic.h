@@ -29,7 +29,7 @@
 #include <X11/Xatom.h>
 #include <X11/keysym.h>
 #include <X11/Xresource.h>
-#if defined ENABLE_XFT
+#if ENABLE_XFT
 #include <X11/Xft/Xft.h>
 #endif
 

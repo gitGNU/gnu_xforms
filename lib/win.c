@@ -32,10 +32,10 @@
 #include "config.h"
 #endif
 
-#include <ctype.h>
 #include "include/forms.h"
 #include "flinternal.h"
 #include "private/flvasprintf.h"
+#include <ctype.h>
 
 
 /*********************************************************************
@@ -850,7 +850,7 @@ fl_winset( Window win )
     if ( flx->win != win )
     {
         flx->win = win;
-#if defined ENABLE_XFT
+#if ENABLE_XFT
         XftDrawChange( flx->textdraw, win );
         XftDrawChange( flx->bgdraw, win );
 #endif

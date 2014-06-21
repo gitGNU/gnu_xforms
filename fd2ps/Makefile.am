@@ -11,7 +11,11 @@ man_MANS = fd2ps.1
 fd2ps.1:
 	cp -p $(srcdir)/fd2ps.man fd2ps.1
 
+if ENABLE_XFT
+INCLUDES = $$(pkg-config --cflags freetype2) -I$(top_srcdir) -I$(top_srcdir)/lib $(X_CFLAGS)
+else
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/lib $(X_CFLAGS)
+endif
 
 bin_PROGRAMS = fd2ps
 
