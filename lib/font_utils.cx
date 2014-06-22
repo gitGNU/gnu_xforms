@@ -40,89 +40,69 @@ fli_font_index_compare( const void * arg1,
 
 
 /***************************************
- * Function called (by qsort) in sorting a list of font names
- ***************************************/
-
-static int
-compare_font_names( const void * arg1,
-					const void * arg2 )
-{
-	return strcmp( * ( char * const * ) arg1, * ( char * const * ) arg2 );
-}
-
-
-/***************************************
  * Tries to convert a (possibly shortend) XLFD name or an alias name to
- * the full name (which is needed by XftFontOpenXlfd()) and returns an
- * allocated string with the full name on success, otherwise a NULL
- * pointer. The font name has the pixel size and resolution fields
- * set to '*' and the 10th of points field to '?'.
+ * the full name (which is needed by XftFontOpenXlfd()), hopefully the
+ * one tat would be loaded by XFontLoad(), and returns an allocated
+ * string with the full name on success, otherwise a NULL pointer. The
+ * font name has the pixel field set to '*' and the 10th of points
+ * field to '?'.
  ***************************************/
 
 char *
 fli_convert_to_full_xlfd( const char * pattern )
 {
 	int i, j;
-	int nnames = INT_MAX;
 	int available;
-	char ** font_list;
 	char **list;
-	char * value = NULL;
-	char *result = NULL;
+	static char *result = NULL;
 	XftFont * font;
-	char *quest;
+	char *qm;
 	char *sp, *sp2;
 	int cnt = 0;
 
-	/* Get a list of all fonts fitting the pattern */
+	if ( result )
+		fli_safe_free( result );
 
-	if ( ! ( font_list =
-			         XListFonts( fl_display, pattern, nnames, &available ) ) )
+	/* Get the first fitting font for the pattern */
+
+	if (    ! ( list = XListFonts( fl_display, pattern, 1, &available ) )
+		 || available == 0 )
 		return NULL;
 
-	/* Copy the pointers in the list (X11 could get upset if we mess
-	   around with the list it returned) and sort them */
-
-	list = fl_malloc( available * sizeof *list );
-	memcpy( list, font_list, available * sizeof *list );
-
-	qsort( list, available, sizeof *list, compare_font_names );
-
 	/* Now try to get the "real" name of the font, Xft doesn't like
-	   alialises etc. Stop when the first one has been found. */
+	   alialises etc. */
 
-	for ( i = 0; ! value && i < available; i++ )
+	XFontStruct * info = XLoadQueryFont( fl_display, list[ 0 ] );
+
+	for ( j = 0; j < info->n_properties; j++ )
 	{
-		XFontStruct * info = XLoadQueryFont( fl_display, list[ i ] );
 
-		for ( j = 0; j < info->n_properties; j++ )
+		char *atom = XGetAtomName( fl_display,
+								   info->properties[ j ].name );
+		char *value;
+
+		if ( ! strcmp( "FONT", atom ) )
+			value = XGetAtomName( fl_display,
+								  info->properties[ j ].card32 );
+
+		XFree( atom );
+
+		if ( value )
 		{
-
-			char *atom = XGetAtomName( fl_display,
-									   info->properties[ j ].name );
-
-			if ( ! strcmp( "FONT", atom ) )
-				value = XGetAtomName( fl_display,
-									 info->properties[ j ].card32 );
-
-			XFree( atom );
+			result = fl_strdup( value );
+			XFree( value );
+			break;
 		}
 
 		XFreeFontInfo( NULL, info, 1 );
 	}
 
-	fl_free( list );
-	XFreeFontNames( font_list );
+	XFreeFontNames( list );
 
 	/* Bail out if there was no fitting file name */
 
-	if ( ! value )
+	if ( ! result )
 		return NULL;
-
-	/* Get a copy of the result */
-
-	result = fl_strdup( value );
-	XFree( value );
 
 	/* Now look for the pixel size field in the XLFD name and replace it
 	   by a '*', it's the one after the 7th dash */
@@ -144,7 +124,7 @@ fli_convert_to_full_xlfd( const char * pattern )
 	   remember its position, we'll replace it by a '?' if the font can
 	   be loaded. */
 
-	quest = ++sp;
+	qm = ++sp;
 
 	*sp++ = '*';
 	sp2 = sp;
@@ -153,27 +133,14 @@ fli_convert_to_full_xlfd( const char * pattern )
 	if ( sp2 != sp )
 		memmove( sp, sp2, strlen( sp2 ) + 1 );
 
-	*++sp = '*';
-	sp2 = ++sp;
-	while ( *sp2 != '-' )
-		sp2++;
-	if ( sp2 != sp )
-		memmove( sp, sp2, strlen( sp2 ) + 1 );
-
-	*++sp = '*';
-	sp2 = ++sp;
-	while ( *sp2 != '-' )
-		sp2++;
-	if ( sp2 != sp )
-		memmove( sp, sp2, strlen( sp2 ) + 1 );
-
-
 	/* Try to load the font */
 
-	if ( ( font = XftFontOpenXlfd( fl_display, fl_screen, value ) ) )
+	if ( ( font = XftFontOpenXlfd( flx->display, flx->screen, result ) ) )
 	{
-		XftFontClose( fl_display, font );
-		*quest = '?';
+		XftFontClose( flx->display, font );
+		*qm = '?';
+	
+		fprintf( stderr, "%s -> %s\n", pattern, result );
 	}
 	else
 		fli_safe_free( result );
@@ -192,12 +159,12 @@ fli_get_fname( const FL_FONT * font,
 			   int             size )
 {
 	char * n = fl_malloc( strlen( font->name ) + 20 );
-    size_t len = strchr( font->name, '?' ) - font->name - 1;
+    char *p = strchr( font->name, '?' ) + 1;
 
-	strncpy( n, font->name, len );
-	sprintf( n, "%d\n",
+	strcpy( n, font->name );
+	sprintf( strchr( n, '?' ), "%d",
 			 FL_nint( 10 * global_font_scale * font->scale * size ) );
-	return strcat( n, font->name + len + 1 );
+	return strcat( n, p );
 }
 
 

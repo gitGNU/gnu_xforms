@@ -1310,6 +1310,7 @@ fli_set_additional_clipping( FL_Coord x,
 
 
 /***************************************
+ * Sets the current global clipping to the GC passed to the function
  ***************************************/
 
 void

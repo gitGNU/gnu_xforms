@@ -419,6 +419,8 @@ FL_EXPORT void fl_draw_frame( int      style,
  */
 
 #if ENABLE_XFT
+FL_EXPORT void fl_use_bitmap_fonts( void );
+
 FL_EXPORT XftFont *fl_get_font_struct( int style,
 									   int size );
 #else

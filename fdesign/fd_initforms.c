@@ -141,7 +141,7 @@ init_helpform( void )
 static void
 init_controlform( void )
 {
-    /* sort of auto-resizing depending on the font size */
+    /* Sort of auto-resizing depending on the font size */
 
     if ( fli_cntl.buttonFontSize > FL_DEFAULT_SIZE )
     {

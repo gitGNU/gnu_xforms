@@ -879,11 +879,7 @@ fli_draw_text_inside( int          align,
 
     if ( special == FL_SHADOW_STYLE )
 #if ENABLE_XFT
-    {
-        int dist = size / 12 + 1;
-
-        D( x + dist, y + dist, FL_BOTTOM_BCOL );
-    }
+        D( x + 2, y + 2, FL_RIGHT_BCOL );
 #else
         D( x + 2, y + 2, FL_BOTTOM_BCOL );
 #endif

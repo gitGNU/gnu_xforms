@@ -875,6 +875,8 @@ main( int    argc,
 
     fl_set_defaults( mask, &cntl );
 
+//    fl_use_bitmap_fonts( );
+
     if ( ! ( fd_display = fl_initialize( &argc, argv, 0, fd_cmdopt, Ncopt ) ) )
         exit( 1 );
 

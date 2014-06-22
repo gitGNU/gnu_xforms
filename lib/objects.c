@@ -2995,7 +2995,7 @@ fli_scale_object( FL_OBJECT * obj,
         obj->fl2  = obj->fl1 + new_w;
         obj->fr2  = obj->form->w_hr - obj->fl2;
         obj->ft2  = obj->ft1 + new_h;
-        obj->fb2  = obj->form->h_hr - obj->ft2;;
+        obj->fb2  = obj->form->h_hr - obj->ft2;
 
         obj->x    = FL_crnd( obj->fl1 );
         obj->y    = FL_crnd( obj->ft1 );
