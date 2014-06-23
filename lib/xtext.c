@@ -1171,16 +1171,23 @@ fli_draw_stringTAB( Drawable     win,
     const char *p,
                *q;
 #if ENABLE_XFT
-    XftFont * fs = fl_get_font_struct( style, size );
+    XftFont * fs;
 #else
-    GC gc = XCreateGC( flx->display, win, 0, NULL );
-    XFontStruct * fs = fl_get_font_struct( style, size );
+    GC gc;
+    XFontStruct * fs;
     DrawString drawIt = img ? XDrawImageString : XDrawString;
-    int cx, cy, cw, ch;
+    FL_COORD cx, cy, cw, ch;
 #endif
 
     if ( win == None )
         return 0;
+
+#if ENABLE_XFT
+    fs = fl_get_font_struct( style, size );
+#else
+    gc = XCreateGC( flx->display, win, 0, NULL );
+    fs = fl_get_font_struct( style, size );
+#endif
 
     tab = fli_get_tabpixels( fs );
 

@@ -619,8 +619,8 @@ pre_connect( int    argc,
             print_version( 1 );
 #if ENABLE_XFT
         else if ( strncmp( argv[ i ] + 1, "use-x11-fonts", 5 ) == 0 )
-#endif
             fdopt.use_x11_fonts = 1;
+#endif
         else if ( strncmp( argv[ i ] + 1, "altformat", 3 ) == 0 )
             fdopt.altformat = 1;
         else if ( strncmp( argv[ i ] + 1, "callback", 3 ) == 0 )
@@ -888,8 +888,12 @@ main( int    argc,
 
     fl_set_defaults( mask, &cntl );
 
+#if ENABLE_XFT
     if ( fdopt.use_x11_fonts )
         fl_use_bitmap_fonts( );
+#else
+    fdopt.use_x11_fonts = 1;
+#endif
 
     if ( ! ( fd_display = fl_initialize( &argc, argv, 0, fd_cmdopt, Ncopt ) ) )
         exit( 1 );

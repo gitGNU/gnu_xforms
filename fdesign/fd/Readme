@@ -4,5 +4,7 @@ fdesign -convert -I \"../lib/include/forms.h\" *.fd
 
 This makes sure that the newest version of the forms.h file
 is included instead of an already installed forms.h file
-(typically /usr/local/include/forms.h).
+(typically /usr/local/include/forms.h). It also avoids that
+during installation all of fdesign gets recompiled.
+
 

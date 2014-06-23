@@ -1050,6 +1050,8 @@ get_clipping( int        type,
         else
             GET_RECT( clip_rect[ GLOBAL_CLIP ], x, y, w, h );
     }
+    else
+        *x = *y = *w = *h = 0;
 
     return is_clipped( type, include_global );
 }

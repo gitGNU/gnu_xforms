@@ -397,8 +397,6 @@ init_classes( void )
 
     initialized = 1;
 
-    fl_set_browser_fontstyle( fd_control->objectbrowser, FL_TIMES_STYLE );
-
     fl_add_browser_line( fd_control->objectbrowser, "box" );
     add_class_def( VN( FL_BOX ), OBJNAME( box ), ++bl );
     for ( vp = vn_btype; vp->val >= 0; vp++ )
