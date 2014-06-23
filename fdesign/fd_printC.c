@@ -1410,6 +1410,11 @@ output_main_newformat( FILE * fn,
 
     fprintf( fn, "\n" );
 
+#if ENABLE_XFT
+    if ( fdopt.use_x11_fonts )
+        fprintf( fn, "    fl_use_bitmap_fonts( );\n\n" );
+#endif
+
     fprintf( fn, "    fl_initialize( &argc, argv, 0, 0, 0 );\n" );
 
     for ( i = 0; i < nform; i++ )
@@ -1454,6 +1459,10 @@ output_main_altformat( FILE * fn,
 
     fprintf( fn, "int\nmain( int    argc,\n      char * argv[ ] )\n{\n" );
 
+#if ENABLE_XFT
+    if ( fdopt.use_x11_fonts )
+        fprintf( fn, "    fl_use_bitmap_fonts( );\n\n" );
+#endif
     fprintf( fn, "    fl_initialize( &argc, argv, 0, 0, 0 );\n\n" );
     fprintf( fn, "\n     %s( );\n\n", main_name );
     fprintf( fn, "\n     /* Fill-in form initialization code */\n\n" );

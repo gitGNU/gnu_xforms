@@ -64,6 +64,9 @@ typedef struct {
     int    compensate;      /* if emit font size compensation code */
     int    unit;
     char * output_dir;
+#if ENABLE_XFT
+    int    use_x11_fonts;
+#endif
 } FD_Opt;
 
 enum {

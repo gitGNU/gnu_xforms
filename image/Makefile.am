@@ -1,11 +1,7 @@
 include $(top_srcdir)/config/common.am
 
 
-if ENABLE_XFT
-INCLUDES = -DMAKING_FORMS $(X_CFLAGS) $$(pkg-config --cflags freetype2)
-else
-INCLUDES = -DMAKING_FORMS $(X_CFLAGS)
-endif
+INCLUDES = -DMAKING_FORMS $(X_CFLAGS) $(FREETYPE_INCLUDE)
 
 include_HEADERS	= flimage.h
 
@@ -13,11 +9,7 @@ lib_LTLIBRARIES = libflimage.la
 
 libflimage_la_LDFLAGS = -no-undefined -version-info @SO_VERSION@
 
-if ENABLE_XFT
-libflimage_la_LIBADD = ../lib/libforms.la $(JPEG_LIB) $(X_LIBS) -lX11 -lXft
-else
-libflimage_la_LIBADD = ../lib/libforms.la $(JPEG_LIB) $(X_LIBS) -lX11
-endif
+libflimage_la_LIBADD = ../lib/libforms.la $(JPEG_LIB) $(X_LIBS) -lX11 $(XFT_LIB)
 
 libflimage_la_SOURCES = \
 	flimage.h \

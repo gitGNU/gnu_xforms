@@ -505,8 +505,9 @@ fl_enumerate_fonts( void ( * output )( const char *s ),
 	int n;
 
     for ( n = i = 0; output && i < font_count; i++, n++ )
-		output( shortform ?
-                cv_fname( fl_get_font_name( i ) ) : fl_get_font_name );
+		output( shortform
+                ? ( const char * ) cv_fname( fl_get_font_name( i ) )
+                : fl_get_font_name );
 
     return n;
 }

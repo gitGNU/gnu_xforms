@@ -13,21 +13,13 @@ EXTRA_DIST = xforms.man dirent_vms.h vms_readdir.c \
 
 SUBDIRS = bitmaps fd include private
 
-if ENABLE_XFT
-INCLUDES = -DMAKING_FORMS $(X_CFLAGS) $(BWC) $$(pkg-config --cflags freetype2)
-else
-INCLUDES = -DMAKING_FORMS $(X_CFLAGS) $(BWC)
-endif
+INCLUDES = -DMAKING_FORMS $(X_CFLAGS) $(BWC) $(FREETYPE_INCLUDE)
 
 lib_LTLIBRARIES = libforms.la
 
 libforms_la_LDFLAGS = -no-undefined -version-info @SO_VERSION@
 
-if ENABLE_XFT
-libforms_la_LIBADD =  $(X_LIBS) $(XPM_LIB) -lX11 -lXft
-else
-libforms_la_LIBADD =  $(X_LIBS) $(XPM_LIB) -lX11
-endif
+libforms_la_LIBADD =  $(X_LIBS) $(XPM_LIB) -lX11 $(XFT_LIB)
 
 nodist_libforms_la_SOURCES = config.h
 

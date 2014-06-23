@@ -147,8 +147,13 @@ fi
 AM_CONDITIONAL(ENABLE_XFT, [test x$enable_xft == xyes])
 if test x$enable_xft == xyes; then
 	AC_SUBST(WITH_XFT, 1)
+	freetype_include=$(pkg-config --cflags freetype2)
+	AC_SUBST(FREETYPE_INCLUDE, $freetype_include)
+	AC_SUBST(XFT_LIB, -lXft)
 else
 	AC_SUBST(WITH_XFT, 0)
+	AC_SUBST(FREETYPE_INCLUDE, "")
+	AC_SUBST(XFT_LIB)
 fi
 
 

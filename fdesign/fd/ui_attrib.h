@@ -3,7 +3,7 @@
 #ifndef FD_attrib_h_
 #define FD_attrib_h_
 
-#include <forms.h>
+#include "../lib/include/forms.h"
 
 /* Callbacks, globals and object handlers */
 

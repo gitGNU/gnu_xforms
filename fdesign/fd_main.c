@@ -60,7 +60,7 @@ static const char *fd_version[ ] =
 {
     "fdesign (FORM Designer) " LIBVERSION( FL_VERSION, FL_REVISION ) "." FL_FIXLEVEL,
     "Copyright (c) 1996-2002 by T.C. Zhao and Mark Overmars",
-    "GNU Lesser General Public License sinc 2002",
+    "GNU Lesser General Public License since 2002",
     NULL
 };
 
@@ -379,31 +379,34 @@ main_loop( void )
 
 static FL_CMD_OPT fd_cmdopt[ ] =
 {
-    { "-geometry",   "*geometry",       XrmoptionSepArg, NULL     },
-    { "-border",     ".XForm.Border",   XrmoptionNoArg, "1"       },
-    { "-convert",    ".convert",        XrmoptionNoArg, "1"       },
-    { "-dir",        ".dir",            XrmoptionSepArg, NULL     },
-    { "-unit",       "*unit",           XrmoptionSepArg, NULL     },
-    { "-altformat",  "*altformat",      XrmoptionNoArg, "1"       },
-    { "-I",          "*xformHeader",    XrmoptionSepArg, NULL     },
-    { "-G",          "*glcanvasHeader", XrmoptionSepArg, NULL     },
-    { "-main",       "*main",           XrmoptionNoArg, "1"       },
-    { "-callback",   "*callback",       XrmoptionNoArg, "1"       },
-    { "-lax",        "*lax",            XrmoptionNoArg, "1"       },
-    { "-nocode",     "*nocode",         XrmoptionNoArg, "0"       },
-    { "-version",    ".fdversion",      XrmoptionNoArg, "1"       },
-    { "-compensate", ".compensate",     XrmoptionNoArg, "1"       },
-    { "-ada",        ".language",       XrmoptionNoArg, "ada95"   },
-    { "-ada95",      ".language",       XrmoptionNoArg, "ada95"   },
-    { "-perl",       ".language",       XrmoptionNoArg, "perl"    },
-    { "-python",     ".language",       XrmoptionNoArg, "python"  },
-    { "-fortran",    ".language",       XrmoptionNoArg, "fortran" },
-    { "-pascal",     ".language",       XrmoptionNoArg, "pascal"  },
-    { "-scm",        ".language",       XrmoptionNoArg, "scm"     },
-    { "-ps",         ".language",       XrmoptionNoArg, "ps"      },
-    { "-filter",     ".filter",         XrmoptionSepArg, NULL     },
-    { "-migrate",    ".migrate",        XrmoptionNoArg, "1"       },
-    { "-help",       ".help",           XrmoptionNoArg, "1"       }
+    { "-geometry",      "*geometry",       XrmoptionSepArg, NULL     },
+    { "-border",        ".XForm.Border",   XrmoptionNoArg, "1"       },
+    { "-convert",       ".convert",        XrmoptionNoArg, "1"       },
+    { "-dir",           ".dir",            XrmoptionSepArg, NULL     },
+#if ENABLE_XFT
+    { "-use-x11-fonts", "*use-x11-fonts",  XrmoptionNoArg, "1"       },
+#endif
+    { "-unit",          "*unit",           XrmoptionSepArg, NULL     },
+    { "-altformat",     "*altformat",      XrmoptionNoArg, "1"       },
+    { "-I",             "*xformHeader",    XrmoptionSepArg, NULL     },
+    { "-G",             "*glcanvasHeader", XrmoptionSepArg, NULL     },
+    { "-main",          "*main",           XrmoptionNoArg, "1"       },
+    { "-callback",      "*callback",       XrmoptionNoArg, "1"       },
+    { "-lax",           "*lax",            XrmoptionNoArg, "1"       },
+    { "-nocode",        "*nocode",         XrmoptionNoArg, "0"       },
+    { "-version",       ".fdversion",      XrmoptionNoArg, "1"       },
+    { "-compensate",    ".compensate",     XrmoptionNoArg, "1"       },
+    { "-ada",           ".language",       XrmoptionNoArg, "ada95"   },
+    { "-ada95",         ".language",       XrmoptionNoArg, "ada95"   },
+    { "-perl",          ".language",       XrmoptionNoArg, "perl"    },
+    { "-python",        ".language",       XrmoptionNoArg, "python"  },
+    { "-fortran",       ".language",       XrmoptionNoArg, "fortran" },
+    { "-pascal",        ".language",       XrmoptionNoArg, "pascal"  },
+    { "-scm",           ".language",       XrmoptionNoArg, "scm"     },
+    { "-ps",            ".language",       XrmoptionNoArg, "ps"      },
+    { "-filter",        ".filter",         XrmoptionSepArg, NULL     },
+    { "-migrate",       ".migrate",        XrmoptionNoArg, "1"       },
+    { "-help",          ".help",           XrmoptionNoArg, "1"       }
 };
 
 #define Ncopt ( sizeof fd_cmdopt / sizeof *fd_cmdopt )
@@ -436,6 +439,9 @@ static FL_resource fdres[ ] =
     { "align.geometry", "Align.Geometry", FL_STRING, fdaligngeom, 0, NG },
     { "control.border", "XForm.Border", FL_BOOL, &fd_cntlborder, "0", 0 },
     { "convert", "Convert", FL_BOOL, &fdopt.conv_only, "0", 0 },
+#if ENABLE_XFT
+    { "use-x11-fonts", "Use-X11-Fonts", FL_BOOL, &fdopt.use_x11_fonts, "0", 0 },
+#endif
     { "migrate", "Migrate", FL_BOOL, &fdopt.conv_only, "0", 0 },
     { "compensate", "Compensate", FL_BOOL, &fdopt.compensate, "0", 0 },
     { "unit", "Unit", FL_STRING, fd_sunit, "pixel", 30 },
@@ -458,6 +464,9 @@ char *helps[ ] =
 {
     "-help                     this message",
     "-display host:dpy         display name",
+#if ENABLE_XFT
+    "-use-x11-fonts            use old X11 bitmap fonts",
+#endif
     "-name appname             change app name",
     "-border                   add border to control panel",
     "-unit {mm|point|pixel|cp|cmm} unit of measure. Default pixel",
@@ -608,6 +617,10 @@ pre_connect( int    argc,
             usage( argv[ 0 ], 1 );
         else if ( strncmp( argv[ i ] + 1, "version", 4 ) == 0 )
             print_version( 1 );
+#if ENABLE_XFT
+        else if ( strncmp( argv[ i ] + 1, "use-x11-fonts", 5 ) == 0 )
+#endif
+            fdopt.use_x11_fonts = 1;
         else if ( strncmp( argv[ i ] + 1, "altformat", 3 ) == 0 )
             fdopt.altformat = 1;
         else if ( strncmp( argv[ i ] + 1, "callback", 3 ) == 0 )
@@ -875,7 +888,8 @@ main( int    argc,
 
     fl_set_defaults( mask, &cntl );
 
-//    fl_use_bitmap_fonts( );
+    if ( fdopt.use_x11_fonts )
+        fl_use_bitmap_fonts( );
 
     if ( ! ( fd_display = fl_initialize( &argc, argv, 0, fd_cmdopt, Ncopt ) ) )
         exit( 1 );

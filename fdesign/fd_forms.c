@@ -543,6 +543,20 @@ load_fd_header( void )
 
             set_snap_size( snap_size, 1 );
         }
+        else if ( ! strcmp( p, "Use-X11-Fonts" ) )
+        {
+#if ENABLE_XFT
+            if ( ff_read( "%d", &fdopt.use_x11_fonts ) < 0 )
+                return ff_err( "Expected border width" );
+
+            /* HERE WE SHOULD SWITCH THE FONT SET IF NECESSARY!
+
+               XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+               TODO...
+            */
+#endif
+        }
         else if ( ! strcmp( p, "Border Width" ) )
         {
             int bw;
@@ -781,6 +795,11 @@ save_forms( const char *str )
 
     if ( snap != 10 )
         fprintf( fp, "SnapGrid: %d\n", snap );
+
+#if ENABLE_XFT
+    if ( fdopt.use_x11_fonts )
+#endif
+        fprintf( fp, "Use-X11-Fonts: 1\n" );
 
     for ( i = 0; i < fnumb; i++ )
         write_form( fp, forms[ i ].form, forms[ i ].fname );

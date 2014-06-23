@@ -51,7 +51,7 @@ fli_font_index_compare( const void * arg1,
 char *
 fli_convert_to_full_xlfd( const char * pattern )
 {
-	int i, j;
+	int i;
 	int available;
 	char **list;
 	static char *result = NULL;
@@ -74,16 +74,16 @@ fli_convert_to_full_xlfd( const char * pattern )
 
 	XFontStruct * info = XLoadQueryFont( fl_display, list[ 0 ] );
 
-	for ( j = 0; j < info->n_properties; j++ )
+	for ( i = 0; i < info->n_properties; i++ )
 	{
 
 		char *atom = XGetAtomName( fl_display,
-								   info->properties[ j ].name );
+								   info->properties[ i ].name );
 		char *value;
 
 		if ( ! strcmp( "FONT", atom ) )
 			value = XGetAtomName( fl_display,
-								  info->properties[ j ].card32 );
+								  info->properties[ i ].card32 );
 
 		XFree( atom );
 
@@ -139,8 +139,6 @@ fli_convert_to_full_xlfd( const char * pattern )
 	{
 		XftFontClose( flx->display, font );
 		*qm = '?';
-	
-		fprintf( stderr, "%s -> %s\n", pattern, result );
 	}
 	else
 		fli_safe_free( result );

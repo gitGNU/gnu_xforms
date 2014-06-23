@@ -12,19 +12,11 @@ man_MANS = fdesign.1
 fdesign.1:
 	cp -p $(srcdir)/fdesign.man fdesign.1
 
-if ENABLE_XFT
-INCLUDES = $$(pkg-config --cflags freetype2) -I./xpm $(X_CFLAGS)
-else
-INCLUDES = -I./xpm $(X_CFLAGS)
-endif
+INCLUDES = -I./xpm $(X_CFLAGS) $(FREETYPE_INCLUDE)
 
 bin_PROGRAMS = fdesign
 
-if ENABLE_XFT
-fdesign_LDADD = $(top_srcdir)/lib/libforms.la $(X_LIBS) $(X_PRE_LIBS) $(XPM_LIB) -lX11 -lXft $(LIBS) $(X_EXTRA_LIBS)
-else
-fdesign_LDADD = $(top_srcdir)/lib/libforms.la $(X_LIBS) $(X_PRE_LIBS) $(XPM_LIB) -lX11 $(LIBS) $(X_EXTRA_LIBS)
-endif
+fdesign_LDADD = $(top_srcdir)/lib/libforms.la $(X_LIBS) $(X_PRE_LIBS) $(XPM_LIB) -lX11 $(XFT_LIB) $(LIBS) $(X_EXTRA_LIBS)
 
 fdesign_SOURCES = \
 	fd_attribs.c \
