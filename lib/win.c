@@ -850,7 +850,7 @@ fl_winset( Window win )
     if ( flx->win != win )
     {
         flx->win = win;
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
         XftDrawChange( flx->textdraw, win );
         XftDrawChange( flx->bgdraw, win );
 #endif

@@ -357,7 +357,12 @@ attrib_init( FD_generic_attrib * ui )
     VN_pair *vp;
 
     if ( attrib_initialized )
+    {
+        fnts = ui->fontobj;
+        fl_clear_choice( fnts );
+        fl_enumerate_fonts( add_font_choice, 1 );
         return;
+    }
 
     attrib_initialized = 1;
 

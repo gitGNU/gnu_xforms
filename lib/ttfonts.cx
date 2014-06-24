@@ -25,10 +25,14 @@
 
 static double global_font_scale = 1.0;
 
-static const char *default_families[ ] = { "DejaVu Sans",
-										   "DejaVu Sans Mono",
-										   "DejaVu Serif",       
-										   "Century Schoolbook L" };
+/* Default font families */
+
+static const char * default_families[ ] = { "DejaVu Sans",
+                                            "DejaVu Sans Mono",
+                                            "DejaVu Serif",       
+                                            "Century Schoolbook L" };
+
+/* Default styles */
 
 struct FONT_STYLE {
 	int slant;
@@ -39,7 +43,10 @@ struct FONT_STYLE {
       { XFT_SLANT_ITALIC, XFT_WEIGHT_MEDIUM },
       { XFT_SLANT_ITALIC, XFT_WEIGHT_BOLD   }  };
 
-static const char *bitmap_fonts[ ] =
+
+/* Old X11 bitmap fonts as alternatives */
+
+static const char * bitmap_fonts[ ] =
 {
     "-*-helvetica-medium-r-*-*-*-?-*-*-p-*-*-*",
     "-*-helvetica-bold-r-*-*-*-?-*-*-p-*-*-*",
@@ -62,33 +69,15 @@ static const char *bitmap_fonts[ ] =
     "-*-charter-bold-i-*-*-*-?-*-*-*-*-*-*",
 };
 
+
+/* List of all fonts */
+
 static FL_FONT * fl_fonts = NULL;
 static size_t font_count = 0;
 
 static size_t num_families = sizeof default_families / sizeof *default_families;
 static size_t num_styles = sizeof default_styles / sizeof *default_styles;
 static size_t num_bitmap_fonts = sizeof bitmap_fonts / sizeof *bitmap_fonts;
-
-
-static int use_bitmap_fonts = 0;
-
-
-/***************************************
- * Function that allows to switch back to the use of the classical X11
- * bitmap fonts for the default fonts to help with older programs.
- ***************************************/
-
-void
-fl_use_bitmap_fonts( void )
-{
-    if ( fl_fonts )
-    {
-        M_err( "fl_use_bitmap_fonts", "Must be called before fl_initialize" );
-        return;
-    }
-
-    use_bitmap_fonts = 1;
-}
 
 
 /***************************************
@@ -102,67 +91,21 @@ fli_init_fonts( void )
 	if ( fl_fonts )
 		return;
 
-    if ( ! use_bitmap_fonts )
-    {
-        fl_fonts =
-                 fl_malloc( ( num_families * num_styles ) * sizeof *fl_fonts );
+    fl_fonts = fl_malloc( ( num_families * num_styles ) * sizeof *fl_fonts );
 
-        for ( i = 0; i < num_families; i++ )
-            for ( j = 0; j < num_styles; j++ )
-            {
-                fl_fonts[ font_count ].index = font_count;
-                fl_fonts[ font_count ].name =
-                                             fl_strdup( default_families[ i ] );
-		
-                fl_fonts[ font_count ].slant  = default_styles[ j ].slant;
-                fl_fonts[ font_count ].weight = default_styles[ j ].weight;
-                fl_fonts[ font_count ].scale = 1.0;
-
-                fl_fonts[ font_count ].sized_fonts = NULL;
-                fl_fonts[ font_count ].size_count = 0;
-
-                font_count++;
-            }
-    }
-    else
-    {
-        fl_fonts = fl_malloc( num_bitmap_fonts * sizeof *fl_fonts );
-
-        for ( ; font_count < num_bitmap_fonts; font_count++ )
+    for ( i = 0; i < num_families; i++ )
+        for ( j = 0; j < num_styles; font_count++, j++ )
         {
-            const char *name =
-                fli_convert_to_full_xlfd( bitmap_fonts[ font_count ] );
-
             fl_fonts[ font_count ].index = font_count;
-
-            if ( name )
-            {
-                fl_fonts[ font_count ].name = fl_strdup( name );
-                fl_fonts[ font_count ].slant  = -1;
-                fl_fonts[ font_count ].weight = -1;
-            }
-            else
-            {
-                int family = font_count / num_styles;
-                int style  = font_count % num_styles;
-
-                M_err( "fli_init_fonts", "No font fitting \"%s\" found",
-                       bitmap_fonts[ font_count ] );
-                
-                fl_fonts[ font_count ].name =
-                                       fl_strdup( default_families[ family ] );
-
-                fl_fonts[ font_count ].slant  = default_styles[ style ].slant;
-                fl_fonts[ font_count ].weight = default_styles[ style ].weight;
+            fl_fonts[ font_count ].name  = fl_strdup( default_families[ i ] );
 		
-            }
-
+            fl_fonts[ font_count ].slant  = default_styles[ j ].slant;
+            fl_fonts[ font_count ].weight = default_styles[ j ].weight;
             fl_fonts[ font_count ].scale = 1.0;
 
             fl_fonts[ font_count ].sized_fonts = NULL;
             fl_fonts[ font_count ].size_count = 0;
         }
-    }
 
     flx->textdraw = fl_state[ fl_vmode ].textdraw =
                            XftDrawCreate( flx->display, fl_root,
@@ -309,6 +252,33 @@ fl_get_font_name( int index )
 
 
 /***************************************
+ * ALlows to switch between the use of True Type fonts and the old
+ * X11 bitmap fonts as the default fonts
+ ***************************************/
+
+void
+fl_set_default_font_type( FL_FONT_TYPE type )
+{
+    size_t i, j;
+
+    if ( type == FL_X11_FONT )
+        for ( i = 0; i < num_bitmap_fonts; i++ )
+            fl_set_font_name( i, bitmap_fonts[ i ] );
+    else if  ( type == FL_XFT_FONT )
+        for ( i = 0; i < num_families; i++ )
+            for ( j = 0; j < num_styles; j++ )
+                fl_set_xft_font_name( i * num_styles + j,
+                                      default_families[ i ],
+                                      default_styles[ j ].slant,
+                                      default_styles[ j ].weight );
+    else
+        M_err( "fl_set_default_font_type", "Invalid argument" );
+
+    fl_state[ fl_vmode ].cur_fnt = flx->fs = NULL;
+}
+
+
+/***************************************
  * Add a new X11 (bitmap) font (indexed by n) or change the existing font
  * at that index.
  ***************************************/
@@ -334,7 +304,7 @@ fl_set_font_name( int          index,
 
 	if ( ! ( full_name = fli_convert_to_full_xlfd( name ) ) )
 	{
-        M_warn( "fl_set_font_name", "Invalid font name" );
+        M_warn( "fl_set_font_name", "Font '%s' not found", name );
 		return -1;
 	}
 
@@ -350,10 +320,9 @@ fl_set_font_name( int          index,
 
 		fli_safe_free( font->sized_fonts );
 		font->size_count = 0;
+		fli_safe_free( font->name );
 
-		fl_free( font->name );
-
-		font->name = full_name;
+		font->name = fl_strdup( full_name );
 		font->slant = font->weight = -1;
 		font->scale = 1.0;
 	}
@@ -363,13 +332,14 @@ fl_set_font_name( int          index,
 							   ( font_count + 1 ) * sizeof *fl_fonts );
 
 		fl_fonts[ font_count ].index       = index;
-		fl_fonts[ font_count ].name        = full_name;
+		fl_fonts[ font_count ].name        = fl_strdup( full_name );
 		fl_fonts[ font_count ].slant       = fl_fonts[ font_count ].weight = -1;
 		fl_fonts[ font_count ].sized_fonts = NULL;
 		fl_fonts[ font_count ].size_count  = 0;
-		fl_fonts[ font_count++ ].scale     = 1.0;
+		fl_fonts[ font_count ].scale       = 1.0;
 
-		qsort( fl_fonts, font_count, sizeof *fl_fonts, fli_font_index_compare );
+		qsort( fl_fonts, ++font_count, sizeof *fl_fonts,
+               fli_font_index_compare );
 	}
 
 	return 0;
@@ -401,17 +371,17 @@ fl_set_font_name_f( int          index,
  ***************************************/
 
 int
-fl_set_ttfont_name( int              index,
-					const char     * name,
-				    FL_FONT_SLANT    slant,
-					FL_FONT_WEIGHT   weight )
+fl_set_xft_font_name( int              index,
+                      const char     * name,
+                      FL_FONT_SLANT    slant,
+                      FL_FONT_WEIGHT   weight )
 {
 	XftFont * font;
 	FL_FONT *f;
 
 	if ( ! name || ! *name )
     {
-        M_warn( "fl_set_font_name", "Missing font name" );
+        M_warn( "fl_set_xft_font_name", "Missing font name" );
         return -1;
     }
 
@@ -419,7 +389,7 @@ fl_set_ttfont_name( int              index,
 		 && slant != FL_SLANT_ITALIC
 		 && slant != FL_SLANT_OBLIQUE )
 	{
-        M_warn( "fl_set_font_name", "Invalid slant for font" );
+        M_warn( "fl_set_xft_font_name", "Invalid slant for font" );
         return -1;
     }
 		
@@ -429,32 +399,33 @@ fl_set_ttfont_name( int              index,
 		 && weight != FL_WEIGHT_BOLD
 		 && weight != FL_WEIGHT_BLACK )
 	{
-        M_warn( "fl_set_font_name", "Invalid weigt for font" );
+        M_warn( "fl_set_xft_font_name", "Invalid weight for font" );
         return -1;
     }
 
     if ( ! flx || ! flx->display )
 	{
-		M_warn( "fl_set_font_name", "Can't load font before initialization" );
+		M_warn( "fl_set_xft_font_name",
+                "Can't load font before fl_initialize()" );
         return 1;
 	}
 
-	font =XftFontOpen( fl_display, fl_screen,
-					   XFT_FAMILY, XftTypeString, name,
-					   XFT_SIZE,   XftTypeDouble,  ( double ) FL_DEFAULT_SIZE,
-					   XFT_SLANT,  XftTypeInteger, slant,
-					   XFT_WEIGHT, XftTypeInteger, weight,
-					   NULL );
+	font = XftFontOpen( fl_display, fl_screen,
+                        XFT_FAMILY, XftTypeString, name,
+                        XFT_SIZE,   XftTypeDouble,  ( double ) FL_DEFAULT_SIZE,
+                        XFT_SLANT,  XftTypeInteger, slant,
+                        XFT_WEIGHT, XftTypeInteger, weight,
+                        NULL );
 
 	if ( ! font )
 	{
-        M_warn( "fl_set_font_name", "Invalid font name" );
+        M_warn( "fl_set_xft_font_name", "Invalid font name" );
 		return -1;
 	}
 
 	XftFontClose( fl_display, font );
 
-	/* Now that we have a tested name we can either replace an existing
+	/* Now that we have a tested font we can either replace an existing
 	   font entry or create a new one. */
 
 	if ( ( f = fl_get_font_from_index( index ) ) )
@@ -466,12 +437,12 @@ fl_set_ttfont_name( int              index,
 
 		fli_safe_free( f->sized_fonts );
 		f->size_count = 0;
-
-		fl_free( f->name );
+		fli_safe_free( f->name );
 
 		f->name   = fl_strdup( name );
 		f->slant  = slant;
 		f->weight = weight;
+        f->scale  = 1.0;
 	}
 	else
 	{
@@ -482,11 +453,12 @@ fl_set_ttfont_name( int              index,
 		fl_fonts[ font_count ].name         = fl_strdup( name );
 		fl_fonts[ font_count ].slant        = slant;
 		fl_fonts[ font_count ].weight       = weight;
-		fl_fonts[ font_count ].scale        = 1;
+		fl_fonts[ font_count ].scale        = 1.0;
 		fl_fonts[ font_count ].sized_fonts  = NULL;
-		fl_fonts[ font_count++ ].size_count = 0;
+		fl_fonts[ font_count ].size_count   = 0;
 
-		qsort( fl_fonts, font_count, sizeof *fl_fonts, fli_font_index_compare );
+		qsort( fl_fonts, ++font_count, sizeof *fl_fonts,
+               fli_font_index_compare );
 	}
 
 	return 0;
@@ -506,8 +478,8 @@ fl_enumerate_fonts( void ( * output )( const char *s ),
 
     for ( n = i = 0; output && i < font_count; i++, n++ )
 		output( shortform
-                ? ( const char * ) cv_fname( fl_get_font_name( i ) )
-                : fl_get_font_name );
+                ? cv_fname( fl_get_font_name( i ) )
+                : fl_get_font_name( i ) );
 
     return n;
 }
@@ -566,7 +538,7 @@ fl_get_font_struct( int style,
 	   to insert the size into the name and load it using XftFontOpenXlfd()
 	   (woch possibly could fail!) */
 
-	if ( f->slant != -1 )
+	if ( f->slant != -1 && f->weight != -1 )
 		f->sized_fonts[ cnt ].font =
 			XftFontOpen( fl_display, fl_screen,
 						 XFT_FAMILY, XftTypeString, f->name,

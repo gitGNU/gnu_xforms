@@ -156,7 +156,7 @@ display_text( FL_IMAGE * im )
     if ( im->dont_display_text || im->ntext == 0 )
         return;
 
-#if ! ENABLE_XFT
+#if ! FL_ENABLE_XFT
     if ( ! im->textgc )
         im->textgc = XCreateGC( im->xdisplay, im->win, 0, 0 );
 #endif
@@ -166,7 +166,7 @@ display_text( FL_IMAGE * im )
     target.display = im->xdisplay;
     target.win = im->win;
     target.isRGBColor = 1;
-#if ! ENABLE_XFT
+#if ! FL_ENABLE_XFT
     target.textgc = im->textgc;
 #endif
     target.gc = im->gc;

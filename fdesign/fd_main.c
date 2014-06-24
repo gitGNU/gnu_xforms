@@ -383,7 +383,7 @@ static FL_CMD_OPT fd_cmdopt[ ] =
     { "-border",        ".XForm.Border",   XrmoptionNoArg, "1"       },
     { "-convert",       ".convert",        XrmoptionNoArg, "1"       },
     { "-dir",           ".dir",            XrmoptionSepArg, NULL     },
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
     { "-use-x11-fonts", "*use-x11-fonts",  XrmoptionNoArg, "1"       },
 #endif
     { "-unit",          "*unit",           XrmoptionSepArg, NULL     },
@@ -439,7 +439,7 @@ static FL_resource fdres[ ] =
     { "align.geometry", "Align.Geometry", FL_STRING, fdaligngeom, 0, NG },
     { "control.border", "XForm.Border", FL_BOOL, &fd_cntlborder, "0", 0 },
     { "convert", "Convert", FL_BOOL, &fdopt.conv_only, "0", 0 },
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
     { "use-x11-fonts", "Use-X11-Fonts", FL_BOOL, &fdopt.use_x11_fonts, "0", 0 },
 #endif
     { "migrate", "Migrate", FL_BOOL, &fdopt.conv_only, "0", 0 },
@@ -464,7 +464,7 @@ char *helps[ ] =
 {
     "-help                     this message",
     "-display host:dpy         display name",
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
     "-use-x11-fonts            use old X11 bitmap fonts",
 #endif
     "-name appname             change app name",
@@ -617,7 +617,7 @@ pre_connect( int    argc,
             usage( argv[ 0 ], 1 );
         else if ( strncmp( argv[ i ] + 1, "version", 4 ) == 0 )
             print_version( 1 );
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
         else if ( strncmp( argv[ i ] + 1, "use-x11-fonts", 5 ) == 0 )
             fdopt.use_x11_fonts = 1;
 #endif
@@ -888,15 +888,15 @@ main( int    argc,
 
     fl_set_defaults( mask, &cntl );
 
-#if ENABLE_XFT
+    if ( ! ( fd_display = fl_initialize( &argc, argv, 0, fd_cmdopt, Ncopt ) ) )
+        exit( 1 );
+
+#if FL_ENABLE_XFT
     if ( fdopt.use_x11_fonts )
-        fl_use_bitmap_fonts( );
+        fl_set_default_font_type( FL_X11_FONT );
 #else
     fdopt.use_x11_fonts = 1;
 #endif
-
-    if ( ! ( fd_display = fl_initialize( &argc, argv, 0, fd_cmdopt, Ncopt ) ) )
-        exit( 1 );
 
     fl_get_app_resources( fdres, Nropt );
     fl_add_signal_callback( SIGINT, interrupted, 0 );

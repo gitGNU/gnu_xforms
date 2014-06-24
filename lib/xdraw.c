@@ -820,7 +820,7 @@ fli_set_global_clipping( FL_Coord x,
 
         if ( r )
         {
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
             XftDrawSetClipRectangles( flx->textdraw, 0, 0, r, 1 );
             XftDrawSetClipRectangles( flx->bgdraw, 0, 0, r, 1 );
 #else
@@ -833,7 +833,7 @@ fli_set_global_clipping( FL_Coord x,
         {
             XRectangle n = { 0, 0, 0, 0 };
 
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
             XftDrawSetClipRectangles( flx->textdraw, 0, 0, &n, 1 );
             XftDrawSetClipRectangles( flx->bgdraw, 0, 0, &n, 1 );
 #else
@@ -845,7 +845,7 @@ fli_set_global_clipping( FL_Coord x,
     }
     else
     {
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
         XftDrawSetClipRectangles( flx->textdraw, 0, 0,
                                   clip_rect + GLOBAL_CLIP, 1 );
         XftDrawSetClipRectangles( flx->bgdraw, 0, 0,
@@ -885,7 +885,7 @@ fli_unset_global_clipping( void )
 
     if ( clipped_flags[ TEXT_CLIP ] )
     {
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
         XftDrawSetClipRectangles( flx->textdraw, 0, 0,
                                   clip_rect + TEXT_CLIP, 1 );
         XftDrawSetClipRectangles( flx->bgdraw, 0, 0,
@@ -897,7 +897,7 @@ fli_unset_global_clipping( void )
     }
     else
     {
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
         XRectangle r = { 0, 0, SHRT_MAX, SHRT_MAX };
 
         XftDrawSetClipRectangles( flx->textdraw, 0, 0, &r, 1 );
@@ -1147,7 +1147,7 @@ fl_set_text_clipping( FL_Coord x,
                       FL_Coord w,
                       FL_Coord h )
 {
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
     if ( w < 0 || h < 0 )
     {
         fl_unset_text_clipping( );
@@ -1199,7 +1199,7 @@ fl_set_text_clipping( FL_Coord x,
 void
 fl_unset_text_clipping( void )
 {
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
     SET_RECT( clip_rect[ TEXT_CLIP ], 0, 0, 0, 0 );
 
     if ( clipped_flags[ GLOBAL_CLIP ] )
@@ -1318,26 +1318,6 @@ fli_set_additional_clipping( FL_Coord x,
 void
 fli_apply_clipping_to_gc( GC gc )
 {
-    if ( clipped_flags[ GLOBAL_CLIP ] )
-        XSetClipRectangles( flx->display, gc, 0, 0,
-                            clip_rect + GLOBAL_CLIP, 1, Unsorted );
-    else
-        XSetClipMask( flx->display, gc, None );
-}
-
-
-/***************************************
- ***************************************/
-
-static void
-set_current_gc( GC gc )
-{
-    if ( flx->gc == gc )
-        return;
-
-    flx->gc    = gc;
-    flx->color = FL_NoColor;
-
     if ( clipped_flags[ GLOBAL_CLIP ] && clipped_flags[ NORMAL_CLIP ] )
     {
         FL_RECT * r = fli_intersect_rects( clip_rect + GLOBAL_CLIP,
@@ -1363,6 +1343,22 @@ set_current_gc( GC gc )
                             clip_rect + NORMAL_CLIP, 1, Unsorted );
     else
         XSetClipMask( flx->display, gc, None );
+}
+
+
+/***************************************
+ ***************************************/
+
+static void
+set_current_gc( GC gc )
+{
+    if ( flx->gc == gc )
+        return;
+
+    flx->gc    = gc;
+    flx->color = FL_NoColor;
+
+    fli_apply_clipping_to_gc( gc );
 }
 
 

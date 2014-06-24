@@ -261,6 +261,7 @@ static MenuEntry opmenu[ ] =
     { "Emit %s UI code", "Ee#e", 0, 0, &fdopt.emit_code  },
     { "Emit Callback",   "Cc#c", 0, 0, &fdopt.emit_cb    },
     { "Emit Main",       "Mm#m", 0, 0, &fdopt.emit_main  },
+    { "Use X11 fonts",   "Xx#x", 0, 0, &fdopt.use_x11_fonts },
     { "Alt Format",      "Aa#a", 0, 0, &fdopt.altformat  },
     { "FS Compensate ",  "Ff#f", 0, 0, &fdopt.compensate }
 };
@@ -285,6 +286,26 @@ optionmenu_callback( FL_OBJECT * ob,
                  *opmenu[ n ].p ? 'B' : 'b' );
         fl_replace_menu_item( fd_control->optionmenu, n + 1, buf );
         ( fd_show_palette ? show_pallette : hide_pallette )( );
+
+        if ( n == 5 )
+        {
+            fl_set_default_font_type( fdopt.use_x11_fonts ?
+                                      FL_X11_FONT : FL_XFT_FONT );
+            redraw_the_form( 0 );
+            fl_redraw_form( ob->form );
+            if ( cur_form && cur_form->visible )
+                fl_redraw_form( cur_form );
+            if ( fd_attrib->attrib->visible )
+                fl_redraw_form( fd_attrib->attrib );
+            if ( fd_test->test->visible )
+                fl_redraw_form( fd_test->test );
+            if ( fd_align->align->visible )
+                fl_redraw_form( fd_align->align );
+            if ( fd_resize->resize->visible )
+                fl_redraw_form( fd_resize->resize );
+            if ( fd_help->helpform->visible )
+                fl_redraw_form( fd_help->helpform );
+        }
     }
 }
 

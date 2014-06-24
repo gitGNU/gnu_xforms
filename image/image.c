@@ -972,7 +972,7 @@ flimage_freemem( FL_IMAGE * image )
         image->gc = None;
     }
 
-#if ! ENABLE_XFT
+#if ! FL_ENABLE_XFT
     if ( image->textgc )
     {
         XFreeGC( image->xdisplay, image->textgc );
@@ -1435,7 +1435,7 @@ flimage_dup_( FL_IMAGE * sim,
     im->ximage = NULL;
     im->info = 0;
     im->win = None;
-#if ! ENABLE_XFT
+#if ! FL_ENABLE_XFT
     im->gc = im->textgc = None;
 #endif
     im->markergc = None;

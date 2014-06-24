@@ -52,16 +52,17 @@ char *
 fli_convert_to_full_xlfd( const char * pattern )
 {
 	int i;
-	int available;
-	char **list;
-	static char *result = NULL;
+	int available = 0;
+	char ** list;
+	static char * result = NULL;
 	XftFont * font;
 	char *qm;
-	char *sp, *sp2;
+	char * sp,
+		 * sp2;
 	int cnt = 0;
+	char * value = NULL;
 
-	if ( result )
-		fli_safe_free( result );
+	fli_safe_free( result );
 
 	/* Get the first fitting font for the pattern */
 
@@ -74,30 +75,30 @@ fli_convert_to_full_xlfd( const char * pattern )
 
 	XFontStruct * info = XLoadQueryFont( fl_display, list[ 0 ] );
 
-	for ( i = 0; i < info->n_properties; i++ )
+	for ( i = 0; ! value && i < info->n_properties; i++ )
 	{
 
-		char *atom = XGetAtomName( fl_display,
-								   info->properties[ i ].name );
-		char *value;
+		char * atom = XGetAtomName( fl_display,
+									info->properties[ i ].name );
 
 		if ( ! strcmp( "FONT", atom ) )
 			value = XGetAtomName( fl_display,
 								  info->properties[ i ].card32 );
 
+
 		XFree( atom );
-
-		if ( value )
-		{
-			result = fl_strdup( value );
-			XFree( value );
-			break;
-		}
-
-		XFreeFontInfo( NULL, info, 1 );
 	}
 
-	XFreeFontNames( list );
+	if ( value )
+	{
+		result = fl_strdup( value );
+		XFree( value );
+	}
+
+	XFreeFontInfo( NULL, info, 1 );
+
+	if ( list )
+		XFreeFontNames( list );
 
 	/* Bail out if there was no fitting file name */
 
@@ -175,6 +176,7 @@ fli_get_string_width( XftFont    * f,
 					  int          len )
 {
 	XGlyphInfo extents;
+
 	XftTextExtents8( fl_display, f, ( XftChar8 * ) s, len, &extents );
 
     return extents.xOff;

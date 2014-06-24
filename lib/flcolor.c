@@ -252,7 +252,7 @@ static FLI_IMAP fli_imap[ FL_MAX_COLS ] =
 #define flmapsize ( ( int ) ( sizeof fli_imap / sizeof *fli_imap ) )
 
 
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
 unsigned long
 fli_get_xrender_color( FL_COLOR       i,
                        XRenderColor * xrc );
@@ -746,7 +746,7 @@ fli_create_gc( Drawable drawable )
         XSetGraphicsExposures( flx->display, flx->gc, 0 );
     }
 
-#if ! ENABLE_XFT
+#if ! FL_ENABLE_XFT
     flx->textgc = fl_state[ fl_vmode ].textgc;
 
     if ( ! flx->textgc )
@@ -792,7 +792,7 @@ fli_create_gc( Drawable drawable )
         }
     }
 
-#if ! ENABLE_XFT
+#if ! FL_ENABLE_XFT
     if ( fl_state[ fl_vmode ].cur_fnt )
         XSetFont( flx->display, flx->textgc,
                   fl_state[ fl_vmode ].cur_fnt->fid );
@@ -1085,7 +1085,7 @@ fli_free_newpixel( unsigned long pixel )
 void
 fli_textcolor( FL_COLOR col )
 {
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
     static FL_COLOR last_allocated = FL_NOCOLOR;
 
     if ( col != FL_NOCOLOR && col != last_allocated )
@@ -1170,7 +1170,7 @@ fl_bk_color( FL_COLOR col )
 void
 fli_bk_textcolor( FL_COLOR col )
 {
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
     static FL_COLOR last_allocated = ULONG_MAX;
 
     if ( col != last_allocated )
@@ -1467,7 +1467,7 @@ fl_getmcolor( FL_COLOR i,
  * Query real colormap. Returns this as a XRenderColor
  ***************************************/
 
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
 unsigned long
 fli_get_xrender_color( FL_COLOR       i,
                        XRenderColor * xrc )

@@ -1564,7 +1564,7 @@ fli_internal_init( void )
         default_flx->display = NULL;;
         default_flx->win = None;
         default_flx->gc = None;
-#if ! ENABLE_XFT
+#if ! FL_ENABLE_XFT
         default_flx->textgc = None;
 #endif
         default_flx->fs = NULL;

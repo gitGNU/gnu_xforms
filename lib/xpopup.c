@@ -141,14 +141,16 @@ static int pup_bw_is_set = 0;
 
 static PopUP *menu_rec = NULL;
 
-#if ENABLE_XFT
+static void reset_max_width( PopUP * m );
+
+#if FL_ENABLE_XFT
 static XftFont *pup_font_struct = NULL;        /* popup main text font */
 #else
 static XFontStruct *pup_font_struct = NULL;        /* popup main text font */
 #endif
 static int pup_ascent = 0,                         /* font properties */
            pup_desc = 0;
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
 static XftFont *pup_title_font_struct = NULL;  /* popup title text font */
 #else
 static XFontStruct *pup_title_font_struct = NULL;  /* popup title text font */
@@ -169,37 +171,33 @@ static int pup_internal_showpup_call = 0;
  ***************************************/
 
 static void
-init_pupfont( void )
+init_pupfont( PopUP * m )
 {
-#if ! ENABLE_XFT        
+#if ! FL_ENABLE_XFT        
     XCharStruct chs;
     int junk;
 #endif
 
-    if ( ! pup_title_font_struct )
-    {
-        pup_title_font_struct = fl_get_fntstruct( pup_title_font_style,
-                                                  pup_title_font_size );
-#if ENABLE_XFT        
-        pup_title_ascent = pup_title_font_struct->ascent;
-        pup_title_desc   = pup_title_font_struct->descent;
+    pup_title_font_struct = fl_get_fntstruct( pup_title_font_style,
+                                              pup_title_font_size );
+#if FL_ENABLE_XFT        
+    pup_title_ascent = pup_title_font_struct->ascent;
+    pup_title_desc   = pup_title_font_struct->descent;
 #else
-        XTextExtents( pup_title_font_struct, "qjQb", 4, &junk,
-                      &pup_title_ascent, &pup_title_desc, &chs );
+    XTextExtents( pup_title_font_struct, "qjQb", 4, &junk,
+                  &pup_title_ascent, &pup_title_desc, &chs );
 #endif
-    }
 
-    if ( ! pup_font_struct )
-    {
-        pup_font_struct = fl_get_fntstruct( pup_font_style, pup_font_size );
-#if ENABLE_XFT        
-        pup_ascent = pup_font_struct->ascent;
-        pup_desc   = pup_font_struct->descent;
+    pup_font_struct = fl_get_fntstruct( pup_font_style, pup_font_size );
+#if FL_ENABLE_XFT        
+    pup_ascent = pup_font_struct->ascent;
+    pup_desc   = pup_font_struct->descent;
 #else
-        XTextExtents( pup_font_struct, "qjQb", 4, &junk, &pup_ascent,
-                      &pup_desc, &chs );
+    XTextExtents( pup_font_struct, "qjQb", 4, &junk, &pup_ascent,
+                  &pup_desc, &chs );
 #endif
-    }
+
+    reset_max_width( m );
 }
 
 
@@ -226,8 +224,7 @@ init_pup( PopUP * m )
         pup_defcursor = fli_get_cursor_byname( XC_sb_right_arrow );
     m->cursor       = pup_defcursor;
     m->lpad         = m->rpad = PADW;
-    init_pupfont( );
-    m->cellh        = pup_ascent + pup_desc + 2 * m->padh;
+    init_pupfont( m );
     m->isEntry      = 0;
     m->form         = NULL;
 }
@@ -496,34 +493,14 @@ parse_entry( int          n,
 
         if ( flags & M_TITLE )
         {
-            char *t,
-                 *b;
-
             m->title = fl_strdup( c );
-            b = t = fl_strdup( c );
-            while ( ( b = strchr( b, '\b' ) ) )
-                memmove( b, b + 1, strlen( b ) );
-            m->title_width = fli_get_string_width( pup_title_font_struct,
-                                                   t, strlen( t ) );
-            fl_free( t );
             fl_free( item );
             m->item[ m->nitems ] = NULL;
         }
         else
         {
-            char *t,
-                 *b;
-
             item->str = fl_strdup( c );
             item->len = strlen( item->str );
-
-            b = t = fl_strdup( item->str );
-            while ( ( b = strchr( b, '\b' ) ) )
-                memmove( b, b + 1, strlen( b ) );
-            m->maxw = FL_max( m->maxw,
-                              fli_get_string_widthTABfs( pup_font_struct,
-                                                         t, strlen( t ) ) );
-            fl_free( t );
             m->nitems++;
         }
     }
@@ -597,7 +574,6 @@ fli_init_pup( void )
 int
 fl_setpup_default_fontsize( int size )
 {
-    int i;
     int old_pup_font_size = pup_font_size;
 
     if ( size <= 0 )
@@ -613,14 +589,6 @@ fl_setpup_default_fontsize( int size )
     if ( ! flx->display )
         return old_pup_font_size;
 
-    init_pupfont( );
-
-    for ( i = 0; i < fl_maxpup; i++ )
-    {
-        reset_max_width( menu_rec + i );
-        close_pupwin( menu_rec + i );
-    }
-
     return old_pup_font_size;
 }
 
@@ -631,7 +599,6 @@ fl_setpup_default_fontsize( int size )
 int
 fl_setpup_default_fontstyle( int style )
 {
-    int i;
     int old_pup_font_style = pup_font_style;
 
     if ( ! flx->display )
@@ -645,11 +612,6 @@ fl_setpup_default_fontstyle( int style )
     pup_font_style       = style;
     pup_title_font_style = style;
     pup_font_struct      = pup_title_font_struct = NULL;
-
-    init_pupfont( );
-
-    for ( i = 0; i < fl_maxpup; i++ )
-        reset_max_width( menu_rec + i );
 
     return old_pup_font_style;
 }
@@ -1257,6 +1219,7 @@ pup_interact( PopUP * m )
 
 
 /***************************************
+ * Grab both pointer and keyboard
  ***************************************/
 
 static void
@@ -1313,6 +1276,8 @@ fl_dopup( int n )
         fli_context->pup_id = n;
 
     pup_subreturn = -1;
+
+    init_pupfont( m );
 
     pup_level++;
     pup_internal_showpup_call = 1;
@@ -1914,7 +1879,7 @@ draw_title( Display  * d,
 
     fl_set_font( pup_title_font_style, pup_title_font_size );
     fli_textcolor( pup_text_color );
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
     d = d;
 
     XftDrawChange( flx->textdraw, w );
@@ -1947,7 +1912,7 @@ draw_title( Display  * d,
 #endif
 
     fli_textcolor( FL_WHITE );
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
     XftDrawString8( flx->textdraw, &flx->textcolor, flx->fs, x, y,
                     ( XftChar8 const * ) t, n );
 #else

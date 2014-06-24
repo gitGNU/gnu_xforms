@@ -334,7 +334,7 @@ typedef struct flimage_ {
     FL_WINDOW         win;
     void            * gc;
     int               sdepth;         /* depth the server says     */
-#if ! ENABLE_XFT
+#if ! FL_ENABLE_XFT
     void            * textgc;
 #endif
     void            * markergc;

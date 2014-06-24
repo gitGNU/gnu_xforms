@@ -84,7 +84,7 @@ enum {
 
 typedef struct {
     XVisualInfo   * xvinfo;
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
     XftFont       * cur_fnt;            /* current font */
 #else
     XFontStruct   * cur_fnt;            /* current font in default GC */
@@ -97,7 +97,7 @@ typedef struct {
     int             dithered;           /* true if dithered color */
     int             pcm;                /* true if colormap is not shared */
     GC              gc;                 /* working GC */
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
 	XftDraw       * textdraw;           /* for drawing texts */
 	XftDraw       * bgdraw;             /* for drawing background of text */
 #else
@@ -179,7 +179,7 @@ struct FL_pixmap_ {
 
 /* Fonts related */
 
-#if ENABLE_XFT
+#if FL_ENABLE_XFT
 
 typedef struct {
 	int       size;
@@ -209,6 +209,12 @@ typedef enum {
 	FL_WEIGHT_BOLD     = XFT_WEIGHT_BOLD,
 	FL_WEIGHT_BLACK    = XFT_WEIGHT_BLACK
 } FL_FONT_WEIGHT;
+
+typedef enum {
+	FL_X11_FONT,
+	FL_XFT_FONT
+} FL_FONT_TYPE;
+
 
 #else  /* X11 fonts */
 
@@ -418,14 +424,20 @@ FL_EXPORT void fl_draw_frame( int      style,
  * Interfaces
  */
 
-#if ENABLE_XFT
-FL_EXPORT void fl_use_bitmap_fonts( void );
+#if FL_ENABLE_XFT
+FL_EXPORT XftFont * fl_get_font_struct( int style,
+										int size );
 
-FL_EXPORT XftFont *fl_get_font_struct( int style,
-									   int size );
+FL_EXPORT int fl_set_xft_font_name( int              index,
+									const char     * name,
+									FL_FONT_SLANT    slant,
+									FL_FONT_WEIGHT   weight );
+
+FL_EXPORT void fl_set_default_font_type( FL_FONT_TYPE type );
 #else
 FL_EXPORT XFontStruct *fl_get_font_struct( int style,
 										   int size );
+
 #endif
 
 #define fl_get_fontstruct     fl_get_fonts_truct
