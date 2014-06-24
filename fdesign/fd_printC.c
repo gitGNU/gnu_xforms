@@ -1410,12 +1410,12 @@ output_main_newformat( FILE * fn,
 
     fprintf( fn, "\n" );
 
+    fprintf( fn, "    fl_initialize( &argc, argv, 0, 0, 0 );\n" );
+
     if ( fdopt.use_x11_fonts )
         fprintf( fn, "#if FL_ENABLE_XFT\n"
                      "    fl_set_default_font_type( FL_X11_FONT );\n"
                      "#endif\n\n" );
-
-    fprintf( fn, "    fl_initialize( &argc, argv, 0, 0, 0 );\n" );
 
     for ( i = 0; i < nform; i++ )
     {
@@ -1459,11 +1459,11 @@ output_main_altformat( FILE * fn,
 
     fprintf( fn, "int\nmain( int    argc,\n      char * argv[ ] )\n{\n" );
 
+    fprintf( fn, "    fl_initialize( &argc, argv, 0, 0, 0 );\n\n" );
     if ( fdopt.use_x11_fonts )
         fprintf( fn, "#if FL_ENABLE_XFT\n"
                      "    fl_set_default_font+type( FL_X11_FONT_TYPE );\n"
                      "#endif\n\n" );
-    fprintf( fn, "    fl_initialize( &argc, argv, 0, 0, 0 );\n\n" );
     fprintf( fn, "\n     %s( );\n\n", main_name );
     fprintf( fn, "\n     /* Fill-in form initialization code */\n\n" );
     fprintf( fn, "    /* Show the first form */\n\n" );

@@ -92,7 +92,7 @@ create_form_buttform( void )
     fl_set_pixmapbutton_align( obj, FL_ALIGN_TOP | FL_ALIGN_INSIDE, 0, 0 );
     fl_set_pixmapbutton_data( obj, r3dbut_pixels );
 
-    obj = fl_add_pixmapbutton( FL_RADIO_BUTTON, 58, 80, 70, 40, "CheckButton" );
+    obj = fl_add_pixmapbutton( FL_RADIO_BUTTON, 48, 80, 70, 40, "CheckButton" );
     fl_set_button_shortcut( obj, "C#C", 1 );
     fl_set_object_color( obj, FL_COL1, FL_YELLOW );
     fl_set_object_callback( obj, pallette_entry_callback, FL_CHECKBUTTON );
@@ -104,7 +104,7 @@ create_form_buttform( void )
     fl_set_object_callback( obj, pallette_entry_callback, FL_BITMAPBUTTON );
     fl_set_bitmapbutton_data( obj, picture_width, picture_height, ( unsigned char * ) picture_bits );
 
-    obj = fl_add_pixmapbutton( FL_RADIO_BUTTON, 231, 80, 70, 40, "PixmapButton" );
+    obj = fl_add_pixmapbutton( FL_RADIO_BUTTON, 241, 80, 70, 40, "PixmapButton" );
     fl_set_button_shortcut( obj, "P#P", 1 );
     fl_set_object_color( obj, FL_COL1, FL_YELLOW );
     fl_set_object_callback( obj, pallette_entry_callback, FL_PIXMAPBUTTON );

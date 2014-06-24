@@ -545,13 +545,21 @@ load_fd_header( void )
         }
         else if ( ! strcmp( p, "Use-X11-Fonts" ) )
         {
-            if ( ff_read( "%d", &fdopt.use_x11_fonts ) < 0 )
+            int state;
+
+
+            if ( ff_read( "%d", &state ) < 0 )
                 return ff_err( "Expected font type" );
 
+            state = state ? 1 : 0;
 #if FL_ENABLE_XFT
-            fl_set_default_font_type( fdopt.use_x11_fonts ?
-                                      FL_X11_FONT : FL_XFT_FONT );
+            if ( state != fdopt.use_x11_fonts )
+            {
+                fl_set_default_font_type( state ? FL_X11_FONT : FL_XFT_FONT );
+                reverse_menu_marker( 5 );
+            }
 #endif
+            fdopt.use_x11_fonts = state;
         }
         else if ( ! strcmp( p, "Border Width" ) )
         {

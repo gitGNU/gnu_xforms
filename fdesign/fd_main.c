@@ -294,7 +294,7 @@ handle_keypress( const XKeyEvent * xev )
     else if ( IsDown( keysym ) )
         ( shift ? resize_selection : move_selection )( 0, stp );
     else if ( keysym == XK_Escape )
-        exit_cb( 0, 0 );
+        exit_cb( NULL, 0 );
     else if ( keysym == XK_t || keysym == XK_T )
         ( fd_test->test->visible ? stoptest_cb : test_cb )( 0, 0 );
     else if ( keysym == XK_s || keysym == XK_S )
@@ -753,7 +753,7 @@ static void
 interrupted( int    s     FL_UNUSED_ARG,
              void * data  FL_UNUSED_ARG )
 {
-    exit_cb( 0, 0 );
+    exit_cb( NULL, 0 );
 }
 
 

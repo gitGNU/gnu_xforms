@@ -197,7 +197,7 @@ argument: FL_ROUND3DBUTTON
 --------------------
 class: FL_PIXMAPBUTTON
 type: FL_RADIO_BUTTON
-box: 58 80 70 40
+box: 48 80 70 40
 boxtype: FL_UP_BOX
 colors: FL_COL1 FL_YELLOW
 alignment: FL_ALIGN_BOTTOM
@@ -241,7 +241,7 @@ argument: FL_BITMAPBUTTON
 --------------------
 class: FL_PIXMAPBUTTON
 type: FL_RADIO_BUTTON
-box: 231 80 70 40
+box: 241 80 70 40
 boxtype: FL_UP_BOX
 colors: FL_COL1 FL_YELLOW
 alignment: FL_ALIGN_BOTTOM

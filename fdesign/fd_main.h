@@ -644,6 +644,8 @@ void init_align( void );
 
 void cleanup_spec( FL_OBJECT * );
 
+void reverse_menu_marker( int n );
+
 /* fake stuff */
 
 #define FL_NTABFOLDER  50
@@ -831,6 +833,9 @@ void changename_cb( FL_OBJECT *,
 
 void changesize_cb( FL_OBJECT *,
                     long );
+
+FL_FORM * create_pallette( void );
+
 
 #endif /* FD_MAIN_H */
 

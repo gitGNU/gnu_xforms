@@ -60,11 +60,11 @@ void saveforms_cb( FL_OBJECT *,
 
 static MenuEntry fmenu[ ] =
 {
-    { " Open",       "Oo#o", loadforms_cb,    0, 0 },
-    { " Merge",      "Mm#m", mergeforms_cb,   0, 0 },
-    { " Save",       "Ss#s", saveforms_cb,    0, 0 },
-    { " Save As %l", "Aa#a", saveforms_as_cb, 0, 0 },
-    { " Exit",       "Ee#e", exit_cb,         0, 0 }
+    { " Open",       "Oo#o", loadforms_cb,    0, NULL },
+    { " Merge",      "Mm#m", mergeforms_cb,   0, NULL },
+    { " Save",       "Ss#s", saveforms_cb,    0, NULL },
+    { " Save As %l", "Aa#a", saveforms_as_cb, 0, NULL },
+    { " Exit",       "Ee#e", exit_cb,         0, NULL }
 };
 
 #define NFM  ( sizeof fmenu / sizeof *fmenu )
@@ -168,9 +168,9 @@ loadforms_cb( FL_OBJECT * obj  FL_UNUSED_ARG,
 
 static MenuEntry gmenu[ ] =
 {
-    { "New group",    "Nn#n", NULL,               7, 0 },
-    { "Delete Group", "Dd#d", NULL,               8, 0 },
-    { "Rename Group", "Rr#r", changegroupname_cb, 0, 0 }
+    { "New group",    "Nn#n", NULL,               7, NULL },
+    { "Delete Group", "Dd#d", NULL,               8, NULL },
+    { "Rename Group", "Rr#r", changegroupname_cb, 0, NULL }
 };
 
 #define NGM ( sizeof gmenu / sizeof *gmenu )
@@ -199,13 +199,13 @@ groupmenu_callback( FL_OBJECT * ob,
 
 static MenuEntry obmenu[ ] =
 {
-    { "Object Attributes", "Oo#o", 0,  1, 0 },
-    { "Lower Object",      "Ll#l", 0,  2, 0 },
-    { "Raise Object",      "Rr#r", 0,  3, 0 },
-    { "Show Object",       "Ss#s", 0,  5, 0 },
-    { "Hide Object",       "Hh#h", 0,  6, 0 },
-    { "Cut Object",        "Cc#c", 0, 12, 0 },
-    { "Paste Object",      "Pp#p", 0, 10, 0 }
+    { "Object Attributes", "Oo#o", 0,  1, NULL },
+    { "Lower Object",      "Ll#l", 0,  2, NULL },
+    { "Raise Object",      "Rr#r", 0,  3, NULL },
+    { "Show Object",       "Ss#s", 0,  5, NULL },
+    { "Hide Object",       "Hh#h", 0,  6, NULL },
+    { "Cut Object",        "Cc#c", 0, 12, NULL },
+    { "Paste Object",      "Pp#p", 0, 10, NULL }
 };
 
 #define NOBM  ( sizeof obmenu / sizeof *obmenu )
@@ -229,10 +229,10 @@ objectmenu_callback( FL_OBJECT * ob,
 
 static MenuEntry fmmenu[ ] =
 {
-    { "New Form",    "Nn#n", addform_cb,    0, 0 },
-    { "Delete Form", "Dd#d", deleteform_cb, 0, 0 },
-    { "Rename Form", "Rr#r", changename_cb, 0, 0 },
-    { "Resize Form", "Ss#s", changesize_cb, 0, 0 }
+    { "New Form",    "Nn#n", addform_cb,    0, NULL },
+    { "Delete Form", "Dd#d", deleteform_cb, 0, NULL },
+    { "Rename Form", "Rr#r", changename_cb, 0, NULL },
+    { "Resize Form", "Ss#s", changesize_cb, 0, NULL }
 };
 
 #define NFMM ( sizeof fmmenu / sizeof *fmmenu )
@@ -256,14 +256,16 @@ formmenu_callback( FL_OBJECT * ob,
 
 static MenuEntry opmenu[ ] =
 {
-    { "Track Geometry",  "Gg#g", 0, 0, &fd_trackgeometry },
-    { "Show Pallette",   "Pp#p", 0, 0, &fd_show_palette  },
-    { "Emit %s UI code", "Ee#e", 0, 0, &fdopt.emit_code  },
-    { "Emit Callback",   "Cc#c", 0, 0, &fdopt.emit_cb    },
-    { "Emit Main",       "Mm#m", 0, 0, &fdopt.emit_main  },
+    { "Track Geometry",  "Gg#g", 0, 0, &fd_trackgeometry    },
+    { "Show Pallette",   "Pp#p", 0, 0, &fd_show_palette     },
+    { "Emit %s UI code", "Ee#e", 0, 0, &fdopt.emit_code     },
+    { "Emit Callback",   "Cc#c", 0, 0, &fdopt.emit_cb       },
+    { "Emit Main",       "Mm#m", 0, 0, &fdopt.emit_main     },
+#if FL_ENABLE_XFT
     { "Use X11 fonts",   "Xx#x", 0, 0, &fdopt.use_x11_fonts },
-    { "Alt Format",      "Aa#a", 0, 0, &fdopt.altformat  },
-    { "FS Compensate ",  "Ff#f", 0, 0, &fdopt.compensate }
+#endif
+    { "Alt Format",      "Aa#a", 0, 0, &fdopt.altformat     },
+    { "FS Compensate ",  "Ff#f", 0, 0, &fdopt.compensate    }
 };
 
 #define NOPM ( sizeof opmenu / sizeof *opmenu )
@@ -273,20 +275,31 @@ static MenuEntry opmenu[ ] =
  ***************************************/
 
 void
+reverse_menu_marker( int n )
+{
+    char buf[ 32 ];
+
+    *opmenu[ n ].p = ! *opmenu[ n ].p;
+    sprintf( buf, "%s%%%c", opmenu[ n ].entry,
+             *opmenu[ n ].p ? 'B' : 'b' );
+    fl_replace_menu_item( fd_control->optionmenu, n + 1, buf );
+}
+
+/***************************************
+ ***************************************/
+
+void
 optionmenu_callback( FL_OBJECT * ob,
                      long        data  FL_UNUSED_ARG )
 {
     int n = fl_get_menu( ob ) - 1;
-    char buf[ 32 ];
 
     if ( n >= 0 )
     {
-        *opmenu[ n ].p = ! *opmenu[ n ].p;
-        sprintf( buf, "%s%%%c", opmenu[ n ].entry,
-                 *opmenu[ n ].p ? 'B' : 'b' );
-        fl_replace_menu_item( fd_control->optionmenu, n + 1, buf );
+        reverse_menu_marker( n );
         ( fd_show_palette ? show_pallette : hide_pallette )( );
 
+#if FL_ENABLE_XFT
         if ( n == 5 )
         {
             fl_set_default_font_type( fdopt.use_x11_fonts ?
@@ -305,7 +318,10 @@ optionmenu_callback( FL_OBJECT * ob,
                 fl_redraw_form( fd_resize->resize );
             if ( fd_help->helpform->visible )
                 fl_redraw_form( fd_help->helpform );
+            fl_redraw_form( create_pallette( ) );
+            changed = 1;
         }
+#endif
     }
 }
 
@@ -428,7 +444,7 @@ control_init( FD_control * ui )
             m->entry = tmpbuf;
         }
 
-        sprintf( buf, "%s%%%c", m->entry, * ( m->p ) ? 'B' : 'b' );
+        sprintf( buf, "%s%%%c", m->entry, *m->p ? 'B' : 'b' );
         fl_addto_menu( ui->optionmenu, buf );
         fl_set_menu_item_shortcut( ui->optionmenu, i, m->sc );
     }
