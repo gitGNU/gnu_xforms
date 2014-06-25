@@ -256,6 +256,43 @@ fli_sstrcpy( char       * dest,
 }
 
 
+/*******************************************
+ * Helper function to remove 'remove_cnt' elements at index
+ * 'index' from an array 'arr' (allocated with fl_malloc()
+ * or fl_realloc()) of length 'len' and a size of its elements
+ * of 'memb_size'. Also reallocates new memory for the shortened
+ * array and corrects the lenght.
+ *******************************************/
+
+void *
+fli_remove_and_resize( void   * arr,
+                       size_t   memb_size,
+                       size_t * len,
+                       size_t   index,
+                       size_t   remove_cnt )
+{
+    if ( index + remove_cnt > *len )
+    {
+        M_err( "fli_remove_and_resize", "Invalid index, array unchanged" );
+        return arr;
+    }
+
+    if ( remove_cnt == 0 )
+    {
+        M_warn( "fli_remove_and_resize", "Remove count is 0, array unchanged" );
+        return arr;
+    }
+
+    if ( index + remove_cnt < *len - 1 )
+        memmove( arr + index * memb_size,
+                 arr + ( index + remove_cnt ) * memb_size,
+                 *len - index - remove_cnt -1 );
+
+    *len -= index - remove_cnt;
+    return fl_realloc( arr, *len * memb_size );
+}
+
+
 /*
  * Local variables:
  * tab-width: 4

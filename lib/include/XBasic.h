@@ -434,6 +434,9 @@ FL_EXPORT int fl_set_xft_font_name( int              index,
 									FL_FONT_WEIGHT   weight );
 
 FL_EXPORT void fl_set_default_font_type( FL_FONT_TYPE type );
+
+FL_EXPORT int fl_unload_font( int index );
+
 #else
 FL_EXPORT XFontStruct *fl_get_font_struct( int style,
 										   int size );

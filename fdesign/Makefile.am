@@ -8,7 +8,6 @@ SUBDIRS = fd spec xpm
 
 man_MANS = fdesign.1
 
-
 fdesign.1:
 	cp -p $(srcdir)/fdesign.man fdesign.1
 

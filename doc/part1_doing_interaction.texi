@@ -475,17 +475,22 @@ void fl_set_form_title_f(FL_FORM *form, const char *fmt, ...)
 @end example
 
 To set or change the icon shown when a form is iconified, use the
-following routine
+following routines
 @findex fl_set_form_icon()
+@findex fl_set_form_icon_data()
 @example
 void fl_set_form_icon(FL_FORM *form, Pixmap icon, Pixmap mask);
+void fl_set_form_icon_data(FL_FORM *form, char **data)l
 @end example
 @noindent
-where @code{icon} and @code{mask} can be any valid Pixmap ID. (See
-@ref{Other Pixmap Routines} for some of the routines that can be used
-to create Pixmaps.) Note that an @code{icon} previously setvia this
-function (if it exists) is not freed or modified in anyway. See the
-demo program @file{iconify.c} for an example.
+where the arguments of the first function, @code{icon} and
+@code{mask}, can be any valid Pixmap ID. (See @ref{Other Pixmap
+Routines} for some of the routines that can be used to create
+Pixmaps.) The second function instead accecpts a pointer to the data
+e.g. obtained by including an @code{xpm} file. Note that an
+@code{icon} previously set via this function (if it exists) is not
+freed or modified in anyway. See the demo program @file{iconify.c} for
+an example.
 
 If the application program wants to stop interacting with a form and
 remove it from the screen, it has to use the call

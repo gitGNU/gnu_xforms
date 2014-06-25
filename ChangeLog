@@ -1,3 +1,8 @@
+2014-06-25 Jens Thoms Toerring    <jt@toerring.de>
+
+	New version with support for TTF/OTF fonts via Xft
+	library.
+
 2014-06-12 Jens Thoms Toerring    <jt@toerring.de>
 
 	* lib/forms.c: an object that isn't visible could become the

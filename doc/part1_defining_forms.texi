@@ -1209,26 +1209,29 @@ void fl_set_border_width(int border_width);
 @node Label Attributes and Fonts
 @subsection Label Attributes and Fonts
 
-There are also a number of routines to change the appearance of the
-label. The first one is
+There are a number of routines to change the appearance of the label.
+The first one is
 @findex fl_set_object_lcolor()
 @example
 void fl_set_object_lcolor(FL_OBJECT *obj, FL_COLOR lcol);
 @end example
 @noindent
 It sets the color of the label. The default is black (@code{FL_BLACK}).
+
 The font size of the label can be changed using the routine
 @findex fl_set_object_lsize()
 @example
 void fl_set_object_lsize(FL_OBJECT *obj, int lsize);
 @end example
 @noindent
-where @code{lsize} gives the size in points. Depending on the server and
-fonts installed, arbitrary sizes may or may not be possible. Fig 3.5
-shows the font sizes that are standard with MIT/XConsortium
-distribution. So use of these values is encouraged. In any case, if a
-requested size can not be honored, substitution will be made. The
-default size for XForms is 10pt.
+where @code{lsize} gives the size in points.
+
+Up to version 1.2 of the XForms library only X11 bitmap fonts were
+used. Under these circumstances the availability of fonts of arbitrary
+sizes (scalable fonts) was not guaranteed. Thus the use of the
+following pre-defined value was often preferable since the fonts used
+by default were nearky always available as part of the core X11
+packages:
 
 @multitable  @columnfractions 0.3 0.2 0.5
 @anchor{FL_TINY_SIZE}
@@ -1238,7 +1241,7 @@ default size for XForms is 10pt.
 @anchor{FL_SMALL_SIZE}
 @tindex FL_SMALL_SIZE
 @item @code{FL_SMALL_SIZE}
-@tab 10pt
+@tab 10pt (default font size for labels)
 @anchor{FL_NORMAL_SIZE}
 @tindex FL_NORMAL_SIZE
 @item @code{FL_NORMAL_SIZE}
@@ -1264,66 +1267,89 @@ default size for XForms is 10pt.
 @center @image{xforms_images/fontsize,6cm}
 @end ifnothtml
 
+If a requested size was not available a substitution was made. With
+the use of the Xft library and True and Open Type fonts this potential
+restriction doesn't exist anymore and all sizes (not less than @w{1
+pt}) should be available.
 
-Labels can be drawn in many different font styles. The style of the
+Labels can be drawn in different font styles. The style of the
 label can be controlled with the routine
 @findex fl_set_object_lstyle()
 @example
 void fl_set_object_lstyle(FL_OBJECT *obj, int lstyle);
 @end example
 @noindent
-The default font for the Forms Library is Helvetica at 10pt.
+The default font for the Forms Library is DejaVu Sans (in older Xforms
+versions it used to be Helvetica).
 
-Additional styles are available:
+Here is a list of all default styles available:
 @multitable @columnfractions 0.5 0.5
 @anchor{FL_NORMAL_STYLE}
 @tindex FL_NORMAL_STYLE
 @item @code{FL_NORMAL_STYLE}
-@tab Normal text
+@tab Normal sans-serif font (DejaVu Sans), the default font
 @anchor{FL_BOLD_STYLE}
 @tindex FL_BOLD_STYLE
 @item @code{FL_BOLD_STYLE}
-@tab Boldface text
+@tab Bold font  (DejaVu Sans)
 @anchor{FL_ITALIC_STYLE}
 @tindex FL_ITALIC_STYLE
 @item @code{FL_ITALIC_STYLE}
-@tab Guess what
+@tab Italic font  (DejaVu Sans)
 @anchor{FL_BOLDITALIC_STYLE}
 @tindex FL_BOLDITALIC_STYLE
 @item @code{FL_BOLDITALIC_STYLE}
-@tab BoldItalic
+@tab Bold-italic font (DejaVu Sans)
 @anchor{FL_FIXED_STYLE}
 @tindex FL_FIXED_STYLE
 @item @code{FL_FIXED_STYLE}
-@tab Fixed width (good for tables)
+@tab Fixed width normal font (DejaVu Mono)
 @anchor{FL_FIXEDBOLD_STYLE}
 @tindex FL_FIXEDBOLD_STYLE
 @item @code{FL_FIXEDBOLD_STYLE}
-@tab 
+@tab Fixed width bold font (DejaVu Mono)
 @anchor{FL_FIXEDITALIC_STYLE}
 @tindex FL_FIXEDITALIC_STYLE
 @item @code{FL_FIXEDITALIC_STYLE}
-@tab 
+@tab Fixed width italic font (DejaVu Mono)
 @anchor{FL_FIXEDBOLDITALIC_STYLE}
 @tindex FL_FIXEDBOLDITALIC_STYLE
 @item @code{FL_FIXEDBOLDITALIC_STYLE}
-@tab 
-@anchor{FL_TIMES_STYLE}
-@tindex FL_TIMES_STYLE
-@item @code{FL_TIMES_STYLE}
-@tab Times-Roman like font
-@anchor{FL_TIMESBOLD_STYLE FL}
-@tindex FL_TIMESBOLD_STYLE FL
-@item @code{FL_TIMESBOLD_STYLE FL}
-@tab 
-@anchor{FL_TIMESITALIC_STYLE}
-@tindex FL_TIMESITALIC_STYLE
-@item @code{FL_TIMESITALIC_STYLE}
-@tab 
-@anchor{FL_TIMESBOLDITALIC_STYLE}
-@tindex FL_TIMESBOLDITALIC_STYLE
-@item @code{FL_TIMESBOLDITALIC_STYLE}
-@tab 
+@tab Fixed width bold-italic font (DejaVu Mono)
+@anchor{FL_SERIF_STYLE}
+@tindex FL_SERIF_STYLE
+@item @code{FL_SERIF_STYLE}
+@tab Normal serif font (DejaVu Serif)
+@anchor{FL_SERIFBOLD_STYLE FL}
+@tindex FL_SERIFBOLD_STYLE FL
+@item @code{FL_SERIFBOLD_STYLE FL}
+@tab Bold serif font (DejaVu Serif)
+@anchor{FL_SERIFITALIC_STYLE}
+@tindex FL_SERIFITALIC_STYLE
+@item @code{FL_SERIFITALIC_STYLE}
+@tab Italic serif font (DejaVu Serif)
+@anchor{FL_SERIFBOLDITALIC_STYLE}
+@tindex FL_SERIFBOLDITALIC_STYLE
+@item @code{FL_SERIFBOLDITALIC_STYLE}
+@tab Bold-italic serif font (DejaVu Serif)
+
+@anchor{FL_MISC_STYLE}
+@tindex FL_MISC_STYLE
+@item @code{FL_MISC_STYLE}
+@tab A less wide serif font, derived from Palladino (FPL Neu)
+@anchor{FL_MISCBOLD_STYLE FL}
+@tindex FL_MISCBOLD_STYLE FL
+@item @code{FL_MISCBOLD_STYLE FL}
+@tab Bold version of font (FPL Neu)
+@anchor{FL_MISCITALIC_STYLE}
+@tindex FL_MISCITALIC_STYLE
+@item @code{MISCSERIFITALIC_STYLE}
+@tab Italic version of font (FPL Neu)
+@anchor{FL_MISCBOLDITALIC_STYLE}
+@tindex FL_MISCBOLDITALIC_STYLE
+@item @code{FL_MISCBOLDITALIC_STYLE}
+@tab Bold-italic version font (FPL Neu)
+
 @anchor{FL_SHADOW_STYLE}
 @tindex FL_SHADOW_STYLE
 @item @code{FL_SHADOW_STYLE}
@@ -1337,110 +1363,199 @@ Additional styles are available:
 @item @code{FL_EMBOSSED_STYLE}
 @tab Text standing out
 @end multitable
+
 The last three styles are special in that they are modifiers, i.e.,
 they do not cause font changes themselves, they only modify the
 appearance of the font already active. E.g., to get a bold engraved
 text, set @code{lstyle} to @code{FL_BOLD_STYLE|FL_ENGRAVED_STYLE}.
 
-Other styles correspond to the first 12 fonts. The package, however, can
-handle up to 48 different fonts. The first 16 (numbers 0-15) have been
-pre-defined. The following table gives their names:
-@example
- 0 helvetica-medium-r
- 1 helvetica-bold-r
- 2 helvetica-medium-o
- 3 helvetica-bold-o
- 4 courier-medium-r
- 5 courier-bold-r
- 6 courier-medium-o
- 7 courier-bold-o
- 8 times-medium-r
- 9 times-bold-r
-10 times-medium-o
-11 times-bold-o
-12 charter-medium-r
-13 charter-bold-r
-14 charter-medium-i
-15 charter-bold-i
-@end example
-
-The other 32 fonts (numbers 16-47) can be filled in by the application
-program. Actually, the application program can also change the first 16
-fonts if required (e.g., to force a particular resolution). To change a
-font for the the entire application, use one of the following routines:
+Beside these fonts, available by default, other fonts can be loaded
+using one of the following functions
+@anchor{fl_set_xft_font_name()}
+@anchor{fl_set_font_name()}
+@anchor{fl_set_font_name_f()}
+@findex fl_set_xft_font_name()
 @findex fl_set_font_name()
 @findex fl_set_font_name_f()
 @example
+int fl_set_xft)font_name(int index, const char *name,
+                         int slant, int weight);
 int fl_set_font_name(int index, const char *name);
 int fl_set_font_name(int index, const char *fmt, ...);
 @end example
-The first form accepts just a simple string for the font name while
-the second assembles the name from a format string as it's used with
-@code{printf()} etc. and the following arguments. The first argument,
-@code{index}, is the number of the font (between 0 and
-@code{FL_MAXFONTS-1}) and the font name should be a valid font name
-(with the exception of the size field). If you are defining a
-completely different font family starting at index @code{k}, it's a
-good idea to define @code{k + FL_BOLD_STYLE} to be the corresponding
-bold font in the family , and @code{k + FL_ITALIC_STYLE} the
-corresponding italic font in the family (so object like browser can
-obtain correct style when switching font styles):
-@example
-#define Pretty       30
-#define PrettyBold   (Pretty + FL_BOLD_STYLE)
-#define PrettyItalic (Pretty + FL_ITALIC_STYLE)
+@noindent
+All of these functions expect an integer as their first argument. It
+assigns a unique numerical ID to the font (to be used when e.g., as
+the @code{style} argument when calling
+@code{@ref{fl_set_object_lstyle()}}). The numbers @code{0} to
+@code{15} are already used by the default fonts. By using them you can
+replace any of the default fonts. Previously unused numbers (smaller
+than @code{@ref{FL_SHADOW_STYLE}}) will make new fonts available.
 
-fl_set_font_name(Pretty, fontname);
-fl_set_font_name(PrettyBold, boldfontname);
-fl_set_font_name(PrettyItalic, italicfontname);
-...
-fl_set_object_lstyle(obj, PrettyBold);
+The function @code{@ref{fl_set_xft_font_name()}} is to be used to
+load new TTF or OTF fonts. Beside the ID number to be used for the
+font it expects the name of the font (e.g., @code{DejaVu Sans}) and
+two integers indication the slant and weight for the font. For the
+slant the following pre-defined constants can be used
+@table @code
+@anchor{FL_SLANT_ROMAN}
+@tindex FL_SLANT_ROMAN
+@item FL_SLANT_ROMAN
+The normal (upright) font slant
+@anchor{FL_SLANT_ITALIC}
+@tindex FL_SLANT_ITALIC
+@item FL_SLANT_ITALIC
+Italic slant (a version of the font designed for leaning to the right)
+@anchor{FL_SLANT_OBLIQUE}
+@tindex FL_SLANT_OBLIQUE
+@item FL_SLANT_OBLIQUE
+Oblique slant (typically the normal font, but leaning to the right)
+@end table
+
+For the @code{width} argument the following constants can be used:
+@table @code
+@anchor{FL_WEIGHT_LIGHT}
+@tindex FL_WEIGHT_LIGHT
+@item FL_WEIGHT_LIGHT
+A light version of the font
+@anchor{FL_WEIGHT_MEDION}
+@tindex FL_WEIGHT_MEDION
+@item FL_WEIGHT_MEDIUM
+The normal weight of the font
+@anchor{FL_WEIGHT_DEMIBOLD}
+@tindex FL_WEIGHT_DEMIBOLD
+@item FL_WEIGHT_DEMIBOLD
+A slightly bolder version of the font
+@anchor{FL_WEIGHT_BOLD}
+@tindex FL_WEIGHT_BOLD
+@item FL_WEIGHT_BOLD
+The bold version of the font
+@anchor{FL_WEIGHT_BLACK}
+@tindex FL_WEIGHT_BLACK
+@item FL_WEIGHT_BLACK
+An even bolder than bold version of the font
+@end table
+
+Please note that not all fonts may be available in all the different
+slants and weights. Use the @code{fc-list} tool to obtain a list of
+all available fonts on your system. If not available the system will
+replace the requested font by one that it considers to be similar,
+
+The other two functions, @code{@ref{fl_set_font_name()}} and
+@code{@ref{fl_set_font_name_f()}}, are intended for backward
+compatibiliy. They accept a font name specified using in the XLFD (X
+Logical Font Description) naming scheme, for example
+@example
+"-*-helvetica-medium-r-*-*-*-*-*-*-*-*-*-*"
 @end example
-The function returns a negative value if the requested font is invalid
-or otherwise can't be loaded. Note however, if this routine is called
-before @code{@ref{fl_initialize()}}, it will return 0, but may fail later if
-the font name is not valid. To change the default font
-(helvetica-medium), a program should change font @code{FL_NORMAL_STYLE}.
+@noindent
+(or alias names, like @code{fixed} or @code{6x13}). The first of the
+two expects just a simple string for the font name while the second
+assembles the name from a format string as it's used with
+@code{printf()} etc. and the following arguments. These two functions
+return a non-zero value if the requested font name is invalid or
+otherwise can't be loaded.
+
+One a font has been loaded you can get a pointer to the @code{XftFont}
+stucture needed for drawing texts with this font by calling
+@anchor{fl_get_font_struct()}
+@findex fl_get_font_struct()
+@example
+XftFont *fl_get_font_struct(int index, int size);
+@end example
+@noindent
+The first argument is the index as used in
+@code{@ref{fl_set_xft_font_name()}} or @code{@ref{fl_get_font_name()}}
+(@code{0} to @code{15} for the default fonts) and the second is the
+size of the font in points. On failure (which should only be possible
+for X11 bitmap fonts) @code{NULL} will be returned.
+
+All additionallu loaded fonts (i.e., all except the default fonts) can
+be unloaded again using
+@anchor{fl_unload_font()}
+@findex fl_unload_font()
+@example
+int fl_unload_font(int index);
+@end example
+@noindent
+Here @code{index} is again the unique ID number of the font. The
+function returns 0 on success, otherwise a non-zero value.
+
+You may also unload a (non-default) font at a specific point size only,
+using @anchor{fl_unload_sized_font()}
+@findex fl_unload_sized_font()
+@example
+int fl_unload_sized_font(int index, int size);
+@end example
+@noindent
+where @code{index} is again the ID of the font and @code{size} is the
+point size of the font to unload. Also the function returns 0 on
+success and a non-zero value if either a non-deletable or a non-loaded
+font was specified.
 
 To get the name of a font at a certain index use
-@example
 @findex fl_get_font_name()
 @anchor{fl_get_font_name()}
+@example
 const char *fl_get_font_name(int index);
 @end example
 
-
-If a font name in XLFD is given, a question mark (@code{?}) in the
-point size position (i.e.; between the eighth and the nineth dash)
-informs the Forms Library that a scalable font should be requested
-later. It is preferable that the complete XLFD name (i.e., with 14
-dashes and possibly wildcards) be given because a complete name has
-the advantage that the font may be re-scalable if scalable fonts are
-available. This means that although both
-@example
-"-*-helvetica-medium-r-*-*-*-?-*-*-*-*-*-*"
-"-*-helvetica-medium-r-*-*-*-?-*-*"
-@end example
-@noindent
-are valid font names, the first form may be re-scalable while the the
-second is not. To obtain the actual built-in font names, use the
+To obtain the actual names of all default fonts use the
 following function
 @findex fl_enumerate_fonts()
 @anchor{fl_enumerate_fonts()}
 @example
-int fl_enumerate_fonts(void (*cb)(const char *f), int shortform);
+int fl_enumerate_fonts(void (*cb)(const char *name), int shortform);
 @end example
+@noindent
 where @code{cb} is a callback function that gets called once for every
-built-in font name. The font name is passed to the callback function as
+font. The font name is passed to the callback function as
 the string pointer parameter while @code{shortform} selects if a short
-form of the name should be used.
+form of the name should be used (only for XLFD names).
 
-XForms only specifies the absolutely needed parts of the font names,
-and assumes the font path is set so that the server always chooses the
-most optimal fonts for the system. If this is not true, you can use
-@code{@ref{fl_set_font_name()}} or @code{@ref{fl_set_font_name_f()}}
-to select the exact font you want. In general, this is not recommended
-if your application is to be run/displayed on different servers.
+While newer versions of XForms now use True and Open Type fonts for
+the defaukt fonts (used for all build-in object types) some older
+applications might be fine-tuned for the use of the previously used
+X11 bitmap fonts. For the benefit of these applications the new fonts
+can be replaced by the nearest equivalent ofold ones by using the
+function
+@anchor{fl_set_default_font_type()}
+@findex fl_set_default_font_type()
+@example
+void fl_set_default_font_type(int type);
+@end example
+@noindent
+where the @code{type} argument is either
+@anchor{FL_XFT_FONT}
+@tindex FL_XFT_FONT
+@code{FL_XFT_FONT} (for switching to the use of True and Open Type
+fonts as the default fonts) or
+@anchor{FL_X11_FONT}
+@tindex FL_X11_FONT
+@code{FL_X11_FONT} (for swiching to the use of the old X11 bitmap
+fonts). It should preferably called immediately after the call to
+@code{@ref{fl_initialize()}}. The function can also be used to reset
+the default fonts to their original settings if your application has
+replaced or scaled any of the default fonts.
+
+Further functions exist to ease the transition from the use of X11
+bitmap to True and Open Type fonts. By calling
+@anchor{fl_set_global_font_scaling_factor()}
+@findex fl_set_global_font_scaling_factor()
+@example
+void fl_set_global_font_scaling_factor(double factor);
+@end example
+@noindent
+a scaling factor for all fonts can be set. Also individual fonts
+can be scaled by using
+@anchor{fl_set_font_scaling_factor()}
+@findex fl_set_font_scaling_factor()
+@example
+void fl_set_font_scaling_factor(int index,
+                                double factor);
+@end example
+@noindent
+where @code{index} is the ID of the font.
 
 See @file{fonts.c} for a demonstration of all the built-in font styles
 available.

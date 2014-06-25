@@ -108,15 +108,15 @@ main( int    argc,
 
     fl_enumerate_fonts( addit, 1 );
     fl_select_browser_line( ui->fontobj, 1 );
-    fl_addto_browser( ui->sizeobj, "8  (tiny)" );
-    fl_addto_browser( ui->sizeobj, "10 (small)" );
-    fl_addto_browser( ui->sizeobj, "11 (scaled)" );
-    fl_addto_browser( ui->sizeobj, "12 (normal)" );
-    fl_addto_browser( ui->sizeobj, "13 (scaled)" );
-    fl_addto_browser( ui->sizeobj, "14 (medium)" );
-    fl_addto_browser( ui->sizeobj, "18 (large)" );
-    fl_addto_browser( ui->sizeobj, "24 (Huge)" );
-    fl_addto_browser( ui->sizeobj, "30 (scaled)" );
+    fl_addto_browser( ui->sizeobj, "8  (FL_TINY_SIZE)" );
+    fl_addto_browser( ui->sizeobj, "10 (FL_SMALL_SIZE)" );
+    fl_addto_browser( ui->sizeobj, "11" );
+    fl_addto_browser( ui->sizeobj, "12 (FL_NORMAL_SIZE)" );
+    fl_addto_browser( ui->sizeobj, "13" );
+    fl_addto_browser( ui->sizeobj, "14 (FL_MEDIUM_SIZE)" );
+    fl_addto_browser( ui->sizeobj, "18 (FL_LARGE_SIZE)" );
+    fl_addto_browser( ui->sizeobj, "24 (FL_HUGE_SIZE)" );
+    fl_addto_browser( ui->sizeobj, "30" );
     fl_select_browser_line( ui->sizeobj, 2 );
     fl_set_object_lstyle( ui->textobj, FL_NORMAL_STYLE );
     fl_call_object_callback( ui->fontobj );

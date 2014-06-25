@@ -30,7 +30,7 @@ static double global_font_scale = 1.0;
 static const char * default_families[ ] = { "DejaVu Sans",
                                             "DejaVu Sans Mono",
                                             "DejaVu Serif",       
-                                            "Century Schoolbook L" };
+                                            "FPL Neu" };
 
 /* Default styles */
 
@@ -79,6 +79,8 @@ static size_t num_families = sizeof default_families / sizeof *default_families;
 static size_t num_styles = sizeof default_styles / sizeof *default_styles;
 static size_t num_bitmap_fonts = sizeof bitmap_fonts / sizeof *bitmap_fonts;
 
+#define NUM_DEFAULT_FONTS ( num_families * num_styles )
+
 
 /***************************************
  ***************************************/
@@ -91,7 +93,7 @@ fli_init_fonts( void )
 	if ( fl_fonts )
 		return;
 
-    fl_fonts = fl_malloc( ( num_families * num_styles ) * sizeof *fl_fonts );
+    fl_fonts = fl_malloc( NUM_DEFAULT_FONTS * sizeof *fl_fonts );
 
     for ( i = 0; i < num_families; i++ )
         for ( j = 0; j < num_styles; font_count++, j++ )
@@ -121,6 +123,19 @@ fli_init_fonts( void )
 
 
 /***************************************
+ * Helper function for searching for a font with a certain index
+ ***************************************/
+
+static int
+cmp_fnt_index( const void * arg1,
+               const void * arg2 )
+{
+    return ( ( const FL_FONT * ) arg1 )->index ==
+                                          ( ( const FL_FONT * ) arg2 )->index;
+}
+
+
+/***************************************
  * Function returns a pointer to the entry in the font list for
  * the given index (most often the style), or NULL on failure
  ***************************************/
@@ -128,23 +143,38 @@ fli_init_fonts( void )
 FL_FONT *
 fl_get_font_from_index( size_t index )
 {
-	size_t i;
+    FL_FONT key;
 
-    if ( index >= font_count )
+    /* Remove the extra flags for shadow, engrave or emboss */
+
+    index %= FL_SHADOW_STYLE;
+
+    /* Finding the default fonts is simple since they have sequential
+       indices, starting at 0 */
+
+    if ( ! fl_fonts )
         return NULL;
 
-	if ( index < num_families * num_styles )
+	if ( index < NUM_DEFAULT_FONTS )
 		return fl_fonts + index;
 
-	for ( i = num_families * num_styles; i < font_count; ++i )
-		if ( index == fl_fonts[ i ].index )
-			return fl_fonts + i;
+    /* If no extra fonts are loaded bail out */
 
-    return NULL;
+    if ( font_count == NUM_DEFAULT_FONTS )
+        return NULL;
+
+    /* Fonts are sorted by ascending order of index, so use a binary
+       search */
+
+    key.index = index;
+    return bsearch( &key, fl_fonts + NUM_DEFAULT_FONTS,
+                    font_count - NUM_DEFAULT_FONTS, sizeof key,
+                    cmp_fnt_index );
 }
 
 
 /***************************************
+ * Sets a global scaling factor applied to all fonts
  ***************************************/
 
 void
@@ -161,6 +191,7 @@ fl_set_global_font_scaling_factor( double factor )
 
 
 /***************************************
+ * Sets a scaling factor for a certain font
  ***************************************/
 
 void
@@ -466,7 +497,105 @@ fl_set_xft_font_name( int              index,
 
 
 /***************************************
- * List all fonts
+ * Function for unloading a custom loaded font (in all sizes)
+ ***************************************/
+
+int
+fl_unload_font( int index )
+{
+    size_t i, j;
+
+    /* Don't allow removal of one of the default font */
+
+    if ( index < ( int ) NUM_DEFAULT_FONTS )
+        return -1;
+
+    /* Try to find the font with the requested index */
+
+    for ( i = NUM_DEFAULT_FONTS; i < font_count; i++ )
+        if ( fl_fonts[ i ].index == ( size_t ) index )
+            break;
+
+    /* Bail out if not found */
+
+    if ( i == font_count )
+        return -1;
+
+    /* Unload all differently sized fonts */
+
+    for ( j = 0; j < fl_fonts[ i ].size_count; j++ )
+    {
+        if ( flx->fs == fl_fonts[ i ].sized_fonts[ j ].font )
+            fl_state[ fl_vmode ].cur_fnt = flx->fs = NULL;
+        XftFontClose( fl_display, fl_fonts[ i ].sized_fonts[ j ].font );
+    }
+
+    /* Deallocate memory used for the unloaded fonts */
+
+    fl_free( fl_fonts[ i ].sized_fonts );
+
+    /* Get rid of the now unused entry in the array of fonts */
+
+    fli_remove_and_resize( fl_fonts, sizeof *fl_fonts, &font_count, i, 1 );
+
+    return 0;
+}
+    
+
+/***************************************
+ * Function for unloading a custom loaded font of a certain size
+ ***************************************/
+
+int
+fl_unload_sized_font( int index,
+                      int size )
+{
+    size_t i, j;
+
+    /* Don't allow removal of one of the default font */
+
+    if ( index < ( int ) NUM_DEFAULT_FONTS )
+        return -1;
+
+    /* Try to find the font with the requested index */
+
+    for ( i = NUM_DEFAULT_FONTS; i < font_count; i++ )
+        if ( fl_fonts[ i ].index == ( size_t ) index )
+            break;
+
+    /* Bail out if not found */
+
+    if ( i == font_count )
+        return -1;
+
+    /* Now look for the requested size */
+
+    for ( j = 0; j < fl_fonts[ i ].size_count; j++ )
+        if ( fl_fonts[ i ].sized_fonts[ j ].size == size )
+            break;
+
+    /* Give up if not found */
+
+    if ( j == fl_fonts[ i ].size_count )
+        return -1;
+
+    if ( flx->fs == fl_fonts[ i ].sized_fonts[ j ].font )
+        fl_state[ fl_vmode ].cur_fnt = flx->fs = NULL;
+        
+    XftFontClose( fl_display, fl_fonts[ i ].sized_fonts[ j ].font );
+
+    /* Remove the entry for the now unused entry in the list of sized fonts */
+
+    fli_remove_and_resize( fl_fonts[ i ].sized_fonts,
+                           sizeof *fl_fonts[ i ].sized_fonts,
+                           &fl_fonts[ i ].size_count, j, 1 );
+
+    return 0;
+}        
+
+
+/***************************************
+ * List all default fonts
  ***************************************/
 
 int
@@ -476,7 +605,7 @@ fl_enumerate_fonts( void ( * output )( const char *s ),
     size_t i;
 	int n;
 
-    for ( n = i = 0; output && i < font_count; i++, n++ )
+    for ( n = i = 0; output && i < NUM_DEFAULT_FONTS; i++, n++ )
 		output( shortform
                 ? cv_fname( fl_get_font_name( i ) )
                 : fl_get_font_name( i ) );
@@ -495,10 +624,6 @@ fl_get_font_struct( int style,
 	FL_FONT *f;
 	size_t i;
 	size_t cnt;
-
-	/* Remove bits for special font styles (shadow, embossed, engraved) */
-
-	style %= FL_SHADOW_STYLE;
 
 	/* Style must be non-negative and in the list of indices */
 
@@ -536,7 +661,7 @@ fl_get_font_struct( int style,
 	/* This is a normal Xft font if its slant (and weight) are non-negative,
 	   so load it with XftFontOpen(). Otherwise it's an X11 font and we need
 	   to insert the size into the name and load it using XftFontOpenXlfd()
-	   (woch possibly could fail!) */
+	   (which can fail!) */
 
 	if ( f->slant != -1 && f->weight != -1 )
 		f->sized_fonts[ cnt ].font =
@@ -588,7 +713,7 @@ fl_set_font( int index,
 		f = fl_get_font_struct( index & FL_BOLDITALIC_STYLE, size );
 	}
 
-    /* cur_font is always the one in current GC */
+    /* 'cur_font' is always the one in current GC */
 
     if ( fl_state[ fl_vmode ].cur_fnt == f )
         return;
@@ -605,6 +730,8 @@ fl_set_font( int index,
 
 
 /***************************************
+ * Returns the width of a string (not containing tabs or newlines) when
+ * using a certain font and size
  ***************************************/
 
 int

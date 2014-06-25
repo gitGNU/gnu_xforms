@@ -1028,8 +1028,8 @@ fl_free_pixmap_focus_pixmap( FL_OBJECT * obj )
  ***************************************/
 
 void
-fli_set_form_icon_data( FL_FORM  * form,
-                        char    ** data )
+fl_set_form_icon_data( FL_FORM  * form,
+                       char    ** data )
 {
     Pixmap p,
            s = None;
@@ -1042,6 +1042,8 @@ fli_set_form_icon_data( FL_FORM  * form,
         fl_set_form_icon( form, p, s );
         fl_free( xpmattrib );
     }
+    else
+        M_warn( "fl_set_form_icon_data", "Failed to create pixnap" );
 }
 
 

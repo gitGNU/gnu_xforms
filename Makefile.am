@@ -28,7 +28,7 @@ else
 DOCS =
 endif
 
-SUBDIRS = config lib image $(GL) fdesign fd2ps $(DEMOS) $(DOCS)
+SUBDIRS = config lib $(FONTS_DIR) image $(GL) fdesign fd2ps $(DEMOS) $(DOCS)
 
 # libforms.spec is needed as well as libforms.spec.in or else 'make rpmdist'
 # will fail.

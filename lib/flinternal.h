@@ -913,9 +913,6 @@ char * fli_sstrcpy( char       * dest,
                     const char * src,
                     size_t       n );
 
-void fli_set_form_icon_data( FL_FORM *,
-                             char ** );
-
 char *fli_getcwd( char *,
                   int );
 
@@ -1153,6 +1150,12 @@ int fli_get_string_widthTABfs( XFontStruct *,
                                int );
 #endif
 
+
+void * fli_remove_and_resize( void   * arr,
+                              size_t   memb_size,
+                              size_t * len,
+                              size_t   index,
+                              size_t   remove_cnt );
 
 #endif /* ! defined FL_INTERNAL_H */
 

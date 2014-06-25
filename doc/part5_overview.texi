@@ -587,28 +587,6 @@ where @code{show} indicates whether to show (1) or not show (0) the
 errors. With newer versions of the Forms Library this function has
 no effect.
 
-The fonts used in all forms can be changed using the routines
-@findex fl_set_font_name()
-@anchor{fl_set_font_name()}
-@findex fl_set_font_name_f()
-@anchor{fl_set_font_name_f()}
-@example
-int fl_set_font_name(int n, const char *name);
-int fl_set_font_name_f(int n, const char *fmt, ,,,);
-@end example
-@noindent
-The first function just accepts a simple string while the second
-constructs the font name from a format string just as it's used for
-@code{printf()} etc. and the following arguments. The first argument,
-@code{n}, must be a number between 0 and @code{FL_MAXFONTS-1}. The
-function returns @code{0} on success, @code{1} if called before proper
-initialization of the library and @code{-1} for either invalid
-arguments (@code{name} or the result of the expansion of the format
-string doesn't name an available font, @code{n} negative or not less
-than @code{FL_MAXFONTS}). @xref{Label Attributes and Fonts}, for
-details. A redraw of all forms is required to actually see the change
-for visible forms.
-
 Since the dimension of an object is typically given in pixels,
 depending on the server resolution and the font used, this can lead to
 unsatisfactory user interfaces. For example, a button designed to
@@ -1740,15 +1718,21 @@ of @code{@ref{fl_show_form()}} for the form.
 
 To set or change the icon shown when a form is iconified use the
 following routine
-@findex fl_set_form_icon()
 @anchor{fl_set_form_icon()}
+@anchor{fl_set_form_icon_data()}
+@findex fl_set_form_icon()
+@findex fl_set_form_icon_data()
 @example
 void fl_set_form_icon(FL_FORM *form, Pixmap icon, Pixmap mask);
+void fl_set_form_icon_data(FL_FORM *form, char **data)l
 @end example
 @noindent
-where @code{icon} can be any valid pixmap ID. (@pxref{Pixmap Object}
-for some of the routines that can be used to create pixmaps.) Note
-that a previously set icon if not freed or modified in anyway.
+where the arguments for the first function, @code{icon} and
+@code{mask}, can be any valid pixmap IDs. (See @pxref{Pixmap Object}
+for some of the routines that can be used to create pixmaps.) The
+second function instead accecpts a pointer to the data e.g. obtained
+by including an @code{xpm} file. Note that a previously set icon is
+not freed or modified in anyway.
 
 If, for any reason, you would like to change the form title after the
 form has been made visible, the following calls can be used (they will

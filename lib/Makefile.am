@@ -9,7 +9,7 @@ endif
 CLEANFILES = forms.h xforms.5
 
 EXTRA_DIST = xforms.man dirent_vms.h vms_readdir.c \
-	         ttfonts.cx font_utils.cx xformts.cx
+	         ttfonts.cx font_utils.cx xfonts.cx
 
 SUBDIRS = bitmaps fd include private
 

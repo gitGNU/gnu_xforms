@@ -84,4 +84,7 @@ FL_EXPORT Pixmap fl_create_from_pixmapdata( Window          win,
                                             int           * hoty,
                                             FL_COLOR        tran );
 
+FL_EXPORT void fl_set_form_icon_data( FL_FORM  * form,
+									  char    ** data );
+
 FL_EXPORT void fl_free_pixmap( Pixmap id );
