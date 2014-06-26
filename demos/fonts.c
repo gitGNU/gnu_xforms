@@ -75,9 +75,13 @@ void
 size_cb( FL_OBJECT * obj,
          long        arg  FL_UNUSED_ARG )
 {
+#if FL_ENABLE_XFT
+    fl_set_object_lsize( ui->textobj, fl_get_spinner_value( obj ) );
+#else
     int sizes[ ] = { 8, 10, 11, 12, 13, 14, 18, 24, 30 };
 
     fl_set_object_lsize( ui->textobj, sizes[ fl_get_browser( obj ) - 1 ] );
+#endif
 }
 
 
@@ -98,8 +102,6 @@ int
 main( int    argc,
       char * argv[ ] )
 {
-    fl_set_border_width( -3 );
-
     fl_initialize( &argc, argv, "FormDemo", 0, 0 );
     ui = create_form_fontsform( );
     fl_scale_form( ui->fontsform, 1.1, 1.2 );
@@ -108,6 +110,9 @@ main( int    argc,
 
     fl_enumerate_fonts( addit, 1 );
     fl_select_browser_line( ui->fontobj, 1 );
+#if FL_ENABLE_XFT
+    fl_set_spinner_value( ui->sizeobj, 10 );
+#else
     fl_addto_browser( ui->sizeobj, "8  (FL_TINY_SIZE)" );
     fl_addto_browser( ui->sizeobj, "10 (FL_SMALL_SIZE)" );
     fl_addto_browser( ui->sizeobj, "11" );
@@ -118,6 +123,7 @@ main( int    argc,
     fl_addto_browser( ui->sizeobj, "24 (FL_HUGE_SIZE)" );
     fl_addto_browser( ui->sizeobj, "30" );
     fl_select_browser_line( ui->sizeobj, 2 );
+#endif
     fl_set_object_lstyle( ui->textobj, FL_NORMAL_STYLE );
     fl_call_object_callback( ui->fontobj );
     fl_call_object_callback( ui->sizeobj );
@@ -143,14 +149,25 @@ create_form_fontsform( void )
     obj = fl_add_box( FL_FLAT_BOX, 0, 0, 371, 296, "" );
     fl_set_object_color( obj, FL_SLATEBLUE, FL_COL1 );
 
+#if FL_ENABLE_XFT
+    fdui->fontobj = obj = fl_add_browser( FL_HOLD_BROWSER, 10, 145, 240, 135,
+                                          "" );
+#else
     fdui->fontobj = obj = fl_add_browser( FL_HOLD_BROWSER, 10, 145, 195, 135,
                                           "" );
+#endif
     fl_set_object_lalign( obj, fl_to_inside_lalign( FL_ALIGN_BOTTOM ) );
     fl_set_object_callback( obj, style_cb, 0 );
 
+#if FL_ENABLE_XFT
+    fdui->sizeobj = obj = fl_add_spinner( FL_INT_SPINNER, 270, 200, 85, 30,
+                                          "" );
+    fl_set_spinner_bounds( obj, 1, 100 );
+#else
     fdui->sizeobj = obj = fl_add_browser( FL_HOLD_BROWSER, 215, 145, 145, 135,
                                           "" );
     fl_set_object_lalign( obj, fl_to_inside_lalign( FL_ALIGN_BOTTOM ) );
+#endif
     fl_set_object_callback( obj, size_cb, 0 );
 
     fdui->textobj = obj = fl_add_text( FL_NORMAL_TEXT, 10, 5, 351, 125,

@@ -1388,15 +1388,18 @@ All of these functions expect an integer as their first argument. It
 assigns a unique numerical ID to the font (to be used when e.g., as
 the @code{style} argument when calling
 @code{@ref{fl_set_object_lstyle()}}). The numbers @code{0} to
-@code{15} are already used by the default fonts. By using them you can
-replace any of the default fonts. Previously unused numbers (smaller
-than @code{@ref{FL_SHADOW_STYLE}}) will make new fonts available.
+@code{15} are already used by the default fonts. By using them one can
+replace the default fonts. Numbers not used for the default fonts,
+between @code{16} and
+@anchor{FL_MAXFONTS}
+@tindex FL_MAXFONTS
+@code{FL_MAXFONTS} (4095) can be used additional new fonts.
 
-The function @code{@ref{fl_set_xft_font_name()}} is to be used to
-load new TTF or OTF fonts. Beside the ID number to be used for the
-font it expects the name of the font (e.g., @code{DejaVu Sans}) and
-two integers indication the slant and weight for the font. For the
-slant the following pre-defined constants can be used
+The function @code{@ref{fl_set_xft_font_name()}} is to be used to load
+new TTF or OTF fonts. Beside the ID number for the font it expects the
+name of the font (e.g., @code{DejaVu Sans}) and two integers,
+indicating the slant and weight for the font. For the slant the
+following pre-defined constants can be used
 @table @code
 @anchor{FL_SLANT_ROMAN}
 @tindex FL_SLANT_ROMAN

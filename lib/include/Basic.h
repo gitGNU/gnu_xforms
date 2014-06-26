@@ -601,8 +601,6 @@ typedef struct {
  * FONTS
  ******************************************************************/
 
-#define FL_MAXFONTS     48  /* max number of fonts */
-
 typedef enum {
     FL_INVALID_STYLE = -1,
 
@@ -631,12 +629,19 @@ typedef enum {
     FL_SYMBOL_STYLE,
     FL_MISCBOLDITALIC_STYLE = FL_SYMBOL_STYLE,
 
-    /* modfier masks. Need to fit a short  */
+    /* Modfier masks, need to fit a (signed) int */
 
-    FL_SHADOW_STYLE   = ( 1 <<  9 ),
-    FL_ENGRAVED_STYLE = ( 1 << 10 ),
-    FL_EMBOSSED_STYLE = ( 1 << 11 )
+    FL_SHADOW_STYLE   = ( 1 << 12 ),
+    FL_ENGRAVED_STYLE = ( 1 << 13 ),
+    FL_EMBOSSED_STYLE = ( 1 << 14 )
 } FL_TEXT_STYLE;
+
+
+#if FL_ENABLE_XFT
+#define FL_MAXFONTS     ( FL_SHADOW_STYLE - 1 )
+#else
+#define FL_MAXFONTS     48  /* max number of fonts */
+#endif
 
 #define FL_FONT_STYLE FL_TEXT_STYLE
 

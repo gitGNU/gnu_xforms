@@ -1,3 +1,9 @@
+2014-06-26 Jens Thoms Toerring    <jt@toerring.de>
+
+	* fdesign: label font size can now be set to arbitrary values.
+	* lib/ttfonts.cx: code cleanup
+	* demos/fonts.c: arbitrary font sizes
+
 2014-06-25 Jens Thoms Toerring    <jt@toerring.de>
 
 	New version with support for TTF/OTF fonts via Xft

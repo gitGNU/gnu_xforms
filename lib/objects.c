@@ -142,6 +142,8 @@ fl_make_object( int            objclass,
 
     obj->objclass  = objclass;
     obj->type      = type;
+    obj->lsize     = FL_DEFAULT_SIZE;
+    obj->lstyle    = FL_NORMAL_STYLE;
     obj->resize    = FL_RESIZE_ALL;
     obj->nwgravity = obj->segravity = FL_NoGravity;
     obj->boxtype   = FL_NO_BOX;
@@ -1214,6 +1216,12 @@ fl_set_object_lsize( FL_OBJECT * obj,
     if ( ! obj )
     {
         M_err( "fl_set_object_lsize", "NULL object" );
+        return;
+    }
+
+    if ( lsize < 1 )
+    {
+        M_err( "fl_set_object_lsize", "Invalid lable size" );
         return;
     }
 

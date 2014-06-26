@@ -57,38 +57,6 @@ static char * get_fname( const char *,
  *
  */
 
-/* These default fonts may not be the most beautiful X11 fonts available
-   on the system but they are part of X11 distributions since at least
-   20 years, so we can be rather sure that they're available everywhere.
-   (And, remember, these fonts must be available on the machine where the
-   X server is running on, which is not necessarily the machine where the
-   program using XForms is executed.) */
-
-static const char *default_fonts[ ] =
-{
-    "-*-helvetica-medium-r-*-*-*-?-*-*-p-*-*-*",
-    "-*-helvetica-bold-r-*-*-*-?-*-*-p-*-*-*",
-    "-*-helvetica-medium-o-*-*-*-?-*-*-p-*-*-*",
-    "-*-helvetica-bold-o-*-*-*-?-*-*-p-*-*-*",
-
-    "-*-courier-medium-r-*-*-*-?-*-*-*-*-*-*",
-    "-*-courier-bold-r-*-*-*-?-*-*-*-*-*-*",
-    "-*-courier-medium-o-*-*-*-?-*-*-*-*-*-*",
-    "-*-courier-bold-o-*-*-*-?-*-*-*-*-*-*",
-
-    "-*-times-medium-r-*-*-*-?-*-*-p-*-*-*",
-    "-*-times-bold-r-*-*-*-?-*-*-p-*-*-*",
-    "-*-times-medium-i-*-*-*-?-*-*-p-*-*-*",
-    "-*-times-bold-i-*-*-*-?-*-*-p-*-*-*",
-
-    "-*-charter-medium-r-*-*-*-?-*-*-*-*-*-*",
-    "-*-charter-bold-r-*-*-*-?-*-*-*-*-*-*",
-    "-*-charter-medium-i-*-*-*-?-*-*-*-*-*-*",
-    "-*-charter-bold-i-*-*-*-?-*-*-*-*-*-*",
-
-    NULL
-};
-
 static FL_FONT fl_fonts[ FL_MAXFONTS ];
 
 #define DEFAULTF1  "fixed"
@@ -108,7 +76,7 @@ void
 fli_init_fonts( void )
 {
     FL_FONT *flf;
-    const char *const *f = default_fonts;
+    const char ** f = bitmap_fonts;
     static int initialized;
 
     if ( initialized )
@@ -119,7 +87,7 @@ fli_init_fonts( void )
     /* If fl_set_font_name() has been called before fl_initialize() we need
        to keep the changes */
 
-    for ( flf = fl_fonts, f = default_fonts; *f; f++, flf++ )
+    for ( flf = fl_fonts, f = bitmap_fonts; *f; f++, flf++ )
         if ( ! *flf->fname )
             strcpy( flf->fname, *f );
 

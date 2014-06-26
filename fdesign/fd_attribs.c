@@ -57,10 +57,13 @@ static struct {
 } saved_object;
 
 
-/* Font sizes, need to do this because of symbolic names */
+/* Font sizes */
 
 static FL_OBJECT *fnts;
 
+#if FL_ENABLE_XFT
+static FL_OBJECT * xft_sizeobj;
+#else
 typedef struct {
     int    size;
     char * name,
@@ -79,6 +82,7 @@ static Fsizes fsizes[ ] =
 };
 
 #define NFSIZE ( sizeof fsizes / sizeof *fsizes )
+#endif
 
 /* Character used for newline */
 
@@ -407,6 +411,18 @@ attrib_init( FD_generic_attrib * ui )
 
     /* Size */
 
+#if FL_ENABLE_XFT
+    fl_addto_form( ui->sizeobj->form );
+    xft_sizeobj = fl_add_spinner( FL_INT_SPINNER, ui->sizeobj->x,
+                                  ui->sizeobj->y, ui->sizeobj->w,
+                                  ui->sizeobj->h, ui->sizeobj->label );
+    fl_set_spinner_bounds( xft_sizeobj, 1, 100 );
+    fl_set_object_boxtype( xft_sizeobj, FL_SHADOW_BOX );
+    fl_set_object_callback( xft_sizeobj, apply_cb, 0 );
+    fl_end_form( );
+
+    fl_hide_object( ui->sizeobj );
+#else
     for ( i = 0; i < ( int ) NFSIZE; i++ )
     {
         if ( fsizes[ i ].size == FL_NORMAL_SIZE )
@@ -419,6 +435,7 @@ attrib_init( FD_generic_attrib * ui )
                            "%2d  %s%%r1", fsizes[ i ].size, fsizes[ i ].name );
         fl_set_choice_item_shortcut( ui->sizeobj, i + 1, fsizes[ i ].sc );
     }
+#endif
 }
 
 
@@ -437,7 +454,9 @@ show_attributes( const FL_OBJECT * obj )
     int i,
         lstyle,
         spstyle,
+#if ! defined FL_ENABLE_XFT
         oksize,
+#endif
         align = fl_to_outside_lalign( obj->align );
     static char othersize[ 32 ];
 
@@ -482,6 +501,9 @@ show_attributes( const FL_OBJECT * obj )
 
 	/* d) label font size */
 
+#if defined FL_ENABLE_XFT
+    fl_set_spinner_value( xft_sizeobj, obj->lsize );
+#else
     for ( oksize = i = 0; ! oksize && i < ( int ) NFSIZE; i++ )
         if ( ( oksize = ( obj->lsize == fsizes[ i ].size ) ) )
             fl_set_choice( fd_generic_attrib->sizeobj, i + 1 );
@@ -494,6 +516,7 @@ show_attributes( const FL_OBJECT * obj )
         fl_replace_choice( fd_generic_attrib->sizeobj, NFSIZE, othersize );
         fl_set_choice( fd_generic_attrib->sizeobj, NFSIZE );
     }
+#endif
 
     /* e) gravity settings */
 
@@ -596,8 +619,12 @@ readback_attributes( FL_OBJECT * obj )
     fl_set_object_resize( obj, check_resize( resize_val( tmpbuf ),
                                              obj->nwgravity, obj->segravity ) );
 
+#if FL_ENABLE_XFT
+    fl_set_object_lsize( obj, fl_get_spinner_value( xft_sizeobj ) );
+#else
     fl_set_object_lsize( obj, fsizes[ fl_get_choice(
                                       fd_generic_attrib->sizeobj ) - 1 ].size );
+#endif
 
     set_label( obj, fl_get_input( fd_generic_attrib->labelobj ) );
     set_shortcut( obj, fl_get_input( fd_generic_attrib->scobj ) );

@@ -44,32 +44,6 @@ struct FONT_STYLE {
       { XFT_SLANT_ITALIC, XFT_WEIGHT_BOLD   }  };
 
 
-/* Old X11 bitmap fonts as alternatives */
-
-static const char * bitmap_fonts[ ] =
-{
-    "-*-helvetica-medium-r-*-*-*-?-*-*-p-*-*-*",
-    "-*-helvetica-bold-r-*-*-*-?-*-*-p-*-*-*",
-    "-*-helvetica-medium-o-*-*-*-?-*-*-p-*-*-*",
-    "-*-helvetica-bold-o-*-*-*-?-*-*-p-*-*-*",
-
-    "-*-courier-medium-r-*-*-*-?-*-*-*-*-*-*",
-    "-*-courier-bold-r-*-*-*-?-*-*-*-*-*-*",
-    "-*-courier-medium-o-*-*-*-?-*-*-*-*-*-*",
-    "-*-courier-bold-o-*-*-*-?-*-*-*-*-*-*",
-
-    "-*-times-medium-r-*-*-*-?-*-*-p-*-*-*",
-    "-*-times-bold-r-*-*-*-?-*-*-p-*-*-*",
-    "-*-times-medium-i-*-*-*-?-*-*-p-*-*-*",
-    "-*-times-bold-i-*-*-*-?-*-*-p-*-*-*",
-
-    "-*-charter-medium-r-*-*-*-?-*-*-*-*-*-*",
-    "-*-charter-bold-r-*-*-*-?-*-*-*-*-*-*",
-    "-*-charter-medium-i-*-*-*-?-*-*-*-*-*-*",
-    "-*-charter-bold-i-*-*-*-?-*-*-*-*-*-*",
-};
-
-
 /* List of all fonts */
 
 static FL_FONT * fl_fonts = NULL;
@@ -77,7 +51,6 @@ static size_t font_count = 0;
 
 static size_t num_families = sizeof default_families / sizeof *default_families;
 static size_t num_styles = sizeof default_styles / sizeof *default_styles;
-static size_t num_bitmap_fonts = sizeof bitmap_fonts / sizeof *bitmap_fonts;
 
 #define NUM_DEFAULT_FONTS ( num_families * num_styles )
 
@@ -283,18 +256,19 @@ fl_get_font_name( int index )
 
 
 /***************************************
- * ALlows to switch between the use of True Type fonts and the old
- * X11 bitmap fonts as the default fonts
+ * ALlows to switch between the use of True and Open Type fonts and
+ * the old X11 bitmap fonts as the default fonts
  ***************************************/
 
 void
 fl_set_default_font_type( FL_FONT_TYPE type )
 {
     size_t i, j;
+    const char ** name;
 
     if ( type == FL_X11_FONT )
-        for ( i = 0; i < num_bitmap_fonts; i++ )
-            fl_set_font_name( i, bitmap_fonts[ i ] );
+        for ( i = 0, name = bitmap_fonts; *name; i++, name++ )
+            fl_set_font_name( i, *name );
     else if  ( type == FL_XFT_FONT )
         for ( i = 0; i < num_families; i++ )
             for ( j = 0; j < num_styles; j++ )
@@ -310,16 +284,25 @@ fl_set_default_font_type( FL_FONT_TYPE type )
 
 
 /***************************************
- * Add a new X11 (bitmap) font (indexed by n) or change the existing font
- * at that index.
+ * Add a new X11 bitmap font (with ID 'index') or replace the
+ * existing font with that ID.
  ***************************************/
 
 int
 fl_set_font_name( int          index,
                   const char * name )
 {
-	FL_FONT * font;
+	FL_FONT * f;
 	char * full_name;
+
+    /* Index can't be arbitrary, otherwise it might conflict with the
+       "special" flags for shadow, engraved and embossed */
+
+    if ( index < 0 || index > FL_MAXFONTS )
+    {
+        M_warn( "fl_set_xft_font_name", "Invalid index" );
+        return -1;
+    }
 
 	if ( ! name || ! *name )
     {
@@ -342,35 +325,36 @@ fl_set_font_name( int          index,
 	/* Now that we have a tested name we can either replace an existing
 	   font entry or create a new one. */
 
-	if ( ( font = fl_get_font_from_index( index ) ) )
+	if ( ( f = fl_get_font_from_index( index ) ) )
 	{
-		size_t i;
+        while ( f->size_count )
+			XftFontClose( fl_display, f->sized_fonts[ --f->size_count ].font );
 
-		for ( i = 0; i < font->size_count; i++ )
-			XftFontClose( fl_display, font->sized_fonts[ i ].font );
+		fli_safe_free( f->sized_fonts );
+		f->size_count = 0;
+		fli_safe_free( f->name );
 
-		fli_safe_free( font->sized_fonts );
-		font->size_count = 0;
-		fli_safe_free( font->name );
-
-		font->name = fl_strdup( full_name );
-		font->slant = font->weight = -1;
-		font->scale = 1.0;
+		f->name = fl_strdup( full_name );
+		f->slant = f->weight = -1;
+		f->scale = 1.0;
 	}
 	else
 	{
-		fl_fonts = fl_realloc( fl_fonts,
-							   ( font_count + 1 ) * sizeof *fl_fonts );
+		fl_fonts = fl_realloc( fl_fonts, ++font_count * sizeof *fl_fonts );
 
-		fl_fonts[ font_count ].index       = index;
-		fl_fonts[ font_count ].name        = fl_strdup( full_name );
-		fl_fonts[ font_count ].slant       = fl_fonts[ font_count ].weight = -1;
-		fl_fonts[ font_count ].sized_fonts = NULL;
-		fl_fonts[ font_count ].size_count  = 0;
-		fl_fonts[ font_count ].scale       = 1.0;
+        f = fl_fonts + font_count - 1;
 
-		qsort( fl_fonts, ++font_count, sizeof *fl_fonts,
-               fli_font_index_compare );
+		f->index       = index;
+		f->name        = fl_strdup( full_name );
+		f->slant       = f->weight = -1;
+		f->sized_fonts = NULL;
+		f->size_count  = 0;
+		f->scale       = 1.0;
+
+        /* Sort the user defined fonts by index to make them easier to find */
+
+		qsort( fl_fonts + NUM_DEFAULT_FONTS, font_count - NUM_DEFAULT_FONTS,
+               sizeof *fl_fonts, fli_font_index_compare );
 	}
 
 	return 0;
@@ -378,7 +362,7 @@ fl_set_font_name( int          index,
 
 
 /***************************************
- * Add a new font or change an existing font.
+ * Add a new X11 font or replace an existing font.
  ***************************************/
 
 int
@@ -397,8 +381,8 @@ fl_set_font_name_f( int          index,
 
 
 /***************************************
- * Add a new True Type (or similar) font (indexed by n) or change the
- * existing font at that index.
+ * Add a new True or Open Type font (with ID 'index') or replace the
+ * existing font with that ID.
  ***************************************/
 
 int
@@ -407,8 +391,16 @@ fl_set_xft_font_name( int              index,
                       FL_FONT_SLANT    slant,
                       FL_FONT_WEIGHT   weight )
 {
-	XftFont * font;
 	FL_FONT *f;
+
+    /* Index can't be arbitrary, otherwise it might conflict with the
+       "special" flags for shadow, engraved or embossed */
+
+    if ( index < 0 || index > FL_MAXFONTS )
+    {
+        M_warn( "fl_set_xft_font_name", "Invalid index" );
+        return -1;
+    }
 
 	if ( ! name || ! *name )
     {
@@ -441,30 +433,14 @@ fl_set_xft_font_name( int              index,
         return 1;
 	}
 
-	font = XftFontOpen( fl_display, fl_screen,
-                        XFT_FAMILY, XftTypeString, name,
-                        XFT_SIZE,   XftTypeDouble,  ( double ) FL_DEFAULT_SIZE,
-                        XFT_SLANT,  XftTypeInteger, slant,
-                        XFT_WEIGHT, XftTypeInteger, weight,
-                        NULL );
-
-	if ( ! font )
-	{
-        M_warn( "fl_set_xft_font_name", "Invalid font name" );
-		return -1;
-	}
-
-	XftFontClose( fl_display, font );
-
-	/* Now that we have a tested font we can either replace an existing
-	   font entry or create a new one. */
+	/* Now that we have tested the font as far as possible (actually opening
+       it doesn't make sense since it always succeeds) we can either replace
+       an existing font entry or create a new one. */
 
 	if ( ( f = fl_get_font_from_index( index ) ) )
 	{
-		size_t i;
-
-		for ( i = 0; i < f->size_count; i++ )
-			XftFontClose( fl_display, f->sized_fonts[ i ].font );
+        while ( f->size_count )
+			XftFontClose( fl_display, f->sized_fonts[ --f->size_count ].font );
 
 		fli_safe_free( f->sized_fonts );
 		f->size_count = 0;
@@ -477,19 +453,22 @@ fl_set_xft_font_name( int              index,
 	}
 	else
 	{
-		fl_fonts = fl_realloc( fl_fonts,
-							   ( font_count + 1 ) * sizeof *fl_fonts );
+		fl_fonts = fl_realloc( fl_fonts, ++font_count * sizeof *fl_fonts );
 
-		fl_fonts[ font_count ].index        = index;
-		fl_fonts[ font_count ].name         = fl_strdup( name );
-		fl_fonts[ font_count ].slant        = slant;
-		fl_fonts[ font_count ].weight       = weight;
-		fl_fonts[ font_count ].scale        = 1.0;
-		fl_fonts[ font_count ].sized_fonts  = NULL;
-		fl_fonts[ font_count ].size_count   = 0;
+        f = fl_fonts + font_count - 1;
 
-		qsort( fl_fonts, ++font_count, sizeof *fl_fonts,
-               fli_font_index_compare );
+		f->index        = index;
+		f->name         = fl_strdup( name );
+		f->slant        = slant;
+		f->weight       = weight;
+		f->scale        = 1.0;
+		f->sized_fonts  = NULL;
+		f->size_count   = 0;
+
+        /* Sort the user defined fonts by index to make them easier to find */
+
+		qsort( fl_fonts + NUM_DEFAULT_FONTS, font_count - NUM_DEFAULT_FONTS,
+               sizeof *fl_fonts, fli_font_index_compare );
 	}
 
 	return 0;
@@ -497,42 +476,48 @@ fl_set_xft_font_name( int              index,
 
 
 /***************************************
- * Function for unloading a custom loaded font (in all sizes)
+ * Function for unloading a custom loaded font (at all sizes)
  ***************************************/
 
 int
 fl_unload_font( int index )
 {
-    size_t i, j;
+    size_t i;
+    FL_FONT *f = NULL;
 
     /* Don't allow removal of one of the default font */
 
+    index %= FL_SHADOW_STYLE;
     if ( index < ( int ) NUM_DEFAULT_FONTS )
         return -1;
 
-    /* Try to find the font with the requested index */
+    /* Try to find a user defined font with the requested index */
 
     for ( i = NUM_DEFAULT_FONTS; i < font_count; i++ )
         if ( fl_fonts[ i ].index == ( size_t ) index )
+        {
+            f = fl_fonts + i;
             break;
+        }
 
     /* Bail out if not found */
 
-    if ( i == font_count )
+    if ( ! f )
         return -1;
 
     /* Unload all differently sized fonts */
 
-    for ( j = 0; j < fl_fonts[ i ].size_count; j++ )
+    while ( f->size_count )
     {
-        if ( flx->fs == fl_fonts[ i ].sized_fonts[ j ].font )
+        if ( flx->fs == f->sized_fonts[ --f->size_count ].font )
             fl_state[ fl_vmode ].cur_fnt = flx->fs = NULL;
-        XftFontClose( fl_display, fl_fonts[ i ].sized_fonts[ j ].font );
+        XftFontClose( fl_display, f->sized_fonts[ f->size_count ].font );
     }
 
     /* Deallocate memory used for the unloaded fonts */
 
-    fl_free( fl_fonts[ i ].sized_fonts );
+    fl_free( f->sized_fonts );
+    fl_free( f->name );
 
     /* Get rid of the now unused entry in the array of fonts */
 
@@ -554,6 +539,7 @@ fl_unload_sized_font( int index,
 
     /* Don't allow removal of one of the default font */
 
+    index %= FL_SHADOW_STYLE;
     if ( index < ( int ) NUM_DEFAULT_FONTS )
         return -1;
 

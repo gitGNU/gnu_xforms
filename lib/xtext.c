@@ -1227,6 +1227,10 @@ fli_draw_stringTAB( Drawable     win,
 }
 
 
+/***************************************
+ * Draws an Xft string, possibly with background
+ ***************************************/
+
 #if FL_ENABLE_XFT
 static void
 draw_string( Display        * display,
@@ -1242,8 +1246,7 @@ draw_string( Display        * display,
     {
         XGlyphInfo extents;
 
-        XftTextExtents8( display, font,
-                         ( XftChar8 * ) str, len, &extents );
+        XftTextExtents8( display, font, str, len, &extents );
 
         XftDrawRect( flx->bgdraw, &flx->bktextcolor, x, y,
                      extents.width, font->height );

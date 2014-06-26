@@ -11,14 +11,10 @@ AC_CONFIG_HEADERS([lib/config.h])
 AM_INIT_AUTOMAKE($PACKAGE_NAME, $PACKAGE_VERSION)
 AM_MAINTAINER_MODE
 
-#######################
-############
-############      Don't forget to set the SO_VERSION for
-############      libtool's versioning system. This is at
-############      the moment moved to a later place since
-############      it depends on Xft suppport!
-############
-#######################
+### This defines the version number of the installed .so files
+### using libtool's versioning system.
+
+AC_SUBST(SO_VERSION, ["3:0:0"])
 
 
 AC_CONFIG_MACRO_DIR([config])
@@ -276,17 +272,6 @@ if test x$enable_xft == xyes; then
 	AC_CONFIG_FILES([fonts/Makefile \
 			         fonts/DejaVu/Makefile \
 		             fonts/FPL_Neu/Makefile])
-fi
-
-### This defines the version number of the installed .so files
-### using libtool's versioning system.
-### Note: with Xft disabled the version is still bakward compatible
-###       with older versions!
-
-if test x$enable_xft == xyes; then
-	AC_SUBST(SO_VERSION, ["3:0:0"])
-else
-	AC_SUBST(SO_VERSION, ["3:4:1"])
 fi
 
 AC_OUTPUT
