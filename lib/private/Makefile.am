@@ -32,5 +32,6 @@ EXTRA_DIST = \
 	ptbox.h \
 	ptext.h \
 	ptimer.h \
+	pthumbwheel.h \
 	pvaluator.h \
 	pxyplot.h
