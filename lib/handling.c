@@ -94,17 +94,20 @@ fli_XLookupString( XKeyEvent * xkey,
     int len = INT_MIN;
 
     if ( ! fli_context->xic )
-        len = XLookupString( xkey, buf, buflen, ks, 0 );
+        len = XLookupString( xkey, buf, buflen - 1, ks, 0 );
     else
     {
         Status status;
 
-        len = XmbLookupString( fli_context->xic, xkey, buf, buflen, ks,
-                               &status );
+        len = Xutf8LookupString( fli_context->xic, xkey, buf, buflen - 1, ks,
+                                 &status );
 
         if ( status == XBufferOverflow )
-            len = -len;
+            len *= -1;
     }
+
+    if ( len >= 0 )
+        buf[ len ] = '\0';
 
     return len;
 }
@@ -208,7 +211,7 @@ do_shortcut( FL_FORM  * form,
 
     if ( fl_keypressed( XK_Alt_L ) || fl_keypressed( XK_Alt_R ) )
     {
-        if ( key < 256 )
+        if ( key <= 0x7F )
         {
             key1 = FL_ALT_MASK + ( islower( ( int ) key ) ?
                                    toupper( ( int ) key ) : key );
@@ -309,6 +312,8 @@ handle_keyboard( FL_FORM  * form,
     if ( fli_do_shortcut( form, key, x, y, xev ) )
         return;
 
+    fprintf( stderr, "ZZZZ 0x%x\n", (unsigned int ) key );
+
     /* Focus policy is done as follows: Input object has the highest
        priority. Next comes the object that wants special keys, finally
        followed by 'mouseobj', having the lowest proiority. */
@@ -329,7 +334,7 @@ handle_keyboard( FL_FORM  * form,
 
         /* Handle special keys first */
 
-        if ( key > 255 )
+        if ( ( key & 0xFF00 ) == 0xFF00 )
         {
             if (    IsLeft( key )
                  || IsRight( key )
@@ -935,8 +940,9 @@ handle_keyboard_event( XEvent * xev,
 {
     Window win = xev->xkey.window;
     KeySym keysym = 0;
-    unsigned char keybuf[ 227 ];
-    int kbuflen;
+    static unsigned char * keybuf = NULL;
+    static int keybuflen = 0;
+    int len;
 
     fli_int.mousex    = xev->xkey.x;
     fli_int.mousey    = xev->xkey.y;
@@ -966,21 +972,31 @@ handle_keyboard_event( XEvent * xev,
     if ( ! fli_int.keyform )
         return;
 
-    kbuflen = fli_XLookupString( ( XKeyEvent * ) xev, ( char * ) keybuf,
-                                 sizeof keybuf, &keysym );
-
-    if ( kbuflen < 0 )
+    if ( ! keybuf )
     {
-        if ( kbuflen != INT_MIN )
-            M_err( "handle_keyboard_event", "keyboad buffer overflow?" );
-        else
-            M_err( "handle_keyboard_event", "fli_XLookupString failed?" );
-
-        return;
+        keybuf = fl_malloc( 5 );
+        keybuflen = 5;
     }
 
+    while ( 1 )
+    {
+        len = fli_XLookupString( ( XKeyEvent * ) xev, ( char * ) keybuf,
+                                 keybuflen, &keysym );
+
+        if ( len >= 0 )
+            break;
+
+        len *= -1;
+
+        M_warn( "handle_keyboard_event",
+                "Key with lenght longger than 4 (%d) encountered", len );
+
+        keybuf = fl_realloc( keybuf, len + 1 );
+        keybuflen = len + 1;
+    }
+            
     /* Ignore modifier keys as they don't cause action and are taken care
-       of by the lookupstring routine */
+       of by the XLookupString() function */
 
     if ( IsModifierKey( keysym ) )
         /* empty */ ;
@@ -990,16 +1006,14 @@ handle_keyboard_event( XEvent * xev,
 
         fli_handle_form( fli_int.keyform, formevent, '\t', xev );
     }
-    else if ( IsCursorKey( keysym ) || kbuflen == 0 )
+    else if ( IsCursorKey( keysym ) || len == 0 )
         fli_handle_form( fli_int.keyform, formevent, keysym, xev );
     else
     {
-        unsigned char *ch;
-
-        /* All regular keys, including mapped strings */
-
-        for ( ch = keybuf; ch < keybuf + kbuflen && fli_int.keyform; ch++ )
-            fli_handle_form( fli_int.keyform, formevent, *ch, xev );
+        fprintf( stderr, "Sending %d 0x%lx\n", formevent,
+                 utf8_to_num( ( char * ) keybuf ) );
+        fli_handle_form( fli_int.keyform, formevent,
+                         utf8_to_num( ( char * ) keybuf ), xev );
     }
 }
 

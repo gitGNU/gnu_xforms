@@ -177,7 +177,7 @@ fli_get_string_width( XftFont    * f,
 {
 	XGlyphInfo extents;
 
-	XftTextExtents8( fl_display, f, ( XftChar8 * ) s, len, &extents );
+	XftTextExtentsUtf8( fl_display, f, ( XftChar8 * ) s, len, &extents );
 
     return extents.xOff;
 }

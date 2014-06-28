@@ -289,6 +289,8 @@ draw_input( FL_OBJECT * obj )
     fl_set_text_clipping( cx, cy, sp->w, sp->h );
     fl_set_clipping( cx, cy, sp->w, sp->h );
 
+    fprintf( stderr, "str = %s\n", sp->str );
+
     max_pixels = fli_draw_string( obj->type == FL_MULTILINE_INPUT ?
                                   FL_ALIGN_LEFT_TOP : FL_ALIGN_LEFT,
                                   cx - sp->xoffset,      /* Bounding box */
@@ -493,24 +495,40 @@ static char cutbuf[ MAXCBLEN ];
 
 
 /***************************************
- * Delete a single char. dir =1 for next, dir -1 for prev
+ * Delete a single char, dir =1 for next, dir -1 for prev
  ***************************************/
 
 static void
 delete_char( FLI_INPUT_SPEC * sp,
-             int              dir,
-             int              slen )
+             int              dir )
 {
-    int i = sp->position - ( dir < 0 );
-
-    if ( sp->str[ i ] == '\n' )
+    if ( dir == 1 )
     {
-        sp->lines--;
-        sp->ypos -= dir < 0;
-    }
+        char * new_pos = utf8_next_char_pos( sp->str + sp->position );
 
-    memmove( sp->str + i, sp->str + i + 1, slen - i );
-    sp->position -= dir < 0;
+        if ( sp->str[ sp->position ] == '\n' )
+            sp->lines--;
+
+        memmove( sp->str + sp->position, new_pos, strlen( new_pos ) + 1 );
+    }
+    else
+    {
+        char * new_pos = utf8_prev_char_pos( sp->str + sp->position );
+
+        if ( *new_pos == '\n' )
+        {
+            sp->lines--;
+            sp->ypos--;
+        }
+
+        fprintf( stderr, "Del %d %d\n", sp->position,
+                 ( int ) ( new_pos - sp->str ) );
+
+        memmove( new_pos, sp->str + sp->position,
+                 strlen( sp->str + sp->position ) + 1 );
+
+        sp->position = new_pos - sp->str;
+    }
 }
 
 
@@ -540,8 +558,10 @@ delete_piece( FL_OBJECT * obj,
                          ( ( FLI_INPUT_SPEC * ) ( o )->spec )->str + ( b ),  \
                          ( e ) - ( b ) )
 
-#define IsRegular( k )  (    ( k ) == '\n'                                \
-                          || ( key >= 32 && key <= 255 && key != 127 ) )
+#define IsRegular( k )  (    ( k ) == '\n'                     \
+                          || (    key >= 32                    \
+                               && utf8_get_char_bytes( k ) > 0 \
+                               && key != 127 ) )
 
 
 /***************************************
@@ -610,7 +630,14 @@ handle_movement( FL_OBJECT * obj,
         if ( shiftkey_down( kmask ) )
             sp->position = startpos;
         else if ( sp->position > 0 )
-            sp->position--;
+        {
+            sp->position -= utf8_get_prev_byte_count( sp->str + sp->position );
+            if ( sp->position < 0 )
+            {
+                M_err( "handle_movement", "Something's wrong here!" );
+                sp->position = 0;
+            }
+        }
 
         if ( sp->str[ sp->position ] == '\n' )
         {
@@ -632,9 +659,10 @@ handle_movement( FL_OBJECT * obj,
             if ( sp->str[ sp->position ] == '\n' )
             {
                 sp->ypos++;
-                startpos = sp->position + 1;
+                startpos = ++sp->position;
             }
-            sp->position++;
+            else
+                sp->position += utf8_get_byte_count( sp->str + sp->position );
         }
     }
     else if ( IsUp( key ) )     /* Up key */
@@ -795,7 +823,7 @@ handle_edit( FL_OBJECT * obj,
         if ( sp->endrange >= 0 )
             delete_piece( obj, sp->beginrange, sp->endrange - 1 );
         else if ( sp->position > 0 )
-            delete_char( sp, -1, slen );
+            delete_char( sp, -1 );
         else
             ret = FL_RETURN_NONE;
     }
@@ -804,7 +832,7 @@ handle_edit( FL_OBJECT * obj,
         if ( sp->endrange >= 0 )
             delete_piece( obj, sp->beginrange, sp->endrange - 1 );
         else if ( sp->position < slen )
-            delete_char( sp, 1, slen );
+            delete_char( sp, 1 );
         else
             ret = FL_RETURN_NONE;
     }
@@ -989,6 +1017,7 @@ handle_normal_key( FL_OBJECT    * obj,
     FLI_INPUT_SPEC *sp = obj->spec;
     char *tmpbuf = NULL;
     int tmppos = 0;
+    int len;
     int ret = FL_RETURN_CHANGED;
 
     /* Check that there's still room for a new character */
@@ -1018,18 +1047,27 @@ handle_normal_key( FL_OBJECT    * obj,
 
     /* Merge the new character */
 
+    len = utf8_get_char_bytes( key );
+
+    fprintf( stderr, "Normal key %d %d\n", key, len );
+
     if (    Input_Mode == FL_DOS_INPUT_MODE
         && sp->maxchars > 0
         && slen == sp->maxchars )
     {
-        memmove( sp->str + sp->position + 1, sp->str + sp->position,
+        memmove( sp->str + sp->position + len, sp->str + sp->position,
                  slen - sp->position );
         sp->str[ sp->maxchars ] = '\0';
     }
     else
         memmove( sp->str + sp->position + 1, sp->str + sp->position,
-                 slen - sp->position + 1 );
-    sp->str[ sp->position++ ] = key;
+                 slen - sp->position + len );
+
+    while ( len-- )
+        sp->str[ sp->position++ ] =
+                          ( ( unsigned long ) key >> ( 8 * len ) ) & 0xFF;
+
+//    sp->str[ sp->position++ ] = key;
 
     if ( key == '\n' )
     {
@@ -1521,6 +1559,8 @@ handle_input( FL_OBJECT * obj,
             break;
 
         case FL_KEYPRESS :
+            fprintf( stderr, "Received 0x%x\n", ( unsigned int ) key );
+
             if ( ( ret = handle_key( obj, key, state ) ) )
             {
                 sp->changed = 1;
@@ -1554,6 +1594,8 @@ handle_input( FL_OBJECT * obj,
 
     if ( obj->spec )
     fl_get_input_cursorpos( obj, &sp->xpos, &sp->ypos );
+
+    fprintf( stderr, "TTT %s\n", sp->str );
 
     return ret;
 }
@@ -1829,14 +1871,37 @@ fl_add_input( int          type,
 }
 
 
+
+/***************************************
+ * Function for testing if a character is suitable for an input field.
+ * These are all UTF-8 characters except non-printable characters
+ * in the range below 0x7F. For multiline inputs also a line feed
+ * is ok. Returns the number of bytes occupied by a valid character
+ * and -1 for invalid ones.
+ ***************************************/
+
+int
+is_valid( FL_OBJECT  * obj,
+          const char * p )
+{
+    int len = utf8_get_byte_count( p );
+
+    if ( len == -1 )
+        return -1;
+
+    if ( len == 1
+         && ! (    isprint( ( unsigned char ) ( *p ) )
+                || ( obj->type == FL_MULTILINE_INPUT && ( *p ) == '\n' ) ) )
+        return -1;
+
+    return len;
+}
+
+
 /***************************************
  * Sets the input string. Only printable character and, for multi-line
  * inputs new-lines are accepted.
  ***************************************/
-
-#define IS_VALID_INPUT_CHAR( c )   \
-       isprint( ( unsigned char ) ( c ) )    \
-    || ( obj->type == FL_MULTILINE_INPUT && ( c ) == '\n' )
 
 void
 fl_set_input( FL_OBJECT  * obj,
@@ -1844,25 +1909,41 @@ fl_set_input( FL_OBJECT  * obj,
 {
     FLI_INPUT_SPEC *sp = obj->spec;
     int len;
+    int cl;
     char *p;
     const char *q;
 
     if ( ! str )
         str = "";
 
-    for ( len = 0, q = str; *q; ++q )
-        if ( IS_VALID_INPUT_CHAR( *q ) )
-            ++len;
+    /* Check out how many bytes we need when skipping all non-valid
+       characters */
 
-    if ( sp->size < len + 1 )
+    for ( len = 0, q = str; *q; q += cl )
+        if ( ( cl = is_valid( obj, q ) ) == -1 )
+            cl = 1;
+        else
+            len += cl;
+
+    /* Re-allocate memory if necessary (with a bit extra)x */
+
+    if ( sp->size < len + 1 || sp->size > len + 9 )
     {
         sp->size = len + 9;
         sp->str = fl_realloc( sp->str, sp->size );
     }
 
-    for ( p = sp->str, q = str; *q; ++q )
-        if ( IS_VALID_INPUT_CHAR( *q ) )
-            *p++ = *q;
+    /* Copy all valid characters */
+
+    for ( p = sp->str, q = str; *q; q += cl )
+        if ( ( cl = is_valid( obj, q ) ) == -1 )
+            cl = 1;
+        else
+        {
+            memcpy( p, q, cl );
+            p += cl;
+        }
+
     *p = '\0';
 
     /* Set position of cursor in string to the end (if object doesn't has

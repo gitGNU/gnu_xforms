@@ -117,6 +117,7 @@ libforms_la_SOURCES = \
 	tooltip.c \
 	ulib.h \
 	util.c \
+	utf8.c \
 	valuator.c \
 	version.c \
 	vn_pair.c \

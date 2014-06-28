@@ -1157,6 +1157,8 @@ void * fli_remove_and_resize( void   * arr,
                               size_t   index,
                               size_t   remove_cnt );
 
+#include "utf8.h"
+
 #endif /* ! defined FL_INTERNAL_H */
 
 

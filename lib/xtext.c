@@ -1024,11 +1024,12 @@ fli_get_underline_rect(
 #if FL_ENABLE_XFT
     XGlyphInfo extents;
 
-    XftTextExtents8( fl_display, fs, ( const XftChar8 * ) "_", 1, &extents );
+    XftTextExtentsUtf8( fl_display, fs, ( const XftChar8 * ) "_", 1,
+                        &extents );
     ul_thickness = extents.height;
 
-    XftTextExtents8( fl_display, fs,
-                     ( const XftChar8 * ) str + n, 1, &extents );
+    XftTextExtentsUtf8( fl_display, fs,
+                        ( const XftChar8 * ) str + n, 1, &extents );
     ul_pos = extents.height - extents.y + ul_thickness / 4 + 1;
 #else
     if ( UL_thickness < 0 )
@@ -1117,8 +1118,8 @@ do_underline_all( FL_Coord        x,
     {
         XGlyphInfo extents;
 
-        XftTextExtents8( fl_display, flx->fs, ( const XftChar8 * ) "_", 1,
-                         &extents );
+        XftTextExtentsUtf8( fl_display, flx->fs, ( const XftChar8 * ) "_", 1,
+                            &extents );
         *ul_thickness = extents.height;
     }
 #else
@@ -1133,8 +1134,8 @@ do_underline_all( FL_Coord        x,
 #if FL_ENABLE_XFT
     {
         XGlyphInfo extents;
-        XftTextExtents8( fl_display, flx->fs,
-                         ( const XftChar8 * ) str, n, &extents );
+        XftTextExtentsUtf8( fl_display, flx->fs,
+                            ( const XftChar8 * ) str, n, &extents );
         *ul_pos = extents.height - extents.y + *ul_thickness / 4 + 1;
     }
 #else
@@ -1246,7 +1247,7 @@ draw_string( Display        * display,
     {
         XGlyphInfo extents;
 
-        XftTextExtents8( display, font, str, len, &extents );
+        XftTextExtentsUtf8( display, font, str, len, &extents );
 
         XftDrawRect( flx->bgdraw, &flx->bktextcolor, x, y,
                      extents.width, font->height );
@@ -1254,7 +1255,7 @@ draw_string( Display        * display,
 
     fli_textcolor( fg_color );
 
-    XftDrawString8( flx->textdraw, &flx->textcolor, font, x, y, str, len );
+    XftDrawStringUtf8( flx->textdraw, &flx->textcolor, font, x, y, str, len );
 }
 #endif
 

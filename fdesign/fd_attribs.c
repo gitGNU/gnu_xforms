@@ -651,7 +651,7 @@ readback_attributes( FL_OBJECT * obj )
 /***************************************
  * Turns the string from the label input field into a string suitable for
  * an object label (taking care of newlines and shortcut markers) and
- * the sets the label of the object being edited.
+ * then sets the label of the object being edited.
  ***************************************/
 
 void
