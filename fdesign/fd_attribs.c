@@ -458,7 +458,9 @@ show_attributes( const FL_OBJECT * obj )
         oksize,
 #endif
         align = fl_to_outside_lalign( obj->align );
+#if ! defined FL_ENABLE_XFT
     static char othersize[ 32 ];
+#endif
 
     fl_freeze_form( fd_generic_attrib->generic_attrib );
 
