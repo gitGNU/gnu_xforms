@@ -56,7 +56,7 @@ static int handle_formbrowser( FL_OBJECT * ob,
                                int         event,
                                FL_Coord    mx,
                                FL_Coord    my,
-                               int         key,
+                               FL_Char     key,
                                void      * ev );
 static void hcb( FL_OBJECT * ob,
                  long        data );
@@ -813,7 +813,7 @@ handle_formbrowser( FL_OBJECT * ob,
                     int         event,
                     FL_Coord    mx   FL_UNUSED_ARG,
                     FL_Coord    my   FL_UNUSED_ARG,
-                    int         key  FL_UNUSED_ARG,
+                    FL_Char     key  FL_UNUSED_ARG,
                     void      * ev   FL_UNUSED_ARG )
 {
     FLI_FORMBROWSER_SPEC *sp = ob->spec;

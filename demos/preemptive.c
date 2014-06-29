@@ -65,7 +65,7 @@ preemptive_handler( FL_OBJECT * ob   FL_UNUSED_ARG,
                     int         event,
                     FL_Coord    mx   FL_UNUSED_ARG,
                     FL_Coord    my   FL_UNUSED_ARG,
-                    int         key  FL_UNUSED_ARG,
+                    FL_Char     key  FL_UNUSED_ARG,
                     void *      xev  FL_UNUSED_ARG )
 {
     int override = fl_get_button( fd_form0->override );
@@ -143,7 +143,7 @@ post_handler( FL_OBJECT * ob,
               int         event,
               FL_Coord    mx   FL_UNUSED_ARG,
               FL_Coord    my   FL_UNUSED_ARG,
-              int         key  FL_UNUSED_ARG,
+              FL_Char     key  FL_UNUSED_ARG,
               void *      xev  FL_UNUSED_ARG )
 {
     if ( ! ob->u_vdata )

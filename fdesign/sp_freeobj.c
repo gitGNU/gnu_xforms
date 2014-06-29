@@ -127,7 +127,7 @@ noop_handle( FL_OBJECT * obj,
              int         e,
              FL_Coord    mx   FL_UNUSED_ARG,
              FL_Coord    my   FL_UNUSED_ARG,
-             int         k    FL_UNUSED_ARG,
+             FL_Char     k    FL_UNUSED_ARG,
              void      * xev  FL_UNUSED_ARG )
 {
     if ( e == FL_DRAW )

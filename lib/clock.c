@@ -221,7 +221,7 @@ handle_clock( FL_OBJECT * ob,
               int         event,
               FL_Coord    x   FL_UNUSED_ARG,
               FL_Coord    y   FL_UNUSED_ARG,
-              int         k   FL_UNUSED_ARG,
+              FL_Char     k   FL_UNUSED_ARG,
               void *      ev  FL_UNUSED_ARG )
 {
     time_t ticks;

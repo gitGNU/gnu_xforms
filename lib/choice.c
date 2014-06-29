@@ -311,7 +311,7 @@ handle_choice( FL_OBJECT * ob,
                int         event,
                FL_Coord    mx,
                FL_Coord    my,
-               int         key,
+               FL_Char     key,
                void *      ev   FL_UNUSED_ARG )
 {
     FLI_CHOICE_SPEC *sp = ob->spec;

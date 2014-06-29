@@ -264,7 +264,7 @@ handle_button( FL_OBJECT * obj,
                int         event,
                FL_Coord    mx,
                FL_Coord    my,
-               int         key,
+               FL_Char     key,
                void      * ev )
 {
     static int oldval;

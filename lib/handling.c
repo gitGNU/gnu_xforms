@@ -148,7 +148,7 @@ void
 fli_do_radio_push( FL_OBJECT * obj,
                    FL_Coord    x,
                    FL_Coord    y,
-                   int         key,
+                   FL_Char     key,
                    void      * xev,
                    int         no_callbacks )
 {
@@ -195,15 +195,15 @@ fli_do_radio_push( FL_OBJECT * obj,
 
 static int
 do_shortcut( FL_FORM  * form,
-             int        key,
+             FL_Char    key,
              FL_Coord   x,
              FL_Coord   y,
              XEvent   * xev )
 {
-    int key1,
-        key2;
+    FL_Char key1,
+            key2;
     FL_OBJECT *obj;
-    long *s;
+    FL_Char *s;
 
     key1 = key2 = key;
 
@@ -213,16 +213,16 @@ do_shortcut( FL_FORM  * form,
     {
         if ( key <= 0x7F )
         {
-            key1 = FL_ALT_MASK + ( islower( ( int ) key ) ?
-                                   toupper( ( int ) key ) : key );
+            key1 = FL_ALT_MASK + toupper( key );
             key2 = FL_ALT_MASK + key;
         }
         else
             key1 = key2 = FL_ALT_MASK + key;
     }
 
-    M_info( "do_shortcut", "win = %ld key = %d %d %d",
-            form->window, key, key1, key2 );
+    M_info( "do_shortcut", "win = %ld key = %lu %lu %lu",
+            form->window, ( unsigned long ) key, ( unsigned long ) key1,
+            ( unsigned long ) key2 );
 
     /* Check if an object has this as a shortcut */
 
@@ -275,7 +275,7 @@ do_shortcut( FL_FORM  * form,
 
 int
 fli_do_shortcut( FL_FORM  * form,
-                 int        key,
+                 FL_Char    key,
                  FL_Coord   x,
                  FL_Coord   y,
                  XEvent   * xev )
@@ -299,7 +299,7 @@ fli_do_shortcut( FL_FORM  * form,
 
 static void
 handle_keyboard( FL_FORM  * form,
-                 int        key,
+                 FL_Char    key,
                  FL_Coord   x,
                  FL_Coord   y,
                  void     * xev )
@@ -334,7 +334,7 @@ handle_keyboard( FL_FORM  * form,
 
         /* Handle special keys first */
 
-        if ( ( key & 0xFF00 ) == 0xFF00 )
+        if ( utf8_get_char_bytes( key ) == -1 )
         {
             if (    IsLeft( key )
                  || IsRight( key )
@@ -400,9 +400,12 @@ handle_keyboard( FL_FORM  * form,
 
     /* Space is an exception for browser */
 
-    if (   (    ( key > 255 || key == ' ' )
+    /* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
+
+    if (   (    ( utf8_get_char_bytes( key ) == - 1|| key == ' ' )
              && special->wantkey & FL_KEY_SPECIAL )
-         || ( key < 255 && special->wantkey & FL_KEY_NORMAL )
+         || (    utf8_get_char_bytes( key ) != -1
+              && special->wantkey & FL_KEY_NORMAL )
          || ( special->wantkey == FL_KEY_ALL ) )
         fli_handle_object( special, FL_KEYPRESS, x, y, key, xev, 1 );
 }
@@ -415,7 +418,7 @@ handle_keyboard( FL_FORM  * form,
 void
 fli_handle_form( FL_FORM * form,
                  int       event,
-                 int       key,
+                 FL_Char   key,
                  XEvent  * xev )
 {
     FL_OBJECT *obj = NULL;

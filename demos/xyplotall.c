@@ -87,7 +87,7 @@ post( FL_OBJECT * ob,
       int         ev,
       FL_Coord    mx,
       FL_Coord    my,
-      int         key,
+      FL_Char     key,
       void      * xev  FL_UNUSED_ARG )
 {
     if ( ev == FL_PUSH || ev == FL_MOTION )
@@ -108,7 +108,7 @@ post( FL_OBJECT * ob,
     }
     else if( ev == FL_KEYPRESS )
     {
-        fprintf( stderr,"key=%d\n",key );
+        fprintf( stderr, "key = %lu\n", ( unsigned long int ) key );
     }
 
     return 0;

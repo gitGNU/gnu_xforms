@@ -30,24 +30,24 @@
 #define PPOSITION_H
 
 typedef struct {
-    double xmin,                 /* minimal values  */
-           ymin;
-    double xmax,                 /* maximal values  */
-           ymax;
-    double xval,                 /* current values  */
-           yval;
-    double lxval,                /* previous values */
-           lyval;
-    double xstep,                /* step size to which values are rounded  */
-           ystep;
-    int    partial;
-    double old_x,                /* values at start of ineraction */
-           old_y;
-    int    react_to[ 5 ];
-    int    mousebut;
-    Pixmap xpm,
-           ypm;
-    GC     copy_gc;
+    double  xmin,                 /* minimal values  */
+            ymin;
+    double  xmax,                 /* maximal values  */
+            ymax;
+    double  xval,                 /* current values  */
+            yval;
+    double  lxval,                /* previous values */
+            lyval;
+    double  xstep,                /* step size to which values are rounded  */
+            ystep;
+    int     partial;
+    double  old_x,                /* values at start of ineraction */
+            old_y;
+    int     react_to[ 5 ];
+    FL_Char mousebut;
+    Pixmap  xpm,
+            ypm;
+    GC      copy_gc;
     FL_POSITIONER_VALIDATOR validator;
                                  /* funcion for validating a new position */
 } FLI_POSITIONER_SPEC;

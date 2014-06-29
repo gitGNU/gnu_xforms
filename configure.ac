@@ -24,6 +24,7 @@ AC_CONFIG_MACRO_DIR([config])
 test "x$prefix" = xNONE && prefix=$ac_default_prefix
 test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
 
+
 # Check if the bwc-bs-hack is to be used
 
 AC_ARG_ENABLE(bwc_bs_hack,
@@ -91,6 +92,10 @@ CHECK_WITH_CYGWIN
 # which returns an error condition when stripping fails.
 
 INSTALL_SCRIPT='${INSTALL}'
+
+# Check for a 32 bit unsigned int
+
+AC_TYPE_UINT32_T
 
 ### Setup libtool
 

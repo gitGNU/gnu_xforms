@@ -196,7 +196,7 @@ draw_box( FL_OBJECT * ob,
           int         ev,
           FL_Coord    x   FL_UNUSED_ARG,
           FL_Coord    y   FL_UNUSED_ARG,
-          int         k   FL_UNUSED_ARG,
+          FL_Char     k   FL_UNUSED_ARG,
           void      * sp  FL_UNUSED_ARG )
 {
     int p = ( FL_max( ob->w, ob->h ) / 2 ) * 2 + 1;

@@ -263,7 +263,7 @@ handle_positioner( FL_OBJECT * obj,
                    int         event,
                    FL_Coord    mx,
                    FL_Coord    my,
-                   int         key  FL_UNUSED_ARG,
+                   FL_Char     key  FL_UNUSED_ARG,
                    void      * ev   FL_UNUSED_ARG )
 {
     FLI_POSITIONER_SPEC *sp = obj->spec;

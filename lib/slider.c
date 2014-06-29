@@ -400,7 +400,7 @@ static int
 handle_mouse( FL_OBJECT    * obj,
               FL_Coord       mx,
               FL_Coord       my,
-              int            key )
+              FL_Char        key )
 {
     FLI_SLIDER_SPEC *sp = obj->spec;
     double newval;
@@ -458,7 +458,7 @@ static int
 handle_motion( FL_OBJECT * obj,
                FL_Coord    mx,
                FL_Coord    my,
-               int         key,
+               FL_Char     key,
                void      * ev )
 {
     FLI_SLIDER_SPEC *sp = obj->spec;
@@ -526,7 +526,7 @@ static int
 handle_push( FL_OBJECT * obj,
              FL_Coord    mx,
              FL_Coord    my,
-             int         key,
+             FL_Char     key,
              void      * ev )
 {
     FLI_SLIDER_SPEC *sp = obj->spec;
@@ -599,7 +599,7 @@ static int
 handle_update( FL_OBJECT * obj,
                FL_Coord    mx,
                FL_Coord    my,
-               int         key )
+               FL_Char     key )
 {
     FLI_SLIDER_SPEC *sp = obj->spec;
     int ret;
@@ -617,7 +617,7 @@ handle_update( FL_OBJECT * obj,
 
 static int
 handle_scroll( FL_OBJECT * obj,
-               int         key,
+               FL_Char     key,
                int         key_state )
 {
     FLI_SLIDER_SPEC *sp = obj->spec;
@@ -652,7 +652,7 @@ static int
 handle_release( FL_OBJECT * obj,
                 FL_Coord    mx,
                 FL_Coord    my,
-                int         key,
+                FL_Char     key,
                 void      * ev )
 {
     FLI_SLIDER_SPEC *sp = obj->spec;
@@ -704,7 +704,7 @@ handle_slider( FL_OBJECT * ob,
                int         event,
                FL_Coord    mx,
                FL_Coord    my,
-               int         key,
+               FL_Char     key,
                void      * ev )
 {
     FLI_SLIDER_SPEC *sp = ob->spec;

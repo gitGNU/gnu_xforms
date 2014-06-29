@@ -1,8 +1,41 @@
+/*
+ *  This file is part of the XForms library package.
+ *
+ *  XForms is free software; you can redistribute it and/or modify it
+ *  under the terms of the GNU Lesser General Public License as
+ *  published by the Free Software Foundation; either version 2.1, or
+ *  (at your option) any later version.
+ *
+ *  XForms is distributed in the hope that it will be useful, but
+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with XForms.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 #if ! defined _UTF8_H_
 #define _UTF8_H_
 
 #include <stdlib.h>
 #include <string.h>
+
+
+ssize_t utf8_length( const char * str );
+
+int utf8_get_char_bytes( FL_Char c );
+
+FL_Char utf8_to_num( const char * str );
+
+int utf8_get_byte_count( const char * str );
+
+int utf8_get_prev_byte_count( const char * str );
+
+char * utf8_next_char_pos( char * str );
+
+char * utf8_prev_char_pos( char * str );
 
 
 /*------------------------------------------*
@@ -51,26 +84,11 @@ typedef struct _UTF8_Iter {
 	ssize_t               ( * length )( struct _UTF8_Iter * this );
 	void                  ( * reset )( struct _UTF8_Iter * this );
 	void                  ( * back )( struct _UTF8_Iter * this );
-	unsigned long         ( * next )( struct _UTF8_Iter * this );
-	unsigned long         ( * prev )( struct _UTF8_Iter * this );
+	FL_Char               ( * next )( struct _UTF8_Iter * this );
+	FL_Char               ( * prev )( struct _UTF8_Iter * this );
 	size_t                ( * cnt )( struct _UTF8_Iter * this );
 	size_t                ( * pos )( struct _UTF8_Iter * this );
 } UTF8_Iter;
-
-ssize_t utf8_length( const char * str );
-
-int utf8_get_char_bytes( unsigned long c );
-
-unsigned long int utf8_to_num( const char * str );
-
-int utf8_get_byte_count( const char * str );
-
-int utf8_get_prev_byte_count( const char * str );
-
-char * utf8_next_char_pos( char * str );
-
-char * utf8_prev_char_pos( char * str );
-
 
 UTF8_Iter * new_UTF8_Iter( const char *str );
 

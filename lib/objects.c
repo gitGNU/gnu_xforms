@@ -217,7 +217,7 @@ fl_make_object( int            objclass,
         obj->lsize = FL_DEFAULT_SIZE;
 
     obj->lstyle             = FL_NORMAL_STYLE;
-    obj->shortcut           = fl_calloc( 1, sizeof( long ) );
+    obj->shortcut           = fl_calloc( 1, sizeof *obj->shortcut );
     *obj->shortcut          = 0;
     obj->active             = 1;
     obj->visible            = FL_VISIBLE;
@@ -1734,7 +1734,7 @@ fl_hide_object( FL_OBJECT * obj )
 
 int
 fli_convert_shortcut( const char * str,
-                      long       * sc )
+                      FL_Char    * sc )
 {
     int i = 0;
     long offset = 0;
@@ -1884,7 +1884,7 @@ fl_set_object_shortcut( FL_OBJECT  * obj,
 {
     int scsize,
         n;
-    long sc[ MAX_SHORTCUTS + 1 ];      /* converted shortcuts - we need one
+    FL_Char sc[ MAX_SHORTCUTS + 1 ];   /* converted shortcuts - we need one
                                           more than max for trailing 0 */
 
     if ( ! obj )
@@ -1929,8 +1929,8 @@ fl_set_object_shortcut( FL_OBJECT  * obj,
  ***************************************/
 
 void
-fl_set_object_shortcutkey( FL_OBJECT    * obj,
-                           unsigned int   keysym )
+fl_set_object_shortcutkey( FL_OBJECT * obj,
+                           FL_Char     keysym )
 {
     size_t n;
 
@@ -2756,7 +2756,7 @@ fli_handle_object( FL_OBJECT * obj,
                    int         event,
                    FL_Coord    mx,
                    FL_Coord    my,
-                   int         key,
+                   FL_Char     key,
                    XEvent    * xev,
                    int         enter_it )
 {
@@ -3849,9 +3849,9 @@ fli_set_object_visibility( FL_OBJECT * obj,
  ***************************************/
 
 int
-fli_mouse_wheel_to_keypress( int  * ev,
-                             int  * key,
-                             void * xev )
+fli_mouse_wheel_to_keypress( int     * ev,
+                             FL_Char * key,
+                             void    * xev )
 {
     if ( ! (    *ev == FL_RELEASE
              && ( *key == FL_MBUTTON4 || *key == FL_MBUTTON5 ) ) )

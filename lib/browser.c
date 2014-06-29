@@ -245,7 +245,7 @@ handle_browser( FL_OBJECT * obj,
                 int         event,
                 FL_Coord    mx   FL_UNUSED_ARG,
                 FL_Coord    my   FL_UNUSED_ARG,
-                int         key  FL_UNUSED_ARG,
+                FL_Char     key  FL_UNUSED_ARG,
                 void      * ev   FL_UNUSED_ARG )
 {
     FLI_BROWSER_SPEC *sp = obj->spec;
@@ -450,7 +450,7 @@ tbpost( FL_OBJECT * ob,
         int         ev,
         FL_Coord    mx,
         FL_Coord    my,
-       int          key,
+        FL_Char     key,
         void      * xev )
 {
     FL_OBJECT *br = ob->parent;
@@ -467,7 +467,7 @@ tbpre( FL_OBJECT * ob,
        int         ev,
        FL_Coord    mx,
        FL_Coord    my,
-      int          key,
+       FL_Char     key,
        void      * xev )
 {
 

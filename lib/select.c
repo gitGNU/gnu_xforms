@@ -26,8 +26,14 @@
 
 
 static void timeout_cb( int, void * );
-static int handle_select( FL_OBJECT *, int, FL_Coord, FL_Coord, int, void * );
-static int handle_push( FL_OBJECT *, int );
+static int handle_select( FL_OBJECT *,
+                          int,
+                          FL_Coord,
+                          FL_Coord,
+                          FL_Char,
+                          void * );
+static int handle_push( FL_OBJECT *,
+                        FL_Char );
 static FL_POPUP_RETURN * find_first_item( FL_OBJECT * );
 static FL_POPUP_RETURN * find_last_item( FL_OBJECT * );
 static FL_POPUP_RETURN * find_next_item( FL_OBJECT * );
@@ -910,7 +916,7 @@ handle_select( FL_OBJECT * obj,
                int         event,
                FL_Coord    mx   FL_UNUSED_ARG,
                FL_Coord    my   FL_UNUSED_ARG,
-               int         key,
+               FL_Char     key,
                void      * ev   FL_UNUSED_ARG )
 {
     FLI_SELECT_SPEC *sp = obj->spec;
@@ -1020,7 +1026,7 @@ handle_select( FL_OBJECT * obj,
 
 static int
 handle_push( FL_OBJECT * obj,
-             int         key )
+             FL_Char     key )
 {
     FLI_SELECT_SPEC *sp = obj->spec;
     FL_POPUP_RETURN *ret = NULL;

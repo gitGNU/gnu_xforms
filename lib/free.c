@@ -79,7 +79,7 @@ fl_add_free( int            type,
              FL_Coord       w,
              FL_Coord       h,
              const char   * label,
-             FL_HANDLEPTR   handle)
+             FL_HANDLEPTR   handle )
 {
     FL_OBJECT *ob;
 

@@ -445,7 +445,7 @@ handle_counter( FL_OBJECT * ob,
                 int         event,
                 FL_Coord    mx,
                 FL_Coord    my,
-                int         key  FL_UNUSED_ARG,
+                FL_Char     key  FL_UNUSED_ARG,
                 void *      ev   FL_UNUSED_ARG )
 {
     FLI_COUNTER_SPEC *sp = ob->spec;

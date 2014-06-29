@@ -168,35 +168,35 @@ FL_EXPORT int fl_validate_input( FL_OBJECT *obj );
 typedef struct {
     /* basic editing */
 
-    long del_prev_char;     /* delete previous char    */
-    long del_next_char;     /* delete next char        */
-    long del_prev_word;     /* delete previous word    */
-    long del_next_word;     /* delete next word        */
+    FL_Char del_prev_char;     /* delete previous char    */
+    FL_Char del_next_char;     /* delete next char        */
+    FL_Char del_prev_word;     /* delete previous word    */
+    FL_Char del_next_word;     /* delete next word        */
 
     /* movement */
 
-    long moveto_prev_line;  /* one line  up             */
-    long moveto_next_line;  /* one line down            */
-    long moveto_prev_char;  /* one char left            */
-    long moveto_next_char;  /* one char right           */
-    long moveto_prev_word;  /* one word left            */
-    long moveto_next_word;  /* one word right           */
-    long moveto_prev_page;  /* one page up              */
-    long moveto_next_page;  /* one page down            */
-    long moveto_bol;        /* move to begining of line */
-    long moveto_eol;        /* move to end of line      */
-    long moveto_bof;        /* move to begin of file    */
-    long moveto_eof;        /* move to end of file      */
+    FL_Char moveto_prev_line;  /* one line  up             */
+    FL_Char moveto_next_line;  /* one line down            */
+    FL_Char moveto_prev_char;  /* one char left            */
+    FL_Char moveto_next_char;  /* one char right           */
+    FL_Char moveto_prev_word;  /* one word left            */
+    FL_Char moveto_next_word;  /* one word right           */
+    FL_Char moveto_prev_page;  /* one page up              */
+    FL_Char moveto_next_page;  /* one page down            */
+    FL_Char moveto_bol;        /* move to begining of line */
+    FL_Char moveto_eol;        /* move to end of line      */
+    FL_Char moveto_bof;        /* move to begin of file    */
+    FL_Char moveto_eof;        /* move to end of file      */
 
     /* misc. stuff */
 
-    long transpose;         /* switch two char positions */
-    long paste;             /* paste the edit buffer    */
-    long backspace;         /* another  del_prev_char   */
-    long del_to_bol;        /* cut to begining of line  */
-    long del_to_eol;        /* cut to end of line       */
-    long clear_field;       /* delete everything        */
-    long del_to_eos;        /* not implemented          */
+    FL_Char transpose;         /* switch two char positions */
+    FL_Char paste;             /* paste the edit buffer    */
+    FL_Char backspace;         /* another  del_prev_char   */
+    FL_Char del_to_bol;        /* cut to begining of line  */
+    FL_Char del_to_eol;        /* cut to end of line       */
+    FL_Char clear_field;       /* delete everything        */
+    FL_Char del_to_eos;        /* not implemented          */
 } FL_EditKeymap;
 
 FL_EXPORT void fl_set_input_editkeymap( const FL_EditKeymap * keymap );

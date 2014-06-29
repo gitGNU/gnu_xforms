@@ -78,7 +78,7 @@ handle_tabfolder( FL_OBJECT * ob,
                   int         event,
                   FL_Coord    mx   FL_UNUSED_ARG,
                   FL_Coord    my   FL_UNUSED_ARG,
-                  int         key  FL_UNUSED_ARG,
+                  FL_Char     key  FL_UNUSED_ARG,
                   void      * ev )
 {
     FL_FORM *folder;

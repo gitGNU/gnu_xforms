@@ -24,8 +24,12 @@
 #include "private/pnmenu.h"
 
 
-static int handle_nmenu( FL_OBJECT *, int, FL_Coord, FL_Coord,
-                         int , void * );
+static int handle_nmenu( FL_OBJECT *,
+                         int,
+                         FL_Coord,
+                         FL_Coord,
+                         FL_Char,
+                         void * );
 static void draw_menu( FL_OBJECT * );
 
 
@@ -753,7 +757,7 @@ handle_nmenu( FL_OBJECT * obj,
               int         event,
               FL_Coord    mx   FL_UNUSED_ARG,
               FL_Coord    my   FL_UNUSED_ARG,
-              int         key  FL_UNUSED_ARG,
+              FL_Char     key  FL_UNUSED_ARG,
               void      * ev   FL_UNUSED_ARG )
 {
     FLI_NMENU_SPEC *sp = obj->spec;

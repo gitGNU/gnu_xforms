@@ -202,9 +202,10 @@ void fli_scale_form( FL_FORM *,
                      double,
                      double );
 
-void fli_handle_form( FL_FORM *,
-                      int, int,
-                      XEvent * );
+void fli_handle_form( FL_FORM * form,
+                      int       event,
+                      FL_Char   key,
+                      XEvent  * xevent );
 
 FL_OBJECT *fli_end_group( void );
 
@@ -212,7 +213,7 @@ void fli_handle_object( FL_OBJECT *,
                         int,
                         FL_Coord,
                         FL_Coord,
-                        int,
+                        FL_Char,
                         XEvent *,
                         int );
 
@@ -252,7 +253,7 @@ void fli_set_object_visibility( FL_OBJECT * obj,
 
 
 int fli_mouse_wheel_to_keypress( int       * ev,
-                                 int       * key,
+                                 FL_Char   * key,
                                  void      * xev );
 
 void fli_notify_object( FL_OBJECT * obj,
@@ -636,7 +637,7 @@ void fli_watch_io( FLI_IO_REC *,
                    long );
 
 int fli_do_shortcut( FL_FORM *,
-                     int,
+                     FL_Char,
                      FL_Coord,
                      FL_Coord,
                      XEvent * );
@@ -780,7 +781,7 @@ void fli_hide_and_get_region( FL_OBJECT *,
                               Region    * );
 
 int fli_convert_shortcut( const char *,
-                          long * );
+                          FL_Char * );
 
 int fli_get_underline_pos( const char *,
                            const char * );
@@ -965,7 +966,7 @@ int fli_is_tooltip_form( FL_FORM * );
 void fli_do_radio_push( FL_OBJECT *,
                         FL_Coord,
                         FL_Coord,
-                        int,
+                        FL_Char,
                         void *,
                         int );
 

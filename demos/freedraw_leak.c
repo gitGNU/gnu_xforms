@@ -258,7 +258,7 @@ freeobject_handler( FL_OBJECT * ob,
 					int         event,
 					FL_Coord    mx,
 					FL_Coord    my,
-					int         key,
+					FL_Char     key,
 					void      * xev  FL_UNUSED_ARG )
 {
     DrawFigure *dr;

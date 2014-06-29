@@ -41,7 +41,7 @@ static int handle_tbox( FL_OBJECT *,
                         int,
                         FL_Coord,
                         FL_Coord,
-                        int,
+                        FL_Char,
                         void * );
 
 static GC create_gc( FL_OBJECT *,
@@ -1950,7 +1950,7 @@ fli_tbox_get_bottomline( FL_OBJECT * obj )
 
 static int
 handle_keyboard( FL_OBJECT * obj,
-                 int         key )
+                 FL_Char     key )
 {
     FLI_TBOX_SPEC *sp = obj->spec;
     int old_select_line = sp->select_line;
@@ -2342,7 +2342,7 @@ handle_tbox( FL_OBJECT * obj,
              int         ev,
              FL_Coord    mx  FL_UNUSED_ARG,
              FL_Coord    my,
-             int         key,
+             FL_Char     key,
              void      * xev )
 {
     FLI_TBOX_SPEC *sp = obj->spec;

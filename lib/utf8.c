@@ -1,5 +1,27 @@
-#include "utf8.h"
-#include <limits.h>
+/*
+ *  This file is part of the XForms library package.
+ *
+ *  XForms is free software; you can redistribute it and/or modify it
+ *  under the terms of the GNU Lesser General Public License as
+ *  published by the Free Software Foundation; either version 2.1, or
+ *  (at your option) any later version.
+ *
+ *  XForms is distributed in the hope that it will be useful, but
+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with XForms.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "include/forms.h"
+#include "flinternal.h"
 
 
 /***************************************
@@ -50,10 +72,10 @@ utf8_length( const char * str )
  * Converts an UTF8 character in a string to a number
  ***************************************/
 
-unsigned long int
+FL_Char
 utf8_to_num( const char * str )
 {
-	unsigned long ret;
+	FL_Char ret;
 	const unsigned char * p = ( const unsigned char * ) str;
 
 	if ( *p < 0x7F )
@@ -97,7 +119,7 @@ utf8_to_num( const char * str )
  ***************************************/
 
 int
-utf8_get_char_bytes( unsigned long c )
+utf8_get_char_bytes( FL_Char c )
 {
 	int len = 1;
 
@@ -253,10 +275,10 @@ utf8_iter_length( UTF8_Iter  * this )
  * Returns the next UTF8 character from the string
  ***************************************/
 
-static unsigned long
+static FL_Char
 utf8_iter_next( UTF8_Iter * this )
 {
-	unsigned long ret = *this->cur++;
+	FL_Char ret = *this->cur++;
 
 	if ( ! ret )
 	{
@@ -288,10 +310,10 @@ utf8_iter_next( UTF8_Iter * this )
  * Returns the previous UTF8 character from the string
  ***************************************/
 
-static unsigned long
+static FL_Char
 utf8_iter_prev( UTF8_Iter * this )
 {
-	unsigned long ret;
+	FL_Char ret;
 
 	if ( this->cur == this->str )
 		return 0;
@@ -301,15 +323,15 @@ utf8_iter_prev( UTF8_Iter * this )
 	if ( ( ret = *--this->cur ) <= 0x7F )
 		return ret;
 
-	ret += ( unsigned long ) *--this->cur << 8;
+	ret += ( FL_Char ) *--this->cur << 8;
 	if ( ( ret & 0xE000 ) == 0xC000 )
 		return ret;
 
-	ret += ( unsigned long ) *--this->cur << 16;
+	ret += ( FL_Char ) *--this->cur << 16;
 	if ( ( ret & 0xF00000 ) == 0xE00000 )
 		return ret;
 
-	return ret + ( ( unsigned long ) *--this->cur << 24 );
+	return ret + ( ( FL_Char ) *--this->cur << 24 );
 }
 
 
@@ -449,7 +471,7 @@ main( int    argc,
 
 	for ( i = 0; i < argc; i++ )
 	{
-		unsigned long c;
+		FL_Char c;
 
 		if ( i > 0 )
 		{

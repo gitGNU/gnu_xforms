@@ -1975,7 +1975,7 @@ handle_xyplot( FL_OBJECT * ob,
                int         event,
                FL_Coord    mx,
                FL_Coord    my,
-               int         key  FL_UNUSED_ARG,
+               FL_Char     key  FL_UNUSED_ARG,
                void      * ev   FL_UNUSED_ARG )
 {
     FLI_XYPLOT_SPEC *sp = ob->spec;
@@ -3458,7 +3458,7 @@ gen_tic( float tmin,
     int ipow,
         digit;
 
-    /* Handle special case: Min, MAX and one tic */
+    /* Handle special cases: Min, MAX and one tic */
 
     if ( major == 1 && minor == 2 )
     {

@@ -39,6 +39,18 @@
 #define FL_UNUSED_ARG
 #endif
 
+
+/* Make sure FL_Char is an unsigned int type with at least 32 bits */
+
+#if HAVE_STDINT_H
+#include <stdint.h>
+#endif
+#if defined UINT32_MAX || defined uint32_t
+typedef uint32_t FL_Char;
+#else
+typedef unsigned long int FL_Char;
+#endif
+
 /* Some general constants */
 
 enum {
@@ -713,12 +725,12 @@ struct FL_OBJECT_ {
     int              align;
     int              lsize,          /* label size and style */
                      lstyle;
-    long           * shortcut;
+    FL_Char        * shortcut;
     int              ( * handle )( FL_OBJECT *,
                                    int,
                                    FL_Coord,
                                    FL_Coord,
-                                   int,
+                                   FL_Char,
                                    void * );
     void             ( * object_callback )( FL_OBJECT *,
                                             long );
@@ -729,13 +741,13 @@ struct FL_OBJECT_ {
                                       int,
                                       FL_Coord,
                                       FL_Coord,
-                                      int,
+                                      FL_Char,
                                       void * );
     int              ( * posthandle )( FL_OBJECT *,
                                        int,
                                        FL_Coord,
                                        FL_Coord,
-                                       int,
+                                       FL_Char,
                                        void * );
     void             ( * set_return )( FL_OBJECT *,
                                        unsigned int );
@@ -818,7 +830,7 @@ typedef int ( * FL_HANDLEPTR )( FL_OBJECT *,
                                 int,
                                 FL_Coord,
                                 FL_Coord,
-                                int,
+                                FL_Char,
                                 void * );
 
 /* Error callback */

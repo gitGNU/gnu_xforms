@@ -201,7 +201,7 @@ static int
 handle_mouse( FL_OBJECT * obj,
               FL_Coord    mousex,
               FL_Coord    mousey,
-              int         key )
+              FL_Char     key )
 {
     FLI_DIAL_SPEC *sp = obj->spec;
     double oldv,
@@ -277,7 +277,7 @@ handle_mouse( FL_OBJECT * obj,
 static int
 handle_mouse_wheel( FL_OBJECT * obj,
                     XEvent *    xev,
-                    int         key )
+                    FL_Char     key )
 {
     FLI_DIAL_SPEC *sp = obj->spec;
     double val,
@@ -334,7 +334,7 @@ handle_dial( FL_OBJECT * obj,
              int         event,
              FL_Coord    mx,
              FL_Coord    my,
-             int         key  FL_UNUSED_ARG,
+             FL_Char     key,
              void *      ev )
 {
     FLI_DIAL_SPEC *sp = obj->spec;

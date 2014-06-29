@@ -62,7 +62,7 @@ routine to the object. For this it will need a routine:
 @example
 static int handle_NEW(FL_OBJECT *obj, int event,
                       FL_Coord mx, FL_Coord my,
-                      int key, void *xev);
+                      FL_Char key, void *xev);
 @end example
 
 This routine is the same as the handle routine for free objects and

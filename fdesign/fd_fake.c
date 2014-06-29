@@ -43,7 +43,7 @@ handle_simu_canvas( FL_OBJECT * ob,
                     int         event,
                     FL_Coord    mx   FL_UNUSED_ARG,
                     FL_Coord    my   FL_UNUSED_ARG,
-                    int         key  FL_UNUSED_ARG,
+                    FL_Char     key  FL_UNUSED_ARG,
                     void      * ev   FL_UNUSED_ARG )
 {
     int ftype;
@@ -176,7 +176,7 @@ handle_tabfolder( FL_OBJECT * ob,
                   int         event,
                   FL_Coord    mx   FL_UNUSED_ARG,
                   FL_Coord    my   FL_UNUSED_ARG,
-                  int         key  FL_UNUSED_ARG,
+                  FL_Char     key  FL_UNUSED_ARG,
                   void      * ev   FL_UNUSED_ARG )
 {
     if ( event == FL_DRAW )
@@ -243,7 +243,7 @@ handle_formbrowser( FL_OBJECT * ob,
                     int         event,
                     FL_Coord    mx   FL_UNUSED_ARG,
                     FL_Coord    my   FL_UNUSED_ARG,
-                    int         key  FL_UNUSED_ARG,
+                    FL_Char     key  FL_UNUSED_ARG,
                     void      * ev   FL_UNUSED_ARG )
 {
     if ( event == FL_DRAW )

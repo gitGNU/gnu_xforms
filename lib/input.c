@@ -587,7 +587,7 @@ static void set_default_keymap( int );
 
 static void
 handle_movement( FL_OBJECT * obj,
-                 int         key,
+                 FL_Char     key,
                  int         slen,
                  int         startpos,
                  int         kmask )
@@ -811,7 +811,7 @@ handle_movement( FL_OBJECT * obj,
 
 static int
 handle_edit( FL_OBJECT * obj,
-             int         key,
+             FL_Char     key,
              int         slen )
 {
     FLI_INPUT_SPEC *sp = obj->spec;
@@ -1011,7 +1011,7 @@ handle_edit( FL_OBJECT * obj,
 
 static int
 handle_normal_key( FL_OBJECT    * obj,
-                   int            key,
+                   FL_Char        key,
                    int            slen )
 {
     FLI_INPUT_SPEC *sp = obj->spec;
@@ -1049,7 +1049,7 @@ handle_normal_key( FL_OBJECT    * obj,
 
     len = utf8_get_char_bytes( key );
 
-    fprintf( stderr, "Normal key %d %d\n", key, len );
+    fprintf( stderr, "Normal key %u %d\n", ( unsigned int ) key, len );
 
     if (    Input_Mode == FL_DOS_INPUT_MODE
         && sp->maxchars > 0
@@ -1109,7 +1109,7 @@ handle_normal_key( FL_OBJECT    * obj,
 
 static int
 handle_key( FL_OBJECT    * obj,
-            int            key,
+            FL_Char        key,
             unsigned int   kmask )
 {
     int ret = FL_RETURN_NONE;
@@ -1400,7 +1400,7 @@ handle_input( FL_OBJECT * obj,
               int         event,
               FL_Coord    mx,
               FL_Coord    my,
-              int         key,
+              FL_Char     key,
               void      * ev )
 {
     FLI_INPUT_SPEC *sp = obj->spec;
@@ -1646,7 +1646,7 @@ input_pre( FL_OBJECT * obj,
            int         ev,
            FL_Coord    mx,
            FL_Coord    my,
-           int         key,
+           FL_Char     key,
            void      * xev )
 {
     FL_OBJECT *ext = obj->parent;
@@ -1664,7 +1664,7 @@ input_post( FL_OBJECT * obj,
             int         ev,
             FL_Coord    mx,
             FL_Coord    my,
-            int         key,
+            FL_Char     key,
             void      * xev )
 {
     FL_OBJECT *ext = obj->parent;
@@ -1775,7 +1775,7 @@ fake_handle( FL_OBJECT * obj,
              int         event,
              FL_Coord    mx   FL_UNUSED_ARG,
              FL_Coord    my   FL_UNUSED_ARG,
-             int         key  FL_UNUSED_ARG,
+             FL_Char     key  FL_UNUSED_ARG,
              void      * ev   FL_UNUSED_ARG )
 {
     FLI_INPUT_SPEC *sp = obj->spec;

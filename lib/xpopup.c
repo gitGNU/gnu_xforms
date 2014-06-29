@@ -65,7 +65,7 @@ typedef struct
 {
     char         * str;             /* label                        */
     FL_PUP_CB      icb;             /* callback                     */
-    long         * shortcut;        /* shortcut keys                */
+    FL_Char      * shortcut;        /* shortcut keys                */
     int            subm;            /* sub menu                     */
     unsigned int   mode;            /* various attributes           */
     int            ret;             /* %x stuff                     */
@@ -254,8 +254,7 @@ find_empty_index( Window win )
 
 static void convert_shortcut( const char *,
                               const char *,
-                              MenuItem *,
-                              int );
+                              MenuItem * );
 
 
 static void wait_for_close( Window );
@@ -482,7 +481,7 @@ parse_entry( int          n,
         if ( sc )
         {
             M_info( "parse_entry", "shortcut = %s for %s", sc, c );
-            convert_shortcut( sc, c, item, NSC );
+            convert_shortcut( sc, c, item );
         }
 
         if ( item->mode & FL_PUP_BOX )
@@ -799,8 +798,7 @@ fl_setpup_mode( int          nm,
 static void
 convert_shortcut( const char * sc,
                   const char * str,
-                  MenuItem   * item,
-                  int          n     FL_UNUSED_ARG )
+                  MenuItem   * item )
 {
     if ( ! item->shortcut )
         item->shortcut = fl_calloc( 1, NSC * sizeof *item->shortcut );
@@ -889,8 +887,8 @@ handle_shortcut( PopUP        * m,
     MenuItem **mi = m->item;
     int i,
         j;
-    int sc,
-        alt;
+    FL_Char sc,
+            alt;
 
     for ( i = 0; i < m->nitems; i++ )
     {
@@ -900,7 +898,7 @@ handle_shortcut( PopUP        * m,
                 sc = mi[ i ]->shortcut[ j ];
                 alt = ( sc & AltMask ) == AltMask;
                 sc &= ~ AltMask;
-                if ( sc == ( int ) keysym && ! ( alt ^ alt_down ) )
+                if ( sc == keysym && ! ( alt ^ alt_down ) )
                     return i + 1;
             }
     }
@@ -1448,7 +1446,7 @@ fl_setpup_shortcut( int          nm,
     MenuItem *item;
 
     if ( sc && ( item = requested_item_is_valid( "pupshortcut", nm, ni ) ) )
-        convert_shortcut( sc, item->str, item, NSC );
+        convert_shortcut( sc, item->str, item );
 }
 
 

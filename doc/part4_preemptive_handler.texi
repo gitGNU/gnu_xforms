@@ -30,7 +30,7 @@ The API to install a pre- or post-handler for an object is as follows
 @example
 typedef int (*FL_HANDLEPTR)(FL_OBJECT *obj, int event,
                             FL_Coord mx, FL_Coord my,
-                            int key, void *raw_event);
+                            FL_Char key, void *raw_event);
 
 void fl_set_object_prehandler(FL_OBJECT *obj,
                               FL_HANDLEPTR pre_handler);
@@ -41,12 +41,17 @@ void fl_set_object_posthandler(FL_OBJECT *obj,
 @code{event} is a generic event of the Forms Library, that is,
 @code{@ref{FL_DRAW}}, @code{@ref{FL_ENTER}} etc. Parameters @code{mx}
 and @code{my} are the mouse position and @code{key} is the key
-pressed. The last parameter @code{raw_event} is a pointer to the
-XEvent (cast to a void pointer due to the different types of Xevents)
-that caused the invocation of the pre- or post-handler. But note: not
-all events of the Form Library have a corresponding Xevent and thus
-dereferencing of @code{xev} should only be done after making sure it
-is not @code{NULL}.
+pressed (the type
+@anchor{FL_Char}
+@tindex FL_Char
+@code{FL_Char} is an unsigned integer large enough to store the value
+of an UTF-8 character, i.e., with at least 32 bits). The last
+parameter @code{raw_event} is a pointer to the XEvent (cast to a void
+pointer due to the different types of Xevents) that caused the
+invocation of the pre- or post-handler. But note: not all events of
+the Form Library have a corresponding Xevent and thus dereferencing of
+@code{xev} should only be done after making sure it is not
+@code{NULL}.
 
 The pre- and post-handler have the same function prototype as the
 built-in handler. Actually they are called with exactly the same

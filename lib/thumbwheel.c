@@ -226,9 +226,9 @@ draw( FL_OBJECT * ob )
 static int
 handle_thumbwheel( FL_OBJECT * ob,
                    int         ev,
-                   int         mx,
-                   int         my,
-                   int         key,
+                   FL_Coord    mx,
+                   FL_Coord    my,
+                   FL_Char     key,
                    void      * xev  FL_UNUSED_ARG )
 {
     FLI_THUMBWHEEL_SPEC *sp = ob->spec;
