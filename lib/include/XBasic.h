@@ -437,6 +437,11 @@ FL_EXPORT void fl_set_default_font_type( FL_FONT_TYPE type );
 
 FL_EXPORT int fl_unload_font( int index );
 
+FL_EXPORT void fl_set_global_font_scaling_factor( double factor );
+
+FL_EXPORT void fl_set_font_scaling_factor( int    index,
+										   double factor );
+
 #else
 FL_EXPORT XFontStruct *fl_get_font_struct( int style,
 										   int size );

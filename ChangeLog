@@ -1,3 +1,8 @@
+2014-06-29 Jens Thoms Toerring    <jt@toerring.de>
+
+	* lib/include/XBasic.h: Missing declarations of font
+	scaling functions added.
+
 2014-06-26 Jens Thoms Toerring    <jt@toerring.de>
 
 	* fdesign: label font size can now be set to arbitrary values.
