@@ -114,6 +114,46 @@ utf8_to_num( const char * str )
 
 
 /***************************************
+ * Inserts the UTF-8 character stored in 'key' into a string.
+ * Returns the number of character inserted.
+ ***************************************/
+
+int
+utf8_insert( FL_Char   key,
+			 char    * str )
+{
+	if ( key <= 0x7F )
+	{
+		*str = ( char ) key;
+		return 1;
+	}
+	else if ( ( key & 0xE000 ) == 0xC000 )
+	{
+		str[ 0 ] = ( char ) ( ( key >> 8 ) & 0xFF );
+		str[ 1 ] = ( char ) ( key & 0xFF );
+		return 2;
+	}
+	else if ( ( key & 0xF00000 ) == 0xE00000 )
+	{
+		str[ 0 ] = ( char ) ( ( key >> 16 ) & 0xFF );
+		str[ 1 ] = ( char ) ( ( key >>  8 ) & 0xFF );
+		str[ 2 ] = ( char ) ( key & 0xFF );
+		return 3;
+	}
+	else if ( ( key & 0xF8000000 ) == 0xF0000000 )
+	{
+		str[ 0 ] = ( char ) ( ( key >> 24 ) & 0xFF );
+		str[ 1 ] = ( char ) ( ( key >>  16 ) & 0xFF );
+		str[ 2 ] = ( char ) ( ( key >>  8 ) & 0xFF );
+		str[ 3 ] = ( char ) ( key & 0xFF );
+		return 4;
+	}
+
+	return 0;
+}
+
+
+/***************************************
  * Returns the number of bytes in an UTF8 character
  * (or -1 if it's not a valid UYF8 character)
  ***************************************/

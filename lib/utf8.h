@@ -29,6 +29,9 @@ int utf8_get_char_bytes( FL_Char c );
 
 FL_Char utf8_to_num( const char * str );
 
+int utf8_insert( FL_Char   key,
+				 char    * str );
+
 int utf8_get_byte_count( const char * str );
 
 int utf8_get_prev_byte_count( const char * str );

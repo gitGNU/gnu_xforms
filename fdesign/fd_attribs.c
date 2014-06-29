@@ -454,11 +454,11 @@ show_attributes( const FL_OBJECT * obj )
     int i,
         lstyle,
         spstyle,
-#if ! defined FL_ENABLE_XFT
+#if ! FL_ENABLE_XFT
         oksize,
 #endif
         align = fl_to_outside_lalign( obj->align );
-#if ! defined FL_ENABLE_XFT
+#if ! FL_ENABLE_XFT
     static char othersize[ 32 ];
 #endif
 
@@ -503,7 +503,7 @@ show_attributes( const FL_OBJECT * obj )
 
 	/* d) label font size */
 
-#if defined FL_ENABLE_XFT
+#if FL_ENABLE_XFT
     fl_set_spinner_value( xft_sizeobj, obj->lsize );
 #else
     for ( oksize = i = 0; ! oksize && i < ( int ) NFSIZE; i++ )

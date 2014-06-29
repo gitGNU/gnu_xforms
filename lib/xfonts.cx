@@ -41,6 +41,10 @@ static XFontStruct * try_get_font_struct( int,
 static char * get_fname( const char *,
                          int );
 
+#if defined X_HAVE_UTF8_STRING
+static XFontSet
+get_font_set_from_struct( const XFontStruct *fs );
+#endif
 
 /*
  * Question marks indicate the sizes in tenth of a point. It will be
@@ -272,6 +276,11 @@ try_get_font_struct( int numb,
 {
     FL_FONT *flf = fl_fonts;
     XFontStruct *fs = NULL;
+#if defined X_HAVE_UTF8_STRING
+    XFontSet fset;
+    int missing_count;
+    char **missing_list, *def_string;
+#endif
     int i,
         is_subst = 0;
 
@@ -326,6 +335,23 @@ try_get_font_struct( int numb,
 
     fs = XLoadQueryFont( flx->display, fli_curfnt );
 
+#if defined X_HAVE_UTF8_STRING
+    if ( fs )
+    {
+        fset = XCreateFontSet( flx->display, fli_curfnt, &missing_list,
+                               &missing_count, &def_string );
+
+        if ( ! fset )
+        {
+            XFreeFont( flx->display, fs );
+            fs = NULL;
+        }
+        else
+            fprintf( stderr, "%s is missing %d chars (%s)\n",
+                     fli_curfnt, missing_count, def_string );
+    }
+#endif
+
     /* If that didn't work try to find a replacement font, i.e. an already
        loaded font with the nearest size or, if there's none, the very most
        basic font. */
@@ -353,11 +379,22 @@ try_get_font_struct( int numb,
         }
 
         if ( k != -1 )
+        {
             fs = flf->fs[ k ];
+#if defined X_HAVE_UTF8_STRING
+            fset = flf->font_set[ k ];
+#endif
+        }
         else
+        {
+#if defined X_HAVE_UTF8_STRING
+#endif
             fs = flx->fs ? flx->fs : defaultfs;
-
-        is_subst = 1;
+#if defined X_HAVE_UTF8_STRING
+            fset = get_font_set_from_struct( fs );
+#endif
+            is_subst = 1;
+        }
     }
 
     /* If cache is full make space at the end */
@@ -365,11 +402,20 @@ try_get_font_struct( int numb,
     if ( flf->nsize == FL_MAX_FONTSIZES )
     {
         if ( flf->size[ FL_MAX_FONTSIZES - 1 ] > 0 )
+        {
             XFreeFont( flx->display, flf->fs[ FL_MAX_FONTSIZES - 1 ] );
+#if defined X_HAVE_UTF8_STRING
+            XFreeFontSet( flx->display,
+                          flf->font_set[ FL_MAX_FONTSIZES - 1 ] );
+#endif
+        }
         flf->nsize--;
     }
 
     flf->fs[ flf->nsize ] = fs;
+#if defined X_HAVE_UTF8_STRING
+    flf->font_set[ flf->nsize ] = fset;
+#endif
     flf->size[ flf->nsize++ ] = is_subst ? - size : size;
 
     /* Here we are guranteed a valid font handle although there is no
@@ -377,6 +423,46 @@ try_get_font_struct( int numb,
 
     return fs;
 }
+
+
+
+/***************************************
+ ***************************************/
+
+#if defined X_HAVE_UTF8_STRING
+XFontSet
+fl_get_font_set( int style,
+                 int size )
+{
+    int i;
+    FL_FONT *flf = fl_fonts;
+    XFontSet fset;
+
+    if ( special_style( style ) )
+        style %= FL_SHADOW_STYLE;
+
+    /* Avoid trying to use negative or zero font size */
+
+    if ( size <= 0 )
+    {
+        M_info( "fl_get_font_set",
+                "Bad font size requested (%d), using %d istead",
+                size, size < 0 ? -size : 1 );
+        size = size < 0 ? -size : 1;
+    }
+ 
+    flf = fl_fonts + style;
+
+    if ( style < 0 || style >= FL_MAXFONTS || ! *flf->fname )
+        return NULL;
+
+    for ( fset = NULL, i = 0; ! fset && i < flf->nsize; i++ )
+        if ( size == abs( flf->size[ i ] ) )
+            fset = flf->font_set[ i ];
+
+    return fset;
+}
+#endif
 
 
 /***************************************
@@ -401,7 +487,14 @@ fli_get_string_width( XFontStruct * fs,
                       const char  * s,
                       int           len )
 {
+#if defined X_HAVE_UTF8_STRING
+    XRectangle o1, o2;
+
+    Xutf8TextExtents( get_font_set_from_struct( fs ), s, len, &o1, &o2 );
+    return o1.width;
+#else
     return XTextWidth( fs, s, len );
+#endif
 }
 
 
@@ -436,6 +529,9 @@ fli_get_string_widthTABfs( XFontStruct * fs,
         tab;
     const char *p,
                *q;
+#if defined X_HAVE_UTF8_STRING
+    XRectangle o1, o2;
+#endif
 
     if ( fli_no_connection )
         return 12 * len;
@@ -445,11 +541,22 @@ fli_get_string_widthTABfs( XFontStruct * fs,
     for ( w = 0, q = s; *q && ( p = strchr( q, '\t' ) ) && ( p - s ) < len;
           q = p + 1 )
     {
+#if defined X_HAVE_UTF8_STRING
+        Xutf8TextExtents( get_font_set_from_struct( fs ), q, p - q, &o1, &o2 );
+        w += o1.width;
+#else
         w += XTextWidth( fs, q, p - q );
+#endif
         w = ( ( w / tab ) + 1 ) * tab;
     }
 
+#if defined X_HAVE_UTF8_STRING
+    Xutf8TextExtents( get_font_set_from_struct( fs ), q, len - ( q - s ),
+                      &o1, &o2 );
+    return w + o1.width;
+#else
     return w += XTextWidth( fs, q, len - ( q - s ) );
+#endif
 }
 
 
@@ -621,8 +728,20 @@ fl_set_tabstop( const char *s )
 int
 fli_get_tabpixels( XFontStruct * fs )
 {
+#if defined X_HAVE_UTF8_STRING
+    int w;
+    XRectangle o1, o2;
+    XFontSet fset = get_font_set_from_struct( fs );
+
+    Xutf8TextExtents( fset, *tabstop, *tabstopNchar,
+                      &o1, &o2 );
+    w = o1.width;
+    Xutf8TextExtents( fset, " ", 1, &o1, &o2 );
+    return w + o1.width;
+#else
     return   XTextWidth( fs, *tabstop, *tabstopNchar )
            + XTextWidth( fs, " ", 1 );
+#endif
 }
 
 
@@ -668,8 +787,37 @@ int
 fli_get_text_width( const char * str,
                     size_t       len )
 {
+#if defined X_HAVE_UTF8_STRING
+    XRectangle o1, o2;
+
+    Xutf8TextExtents( get_font_set_from_struct( flx->fs) , str, len, &o1, &o2 );
+    return o1.width;
+#else
     return XTextWidth( flx->fs, str, len );
+#endif
 }
+
+
+/***************************************
+ ***************************************/
+
+#if defined X_HAVE_UTF8_STRING
+static XFontSet
+get_font_set_from_struct( const XFontStruct *fs )
+{
+    FL_FONT *flf = fl_fonts,
+            *fe  = flf + FL_MAXFONTS;
+    int i;
+
+    for ( ; flf < fe; flf++ )
+        if ( flf->fname && *flf->fname )
+            for ( i = 0; i < flf->nsize; i++ )
+                if ( flf->fs[ i ] == fs )
+                    return flf->font_set[ i ];
+
+    return NULL;
+}
+#endif
 
 
 /***************************************

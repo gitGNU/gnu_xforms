@@ -223,6 +223,9 @@ typedef enum {
 
 typedef struct {
     XFontStruct * fs[ FL_MAX_FONTSIZES ];               /* cached fontstruct */
+#if defined X_HAVE_UTF8_STRING
+	XFontSet      font_set[ FL_MAX_FONTSIZES ];
+#endif
     short         size[ FL_MAX_FONTSIZES ];             /* cached sizes */
     short         nsize;                                /* cached so far */
     char          fname[ FL_MAX_FONTNAME_LENGTH + 1 ];  /* without size info */
@@ -446,6 +449,10 @@ FL_EXPORT void fl_set_font_scaling_factor( int    index,
 FL_EXPORT XFontStruct *fl_get_font_struct( int style,
 										   int size );
 
+#if defined X_HAVE_UTF8_STRING
+FL_EXPORT XFontSet fl_get_font_set( int style,
+									int size );
+#endif
 #endif
 
 #define fl_get_fontstruct     fl_get_fonts_truct

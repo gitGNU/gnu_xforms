@@ -333,7 +333,13 @@ draw_input( FL_OBJECT * obj )
 }
 
 
-#define DELIM( c )  ( c == ' ' || c == ',' || c == '.' || c == '\n' )
+#define DELIM_OLD( c )                                                       \
+    (    ( unsigned char ) ( c ) < 0x7F                                      \
+      && ( ( c ) == ' ' || ( c ) == ',' || ( c ) == '.' || ( c ) == '\n' ) )
+
+#define DELIM_NEW( c )                                                  \
+    (    ( unsigned char ) ( c ) < 0x7F                                 \
+      && ! ( isalnum( ( unsigned int ) ( c ) ) || ( c ) == '_' ) )
 
 
 /***************************************
@@ -380,34 +386,22 @@ handle_select( FL_Coord    mx,
 #if defined USE_CLASSIC_EDITKEYS
         if ( sp->str[ thepos ] == ' ' )
             return 0;
-
-        for ( n = thepos; sp->str[ n ] && ! DELIM( sp->str[ n ] ); n++ )
+        for ( n = thepos; sp->str[ n ] && ! DELIM_OLD( sp->str[ n ] ); n++ )
             /* empty */ ;
         sp->endrange = n;
 
-        for ( n = thepos; n >= 0 && ! DELIM( sp->str[ n ] ); n-- )
+        for ( n = thepos; n >= 0 && ! DELIM_OLD( sp->str[ n ] ); n-- )
             /* empty */ ;
 
         sp->beginrange = n + 1;
 #else
-        if (    ! isalnum( ( unsigned char ) sp->str[ thepos ] )
-             && sp->str[ thepos ] != '_' )
+        if ( DELIM_NEW( sp->str[ thepos ] ) )
         {
-            for ( n = thepos;
-                     sp->str[ n ]
-                  && ! isalnum( ( unsigned char ) sp->str[ n ] )
-                  && sp->str[ n ] != '_'
-                  && sp->str[ n ] != '\n';
-                  n++ )
+            for ( n = thepos; sp->str[ n ] && DELIM_NEW( sp->str[ n ] ); n++ )
                 /* empty */ ;
             sp->endrange = n;
 
-            for ( n = thepos;
-                     n
-                  && ! isalnum( ( unsigned char ) sp->str[ n ] )
-                  && sp->str[ n ] != '_'
-                  && sp->str[ n ] != '\n';
-                  n-- )
+            for ( n = thepos; n && DELIM_NEW( sp->str[ n ] ); n-- )
                 /* empty */ ;
             if ( n > 0 )
                 ++n;
@@ -415,18 +409,11 @@ handle_select( FL_Coord    mx,
         }
         else
         {
-            for ( n = thepos;
-                     sp->str[ n ]
-                  && (    isalnum( ( unsigned char ) sp->str[ n ] )
-                       || sp->str[ n ] == '_' );
-                  n++ )
+            for ( n = thepos; sp->str[ n ] && ! DELIM_NEW( sp->str[ n ] ); n++ )
                 /* empty */ ;
             sp->endrange = n;
 
-            for ( n = thepos;
-                  n && (    isalnum( ( unsigned char ) sp->str[ n ] )
-                         || sp->str[ n ] == '_' );
-                  n-- )
+            for ( n = thepos; n && ! DELIM_NEW(sp->str[ n ] ); n-- )
                 /* empty */ ;
             if ( n > 0 )
                 ++n;
@@ -545,8 +532,6 @@ delete_piece( FL_OBJECT * obj,
 
     memmove( sp->str + start, sp->str + end + 1, strlen( sp->str + end ) );
     sp->position = start;
-
-    /* This can be expensive TODO */
 
     sp->lines = fl_get_input_numberoflines( obj );
     fl_get_input_cursorpos( obj, &sp->xpos, &sp->ypos );
@@ -788,16 +773,11 @@ handle_movement( FL_OBJECT * obj,
         while ( i < slen && sp->str[ i ] != ' ' && sp->str[ i ] != '\n' )
             i++;
 #else
-        if (    ! isalnum( ( unsigned char ) sp->str[ i ] )
-             && sp->str[ i ] != '_' )
-            while (    i < slen
-                    && ! isalnum( ( unsigned char ) sp->str[ i ] )
-                    && sp->str[ i ] != '_' )
+        if ( DELIM_NEW( sp->str[ i ] )  )
+            while ( i < slen && DELIM_NEW( sp->str[ i ] ) )
                 ++i;
         else
-            while (    i < slen
-                    && (    isalnum( ( unsigned char ) sp->str[ i ] )
-                         || sp->str[ i ] == '_' ) )
+            while ( i < slen && ! DELIM_NEW( sp->str[ i ] ) )
                 ++i;
 #endif
         sp->position = i;
@@ -855,16 +835,11 @@ handle_edit( FL_OBJECT * obj,
                underscores. This is the same behaviour as in e.g. Qt.
             */
 
-            if (    ! isalnum( ( unsigned char ) sp->str[ i ] )
-                 && sp->str[ i ] != '_' )
-                while (    i < slen
-                        && ! isalnum( ( unsigned char ) sp->str[ i ] )
-                        && sp->str[ i ] != '_' )
+            if ( DELIM_NEW( sp->str[ i ] ) )
+                while ( i < slen && ! DELIM_NEW( sp->str[ i ] ) )
                     i++;
             else
-                while (    i < slen
-                        && (    isalnum( ( unsigned char ) sp->str[ i ] )
-                             || sp->str[ i ] == '_' ) )
+                while ( i < slen && DELIM_NEW( sp->str[ i ] ) )
                     i++;
 #endif
             if ( i - sp->position > 1 )
@@ -1060,14 +1035,10 @@ handle_normal_key( FL_OBJECT    * obj,
         sp->str[ sp->maxchars ] = '\0';
     }
     else
-        memmove( sp->str + sp->position + 1, sp->str + sp->position,
+        memmove( sp->str + sp->position + len, sp->str + sp->position,
                  slen - sp->position + len );
 
-    while ( len-- )
-        sp->str[ sp->position++ ] =
-                          ( ( unsigned long ) key >> ( 8 * len ) ) & 0xFF;
-
-//    sp->str[ sp->position++ ] = key;
+    sp->position += utf8_insert( key, sp->str + sp->position );
 
     if ( key == '\n' )
     {

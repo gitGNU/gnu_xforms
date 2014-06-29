@@ -312,8 +312,6 @@ handle_keyboard( FL_FORM  * form,
     if ( fli_do_shortcut( form, key, x, y, xev ) )
         return;
 
-    fprintf( stderr, "ZZZZ 0x%x\n", (unsigned int ) key );
-
     /* Focus policy is done as follows: Input object has the highest
        priority. Next comes the object that wants special keys, finally
        followed by 'mouseobj', having the lowest proiority. */
@@ -400,10 +398,8 @@ handle_keyboard( FL_FORM  * form,
 
     /* Space is an exception for browser */
 
-    /* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
-
-    if (   (    ( utf8_get_char_bytes( key ) == - 1|| key == ' ' )
-             && special->wantkey & FL_KEY_SPECIAL )
+    if (    (    ( utf8_get_char_bytes( key ) == - 1|| key == ' ' )
+              && special->wantkey & FL_KEY_SPECIAL )
          || (    utf8_get_char_bytes( key ) != -1
               && special->wantkey & FL_KEY_NORMAL )
          || ( special->wantkey == FL_KEY_ALL ) )
@@ -1012,12 +1008,8 @@ handle_keyboard_event( XEvent * xev,
     else if ( IsCursorKey( keysym ) || len == 0 )
         fli_handle_form( fli_int.keyform, formevent, keysym, xev );
     else
-    {
-        fprintf( stderr, "Sending %d 0x%lx\n", formevent,
-                 utf8_to_num( ( char * ) keybuf ) );
         fli_handle_form( fli_int.keyform, formevent,
                          utf8_to_num( ( char * ) keybuf ), xev );
-    }
 }
 
 
