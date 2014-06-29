@@ -289,8 +289,6 @@ draw_input( FL_OBJECT * obj )
     fl_set_text_clipping( cx, cy, sp->w, sp->h );
     fl_set_clipping( cx, cy, sp->w, sp->h );
 
-    fprintf( stderr, "str = %s\n", sp->str );
-
     max_pixels = fli_draw_string( obj->type == FL_MULTILINE_INPUT ?
                                   FL_ALIGN_LEFT_TOP : FL_ALIGN_LEFT,
                                   cx - sp->xoffset,      /* Bounding box */
@@ -507,9 +505,6 @@ delete_char( FLI_INPUT_SPEC * sp,
             sp->lines--;
             sp->ypos--;
         }
-
-        fprintf( stderr, "Del %d %d\n", sp->position,
-                 ( int ) ( new_pos - sp->str ) );
 
         memmove( new_pos, sp->str + sp->position,
                  strlen( sp->str + sp->position ) + 1 );
@@ -1024,8 +1019,6 @@ handle_normal_key( FL_OBJECT    * obj,
 
     len = utf8_get_char_bytes( key );
 
-    fprintf( stderr, "Normal key %u %d\n", ( unsigned int ) key, len );
-
     if (    Input_Mode == FL_DOS_INPUT_MODE
         && sp->maxchars > 0
         && slen == sp->maxchars )
@@ -1530,8 +1523,6 @@ handle_input( FL_OBJECT * obj,
             break;
 
         case FL_KEYPRESS :
-            fprintf( stderr, "Received 0x%x\n", ( unsigned int ) key );
-
             if ( ( ret = handle_key( obj, key, state ) ) )
             {
                 sp->changed = 1;
@@ -1565,8 +1556,6 @@ handle_input( FL_OBJECT * obj,
 
     if ( obj->spec )
     fl_get_input_cursorpos( obj, &sp->xpos, &sp->ypos );
-
-    fprintf( stderr, "TTT %s\n", sp->str );
 
     return ret;
 }
