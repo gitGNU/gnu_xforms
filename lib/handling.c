@@ -91,7 +91,7 @@ fli_XLookupString( XKeyEvent * xkey,
                    int         buflen,
                    KeySym    * ks )
 {
-    int len = INT_MIN;
+    int len;
 
     if ( ! fli_context->xic )
         len = XLookupString( xkey, buf, buflen - 1, ks, 0 );
@@ -99,8 +99,13 @@ fli_XLookupString( XKeyEvent * xkey,
     {
         Status status;
 
+#if defined X_HAVE_UTF8_STRING
         len = Xutf8LookupString( fli_context->xic, xkey, buf, buflen - 1, ks,
                                  &status );
+#else
+        len = XmbLookupString( fli_context->xic, xkey, buf, buflen - 1, ks,
+                               &status );
+#endif
 
         if ( status == XBufferOverflow )
             len *= -1;

@@ -146,13 +146,20 @@ fl_request_clipboard( FL_OBJECT       * ob,
     }
     else if ( win != cp->req_window )
     {
-        /* We don't own it, request it */
+        /* We don't own it, request it. If we're trying to work with UTF-8
+           try to get an UTF-8 string, but if that fails fall back to an
+           XA_STRING */
 
-        M_warn( "fl_request_clipboard", "Requesting selection from %ld", win );
-        XConvertSelection( flx->display,
-                           XA_PRIMARY, XA_STRING,
-                           clipboard_prop,
-                           cp->req_window, CurrentTime );
+#if defined X_HAVE_UTF8_STRING
+        Atom atomUTF8String = XInternAtom( flx->display,
+                                           "UTF8_STRING", False );
+
+        if ( ! XConvertSelection( flx->display,XA_PRIMARY, atomUTF8String,
+                                  clipboard_prop, cp->req_window,
+                                  CurrentTime ) )
+#endif
+            XConvertSelection( flx->display, XA_PRIMARY, XA_STRING,
+                               clipboard_prop, cp->req_window, CurrentTime );
         nb = -1;
     }
     else if ( win == cp->req_window )

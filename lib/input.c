@@ -539,9 +539,9 @@ delete_piece( FL_OBJECT * obj,
                          ( e ) - ( b ) )
 
 #define IsRegular( k )  (    ( k ) == '\n'                     \
-                          || (    key >= 32                    \
+                          || (    key >= ' '                   \
                                && utf8_get_char_bytes( k ) > 0 \
-                               && key != 127 ) )
+                               && key != 0x7F ) )
 
 
 /***************************************
@@ -553,7 +553,7 @@ delete_piece( FL_OBJECT * obj,
 static FL_EditKeymap kmap;
 
 static int paste_it( FL_OBJECT *,
-                     const unsigned char *,
+                     const char *,
                      int );
 
 static void set_default_keymap( int );
@@ -951,7 +951,7 @@ handle_edit( FL_OBJECT * obj,
     }
 #endif
     else if ( key == kmap.paste )
-        paste_it( obj, ( unsigned char * ) cutbuf, strlen( cutbuf ) );
+        paste_it( obj, cutbuf, strlen( cutbuf ) );
     else if ( key == kmap.transpose && sp->position > 0 )
     {
         char t;
@@ -990,10 +990,21 @@ handle_normal_key( FL_OBJECT    * obj,
     int len;
     int ret = FL_RETURN_CHANGED;
 
+
+    /* We might receive a '\n' even for non-mulitline inputs (when the
+       input comes via cut-and-paste), don't accept it */
+
+    if ( key == '\n' && obj->type != FL_MULTILINE_INPUT )
+        return FL_RETURN_NONE;
+
     /* Check that there's still room for a new character */
 
+    len = utf8_get_char_bytes( key );
+    if ( len <= 0 )
+        return;
+
     if (    sp->maxchars > 0
-         && slen >= sp->maxchars
+         && slen +len > sp->maxchars
          && (    Input_Mode == FL_NORMAL_INPUT_MODE
               || slen == sp->position ) )
     {
@@ -1017,19 +1028,17 @@ handle_normal_key( FL_OBJECT    * obj,
 
     /* Merge the new character */
 
-    len = utf8_get_char_bytes( key );
-
     if (    Input_Mode == FL_DOS_INPUT_MODE
         && sp->maxchars > 0
         && slen == sp->maxchars )
     {
         memmove( sp->str + sp->position + len, sp->str + sp->position,
-                 slen - sp->position );
+                 slen - sp->position + 1 );
         sp->str[ sp->maxchars ] = '\0';
     }
     else
         memmove( sp->str + sp->position + len, sp->str + sp->position,
-                 slen - sp->position + len );
+                 slen - sp->position + 1 );
 
     sp->position += utf8_insert( key, sp->str + sp->position );
 
@@ -1084,11 +1093,11 @@ handle_key( FL_OBJECT    * obj,
     int oldx = sp->xoffset;
     int oldmax = sp->max_pixels;
 
-    /* Increase the size of the buffer for the text if it's full */
+    /* Increase the size of the buffer for the text if it's getting full */
 
     slen = strlen( sp->str );
 
-    if ( sp->size == slen + 1 )
+    if ( sp->size <= slen + 4 )
     {
         sp->size += 8;
         sp->str = fl_realloc( sp->str, sp->size );
@@ -1243,14 +1252,29 @@ handle_key( FL_OBJECT    * obj,
  ***************************************/
 
 static int
-paste_it( FL_OBJECT           * obj,
-          const unsigned char * thebytes,
-          int                   nb )
+paste_it( FL_OBJECT  * obj,
+          const char * buf,
+          int          nb )
 {
     int ret = FL_RETURN_NONE;
+    int len;
 
-    while ( nb-- )
-        ret |= handle_key( obj, *thebytes++, 0 );
+    while ( nb > 0 )
+    {
+        len = utf8_get_byte_count( buf );
+
+        if ( len == -1 )
+        {
+            buf++;
+            nb--;
+        }
+        else
+        {
+            ret |= handle_key( obj, utf8_to_num( buf ), 0 );
+            buf += len;
+            nb  -= len;
+        }
+    }
 
     return ret;
 }
@@ -1274,7 +1298,7 @@ gotit_cb( FL_OBJECT  * obj,
 {
     FLI_INPUT_SPEC *sp = obj->spec;
 
-    sp->changed |= paste_it( obj, ( unsigned char * ) buf, nb );
+    sp->changed |= paste_it( obj, buf, nb );
     fl_update_display( 0 );
 
     if ( selection_hack && sp->changed )

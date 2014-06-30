@@ -26,7 +26,7 @@
 
 /***************************************
  * Function for determing the number of (UTF-8) characters in
- * a string. If it's not a vaid UTF8 string -1 is returned.
+ * a string. If it's not a vaid UTF-8 string -1 is returned.
  ***************************************/
 
 ssize_t
@@ -69,7 +69,7 @@ utf8_length( const char * str )
 
 
 /***************************************
- * Converts an UTF8 character in a string to a number
+ * Converts an UTF-8 character in a string to a number
  ***************************************/
 
 FL_Char
@@ -154,7 +154,7 @@ utf8_insert( FL_Char   key,
 
 
 /***************************************
- * Returns the number of bytes in an UTF8 character
+ * Returns the number of bytes in an UTF-8 character
  * (or -1 if it's not a valid UYF8 character)
  ***************************************/
 
@@ -184,9 +184,9 @@ utf8_get_char_bytes( FL_Char c )
 
 
 /***************************************
- * Returns the number of bytes in the UTF8 character
+ * Returns the number of bytes in the UTF-8 character
  * pointed to by a char pointer (or =1 if it's no a
- * valid UTF8 character)
+ * valid UTF-8 character)
  ***************************************/
 
 int
@@ -216,9 +216,9 @@ utf8_get_byte_count( const char * str )
 
 
 /***************************************
- * Returns the number of bytes in the UTF8 character
+ * Returns the number of bytes in the UTF-8 character
  * before the string pointed to (or -1 if it's no a
- * valid UTF8 character)
+ * valid UTF-8 character)
  ***************************************/
 
 int
@@ -266,7 +266,7 @@ utf8_prev_char_pos( char * str )
 
 
 /***************************************
- * Sets up an UTF8 string iterator with a new string
+ * Sets up an UTF-8 string iterator with a new string
  ***************************************/
 
 static void
@@ -281,7 +281,7 @@ utf8_iter_init( UTF8_Iter  * this,
 
 
 /***************************************
- * Sets up a reverse UTF8 string iterator with a new string
+ * Sets up a reverse UTF-8 string iterator with a new string
  ***************************************/
 
 static void
@@ -299,9 +299,9 @@ utf8_reverse_iter_init( UTF8_Iter  * this,
 
 
 /***************************************
- * Returns the number of UTF8 characters in the iterators string
+ * Returns the number of UTF-8 characters in the iterators string
  * (or -1 if the iterator isn't initialized or the string wasn't
- * a valid UTF8 string).
+ * a valid UTF-8 string).
  ***************************************/
 
 static ssize_t
@@ -312,7 +312,7 @@ utf8_iter_length( UTF8_Iter  * this )
 
 
 /***************************************
- * Returns the next UTF8 character from the string
+ * Returns the next UTF-8 character from the string
  ***************************************/
 
 static FL_Char
@@ -347,7 +347,7 @@ utf8_iter_next( UTF8_Iter * this )
 
 
 /***************************************
- * Returns the previous UTF8 character from the string
+ * Returns the previous UTF-8 character from the string
  ***************************************/
 
 static FL_Char
@@ -388,7 +388,7 @@ utf8_iter_reset( UTF8_Iter  * this )
 
 
 /***************************************
- * Resets a UTF8 string iterator to the end of the string
+ * Resets a UTF-8 string iterator to the end of the string
  ***************************************/
 
 static void
@@ -400,7 +400,7 @@ utf8_iter_back( UTF8_Iter  * this )
 
 
 /***************************************
- * Returns the position of the current UTF8 character
+ * Returns the position of the current UTF-8 character
  ***************************************/
 
 static size_t
@@ -411,7 +411,7 @@ utf8_iter_cur_cnt( UTF8_Iter  * this )
 
 
 /***************************************
- * Returns the byte position of the current UTF8 character
+ * Returns the byte position of the current UTF-8 character
  ***************************************/
 
 static size_t
@@ -422,7 +422,7 @@ utf8_iter_cur_index( UTF8_Iter  * this )
 
 
 /***************************************
- * Creates a new UTF8 string iterator and, if the argument
+ * Creates a new UTF-8 string iterator and, if the argument
  * is not NULL, initializes it to the start of that string
  ***************************************/
 
@@ -452,7 +452,7 @@ new_UTF8_Iter( const char *str )
 
 
 /***************************************
- * Creates a new reverse UTF8 string iterator and, if the argument
+ * Creates a new reverse UTF-8 string iterator and, if the argument
  * is not NULL, initializes it to the end of that string
  ***************************************/
 
@@ -482,7 +482,7 @@ new_reverse_UTF8_Iter( const char *str )
 
 
 /***************************************
- * Deletes an UTF8 string iterator
+ * Deletes an UTF-8 string iterator
  ***************************************/
 
 void *
