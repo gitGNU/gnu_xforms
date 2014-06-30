@@ -1001,11 +1001,15 @@ handle_normal_key( FL_OBJECT    * obj,
 
     len = utf8_get_char_bytes( key );
     if ( len <= 0 )
-        return;
+        return FL_RETURN_NONE;
+
+    /* Check if the character can be inserted without clashing with
+       the maxchar setting */
 
     if (    sp->maxchars > 0
-         && slen +len > sp->maxchars
+         && slen + len > sp->maxchars
          && (    Input_Mode == FL_NORMAL_INPUT_MODE
+              || len > sp->maxchars
               || slen == sp->position ) )
     {
         fl_ringbell( 0 );
@@ -1032,9 +1036,18 @@ handle_normal_key( FL_OBJECT    * obj,
         && sp->maxchars > 0
         && slen == sp->maxchars )
     {
+        while ( slen + len > sp->maxchars )
+        {
+            int cl = utf8_get_prev_byte_count( sp->str + slen );
+
+            if ( cl == -1 )
+                cl = 1;
+            slen -= cl;
+            sp->str[ slen ] = '\0';
+        }
+
         memmove( sp->str + sp->position + len, sp->str + sp->position,
                  slen - sp->position + 1 );
-        sp->str[ sp->maxchars ] = '\0';
     }
     else
         memmove( sp->str + sp->position + len, sp->str + sp->position,
@@ -1093,14 +1106,24 @@ handle_key( FL_OBJECT    * obj,
     int oldx = sp->xoffset;
     int oldmax = sp->max_pixels;
 
-    /* Increase the size of the buffer for the text if it's getting full */
+    /* Increase the size of the buffer for the text if it's getting full.
+       Decrease its size if the number of occupied bytes has dropped
+       below half of that available in the buffer. */
 
     slen = strlen( sp->str );
 
-    if ( sp->size <= slen + 4 )
+    if ( sp->maxchars == 0 )
     {
-        sp->size += 8;
-        sp->str = fl_realloc( sp->str, sp->size );
+        if ( sp->size <= slen + 4 )
+        {
+            sp->size += 8;
+            sp->str  = fl_realloc( sp->str, sp->size );
+        }
+        else if ( sp->size > 2 * slen )
+        {
+            sp->size = slen + 8;
+            sp->str  = fl_realloc( sp->str, sp->size );
+        }
     }
 
     /* Silently translate carriage return to line feed */
@@ -1710,25 +1733,30 @@ fl_create_input( int          type,
     sp->curscol        = FLI_INPUT_CCOL;
     sp->position       = -1;
     sp->endrange       = -1;
-    sp->size           = 8;
     sp->lines          = sp->ypos = 1;
-    sp->str            = fl_malloc( sp->size );
-    *sp->str           = '\0';
     sp->cursor_visible = 1;
 
     switch ( obj->type )
     {
         case FL_DATE_INPUT :
             sp->maxchars = 10;
+            sp->size     = sp->maxchars + 1;
+            sp->str      = fl_malloc( sp->size );
             break;
 
         case FL_SECRET_INPUT :
             sp->maxchars = 16;
+            sp->size     = sp->maxchars + 1;
+            sp->str      = fl_malloc( sp->size );
             break;
 
         default :
+            sp->size     = 8;
+            sp->str      = fl_malloc( sp->size );
             sp->maxchars = 0;
     }
+
+    *sp->str           = '\0';
 
     sp->dummy      = obj;
     sp->input      = obj;
@@ -2350,7 +2378,44 @@ void
 fl_set_input_maxchars( FL_OBJECT * obj,
                        int         maxchars )
 {
-    ( ( FLI_INPUT_SPEC * ) obj->spec )->maxchars = maxchars;
+    FLI_INPUT_SPEC * sp = obj->spec;
+    int len = strlen( sp->str );
+
+    if ( maxchars < 0 )
+    {
+        M_err( "fl_set_input_maxchars", "Invalid negative argument" );
+        return;
+    }
+
+    sp->maxchars = maxchars;
+
+    if ( maxchars == 0 )
+        return;
+
+    if ( sp->size < maxchars )
+    {
+        sp->str = fl_realloc( sp->str, maxchars + 1 );
+        sp->size = maxchars + 1;
+    }
+    else if ( sp->size > maxchars )
+    {
+        /* Remove as many characters from the end as necessary to make
+           the length of the string not larger than the new maximum value */
+
+        while ( len > maxchars )
+        {
+            int cl = utf8_get_prev_byte_count( sp->str + len );
+            if ( cl == -1 )
+                cl = 1;
+            len -= cl;
+            sp->str[ len ] = '\0';
+        }
+
+        sp->str = fl_realloc( sp->str, maxchars + 1 );
+        sp->size = maxchars + 1;
+
+        fl_redraw_object( obj );
+    }
 }
 
 

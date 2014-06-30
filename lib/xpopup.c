@@ -173,29 +173,14 @@ static int pup_internal_showpup_call = 0;
 static void
 init_pupfont( PopUP * m )
 {
-#if ! FL_ENABLE_XFT        
-    XCharStruct chs;
-    int junk;
-#endif
-
     pup_title_font_struct = fl_get_fntstruct( pup_title_font_style,
                                               pup_title_font_size );
-#if FL_ENABLE_XFT        
     pup_title_ascent = pup_title_font_struct->ascent;
     pup_title_desc   = pup_title_font_struct->descent;
-#else
-    XTextExtents( pup_title_font_struct, "qjQb", 4, &junk,
-                  &pup_title_ascent, &pup_title_desc, &chs );
-#endif
 
     pup_font_struct = fl_get_fntstruct( pup_font_style, pup_font_size );
-#if FL_ENABLE_XFT        
     pup_ascent = pup_font_struct->ascent;
     pup_desc   = pup_font_struct->descent;
-#else
-    XTextExtents( pup_font_struct, "qjQb", 4, &junk, &pup_ascent,
-                  &pup_desc, &chs );
-#endif
 
     reset_max_width( m );
 }

@@ -1279,27 +1279,27 @@ label can be controlled with the routine
 void fl_set_object_lstyle(FL_OBJECT *obj, int lstyle);
 @end example
 @noindent
-The default font for the Forms Library is DejaVu Sans (in older Xforms
-versions it used to be Helvetica).
+The default font for the Forms Library is DejaVu Sans Condensed (in
+older Xforms versions it used to be Helvetica).
 
 Here is a list of all default styles available:
 @multitable @columnfractions 0.5 0.5
 @anchor{FL_NORMAL_STYLE}
 @tindex FL_NORMAL_STYLE
 @item @code{FL_NORMAL_STYLE}
-@tab Normal sans-serif font (DejaVu Sans), the default font
+@tab Normal sans-serif font (DejaVu Sans Condensed), the default font
 @anchor{FL_BOLD_STYLE}
 @tindex FL_BOLD_STYLE
 @item @code{FL_BOLD_STYLE}
-@tab Bold font  (DejaVu Sans)
+@tab Bold font (DejaVu Sans Condensed)
 @anchor{FL_ITALIC_STYLE}
 @tindex FL_ITALIC_STYLE
 @item @code{FL_ITALIC_STYLE}
-@tab Italic font  (DejaVu Sans)
+@tab Italic font  (DejaVu Sans Condensed)
 @anchor{FL_BOLDITALIC_STYLE}
 @tindex FL_BOLDITALIC_STYLE
 @item @code{FL_BOLDITALIC_STYLE}
-@tab Bold-italic font (DejaVu Sans)
+@tab Bold-italic font (DejaVu Sans Condensed)
 @anchor{FL_FIXED_STYLE}
 @tindex FL_FIXED_STYLE
 @item @code{FL_FIXED_STYLE}
@@ -1319,36 +1319,36 @@ Here is a list of all default styles available:
 @anchor{FL_SERIF_STYLE}
 @tindex FL_SERIF_STYLE
 @item @code{FL_SERIF_STYLE}
-@tab Normal serif font (DejaVu Serif)
+@tab Normal serif font (DejaVu Serif Condensed)
 @anchor{FL_SERIFBOLD_STYLE FL}
 @tindex FL_SERIFBOLD_STYLE FL
 @item @code{FL_SERIFBOLD_STYLE FL}
-@tab Bold serif font (DejaVu Serif)
+@tab Bold serif font (DejaVu Serif Condensed)
 @anchor{FL_SERIFITALIC_STYLE}
 @tindex FL_SERIFITALIC_STYLE
 @item @code{FL_SERIFITALIC_STYLE}
-@tab Italic serif font (DejaVu Serif)
+@tab Italic serif font (DejaVu Serif Condensed)
 @anchor{FL_SERIFBOLDITALIC_STYLE}
 @tindex FL_SERIFBOLDITALIC_STYLE
 @item @code{FL_SERIFBOLDITALIC_STYLE}
-@tab Bold-italic serif font (DejaVu Serif)
+@tab Bold-italic serif font (DejaVu Serif Condensed)
 
 @anchor{FL_MISC_STYLE}
 @tindex FL_MISC_STYLE
 @item @code{FL_MISC_STYLE}
-@tab A less wide serif font, derived from Palladino (FPL Neu)
+@tab A bit wider serif font (DejaVu Serif)
 @anchor{FL_MISCBOLD_STYLE FL}
 @tindex FL_MISCBOLD_STYLE FL
 @item @code{FL_MISCBOLD_STYLE FL}
-@tab Bold version of font (FPL Neu)
+@tab Bold version of font (DejaVu Serif)
 @anchor{FL_MISCITALIC_STYLE}
 @tindex FL_MISCITALIC_STYLE
 @item @code{MISCSERIFITALIC_STYLE}
-@tab Italic version of font (FPL Neu)
+@tab Italic version of font (DejaVu Serif)
 @anchor{FL_MISCBOLDITALIC_STYLE}
 @tindex FL_MISCBOLDITALIC_STYLE
 @item @code{FL_MISCBOLDITALIC_STYLE}
-@tab Bold-italic version font (FPL Neu)
+@tab Bold-italic version font (DejaVu Serif)
 
 @anchor{FL_SHADOW_STYLE}
 @tindex FL_SHADOW_STYLE

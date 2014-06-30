@@ -1725,9 +1725,10 @@ fl_hide_object( FL_OBJECT * obj )
  * '^#' stand for '#'
  * '^&' stand for '&'
  * Note: '&' followed by anything else than the above will be skipped,
- * e.g. '&E' or '&0'. If '&' is followed by a number larger than 34
+ * e.g. '&E' or '&0'. If '&' is followed by a number larger than 35
  * only the first digit of the number is used.
  * Not escapable are Crtl-^, Crtl-# and Ctrl-&.
+ * No non-ASCII UTF-8 characters are allowed.
  ***************************************/
 
 #include <ctype.h>
@@ -1739,6 +1740,15 @@ fli_convert_shortcut( const char * str,
     int i = 0;
     long offset = 0;
     const char *c;
+
+    if ( utf8_length( str ) != ( ssize_t ) strlen( str ) )
+    {
+        M_err( "fli_convert_shortcut",
+               "Shortcuts may only contain ASCII characters" );
+        
+        sc[ 0 ] = 0;
+        return 0;
+    }
 
     for ( c = str; *c && i < MAX_SHORTCUTS; c++ )
     {
@@ -1899,7 +1909,8 @@ fl_set_object_shortcut( FL_OBJECT  * obj,
         return;
     }
 
-    n = fli_convert_shortcut( sstr, sc );
+    if ( ( n = fli_convert_shortcut( sstr, sc ) ) == 0 )
+        return;
     scsize = ( n + 1 ) * sizeof *obj->shortcut;
     obj->shortcut = fl_realloc( obj->shortcut, scsize );
     memcpy( obj->shortcut, sc, scsize );
@@ -1947,7 +1958,7 @@ fl_set_object_shortcutkey( FL_OBJECT * obj,
 
 
 /***************************************
- * Sets the object in the form that gets keyboard input.
++ * Sets the object in the form that gets keyboard input.
  ***************************************/
 
 void

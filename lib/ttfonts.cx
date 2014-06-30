@@ -27,10 +27,10 @@ static double global_font_scale = 1.0;
 
 /* Default font families */
 
-static const char * default_families[ ] = { "DejaVu Sans",
+static const char * default_families[ ] = { "DejaVu Sans Condensed",
                                             "DejaVu Sans Mono",
-                                            "DejaVu Serif",       
-                                            "FPL Neu" };
+                                            "DejaVu Serif Condensed",       
+                                            "DejaVu Serif" };
 
 /* Default styles */
 

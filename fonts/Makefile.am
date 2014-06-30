@@ -1,6 +1,6 @@
 include $(top_srcdir)/config/common.am
 
-SUBDIRS = DejaVu FPL_Neu
+SUBDIRS = DejaVu
 
 install-data-local:
 	fc-cache -vf

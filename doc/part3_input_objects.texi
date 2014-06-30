@@ -255,18 +255,21 @@ of handing used in versions up and including to 1.0.90. The function
 can be used at any time to change between the two possible types of
 behaviour. The function returns the previous setting.
 
-There is a routine that can be used to limit the number of characters
-per line for input fields of type @code{@ref{FL_NORMAL_INPUT}}
+There is a routine that can be used to limit the number of bytes
+(not characters, it can be less when UTF-8 characters are involved
+that may occupy up to 4 bytes) for input fields
 @findex fl_set_input_maxchars()
 @anchor{fl_set_input_maxchars()}
 @example
 void fl_set_input_maxchars(FL_OBJECT *obj, int maxchars);
 @end example
 @noindent
-To reset the limit to unlimited, set @code{maxchars} to 0. Note that
-input objects of type @code{@ref{FL_DATE_INPUT}} are limited to 10
-characters per default and those of type @code{@ref{FL_SECRET_INPUT}}
-to 16.
+When setting the limit the content of the input field may become
+truncated if it did contain more characters than would fit into the
+more restricted buffer. To reset the limit to unlimited, set
+@code{maxchars} to 0. Note that input objects of type
+@code{@ref{FL_DATE_INPUT}} are limited to 10 characters per default
+and those of type @code{@ref{FL_SECRET_INPUT}} to 16.
 
 Although an input of type @code{@ref{FL_RETURN_ALWAYS}} can be used in
 combination with the callback function to check the validity of
@@ -365,7 +368,7 @@ There are two slightly different input modes for input objects. In the
 (e.g., by using of the <Tab> key) the cursor is placed again at the
 position it was when the field was left (or at the end of a possibly
 existing string when it's entered for the first time). When an input
-object has a maximum number of allowed characters set (via the
+object has a maximum number of allowed bytes set (via the
 @code{@ref{fl_set_input_maxchars()}} function) and there's no room
 left no new input is accepted until at least one character has been
 deleted.
@@ -374,8 +377,8 @@ As an alternative there's an input mode that is similar to the way
 things were handle in DOS forms etc. Here, when the field is entered
 by any means but clicking into it with the mouse, the cursor is placed
 at the start of the text. And for fields with a maximum capacity, that
-contain already as many characters as possible, the character at the
-end of the field are removed when a new one is entered.
+contain already as many characters as possible, one or more character
+at the end of the field is removed when a new one is entered.
 
 To switch between the two modes use the function
 @findex fl_set_input_mode()

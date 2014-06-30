@@ -33,7 +33,12 @@
 #include <string.h>
 #include <ctype.h>
 
+#include <locale.h>
+
 static XFontStruct * defaultfs;
+#if defined X_HAVE_UTF8_STRING
+static XFontSet defaultfset;
+#endif
 
 static XFontStruct * try_get_font_struct( int,
                                           int,
@@ -42,8 +47,7 @@ static char * get_fname( const char *,
                          int );
 
 #if defined X_HAVE_UTF8_STRING
-static XFontSet
-get_font_set_from_struct( const XFontStruct *fs );
+static XFontSet get_font_set_from_struct( const XFontStruct * fs );
 #endif
 
 /*
@@ -82,6 +86,14 @@ fli_init_fonts( void )
     FL_FONT *flf;
     const char ** f = bitmap_fonts;
     static int initialized;
+#if defined X_HAVE_UTF8_STRING
+    int missing_count;
+    char **missing_list, *def_string;
+    char * old_locale;
+    int locale_needs_reset = 0;
+#endif
+    const char * def_names[ ] = { DEFAULTF1, DEFAULTF2, NULL };
+    const char ** p;
 
     if ( initialized )
         return;
@@ -97,9 +109,37 @@ fli_init_fonts( void )
 
     /* Load a default font */
 
-    if (    ! defaultfs
-         && ! ( defaultfs = XLoadQueryFont( flx->display, DEFAULTF1 ) ) )
-        defaultfs = XLoadQueryFont( flx->display, DEFAULTF2 );
+#if defined X_HAVE_UTF8_STRING
+    old_locale = setlocale( LC_CTYPE, "" );
+    if ( ! old_locale || ! strcmp( old_locale, "C" ) )
+    {
+        locale_needs_reset = 1;
+        setlocale( LC_CTYPE, "C.UTF-8" );
+    }
+#endif
+
+    for ( p = def_names; ! defaultfs && p; p++ )
+    {
+        defaultfs = XLoadQueryFont( flx->display, *p );
+#if defined X_HAVE_UTF8_STRING
+        if ( defaultfs )
+        {
+            defaultfset = XCreateFontSet( flx->display, *p, &missing_list,
+                                          &missing_count, &def_string );
+            if ( ! defaultfset )
+            {
+                XFreeFont( flx->display, defaultfs );
+                defaultfs = NULL;
+            }
+        }
+#endif
+    }
+
+#if defined X_HAVE_UTF8_STRING
+    if ( locale_needs_reset )
+        setlocale( LC_CTYPE, old_locale );
+#endif
+
 
     /* Load a couple of fonts at normal size to prevent the caching code from
        using bad looking replacement if strange sizes are requested */
@@ -119,8 +159,6 @@ void
 fl_set_font( int numb,
              int size )
 {
-    int dh;
-    XCharStruct overall;
     XFontStruct *fs;
 
     fs = fl_get_font_struct( numb, size );
@@ -140,7 +178,8 @@ fl_set_font( int numb,
     /* Basic font info (no need to send a string, we just want the maximum
        ascent and descent) */
 
-    XTextExtents( flx->fs, "", 0, &dh, &flx->fasc, &flx->fdesc, &overall );
+    flx->fasc    = fs->ascent;
+    flx->fdesc   = fs->descent;
     flx->fheight = flx->fasc + flx->fdesc;
 
     XSetFont( flx->display, flx->textgc, flx->fs->fid );
@@ -283,6 +322,8 @@ try_get_font_struct( int numb,
 #endif
     int i,
         is_subst = 0;
+    char * old_locale;
+    int locale_needs_reset = 0;
 
     if ( special_style( numb ) )
         numb %= FL_SHADOW_STYLE;
@@ -317,8 +358,6 @@ try_get_font_struct( int numb,
         return fl_state[ fl_vmode ].cur_fnt;
     }
 
-    strcpy( fli_curfnt, get_fname( flf->fname, size ) );
-
     /* Search for requested size in the cached fonts - fonts with "negative
        sizes" are replacement fonts found before */
 
@@ -331,7 +370,20 @@ try_get_font_struct( int numb,
     if ( fs )
         return fs;
 
-    /* Try to load the font */
+    /* Try to load the font. For that first obtain a name with the
+       point size field set appropriately, then set a UTF-8 locale,
+       otherwise nothing but the ASCII character will be available. */
+
+    strcpy( fli_curfnt, get_fname( flf->fname, size ) );
+
+#if defined X_HAVE_UTF8_STRING
+    old_locale = setlocale( LC_CTYPE, "" );
+    if ( ! old_locale || ! strcmp( old_locale, "C" ) )
+    {
+        locale_needs_reset = 1;
+        setlocale( LC_CTYPE, "C.UTF-8" );
+    }
+#endif
 
     fs = XLoadQueryFont( flx->display, fli_curfnt );
 
@@ -346,10 +398,10 @@ try_get_font_struct( int numb,
             XFreeFont( flx->display, fs );
             fs = NULL;
         }
-        else
-            fprintf( stderr, "%s is missing %d chars (%s)\n",
-                     fli_curfnt, missing_count, def_string );
     }
+
+    if ( locale_needs_reset )
+        setlocale( LC_CTYPE, old_locale );
 #endif
 
     /* If that didn't work try to find a replacement font, i.e. an already
@@ -488,10 +540,7 @@ fli_get_string_width( XFontStruct * fs,
                       int           len )
 {
 #if defined X_HAVE_UTF8_STRING
-    XRectangle o1, o2;
-
-    Xutf8TextExtents( get_font_set_from_struct( fs ), s, len, &o1, &o2 );
-    return o1.width;
+     return Xutf8TextEscapement( get_font_set_from_struct( fs ), s, len );
 #else
     return XTextWidth( fs, s, len );
 #endif
@@ -530,7 +579,7 @@ fli_get_string_widthTABfs( XFontStruct * fs,
     const char *p,
                *q;
 #if defined X_HAVE_UTF8_STRING
-    XRectangle o1, o2;
+    XFontSet fset;
 #endif
 
     if ( fli_no_connection )
@@ -538,12 +587,15 @@ fli_get_string_widthTABfs( XFontStruct * fs,
 
     tab = fli_get_tabpixels( fs );
 
+#if defined X_HAVE_UTF8_STRING
+    fset = get_font_set_from_struct( fs );
+#endif
+
     for ( w = 0, q = s; *q && ( p = strchr( q, '\t' ) ) && ( p - s ) < len;
           q = p + 1 )
     {
 #if defined X_HAVE_UTF8_STRING
-        Xutf8TextExtents( get_font_set_from_struct( fs ), q, p - q, &o1, &o2 );
-        w += o1.width;
+        w += Xutf8TextEscapement( fset, q, p - q );
 #else
         w += XTextWidth( fs, q, p - q );
 #endif
@@ -551,9 +603,7 @@ fli_get_string_widthTABfs( XFontStruct * fs,
     }
 
 #if defined X_HAVE_UTF8_STRING
-    Xutf8TextExtents( get_font_set_from_struct( fs ), q, len - ( q - s ),
-                      &o1, &o2 );
-    return w + o1.width;
+    return w + Xutf8TextEscapement( fset, q, len - ( q - s ) );
 #else
     return w += XTextWidth( fs, q, len - ( q - s ) );
 #endif
@@ -585,8 +635,8 @@ fl_get_string_widthTAB( int          style,
 int
 fl_get_string_height( int          style,
                       int          size,
-                      const char * s,
-                      int          len,
+                      const char * s      FL_UNUSED_ARG,
+                      int          len    FL_UNUSED_ARG,
                       int *        asc,
                       int *        desc )
 {
@@ -597,10 +647,9 @@ fl_get_string_height( int          style,
     else
     {
         XFontStruct *fs = fl_get_font_struct( style, size );
-        XCharStruct overall;
-        int dh;
 
-        XTextExtents( fs, s, len, &dh, &a, &d, &overall );
+        a = fs->ascent;
+        d = fs->descent;
     }
 
     if ( asc )
@@ -729,15 +778,10 @@ int
 fli_get_tabpixels( XFontStruct * fs )
 {
 #if defined X_HAVE_UTF8_STRING
-    int w;
-    XRectangle o1, o2;
     XFontSet fset = get_font_set_from_struct( fs );
 
-    Xutf8TextExtents( fset, *tabstop, *tabstopNchar,
-                      &o1, &o2 );
-    w = o1.width;
-    Xutf8TextExtents( fset, " ", 1, &o1, &o2 );
-    return w + o1.width;
+    return   Xutf8TextEscapement( fset, *tabstop, *tabstopNchar )
+           + Xutf8TextEscapement( fset, " ", 1 );
 #else
     return   XTextWidth( fs, *tabstop, *tabstopNchar )
            + XTextWidth( fs, " ", 1 );
@@ -788,10 +832,7 @@ fli_get_text_width( const char * str,
                     size_t       len )
 {
 #if defined X_HAVE_UTF8_STRING
-    XRectangle o1, o2;
-
-    Xutf8TextExtents( get_font_set_from_struct( flx->fs) , str, len, &o1, &o2 );
-    return o1.width;
+    return Xutf8TextEscapement( get_font_set_from_struct( flx->fs) , str, len );
 #else
     return XTextWidth( flx->fs, str, len );
 #endif
@@ -803,7 +844,7 @@ fli_get_text_width( const char * str,
 
 #if defined X_HAVE_UTF8_STRING
 static XFontSet
-get_font_set_from_struct( const XFontStruct *fs )
+get_font_set_from_struct( const XFontStruct * fs )
 {
     FL_FONT *flf = fl_fonts,
             *fe  = flf + FL_MAXFONTS;
@@ -814,6 +855,10 @@ get_font_set_from_struct( const XFontStruct *fs )
             for ( i = 0; i < flf->nsize; i++ )
                 if ( flf->fs[ i ] == fs )
                     return flf->font_set[ i ];
+
+
+    if ( fs == defaultfs )
+        return defaultfset;
 
     return NULL;
 }

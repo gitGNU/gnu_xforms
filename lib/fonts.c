@@ -25,12 +25,11 @@
 
 /* These default X11 bitmap fonts may not be the most beautiful X11 fonts
    available on the system but they are part of X11 distributions since at
-   least 20 years, so we can be rather sure that they're available everywhere.
+   least 20 years, so cahnces are relatively hight that they're available.
    (And, remember, these fonts must be available on the machine where the X
    server is running on, which is not necessarily the machine where the
    program using XForms is executed.) */
 
-#if ! defined X_HAVE_UTF8_STRING
 static const char * bitmap_fonts[ ] =
 {
     "-*-helvetica-medium-r-*-*-*-?-*-*-p-*-*-*",
@@ -55,32 +54,6 @@ static const char * bitmap_fonts[ ] =
 
     NULL
 };
-#else
-static const char * bitmap_fonts[ ] =
-{
-    "-*-helvetica-medium-r-*-*-*-?-*-*-p-*-iso10646-1",
-    "-*-helvetica-bold-r-*-*-*-?-*-*-p-*-iso10646-1",
-    "-*-helvetica-medium-o-*-*-*-?-*-*-p-*-iso10646-1",
-    "-*-helvetica-bold-o-*-*-*-?-*-*-p-*-iso10646-1",
-
-    "-*-courier-medium-r-*-*-*-?-*-*-*-*-iso10646-1",
-    "-*-courier-bold-r-*-*-*-?-*-*-*-*-iso10646-1",
-    "-*-courier-medium-o-*-*-*-?-*-*-*-*-iso10646-1",
-    "-*-courier-bold-o-*-*-*-?-*-*-*-*-iso10646-1",
-
-    "-*-times-medium-r-*-*-*-?-*-*-p-*-iso10646-1",
-    "-*-times-bold-r-*-*-*-?-*-*-p-*-iso10646-1",
-    "-*-times-medium-i-*-*-*-?-*-*-p-*-iso10646-1",
-    "-*-times-bold-i-*-*-*-?-*-*-p-*-iso10646-1",
-
-    "-*-charter-medium-r-*-*-*-?-*-*-*-*-iso10646-1",
-    "-*-charter-bold-r-*-*-*-?-*-*-*-*-iso10646-1",
-    "-*-charter-medium-i-*-*-*-?-*-*-*-*-iso10646-1",
-    "-*-charter-bold-i-*-*-*-?-*-*-*-*-iso10646-1",
-
-    NULL
-};
-#endif
 
 
 static const char * cv_fname( const char *f );

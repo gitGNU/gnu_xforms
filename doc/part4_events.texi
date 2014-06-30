@@ -268,7 +268,13 @@ redrawn or partially redrawn. Always do this using the routine
 The Forms Library has a mechanism of dealing with keyboard shortcuts.
 In this way the user can use the keyboard rather than the mouse for
 particular actions. Obviously, only "active" objects can have
-shortcuts (i.e., not objects like boxes, texts etc.).
+shortcuts (i.e., not objects like boxes, texts etc.). The maximum
+number of shortcut keys that can be assigned to an object is currently
+set to 8.
+
+Note that the library does not check if a shortcut has already been
+assigned to another object. If two objects end up having the same
+shortcut only the object created first will react to it.
 
 The mechanism works as follows. There is a routine
 @findex fl_set_object_shortcut()
@@ -301,6 +307,10 @@ for the @code{<F2>} function key. The four cursors keys (up, down,
 right, and left) can be given as @code{"&A"}, @code{"&B"}, @code{"&C"}
 and @code{"&D"}, respectively. The key @code{'&'} itself can be
 obtained as a shortcut by prefixing it with @code{'^'}.
+
+Note that only ASCII characters can be used for shortcurs, a string
+containing any non-ASCII UTF-8 characters will be rejected and the
+shortcuts of the object remain unmodified.
 
 The argument @code{showit} tells whether the shortcut letter in the
 object label should be underlined if a match exists. Although the
