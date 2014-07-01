@@ -94,7 +94,7 @@ fli_XLookupString( XKeyEvent * xkey,
     int len;
 
     if ( ! fli_context->xic )
-        len = XLookupString( xkey, buf, buflen - 1, ks, 0 );
+        len = XLookupString( xkey, buf, buflen - 1, ks, NULL );
     else
     {
         Status status;

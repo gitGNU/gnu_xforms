@@ -659,8 +659,6 @@ fl_get_font_struct( int style,
     qsort( f->sized_fonts, f->size_count, sizeof *f->sized_fonts,
            fli_font_size_compare );
 
-    fprintf( stderr, "Created new font %d %d\n", style, size );
-
 	return xf;
 }
 

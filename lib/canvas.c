@@ -47,25 +47,57 @@ static int
 handle_keyboard_special( FL_OBJECT * ob,
                          XEvent    * xev )
 {
-    unsigned char keybuf[ 127 ],
-                  *ch;
+    static char *buf = NULL;
+    static int buflen = 5;
     KeySym keysym;
-    int kbuflen;
+    int len;
     int ret = 0;
+    Status status;
+#if ! defined X_HAVE_UTF8_STRING
+    char *p;
+#endif
 
-    kbuflen = XLookupString( ( XKeyEvent * ) xev, ( char * ) keybuf,
-                             sizeof keybuf, &keysym, 0 );
+    if ( ! buf )
+        buf = fl_malloc( buflen );
+
+    if ( ! fli_context->xic )
+        len = XLookupString( ( XKeyEvent * ) xev, buf, buflen - 1, &keysym,
+                                 NULL );
+    else
+        while ( 1 )
+        {
+#if defined X_HAVE_UTF8_STRING
+            len = Xutf8LookupString( fli_context->xic, ( XKeyEvent * ) xev,
+                                     buf, buflen - 1, &keysym, &status );
+#else
+            len = XmbLookupString( fli_context->xic, ( XKeyEvent * ) xev,
+                                   buf, buflen - 1, &keysym, &status );
+#endif
+
+            if ( status == XBufferOverflow )
+                buf = fl_realloc( buf, buflen = len + 1 );
+            else
+                break;
+        }
+
+    buf[ len ] = '\0';
 
     if ( IsModifierKey( keysym ) )
         /* empty */ ;
-    else if ( kbuflen == 0 && keysym != None )
+    else if ( len == 0 && keysym != None )
         ret = fli_do_shortcut( ob->form, keysym,
                                xev->xkey.x, xev->xkey.y, xev );
-    else
-        for ( ch = keybuf; ch < keybuf + kbuflen && ob->form; ch++ )
-            ret = fli_do_shortcut( ob->form, *ch,
+    else if ( ob->form )
+    {
+#if defined X_HAVE_UTF8_STRING
+        ret = fli_do_shortcut( ob->form, utf8_to_num( buf ),
+                               xev->xkey.x, xev->xkey.y, xev ) || ret;
+#else
+        for ( p = buf; *p; p++ )
+            ret = fli_do_shortcut( ob->form, *p,
                                    xev->xkey.x, xev->xkey.y, xev ) || ret;
-
+#endif
+    }
 
     return ret;
 }

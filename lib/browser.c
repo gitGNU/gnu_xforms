@@ -707,9 +707,9 @@ fl_get_browser_vscroll_callback( FL_OBJECT * ob )
  ***************************************/
 
 void
-fli_adjust_browser_scrollbar( FL_OBJECT * ob )
+fli_adjust_browser_scrollbar( FL_OBJECT * obj )
 {
-      FLI_BROWSER_SPEC *comp = ob->spec;
+      FLI_BROWSER_SPEC *comp = obj->spec;
 
       fl_call_object_callback( comp->hsl );
       fl_call_object_callback( comp->vsl );
@@ -721,18 +721,18 @@ fli_adjust_browser_scrollbar( FL_OBJECT * ob )
  ***************************************/
 
 void
-fl_clear_browser( FL_OBJECT * ob )
+fl_clear_browser( FL_OBJECT * obj )
 {
-    FLI_BROWSER_SPEC *comp = ob->spec;
+    FLI_BROWSER_SPEC *sp = obj->spec;
 
-    fl_freeze_form( ob->form );
-    fli_tbox_clear( comp->tb );
-    fl_set_scrollbar_value( comp->hsl, 0.0 );
-    fl_set_scrollbar_size( comp->hsl, 1.0 );
-    fl_set_scrollbar_value( comp->vsl, 0.0 );
-    fl_set_scrollbar_size( comp->vsl, 1.0 );
-    redraw_scrollbar( ob );
-    fl_unfreeze_form( ob->form );
+    fl_freeze_form( obj->form );
+    fli_tbox_clear( sp->tb );
+    fl_set_scrollbar_value( sp->hsl, 0.0 );
+    fl_set_scrollbar_size( sp->hsl, 1.0 );
+    fl_set_scrollbar_value( sp->vsl, 0.0 );
+    fl_set_scrollbar_size( sp->vsl, 1.0 );
+    redraw_scrollbar( obj );
+    fl_unfreeze_form( obj->form );
 }
 
 

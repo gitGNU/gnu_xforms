@@ -564,10 +564,6 @@ handle_chart( FL_OBJECT * ob,
               FL_Char     key  FL_UNUSED_ARG,
               void      * ev   FL_UNUSED_ARG )
 {
-#if FL_DEBUG >= ML_DEBUG
-    M_info( "handle_chart", fli_event_name( event ) );
-#endif
-
     switch ( event )
     {
         case FL_DRAW:

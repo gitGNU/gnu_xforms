@@ -274,9 +274,7 @@ AC_CONFIG_FILES([Makefile \
 	             doc/xforms_images/Makefile])
 
 if test x$enable_xft == xyes; then
-	AC_CONFIG_FILES([fonts/Makefile \
-			         fonts/DejaVu/Makefile \
-		             fonts/FPL_Neu/Makefile])
+	AC_CONFIG_FILES([fonts/Makefile])
 fi
 
 AC_OUTPUT
