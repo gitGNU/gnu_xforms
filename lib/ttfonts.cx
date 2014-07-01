@@ -103,8 +103,14 @@ static int
 cmp_fnt_index( const void * arg1,
                const void * arg2 )
 {
-    return ( ( const FL_FONT * ) arg1 )->index ==
-                                          ( ( const FL_FONT * ) arg2 )->index;
+    size_t index1 = ( ( const FL_FONT * ) arg1 )->index;
+    size_t index2 = ( ( const FL_FONT * ) arg2 )->index;
+
+    if ( index1 < index2 )
+        return -1;
+    else if ( index1 == index2 )
+        return 0;
+    return 1;
 }
 
 
