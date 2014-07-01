@@ -96,25 +96,6 @@ fli_init_fonts( void )
 
 
 /***************************************
- * Helper function for searching for a font with a certain index
- ***************************************/
-
-static int
-cmp_fnt_index( const void * arg1,
-               const void * arg2 )
-{
-    size_t index1 = ( ( const FL_FONT * ) arg1 )->index;
-    size_t index2 = ( ( const FL_FONT * ) arg2 )->index;
-
-    if ( index1 < index2 )
-        return -1;
-    else if ( index1 == index2 )
-        return 0;
-    return 1;
-}
-
-
-/***************************************
  * Function returns a pointer to the entry in the font list for
  * the given index (most often the style), or NULL on failure
  ***************************************/
@@ -122,8 +103,6 @@ cmp_fnt_index( const void * arg1,
 FL_FONT *
 fl_get_font_from_index( size_t index )
 {
-    FL_FONT key;
-
     /* Remove the extra flags for shadow, engrave or emboss */
 
     index %= FL_SHADOW_STYLE;
@@ -142,13 +121,10 @@ fl_get_font_from_index( size_t index )
     if ( font_count == NUM_DEFAULT_FONTS )
         return NULL;
 
-    /* Fonts are sorted by ascending order of index, so use a binary
-       search */
+    /* Check for the font in whatever else has been loaded */
 
-    key.index = index;
-    return bsearch( &key, fl_fonts + NUM_DEFAULT_FONTS,
-                    font_count - NUM_DEFAULT_FONTS, sizeof key,
-                    cmp_fnt_index );
+    return fli_find_font_by_index( fl_fonts + NUM_DEFAULT_FONTS,
+                                   font_count - NUM_DEFAULT_FONTS, index );
 }
 
 
@@ -357,7 +333,8 @@ fl_set_font_name( int          index,
 		f->size_count  = 0;
 		f->scale       = 1.0;
 
-        /* Sort the user defined fonts by index to make them easier to find */
+        /* Sort the user defined fonts by index to allow faster retrieval
+           by using bsearch() */
 
 		qsort( fl_fonts + NUM_DEFAULT_FONTS, font_count - NUM_DEFAULT_FONTS,
                sizeof *fl_fonts, fli_font_index_compare );
@@ -541,7 +518,8 @@ int
 fl_unload_sized_font( int index,
                       int size )
 {
-    size_t i, j;
+    FL_FONT * f;
+    FL_SIZED_FONT * sf;
 
     /* Don't allow removal of one of the default font */
 
@@ -551,36 +529,30 @@ fl_unload_sized_font( int index,
 
     /* Try to find the font with the requested index */
 
-    for ( i = NUM_DEFAULT_FONTS; i < font_count; i++ )
-        if ( fl_fonts[ i ].index == ( size_t ) index )
-            break;
+    f = fl_get_font_from_index( index );
 
-    /* Bail out if not found */
+    /* Bail out if font was not found or it has no sized fonts */
 
-    if ( i == font_count )
+    if ( ! f || f->size_count == 0 )
         return -1;
 
-    /* Now look for the requested size */
+    /* Now look for the sized font with the requested size, give up if
+       not found */
 
-    for ( j = 0; j < fl_fonts[ i ].size_count; j++ )
-        if ( fl_fonts[ i ].sized_fonts[ j ].size == size )
-            break;
-
-    /* Give up if not found */
-
-    if ( j == fl_fonts[ i ].size_count )
+    if (    ! f->size_count
+         || ! ( sf = fli_search_sized_fonts( f->sized_fonts,
+                                             f->size_count, size ) ) )
         return -1;
 
-    if ( flx->fs == fl_fonts[ i ].sized_fonts[ j ].font )
+    if ( flx->fs == sf->font )
         fl_state[ fl_vmode ].cur_fnt = flx->fs = NULL;
         
-    XftFontClose( fl_display, fl_fonts[ i ].sized_fonts[ j ].font );
+    XftFontClose( fl_display, sf->font );
 
     /* Remove the entry for the now unused entry in the list of sized fonts */
 
-    fli_remove_and_resize( fl_fonts[ i ].sized_fonts,
-                           sizeof *fl_fonts[ i ].sized_fonts,
-                           &fl_fonts[ i ].size_count, j, 1 );
+    fli_remove_and_resize( f->sized_fonts, sizeof *f->sized_fonts,
+                           &f->size_count, sf - f->sized_fonts, 1 );
 
     return 0;
 }        
@@ -614,8 +586,8 @@ fl_get_font_struct( int style,
 					int size )
 {
 	FL_FONT *f;
-	size_t i;
-	size_t cnt;
+    FL_SIZED_FONT *sf;
+    XftFont * xf;
 
 	/* Style must be non-negative and in the list of indices */
 
@@ -639,16 +611,15 @@ fl_get_font_struct( int style,
  
 	/* If font is already loaded return it directly */
 
-	for ( i = 0; i < f->size_count; i++ )
-		if ( f->sized_fonts[ i ].size == size )
-			return f->sized_fonts[ i ].font;
+    if (    f->size_count
+         && ( sf = fli_search_sized_fonts( f->sized_fonts,
+                                           f->size_count, size ) ) )
+        return sf->font;
 
-	cnt = f->size_count;
-
-	/* Increase the length of the list for loaded fonts */
+	/* Increase the length of the list for sized fonts */
 
 	f->sized_fonts = realloc( f->sized_fonts,
-							  ( cnt + 1 ) * sizeof *f->sized_fonts );
+							  ( f->size_count + 1 ) * sizeof *f->sized_fonts );
 
 	/* This is a normal Xft font if its slant (and weight) are non-negative,
 	   so load it with XftFontOpen(). Otherwise it's an X11 font and we need
@@ -656,7 +627,7 @@ fl_get_font_struct( int style,
 	   (which can fail!) */
 
 	if ( f->slant != -1 && f->weight != -1 )
-		f->sized_fonts[ cnt ].font =
+		xf = f->sized_fonts[ f->size_count ].font =
 			XftFontOpen( fl_display, fl_screen,
 						 XFT_FAMILY, XftTypeString, f->name,
 						 XFT_SIZE,   XftTypeDouble,
@@ -668,22 +639,29 @@ fl_get_font_struct( int style,
 	{
 		char * name = fli_get_fname( f, size );
 
-		f->sized_fonts[ cnt ].font = XftFontOpenXlfd( fl_display, fl_screen,
-													  name );
+		xf = f->sized_fonts[ f->size_count ].font =
+                               XftFontOpenXlfd( fl_display, fl_screen, name );
 
 		fl_free( name );
 
-		if ( ! f->sized_fonts[ cnt ].font )
+		if ( ! xf )
 		{
 			f->sized_fonts = realloc( f->sized_fonts,
-									  cnt * sizeof *f->sized_fonts );
+									  f->size_count * sizeof *f->sized_fonts );
 			return NULL;
 		}
 	}
 
-	f->sized_fonts[ cnt ].size = size;
+	f->sized_fonts[ f->size_count++ ].size = size;
 
-	return f->sized_fonts[ f->size_count++ ].font;
+    /* Sort the fonts by size to allow faster retrieval using bsearch() */
+
+    qsort( f->sized_fonts, f->size_count, sizeof *f->sized_fonts,
+           fli_font_size_compare );
+
+    fprintf( stderr, "Created new font %d %d\n", style, size );
+
+	return xf;
 }
 
 

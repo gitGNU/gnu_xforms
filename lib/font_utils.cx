@@ -27,7 +27,7 @@
 
 
 /***************************************
- * Function called (by qsort) in sorting the list of fonts by index
+ * Function called (by qsort) when sorting the list of fonts by index
  ***************************************/
 
 int
@@ -36,6 +36,83 @@ fli_font_index_compare( const void * arg1,
 {
 	return ( ( FL_FONT * ) arg1 )->index < ( ( FL_FONT * ) arg2 )->index ?
 		   -1 : 1;
+}
+
+
+/***************************************
+ * Function cakled by bsearch() for comparing fonts by index
+ ***************************************/
+
+static int
+fli_cmp_fnt_index( const void * arg1,
+				   const void * arg2 )
+{
+    size_t index1 = ( ( const FL_FONT * ) arg1 )->index;
+    size_t index2 = ( ( const FL_FONT * ) arg2 )->index;
+
+	return index1 < index2 ? -1 : ( index1 == index2 ? 0 : 1 );
+}
+
+
+/***************************************
+ * Helper function for searching for a font with a certain index
+ ***************************************/
+
+FL_FONT *
+fli_find_font_by_index( FL_FONT * base,
+						size_t    cnt,
+						size_t    index )
+{
+    FL_FONT key;
+
+	key.index = index;
+    return bsearch( &key, base, cnt, sizeof key, fli_cmp_fnt_index );
+}
+
+
+/***************************************
+ * Function called (by qsort) when sorting a list of sized fonts by size
+ ***************************************/
+
+int
+fli_font_size_compare( const void * arg1,
+					   const void * arg2 )
+{
+	return ( ( FL_SIZED_FONT * ) arg1 )->size <
+		                                 ( ( FL_SIZED_FONT * ) arg2 )->size ?
+		   -1 : 1;
+}
+
+
+/***************************************
+ * Function called by bsearch() when searching for a sized font of 
+ * a certain size
+ ***************************************/
+
+static int
+fli_cmp_fnt_size( const void * arg1,
+				  const void * arg2 )
+{
+    size_t size1 = ( ( const FL_SIZED_FONT * ) arg1 )->size;
+    size_t size2 = ( ( const FL_SIZED_FONT * ) arg2 )->size;
+
+	return size1 < size2 ? -1 : ( size1 == size2 ? 0 : 1 );
+}
+
+
+/***************************************
+ * Helper function for searching for a sized font with a certain size
+ ***************************************/
+
+FL_SIZED_FONT *
+fli_search_sized_fonts( FL_SIZED_FONT * base,
+						size_t          cnt,
+						int             size )
+{
+	FL_SIZED_FONT key;
+
+    key.size = size;
+    return bsearch( &key, base, cnt, sizeof key, fli_cmp_fnt_size );
 }
 
 

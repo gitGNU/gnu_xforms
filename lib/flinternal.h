@@ -1120,6 +1120,18 @@ int fli_is_valid_dir( const char * name );
 int fli_font_index_compare( const void * arg1,
                             const void * arg2 );
 
+FL_FONT * fli_find_font_by_index( FL_FONT * base,
+                                  size_t    cnt,
+                                  size_t    index );
+
+int fli_font_size_compare( const void * arg1,
+                           const void * arg2 );
+
+FL_SIZED_FONT *
+fli_search_sized_fonts( FL_SIZED_FONT * base,
+						size_t          cnt,
+						int             size );
+
 char * fli_convert_to_full_xlfd( const char * pattern );
 
 char * fli_get_fname( const FL_FONT * font,
