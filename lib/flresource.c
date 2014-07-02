@@ -39,6 +39,7 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <locale.h>
+#include <X11/Xatom.h>
 
 #ifdef FL_WIN32
 #include <X11/Xw32defs.h>
@@ -894,6 +895,7 @@ fli_set_input_navigate( unsigned int mask )
 }
 
 
+#ifdef XlibSpecificationRelease
 
 /***************************************
  * This function chooses the "more desirable" of two input styles.  The
@@ -906,7 +908,6 @@ fli_set_input_navigate( unsigned int mask )
  * "Stolen" from the XLib manual.
  ***************************************/
 
-#ifdef XlibSpecificationRelease
 static XIMStyle
 ChooseBetterStyle( XIMStyle style1,
                    XIMStyle style2 )
@@ -957,6 +958,92 @@ ChooseBetterStyle( XIMStyle style1,
             return s == XIMStatusNothing ? style1 : style2;
     }
 }
+
+
+/***************************************
+ * Function to set up an IM ("input method") and an IC ("input context")
+ * to be used all over the library
+ ***************************************/
+
+static void
+setup_im_and_ic( void )
+{
+    XIMStyle best_style;
+    XIMStyles * im_supported_styles;
+    XIMStyle app_supported_styles;
+    int i;
+
+    if (    ! setlocale( LC_ALL, "" )
+         || !  XSupportsLocale( )
+         || ! XSetLocaleModifiers( "" ) )
+        return;
+
+    /* Use the same input method throughout xforms */
+
+    fli_context->xim = XOpenIM( fl_display, NULL, NULL, NULL );
+
+    if ( ! fli_context->xim )
+    {
+        M_err( "fl_initialize", "Could not create an input method" );
+        return;
+    }
+
+    /* And also the same input context. Start with figuring out which
+       styles the IM can support */
+            
+    XGetIMValues( fli_context->xim, XNQueryInputStyle,
+                  &im_supported_styles, NULL );
+
+    /* Set flags for the styles the library can support */
+            
+    app_supported_styles =   XIMPreeditNone
+                           | XIMPreeditNothing
+                           | XIMPreeditArea
+                           | XIMStatusNone
+                           | XIMStatusNothing
+                           | XIMStatusArea;
+
+    /* Now look at each of the IM supported styles, and chose the
+     * "best" one that we can support. */
+
+    best_style = 0;
+    for ( i = 0; i < im_supported_styles->count_styles; i++ )
+    {
+        XIMStyle style = im_supported_styles->supported_styles[ i ];
+
+        if ( ( style & app_supported_styles ) == style )
+            best_style = ChooseBetterStyle( style, best_style );
+    }
+
+    XFree( im_supported_styles );
+
+    /* If we couldn't support any of them print an error message */
+
+    if ( best_style == 0 )
+    {
+        M_err( "fl_intialize", "Can't find a fitting IC style" );
+        XCloseIM( fli_context->xim );
+        fli_context->xim = NULL;
+        return;
+    }
+
+    /* Try to create the input context */
+
+    fli_context->xic_win = None;
+    fli_context->xic = XCreateIC( fli_context->xim,
+                                  XNInputStyle, best_style,
+                                  XNClientWindow, fl_root,
+                                  ( char * ) NULL );
+
+    if ( ! fli_context->xic )
+    {
+        M_err( "fl_initialize",
+               "Could not create an input context" );
+        XCloseIM( fli_context->xim );
+        fli_context->xim = NULL;
+    }
+}
+
 #endif
 
 
@@ -1021,7 +1108,7 @@ fl_initialize( int        * na,
 
     XrmParseCommand( &cmddb, copt, Ncopt, fl_app_name, na, arg );
 
-    /* if there are still more left and  appopt is not zero */
+    /* If there are still more left and appopt is not zero */
 
     if ( appopt && na && *na )
         XrmParseCommand( &cmddb, appopt, nappopt,
@@ -1052,8 +1139,8 @@ fl_initialize( int        * na,
 
     if ( ! ( fl_display = XOpenDisplay( buf ) ) )
     {
-        /* if no display is set, there is no guarantee that buf
-           is long enough to contain the DISPLAY setting */
+        /* if no display is set there is no guarantee that 'buf' is long
+           enough to contain the DISPLAY setting */
 
         M_err( "fl_initialize", "%s: Can't open display %s", fli_argv[ 0 ],
                XDisplayName( buf[ 0 ] ? buf : 0 ) );
@@ -1216,80 +1303,9 @@ fl_initialize( int        * na,
     fli_init_context( );
 
 #ifdef XlibSpecificationRelease
-    if (    setlocale( LC_ALL, "" )
-         && XSupportsLocale( )
-         && XSetLocaleModifiers( "" ) )
-    {
-        /* Use the same input method throughout xforms */
+    /* Create input method and input context */
 
-        fli_context->xim = XOpenIM( fl_display, NULL, NULL, NULL );
-
-        /* Also use the same input context */
-
-        if ( fli_context->xim )
-        {
-            XIMStyle best_style;
-            XIMStyles * im_supported_styles;
-            XIMStyle app_supported_styles;
-            int i;
-
-            /* Figure out which styles the IM can support */
-            
-            XGetIMValues( fli_context->xim, XNQueryInputStyle,
-                          &im_supported_styles, NULL );
-
-            /* Set flags for the styles the library can support */
-            
-            app_supported_styles =   XIMPreeditNone
-                                   | XIMPreeditNothing
-                                   | XIMPreeditArea
-                                   | XIMStatusNone
-                                   | XIMStatusNothing
-                                   | XIMStatusArea;
-
-            /* Now look at each of the IM supported styles, and chose the
-             * "best" one that we can support. */
-
-            best_style = 0;
-            for ( i = 0; i < im_supported_styles->count_styles; i++ )
-            {
-                XIMStyle style = im_supported_styles->supported_styles[ i ];
-
-                if ( ( style & app_supported_styles ) == style )
-                    best_style = ChooseBetterStyle( style, best_style );
-            }
-
-            XFree( im_supported_styles );
-
-            /* If we couldn't support any of them, print an error message */
-
-            if ( best_style == 0 )
-            {
-                M_err( "fl_intialize", "Can't find a fitting IC style" );
-                XCloseIM( fli_context->xim );
-                fli_context->xim = NULL;
-            }
-            else
-            {
-                fli_context->xic = XCreateIC( fli_context->xim,
-                                              XNInputStyle, best_style,
-                                              XNClientWindow, fl_root,
-                                              ( char * ) NULL );
-
-                if ( ! fli_context->xic )
-                {
-                    M_err( "fl_initialize",
-                           "Could not create an input context" );
-                    XCloseIM( fli_context->xim );
-                    fli_context->xim = NULL;
-                }
-            }
-
-            fli_context->xic_win = None;
-        }
-        else
-            M_err( "fl_initialize", "Could not create an input method" );
-    }
+    setup_im_and_ic( );
 #endif
 
     fli_default_xswa( );
@@ -1449,7 +1465,7 @@ fl_finish( void )
     /* Get rid of memory for input methods */
 
 #ifdef XlibSpecificationRelease
-    if ( fli_context && XSupportsLocale( ) && fli_context->xim )
+    if ( fli_context && fli_context->xim )
     {
         if ( fli_context->xic )
             XDestroyIC( fli_context->xic );
@@ -1475,8 +1491,6 @@ fl_finish( void )
 /***************************************
  * Find out about virtual root. Taken from XFaq
  ***************************************/
-
-#include <X11/Xatom.h>
 
 static int
 xerror_handler( Display     * d  FL_UNUSED_ARG,
