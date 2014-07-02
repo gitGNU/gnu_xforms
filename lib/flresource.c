@@ -38,10 +38,7 @@
 #include <X11/Xresource.h>
 #include <ctype.h>
 #include <sys/types.h>
-
-#if 0
 #include <locale.h>
-#endif
 
 #ifdef FL_WIN32
 #include <X11/Xw32defs.h>
@@ -897,6 +894,72 @@ fli_set_input_navigate( unsigned int mask )
 }
 
 
+
+/***************************************
+ * This function chooses the "more desirable" of two input styles.  The
+ * style with the more complicated Preedit style is returned, and if the
+ * styles have the same Preedit styles, then the style with the more
+ * complicated Status style is returned.  There is no "official" way to
+ * order interaction styles; this one seems reasonable, though.
+ * This is a long procedure for a simple heuristic.
+ *
+ * "Stolen" from the XLib manual.
+ ***************************************/
+
+#ifdef XlibSpecificationRelease
+static XIMStyle
+ChooseBetterStyle( XIMStyle style1,
+                   XIMStyle style2 )
+{
+    XIMStyle s, t;
+    XIMStyle preedit =   XIMPreeditArea | XIMPreeditCallbacks
+                       | XIMPreeditPosition | XIMPreeditNothing
+                       | XIMPreeditNone;
+    XIMStyle status  =   XIMStatusArea | XIMStatusCallbacks
+                       | XIMStatusNothing | XIMStatusNone;
+
+    if ( style1 == 0 )
+        return style2;
+
+    if ( style2 == 0 )
+        return style1;
+
+    if ( ( style1 & ( preedit | status ) ) ==
+                                        ( style2 & ( preedit | status ) ) )
+        return style1;
+
+    s = style1 & preedit;
+    t = style2 & preedit;
+
+    if ( s != t )
+    {
+        if ( s | t | XIMPreeditCallbacks )
+            return s == XIMPreeditCallbacks ? style1 : style2;
+        else if ( s | t | XIMPreeditPosition )
+            return s == XIMPreeditPosition ? style1 : style2;
+        else if ( s | t | XIMPreeditArea )
+            return (s == XIMPreeditArea)?style1:style2;
+        else if (s | t | XIMPreeditNothing)
+            return s == XIMPreeditNothing ? style1 : style2;
+    }
+    else
+    {
+        /* if preedit flags are the same, compare status flags */
+
+        s = style1 & status;
+        t = style2 & status;
+
+        if ( s | t | XIMStatusCallbacks )
+            return s == XIMStatusCallbacks ? style1 : style2;
+        else if ( s | t | XIMStatusArea )
+            return s == XIMStatusArea ? style1 : style2;
+        else if ( s | t | XIMStatusNothing )
+            return s == XIMStatusNothing ? style1 : style2;
+    }
+}
+#endif
+
+
 /***************************************
  ***************************************/
 
@@ -1153,10 +1216,10 @@ fl_initialize( int        * na,
     fli_init_context( );
 
 #ifdef XlibSpecificationRelease
-    if ( XSupportsLocale( ) )
+    if (    setlocale( LC_ALL, "" )
+         && XSupportsLocale( )
+         && XSetLocaleModifiers( "" ) )
     {
-        XSetLocaleModifiers( "" );
-
         /* Use the same input method throughout xforms */
 
         fli_context->xim = XOpenIM( fl_display, NULL, NULL, NULL );
@@ -1165,19 +1228,64 @@ fl_initialize( int        * na,
 
         if ( fli_context->xim )
         {
-            int style =  XIMPreeditNothing | XIMStatusNothing;
+            XIMStyle best_style;
+            XIMStyles * im_supported_styles;
+            XIMStyle app_supported_styles;
+            int i;
 
-            fli_context->xic = XCreateIC( fli_context->xim,
-                                          XNInputStyle, style,
-                                          ( char * ) NULL );
+            /* Figure out which styles the IM can support */
+            
+            XGetIMValues( fli_context->xim, XNQueryInputStyle,
+                          &im_supported_styles, NULL );
 
-        /* Clean-up on failure */
+            /* Set flags for the styles the library can support */
+            
+            app_supported_styles =   XIMPreeditNone
+                                   | XIMPreeditNothing
+                                   | XIMPreeditArea
+                                   | XIMStatusNone
+                                   | XIMStatusNothing
+                                   | XIMStatusArea;
 
-            if ( ! fli_context->xic )
+            /* Now look at each of the IM supported styles, and chose the
+             * "best" one that we can support. */
+
+            best_style = 0;
+            for ( i = 0; i < im_supported_styles->count_styles; i++ )
             {
-                M_err( "fl_initialize", "Could not create an input context" );
-                XCloseIM( fli_context->xim );
+                XIMStyle style = im_supported_styles->supported_styles[ i ];
+
+                if ( ( style & app_supported_styles ) == style )
+                    best_style = ChooseBetterStyle( style, best_style );
             }
+
+            XFree( im_supported_styles );
+
+            /* If we couldn't support any of them, print an error message */
+
+            if ( best_style == 0 )
+            {
+                M_err( "fl_intialize", "Can't find a fitting IC style" );
+                XCloseIM( fli_context->xim );
+                fli_context->xim = NULL;
+            }
+            else
+            {
+                fli_context->xic = XCreateIC( fli_context->xim,
+                                              XNInputStyle, best_style,
+                                              XNClientWindow, fl_root,
+                                              ( char * ) NULL );
+
+                if ( ! fli_context->xic )
+                {
+                    M_err( "fl_initialize",
+                           "Could not create an input context" );
+                    XCloseIM( fli_context->xim );
+                    fli_context->xim = NULL;
+                }
+            }
+
+            fli_context->xic_win = None;
         }
         else
             M_err( "fl_initialize", "Could not create an input method" );

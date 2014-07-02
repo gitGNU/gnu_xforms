@@ -1522,7 +1522,6 @@ handle_input( FL_OBJECT * obj,
             if ( ev )
                 ret =   ( sp->changed ? FL_RETURN_CHANGED : FL_RETURN_NONE )
                       | FL_RETURN_END;
-
             break;
 
         case FL_UPDATE:

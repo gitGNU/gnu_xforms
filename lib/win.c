@@ -83,6 +83,7 @@ fli_default_xswa( void )
                          | PointerMotionMask
                          | PointerMotionHintMask
 /*
+                         | FocusChangeMask
                          | VisibilityChangeMask
                          | PropertyChangeMask
 */
@@ -94,8 +95,8 @@ fli_default_xswa( void )
     {
         long int fevents;
 
-        if ( ! XGetICValues( fli_context->xic, XNFilterEvents,
-                             &fevents, NULL ) )
+        if ( ! XGetICValues( fli_context->xic, XNFilterEvents, &fevents,
+                             ( char * ) NULL ) )
             st_xswa.event_mask |= fevents;
     }
 

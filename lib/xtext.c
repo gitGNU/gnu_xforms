@@ -903,28 +903,32 @@ fli_draw_text_inside( int          align,
     /* Take care of special effects stuff  */
 
     if ( special == FL_SHADOW_STYLE )
-#if FL_ENABLE_XFT
-        D( x + 2, y + 2, FL_RIGHT_BCOL );
-#else
-        D( x + 2, y + 2, FL_BOTTOM_BCOL );
-#endif
+    {
+        int e = size / 18 + 2;
+
+        D( x + e, y + e, FL_RIGHT_BCOL );
+    }
     else if ( special == FL_ENGRAVED_STYLE )
     {
-        D( x - 1, y,     FL_RIGHT_BCOL );
-        D( x,     y - 1, FL_RIGHT_BCOL );
-        D( x - 1, y - 1, FL_RIGHT_BCOL );
-        D( x + 1, y,     FL_TOP_BCOL );
-        D( x,     y + 1, FL_TOP_BCOL );
-        D( x + 1, y + 1, FL_TOP_BCOL );
+        int e = size / 36 + 1;
+
+        D( x - e, y,     FL_RIGHT_BCOL );
+        D( x,     y - e, FL_RIGHT_BCOL );
+        D( x - e, y - e, FL_RIGHT_BCOL );
+        D( x + e, y,     FL_TOP_BCOL );
+        D( x,     y + e, FL_TOP_BCOL );
+        D( x + e, y + e, FL_TOP_BCOL );
     }
     else if ( special == FL_EMBOSSED_STYLE )
     {
-        D( x - 1, y,     FL_TOP_BCOL );
-        D( x,     y - 1, FL_TOP_BCOL );
-        D( x - 1, y - 1, FL_TOP_BCOL );
-        D( x + 1, y,     FL_RIGHT_BCOL );
-        D( x,     y + 1, FL_RIGHT_BCOL );
-        D( x + 1, y + 1, FL_RIGHT_BCOL );
+        int e = size / 36 + 1;
+
+        D( x - e, y,     FL_TOP_BCOL );
+        D( x,     y - e, FL_TOP_BCOL );
+        D( x - e, y - e, FL_TOP_BCOL );
+        D( x + e, y,     FL_RIGHT_BCOL );
+        D( x,     y + e, FL_RIGHT_BCOL );
+        D( x + e, y + e, FL_RIGHT_BCOL );
     }
 
     fli_draw_text_cursor( align, x, y, w, h, str, style, size,
@@ -1136,7 +1140,10 @@ do_underline_all( FL_Coord        x,
     int ul_width;
 
     if ( flx->win == None )
+    {
+        *ul_pos = *ul_thickness = 0;
         return;
+    }
 
     if ( UL_thickness < 0 )
 #if FL_ENABLE_XFT

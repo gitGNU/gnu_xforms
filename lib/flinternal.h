@@ -568,6 +568,7 @@ typedef struct fli_context_ {
     void               * xim;
     void               * xic;
 #endif
+    Window               xic_win;
     unsigned int         navigate_mask;     /* input field            */
     long                 reserverd[ 6 ];
 } FLI_CONTEXT;

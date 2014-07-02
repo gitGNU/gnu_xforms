@@ -86,7 +86,7 @@ fl_input_end_return_handling( int type )
  ***************************************/
 
 static int
-fli_XLookupString( XKeyEvent * xkey,
+fli_XLookupString( XKeyEvent * xkev,
                    char      * buf,
                    int         buflen,
                    KeySym    * ks )
@@ -94,16 +94,16 @@ fli_XLookupString( XKeyEvent * xkey,
     int len;
 
     if ( ! fli_context->xic )
-        len = XLookupString( xkey, buf, buflen - 1, ks, NULL );
+        len = XLookupString( xkev, buf, buflen - 1, ks, NULL );
     else
     {
         Status status;
 
 #if defined X_HAVE_UTF8_STRING
-        len = Xutf8LookupString( fli_context->xic, xkey, buf, buflen - 1, ks,
+        len = Xutf8LookupString( fli_context->xic, xkev, buf, buflen - 1, ks,
                                  &status );
 #else
-        len = XmbLookupString( fli_context->xic, xkey, buf, buflen - 1, ks,
+        len = XmbLookupString( fli_context->xic, xkev, buf, buflen - 1, ks,
                                &status );
 #endif
 
@@ -312,7 +312,7 @@ handle_keyboard( FL_FORM  * form,
     FL_OBJECT *obj,
               *special;
 
-    /* Always check shortcut first */
+    /* Always check for shortcuts first */
 
     if ( fli_do_shortcut( form, key, x, y, xev ) )
         return;
@@ -367,13 +367,12 @@ handle_keyboard( FL_FORM  * form,
         /* The <Tab> and <Return> keys move the focus to the next or previous
            input object (depending on <SHIFT> being pressed also, and for
            <Return> only if the current focus object hasn't set FL_KEY_TAB as
-           it's the case for  multiline input objects) */
+           it's the case for multiline input objects). Don't do anything
+           if the form has only a single object that can have the focus. */
 
         if (    key == '\t'
              || ( key == '\r' && ! ( focusobj->wantkey & FL_KEY_TAB ) ) )
         {
-            fli_handle_object( focusobj, FL_UNFOCUS, x, y, 0, xev, 1 );
-
             if ( ( ( XKeyEvent * ) xev )->state & fli_context->navigate_mask )
             {
                 if ( ! ( obj = fli_find_object_backwards( focusobj->prev,
@@ -388,15 +387,19 @@ handle_keyboard( FL_FORM  * form,
                         
                     obj = fli_find_first( form, FLI_FIND_INPUT, 0, 0 );
             }
-                
-            fli_handle_object( obj, FL_FOCUS, x, y, 0, xev, 1 );
+
+            if ( focusobj != obj )
+            {
+                fli_handle_object( focusobj, FL_UNFOCUS, x, y, 0, xev, 1 );
+                fli_handle_object( obj, FL_FOCUS, x, y, 0, xev, 1 );
+            }
         }
         else if ( focusobj->wantkey != FL_KEY_SPECIAL )
             fli_handle_object( focusobj, FL_KEYPRESS, x, y, key, xev, 1 );
         return;
     }
 
-    /* Keyboard input is not wanted */
+    /* Bail out if keyboard input is not wanted */
 
     if ( ! special || special->wantkey == 0 )
         return;
@@ -684,6 +687,7 @@ do_interaction_step( int wait_io )
         fli_xevent_name( "MainLoop", &st_xev );
 #endif
 
+
     fli_compress_event( &st_xev, evform->compress_mask );
 
     fli_int.query_age++;
@@ -706,15 +710,14 @@ do_interaction_step( int wait_io )
             if ( evform->focusobj )
                 fli_int.keyform = evform;
 
-            if ( fli_context->xic )
-                XSetICValues( fli_context->xic,
-                              XNFocusWindow, st_xev.xfocus.window,
-                              XNClientWindow, st_xev.xfocus.window,
-                              ( char * ) NULL );
             break;
 
         case FocusOut:
             fli_int.keyform = NULL;
+#if defined XlibSpecificationRelease
+//            if ( fli_context->xic )
+//                XUnsetICFocus( fli_context->xic );
+#endif
             break;
 
         case KeyPress:
@@ -1013,8 +1016,21 @@ handle_keyboard_event( XEvent * xev,
     else if ( IsCursorKey( keysym ) || len == 0 )
         fli_handle_form( fli_int.keyform, formevent, keysym, xev );
     else
-        fli_handle_form( fli_int.keyform, formevent,
-                         utf8_to_num( ( char * ) keybuf ), xev );
+    {
+        /* Note: with input methods more than one character may have
+           arrived with a single keyboard event */
+
+        const char * p = ( char * ) keybuf;
+        int cl = 0;
+
+        do
+        {
+            fli_handle_form( fli_int.keyform, formevent,
+                             utf8_to_num( p + cl ), xev );
+            cl = utf8_get_byte_count( p );
+            cl *= cl >= 0 ? 1 : -1;
+        } while ( ( len -= cl ) > 0 );
+    }
 }
 
 
@@ -1039,6 +1055,21 @@ handle_EnterNotify_event( FL_FORM * evform )
     if ( fli_int.mouseform )
         fli_handle_form( fli_int.mouseform, FL_LEAVE,
                          xmask2button( fli_int.keymask ), &st_xev );
+
+#if defined XlibSpecificationRelease
+    /* If we've got aN input context and the window changed we've got
+       to tell it about the new window */
+
+    if ( fli_context->xic && fli_context->xic_win != win )
+    {
+        fli_context->xic_win = win;
+        XSetICValues( fli_context->xic,
+                      XNFocusWindow, win,
+                      XNClientWindow, win,
+                      ( char * ) NULL );
+        XSetICFocus( fli_context->xic );
+    }
+#endif
 
     if ( evform )
     {
