@@ -118,6 +118,7 @@ libforms_la_SOURCES = \
 	ulib.h \
 	util.c \
 	utf8.c \
+	utf8.h \
 	valuator.c \
 	version.c \
 	vn_pair.c \
