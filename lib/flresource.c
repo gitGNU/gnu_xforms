@@ -913,11 +913,15 @@ ChooseBetterStyle( XIMStyle style1,
                    XIMStyle style2 )
 {
     XIMStyle s, t;
-    XIMStyle preedit =   XIMPreeditArea | XIMPreeditCallbacks
-                       | XIMPreeditPosition | XIMPreeditNothing
+    XIMStyle preedit =   XIMPreeditArea
+                       | XIMPreeditCallbacks
+                       | XIMPreeditPosition
+                       | XIMPreeditNothing
                        | XIMPreeditNone;
-    XIMStyle status  =   XIMStatusArea | XIMStatusCallbacks
-                       | XIMStatusNothing | XIMStatusNone;
+    XIMStyle status  =   XIMStatusArea
+                       | XIMStatusCallbacks
+                       | XIMStatusNothing
+                       | XIMStatusNone;
 
     if ( style1 == 0 )
         return style2;
@@ -935,13 +939,13 @@ ChooseBetterStyle( XIMStyle style1,
     if ( s != t )
     {
         if ( s | t | XIMPreeditCallbacks )
-            return s == XIMPreeditCallbacks ? style1 : style2;
+            return ( s == XIMPreeditCallbacks ) ? style1 : style2;
         else if ( s | t | XIMPreeditPosition )
-            return s == XIMPreeditPosition ? style1 : style2;
+            return ( s == XIMPreeditPosition ) ? style1 : style2;
         else if ( s | t | XIMPreeditArea )
-            return (s == XIMPreeditArea)?style1:style2;
+            return ( s == XIMPreeditArea ) ? style1 : style2;
         else if (s | t | XIMPreeditNothing)
-            return s == XIMPreeditNothing ? style1 : style2;
+            return ( s == XIMPreeditNothing ) ? style1 : style2;
     }
     else
     {
@@ -951,11 +955,11 @@ ChooseBetterStyle( XIMStyle style1,
         t = style2 & status;
 
         if ( s | t | XIMStatusCallbacks )
-            return s == XIMStatusCallbacks ? style1 : style2;
+            return ( s == XIMStatusCallbacks ) ? style1 : style2;
         else if ( s | t | XIMStatusArea )
-            return s == XIMStatusArea ? style1 : style2;
+            return ( s == XIMStatusArea ) ? style1 : style2;
         else if ( s | t | XIMStatusNothing )
-            return s == XIMStatusNothing ? style1 : style2;
+            return ( s == XIMStatusNothing ) ? style1 : style2;
     }
 }
 
@@ -973,41 +977,54 @@ setup_im_and_ic( void )
     XIMStyle app_supported_styles;
     int i;
 
+    /* First check if a valid and supported locale is set */
+
     if (    ! setlocale( LC_ALL, "" )
-         || !  XSupportsLocale( )
+         || ! XSupportsLocale( )
          || ! XSetLocaleModifiers( "" ) )
-        return;
-
-    /* Use the same input method throughout xforms */
-
-    fli_context->xim = XOpenIM( fl_display, NULL, NULL, NULL );
-
-    if ( ! fli_context->xim )
     {
-        M_err( "fl_initialize", "Could not create an input method" );
+        M_err( "setup_im_and_ic",
+               "Unsupported or invalid locale, can't set input method" );
         return;
     }
 
-    /* And also the same input context. Start with figuring out which
-       styles the IM can support */
+    /* Create an input method to be Used throughout all of xforms */
+
+    if ( ! ( fli_context->xim = XOpenIM( fl_display, NULL, NULL, NULL ) ) )
+    {
+        M_err( "setup_im_and_ic", "Could not create an input method" );
+        return;
+    }
+
+    /* Next we also need an input context (also to be used everywhere).
+       Start with figuring out which styles the IM supports. */
             
-    XGetIMValues( fli_context->xim, XNQueryInputStyle,
-                  &im_supported_styles, NULL );
+    XGetIMValues( fli_context->xim,
+                  XNQueryInputStyle, &im_supported_styles,
+                  ( char * ) NULL );
 
-    /* Set flags for the styles the library can support */
-            
-    app_supported_styles =   XIMPreeditNone
-                           | XIMPreeditNothing
-                           | XIMPreeditArea
-                           | XIMStatusNone
-                           | XIMStatusNothing
-                           | XIMStatusArea;
+    /* Set flags for the styles the library will support. (I'd love to enable
+       OverTheSpot editing (by allowing XIMPreeditPosition) but found no way
+       to get that to  work, XCreateIC() always fails with that. And when we
+       can't determine the position we also don't care about the area.) */
 
-    /* Now look at each of the IM supported styles, and chose the
-     * "best" one that we can support. */
+    app_supported_styles =
+#if 0
+                            XIMPreeditArea     |  /* 0x0001L */
+                            XIMPreeditPosition |  /* 0x0004L */
+#endif
+                            XIMPreeditNothing  |  /* 0x0008L */
+                            XIMPreeditNone     |  /* 0x0010L */
+#if 0
+                            XIMStatusArea      |  /* 0x0100L */
+#endif
+                            XIMStatusNothing   |  /* 0x0400L */
+                            XIMStatusNone;      /* 0x0800L */
 
-    best_style = 0;
-    for ( i = 0; i < im_supported_styles->count_styles; i++ )
+    /* Now test at each of the IM supported styles for compatibility and
+       chose the "best" one that we can support. */
+
+    for ( best_style = 0, i = 0; i < im_supported_styles->count_styles; i++ )
     {
         XIMStyle style = im_supported_styles->supported_styles[ i ];
 
@@ -1017,11 +1034,12 @@ setup_im_and_ic( void )
 
     XFree( im_supported_styles );
 
-    /* If we couldn't support any of them print an error message */
+    /* If we can't support any of the styles available print an error
+       message and give up */
 
     if ( best_style == 0 )
     {
-        M_err( "fl_intialize", "Can't find a fitting IC style" );
+        M_err( "setup_im_and_ic", "Can't find a usable IM style" );
         XCloseIM( fli_context->xim );
         fli_context->xim = NULL;
         return;
@@ -1032,13 +1050,11 @@ setup_im_and_ic( void )
     fli_context->xic_win = None;
     fli_context->xic = XCreateIC( fli_context->xim,
                                   XNInputStyle, best_style,
-                                  XNClientWindow, fl_root,
                                   ( char * ) NULL );
 
     if ( ! fli_context->xic )
     {
-        M_err( "fl_initialize",
-               "Could not create an input context" );
+        M_err( "setup_im_and_ic", "Could not create an input context" );
         XCloseIM( fli_context->xim );
         fli_context->xim = NULL;
     }

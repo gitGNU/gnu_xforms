@@ -714,10 +714,6 @@ do_interaction_step( int wait_io )
 
         case FocusOut:
             fli_int.keyform = NULL;
-#if defined XlibSpecificationRelease
-//            if ( fli_context->xic )
-//                XUnsetICFocus( fli_context->xic );
-#endif
             break;
 
         case KeyPress:
@@ -1057,17 +1053,23 @@ handle_EnterNotify_event( FL_FORM * evform )
                          xmask2button( fli_int.keymask ), &st_xev );
 
 #if defined XlibSpecificationRelease
-    /* If we've got aN input context and the window changed we've got
-       to tell it about the new window */
+    /* If we've got an input context and the window changed we've got
+       to switch it to the new window. Before we do so we also reset it
+       - it might be in an intermediate state (the reset function retirns
+       a string that needs to be freed) */
 
     if ( fli_context->xic && fli_context->xic_win != win )
     {
-        fli_context->xic_win = win;
+#if defined X_HAVE_UTF8_STRING
+        XFree( Xutf8ResetIC( fli_context->xic ) );
+#else
+        XFree( XmbResetIC( fli_context->xic ) );
+#endif
         XSetICValues( fli_context->xic,
                       XNFocusWindow, win,
-                      XNClientWindow, win,
                       ( char * ) NULL );
         XSetICFocus( fli_context->xic );
+        fli_context->xic_win = win;
     }
 #endif
 
