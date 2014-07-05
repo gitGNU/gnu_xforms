@@ -627,8 +627,8 @@ fli_create_window( Window       parent,
     char *tmp;
     XTextProperty xtpwname,
                   xtpmachine;
-    char *label = fl_strdup( wname ? wname : "" );
-    FL_FORM *mainform = fl_get_app_mainform( );
+    char * label = fl_strdup( wname ? wname : "" );
+    FL_FORM * mainform = fl_get_app_mainform( );
 
     st_xswa.colormap = m;
     st_wmask |= CWColormap;
@@ -731,8 +731,8 @@ fli_create_window( Window       parent,
 
 Window
 fli_cmap_winopen( Window       parent,
-                 Colormap     m,
-                 const char * label )
+                  Colormap     m,
+                  const char * label )
 {
     Window win = fli_create_window( parent, m, label );
     return fl_winshow( win );

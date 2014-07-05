@@ -579,6 +579,9 @@ fl_enumerate_fonts( void ( * output )( const char *s ),
 
 
 /***************************************
+ * Returns the XftFont structure (pointer) for the font with the requested
+ * style and size. May return NULL if 'size' is invalid or the font
+ * specified by 'style; wasn't loaded.
  ***************************************/
 
 XftFont *
@@ -591,12 +594,12 @@ fl_get_font_struct( int style,
 
 	/* Style must be non-negative and in the list of indices */
 
-	if ( style < 0 || ! ( f = fl_get_font_from_index( style ) ) )
+	if ( size <= 0 || style < 0 || ! ( f = fl_get_font_from_index( style ) ) )
 	{
         if ( fli_no_connection )
-            M_info( "fl_get_font_struct", "Invalid style argument" );
+            M_info( "fl_get_font_struct", "No connection to server" );
         else
-            M_warn( "fl_get_font_struct", "Invalid style argument" );
+            M_warn( "fl_get_font_struct", "Invalid style or size argument" );
 
 		return NULL;
 	}
@@ -811,6 +814,10 @@ fl_get_char_width( int style,
 
 
 /***************************************
+ * Returns the width and height required for drawing a 'len characters
+ * of a string (with embedded new-line characters). The string must be
+ * terminated by '\0' even if 'len' is smaller than the length of the
+ * string. No handling of tab characters is done.
  ***************************************/
 
 void
@@ -821,61 +828,50 @@ fl_get_string_dimension( int          style,
                          int *        width,
                          int *        height )
 {
-    const char *p,
-               *q;
-    int h,
-        maxw = 0,
-        maxh = 0;
+    const char *q = s;
 	XftFont * f = fli_get_font_struct( style, size );
 
-	if ( f )
-	{
-		h = f->height;
-		
-		for ( q = s; *q && ( p = strchr( q, '\n' ) ); q = p + 1 )
-		{
-			maxw = FL_max( maxw,
-						   fli_get_string_width( f, q, p - q ) );
-			maxh += h;
-		}
+    *width  = 0;
+    *height = 0;
 
-		maxw = FL_max( maxw, fli_get_string_width( f, q, len - ( q - s ) ) );
-		maxh += h;
+	if ( ! f || ! s || ! *s || len <= 0 || size <= 0 )
+        return;
 
-		*width  = maxw;
-		*height = maxh;
-	}
-	else
-	{
-		*width  = 0;
-		*height = 0;
-	}
+    do
+    {
+        const char * p = strchr( q, '\n' );
+
+        if ( ! p || p > s + len )
+            p = s + len;
+
+        if ( p - q )
+            *width = FL_max( *width,
+                             fli_get_string_width( f, q, p - q ) );
+        *height += f->height;
+
+        q = p + 1;
+    } while ( q < s + len );
 }
 
 
 /***************************************
+ * Sets the string that is used for emulating a 'tab' when trying to
+ * determine the width of a tab.
  ***************************************/
 
-static char * tabstop = "aaaaaaa ";
-static size_t tabstopNchar = 8;
+static char * tabstop = NULL;
 
 void
 fl_set_tabstop( const char * s )
 {
-    static int set;
-
-    if ( s )
-    {
-        if ( set )
-            fl_free( tabstop );
-        tabstop = fl_strdup( s );
-        tabstopNchar = strlen( tabstop );
-        set = 1;
-    }
+    fl_free( tabstop );
+    tabstop = fl_strdup( s );
 }
 
 
 /***************************************
+ * Calculates the width of a 'tab' (emulated by the string 'tabstop').
+& Default for that string is "aaaaaaaa" (i.e. 8 a's in a row).
  ***************************************/
 
 int
@@ -887,7 +883,10 @@ fli_get_tabpixels( XftFont * f )
 		return 0;
 	}
 
-    return fli_get_string_width( f, tabstop, tabstopNchar );
+    if ( ! tabstop )
+        fl_set_tabstop( "aaaaaaaa" );
+
+    return fli_get_string_width( f, tabstop, strlen( tabstop ) );
 }
 
 

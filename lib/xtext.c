@@ -86,7 +86,7 @@ typedef int ( * DrawString )( Display    * display,
 #endif
 #endif
 
-#define NUM_LINES_INCREMENT  64
+#define NUM_LINES_INCREMENT  32
 
 static struct LINE_INFO {
     char * str;
@@ -103,6 +103,7 @@ static int max_pixelline = 0;
 
 
 /***************************************
+ * Increases the pool available for lines of text to be drawn
  ***************************************/
 
 static int
@@ -114,6 +115,7 @@ extend_workmem( int nl )
 
 
 /***************************************
+ * Free the pool of memory for lines
  ***************************************/
 
 void
@@ -660,7 +662,7 @@ fli_get_pos_in_string( int          align,
 
     while ( p )
     {
-        if ( lnumb + 1 >= nlines )
+        if ( lnumb >= nlines )
             extend_workmem( nlines + NUM_LINES_INCREMENT );
 
         lines[ lnumb ].str = ( char * ) p;
@@ -839,6 +841,7 @@ fl_draw_text_cursor( int          align,   /* alignment in box */
 
 
 /***************************************
+ * Draws text inside of a box
  ***************************************/
 
 #define D( x, y, c )                                      \
@@ -956,6 +959,7 @@ fl_draw_text( int          align,
 
 
 /***************************************
+ * Draws a text beside a box
  ***************************************/
 
 void
@@ -1028,6 +1032,9 @@ fli_set_ul_property( int prop,
 #define NARROW( c ) ( c == 'i' || c == 'j' || c == 'l' || c == 'f' || c == '1' )
 
 /***************************************
+ * Tries to determine the posiion and size needed for underlining the
+ * first 'n' characters in 'str' (or one less if the first character
+ * is the "magic underline" character)
  ***************************************/
 
 XRectangle *
@@ -1100,6 +1107,7 @@ fli_get_underline_rect(
 
 
 /***************************************
+ * Draws the Underline for the first 'n' characters of 'str'
  ***************************************/
 
 static void
@@ -1126,7 +1134,7 @@ do_underline( FL_Coord     x,
 
 
 /***************************************
- * Underline whole string
+ * Underline a whole string
  ***************************************/
 
 static void
@@ -1186,7 +1194,8 @@ do_underline_all( FL_Coord        x,
 
 
 /***************************************
- * Draw a single line string with embedded tabs
+ * Draw a single line (i.e. a string without any embedded '\n'),
+ * but with embedded tabs
  ***************************************/
 
 int
@@ -1200,9 +1209,8 @@ fli_draw_stringTAB( Drawable     win,
                     int          len,
                     int          img )
 {
-    int w, tab;
-    const char *p,
-               *q;
+    int w, tab_width;
+    const char *q;
 #if FL_ENABLE_XFT
     XftFont * fs;
 #else
@@ -1216,8 +1224,10 @@ fli_draw_stringTAB( Drawable     win,
     FL_COORD cx, cy, cw, ch;
 #endif
 
-    if ( win == None )
+    if ( ! win || ! s || ! *s || len == 0 || size <= 0  )
         return 0;
+
+    /* Load (or get) the required font */
 
 #if FL_ENABLE_XFT
     fs = fl_get_font_struct( style, size );
@@ -1226,7 +1236,9 @@ fli_draw_stringTAB( Drawable     win,
     fs = fl_get_font_struct( style, size );
 #endif
 
-    tab = fli_get_tabpixels( fs );
+    /* Figure out how wide a tab is (approximately) */
+
+    tab_width = fli_get_tabpixels( fs );
 
 #if ! FL_ENABLE_XFT
     XSetFont( flx->display, gc, fs->fid );
@@ -1237,12 +1249,28 @@ fli_draw_stringTAB( Drawable     win,
         fl_set_gc_clipping( gc, cx, cy, cw, ch );
 #endif
 
-    for ( w = 0, q = s; *q && ( p = strchr( q, '\t' ) ) && p - s < len;
-          q = p + 1 )
+    /* Split up the string at tabs and draw each part on its own, advancing
+       to the next tab positions */
+
+    w = 0;
+    q = s;
+
+    while ( *q == '\t' && q < s + len )
     {
+        w += tab_width;
+        q++;
+    }
+
+    while ( q < s + len )
+    {
+        const char * p = strchr( q, '\t' );
+
+        if ( ! p || p > s + len )
+            p = s + len;
+
 #if FL_ENABLE_XFT
         draw_string( flx->display, fs, color, x + w, y,
-                     ( const XftChar8 * ) q, s - q, img );
+                     ( const XftChar8 * ) q, p - q, img );
 #else
 #if defined X_HAVE_UTF8_STRING
         drawIt( flx->display, win,  fl_get_font_set( style, size ),
@@ -1251,20 +1279,25 @@ fli_draw_stringTAB( Drawable     win,
         drawIt( flx->display, win, gc, x + w, y, ( char * ) q, p - q );
 #endif
 #endif
-        w = ( ( w + fli_get_string_width( fs, q, p - q ) ) / tab + 1 ) * tab;
+
+        if ( p == s + len )
+            break;
+
+        /* Figure where the next substring must be drawn */
+
+        w =   ( ( w + fli_get_string_width( fs, q, p - q ) ) / tab_width + 1 )
+            * tab_width;
+
+        q = p + 1;
+
+        while ( *q == '\t' && q < s + len )
+        {
+            w += tab_width;
+            q++;
+        }
     }
 
-#if FL_ENABLE_XFT
-    draw_string( flx->display, fs, color, x + w, y,
-                 ( const XftChar8 * ) q, s - q + len, img );
-#else
-#if defined X_HAVE_UTF8_STRING
-    drawIt( flx->display, win,  fl_get_font_set( style, size ), gc,
-            x + w, y, ( char * ) q, s - q + len );
-#else
-    drawIt( flx->display, win, gc, x + w, y, ( char * ) q, s - q + len );
-#endif
-
+#if ! FL_ENABLE_XFT
     if ( cw > 0 || ch > 0 )
         fl_unset_gc_clipping( gc );
     XFreeGC( flx->display, gc );

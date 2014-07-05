@@ -265,6 +265,7 @@ fli_composite_has_been_resized( FL_OBJECT * obj )
     {
         if ( obj->child )
             fli_composite_has_been_resized( obj );
+        fli_calc_object_bbox( obj );
         fli_handle_object( obj, FL_RESIZED, 0, 0, 0, NULL, 0 );
     }
 }

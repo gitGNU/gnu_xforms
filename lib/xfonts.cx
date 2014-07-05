@@ -166,12 +166,7 @@ fl_set_font( int numb,
     /* cur_font is always the one in current GC */
 
     if ( fl_state[ fl_vmode ].cur_fnt == fs )
-    {
-#if FL_DEBUG >= ML_DEBUG
-        M_debug( "fl_set_font", "current", fli_curfnt );
-#endif
         return;
-    }
 
     fl_state[ fl_vmode ].cur_fnt = flx->fs = fs;
 

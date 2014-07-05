@@ -32,6 +32,7 @@
 #include "include/forms.h"
 #include "flinternal.h"
 #include "private/flvasprintf.h"
+#include <ctype.h>
 
 
 #define TRANSLATE_Y( obj, form )    ( form->h - obj->h - obj->y )
@@ -44,9 +45,6 @@ extern FL_OBJECT * fli_handled_parent;     /* defined in  events.c */
 static void redraw( FL_FORM *,
                     int );
 static void lose_focus( FL_OBJECT * );
-static void get_object_rect( const FL_OBJECT * obj,
-                             XRectangle      * rect,
-                             int               extra );
 static XRectangle * get_label_rect( const FL_OBJECT  * obj,
                                     XRectangle       * rect );
 static int objects_intersect( const FL_OBJECT *,
@@ -55,15 +53,8 @@ static void mark_object_for_redraw( FL_OBJECT * );
 static int object_is_under( const FL_OBJECT * );
 static void checked_hide_tooltip( FL_OBJECT *,
                                   XEvent    * );
-static int prep_recalc( FL_FORM   * form,
-                        FL_OBJECT * start_obj );
-static void finish_recalc( FL_FORM   * form,
-                           FL_OBJECT * start_obj );
 
 static FL_OBJECT *refocus;
-
-static void **tmp_vdata = NULL;
-static FL_RECT *tmp_rects = NULL;
 
 #define IS_BUTTON_CLASS( i )   (    i == FL_BUTTON           \
                                  || i == FL_ROUNDBUTTON      \
@@ -74,7 +65,7 @@ static FL_RECT *tmp_rects = NULL;
                                  || i == FL_PIXMAPBUTTON )
 
 
-/* Macro for checking of a FL_FORM pointer points to a form that should
+/* Macro for checking if a FL_FORM pointer points to a form that should
    be actually drawn to */
 
 #define FORM_IS_UPDATABLE( form ) (    form                             \
@@ -301,6 +292,8 @@ fl_add_object( FL_FORM   * form,
     obj->ft2 = obj->y  + obj->h;
     obj->fb2 = form->h - obj->ft2;
 
+    fli_calc_object_bbox( obj );
+
     /* If adding to a group, set objects group ID, then find the end of the
        group or the end of the object list of this form */
 
@@ -313,7 +306,7 @@ fl_add_object( FL_FORM   * form,
         while ( end && end->objclass != FL_END_GROUP )
             end = end->next;
 
-        /* If 'end' exists must've opened the group with fl_addto_group */
+        /* If 'end' exists must have opened the group with fl_addto_group */
 
         if ( end )
         {
@@ -1095,6 +1088,8 @@ fl_set_object_label( FL_OBJECT  * obj,
     obj->label = fl_realloc( obj->label, strlen( label ) + 1 );
     strcpy( obj->label, label );
 
+    fli_calc_object_bbox( obj );
+
     if ( need_show )
         fl_show_object( obj );
     else if ( obj->visible )
@@ -1221,7 +1216,7 @@ fl_set_object_lsize( FL_OBJECT * obj,
 
     if ( lsize < 1 )
     {
-        M_err( "fl_set_object_lsize", "Invalid lable size" );
+        M_err( "fl_set_object_lsize", "Invalid label size" );
         return;
     }
 
@@ -1239,6 +1234,7 @@ fl_set_object_lsize( FL_OBJECT * obj,
     }
 
     obj->lsize = lsize;
+    fli_calc_object_bbox( obj );
     fli_handle_object( obj, FL_ATTRIB, 0, 0, 0, NULL, 0 );
 
     if ( obj->objclass == FL_TABFOLDER )
@@ -1248,6 +1244,7 @@ fl_set_object_lsize( FL_OBJECT * obj,
         for ( o = obj->next; o && o->objclass != FL_END_GROUP; o = o->next )
         {
             obj->lsize = lsize;
+            fli_calc_object_bbox( o );
             fli_handle_object( o, FL_ATTRIB, 0, 0, 0, NULL, 0 );
         }
 
@@ -1305,6 +1302,7 @@ fl_set_object_lstyle( FL_OBJECT * obj,
     }
 
     obj->lstyle = lstyle;
+    fli_calc_object_bbox( obj );
     fli_handle_object( obj, FL_ATTRIB, 0, 0, 0, NULL, 0 );
 
     if ( obj->objclass == FL_TABFOLDER )
@@ -1314,6 +1312,7 @@ fl_set_object_lstyle( FL_OBJECT * obj,
         for ( o = obj->next; o && o->objclass != FL_END_GROUP; o = o->next )
         {
             obj->lstyle = lstyle;
+            fli_calc_object_bbox( o );
             fli_handle_object( o, FL_ATTRIB, 0, 0, 0, NULL, 0 );
         }
 
@@ -1373,6 +1372,7 @@ fl_set_object_lalign( FL_OBJECT * obj,
     }
 
     obj->align = align;
+    fli_calc_object_bbox( obj );
     fli_handle_object( obj, FL_ATTRIB, 0, 0, 0, NULL, 0 );
 
     if ( obj->objclass == FL_TABFOLDER )
@@ -1591,8 +1591,6 @@ void
 fli_hide_and_get_region( FL_OBJECT * obj,
                          Region    * reg )
 {
-    FL_RECT xrect;  
-
 #ifdef DELAYED_ACTION
     /* Remove all entries for the object from the object queue */
 
@@ -1622,15 +1620,13 @@ fli_hide_and_get_region( FL_OBJECT * obj,
     if ( obj == fli_int.mouseobj )
         fli_int.mouseobj = NULL;
 
-    /* Get the area the object covers and add that to the region passed 
+    /* Add the area covered by the object and add it to the region passed 
        to the function */
 
     if ( obj->objclass == FL_CANVAS || obj->objclass == FL_GLCANVAS )
         fli_hide_canvas( obj );
 
-    get_object_rect( obj, &xrect, 0 );
-
-    XUnionRectWithRegion( &xrect, *reg, *reg );
+    XUnionRectWithRegion( &obj->bbox, *reg, *reg );
 
     /* Mark it as invisible (must be last, fli_hide_canvas() tests for
        visibility and doesn't do anything if already marked as invisible) */
@@ -1730,8 +1726,6 @@ fl_hide_object( FL_OBJECT * obj )
  * Not escapable are Crtl-^, Crtl-# and Ctrl-&.
  * No non-ASCII UTF-8 characters are allowed.
  ***************************************/
-
-#include <ctype.h>
 
 int
 fli_convert_shortcut( const char * str,
@@ -2133,20 +2127,20 @@ fli_find_last( FL_FORM * form,
 
 
 /***************************************
+ * Returns if an object only parially or not at all visible due to clipping
  ***************************************/
 
 static int
 is_object_clipped( FL_OBJECT * obj )
 {
-    FL_RECT obj_rect,
-            *xc;
+    FL_RECT * xc;
 
     if ( ! fl_is_global_clipped( ) )
         return 0;
 
-    get_object_rect( obj, &obj_rect, 1 );
+    fli_calc_object_bbox( obj );
 
-    xc = fli_intersect_rects( &obj_rect, fli_get_global_clip_rect( ) );
+    xc = fli_intersect_rects( &obj->bbox, fli_get_global_clip_rect( ) );
 
     if ( ! xc )
         return 1;
@@ -2187,7 +2181,7 @@ mark_object_for_redraw( FL_OBJECT * obj )
 
     /* If an object is marked as being under another object we have to find
        the object(s) it is beneath and also mark them for a redraw. For the
-       special case that the object to be redraw is the first object of
+       special case that the object to be redrawn is the first object of
        the form (i.e. the one for the background) we don't have to check
        if the other object are on top of it, they all are. */
 
@@ -2209,7 +2203,6 @@ mark_object_for_redraw( FL_OBJECT * obj )
         /* If it hasn't been done yet pre-calculate the sizes of all
            objects possibly concerned */
 
-        int need_finish = prep_recalc( obj->form, obj );
         int cnt = 0;
 
         for ( o = obj->next; o; o = o->next )
@@ -2232,9 +2225,6 @@ mark_object_for_redraw( FL_OBJECT * obj )
                     break;
             }
         }
-
-        if ( need_finish )
-            finish_recalc( obj->form, obj );
     }
 }
 
@@ -2262,13 +2252,8 @@ fl_redraw_object( FL_OBJECT * obj )
         /* If it hasn't been done yet pre-calculate the sizes of all
             objects possibly concerned */
 
-        int need_finish = prep_recalc( o->form, o );
-
         for ( ; o && o->objclass != FL_END_GROUP; o = o->next )
             mark_object_for_redraw( o );
-
-        if ( need_finish )
-            finish_recalc( obj->form, obj->next ); 
     }
     else
         mark_object_for_redraw( obj );
@@ -2286,29 +2271,10 @@ static int
 objects_intersect( const FL_OBJECT * obj1,
                    const FL_OBJECT * obj2 )
 {
-    if ( tmp_vdata )
-    {
-        FL_RECT *r1 = obj1->u_vdata,
-                *r2 = obj2->u_vdata;
-
-        return    r1->x + r1->width  > r2->x
-               && r2->x + r2->width  > r1->x
-               && r1->y + r1->height > r2->y
-               && r2->y + r2->height > r1->y;
-
-    }
-    else
-    {
-        FL_RECT r1, r2;
-
-        get_object_rect( obj1, &r1, 0 );
-        get_object_rect( obj2, &r2, 0 );
-
-        return    r1.x + r1.width  > r2.x
-               && r2.x + r2.width  > r2.x
-               && r1.y + r1.height > r2.y
-               && r2.y + r2.height > r1.y;
-    }
+    return    obj1->bbox.x + obj1->bbox.width  > obj2->bbox.x
+           && obj2->bbox.x + obj2->bbox.width  > obj2->bbox.x
+           && obj1->bbox.y + obj1->bbox.height > obj2->bbox.y
+           && obj2->bbox.y + obj2->bbox.height > obj1->bbox.y;
 }
 
 
@@ -2871,6 +2837,7 @@ fl_set_object_bw( FL_OBJECT * obj,
             if ( obj->bw != bw )
             {
                 obj->bw = bw;
+                fli_calc_object_bbox( obj );
                 fli_handle_object( obj, FL_ATTRIB, 0, 0, 0, NULL, 0 );
                 mark_object_for_redraw( obj );
             }
@@ -2881,6 +2848,7 @@ fl_set_object_bw( FL_OBJECT * obj,
     else if ( obj->bw != bw && obj->objclass != FL_TABFOLDER )
     {
         obj->bw = bw;
+        fli_calc_object_bbox( obj );
         fli_handle_object( obj, FL_ATTRIB, 0, 0, 0, NULL, 0 );
 
         if ( obj->objclass == FL_TABFOLDER )
@@ -3021,6 +2989,7 @@ fli_scale_object( FL_OBJECT * obj,
         obj->w    = FL_crnd( new_w );
         obj->h    = FL_crnd( new_h );
 
+        fli_calc_object_bbox( obj );
         fli_handle_object( obj, FL_RESIZED, 0, 0, 0, NULL, 0 );
 
         /* If there are child objects also inform them about the size change */
@@ -3180,92 +3149,6 @@ object_is_under( const FL_OBJECT * obj )
 
 
 /***************************************
- * Helper function for fli_recalc_intersections() and other functions -
- * without this is a O(N^2) operation with respect to the recalculations
- * of the N object bounding boxes. Here we use that the 'u_vdata' pointers
- * of the objects don't get used during fli_recalc_intersections() and
- * replace them all by pointers to pre-calculated bounding boxes, thus
- * reducing the number of recalculations to N (in objects_intersect() it
- * gets checked if 'tmp_vdata' is non-NULL and then uses the pre-calculated
- * bounding boxes).
- ***************************************/
-
-static int
-prep_recalc( FL_FORM   * form,
-             FL_OBJECT * start_obj )
-{
-    FL_OBJECT *obj;
-    int cnt = 0;
-    int i = 0;
-
-    if ( ! form || tmp_vdata )
-        return 0;
-
-    if ( ! start_obj )
-        start_obj = bg_object( form );
-
-    /* Count how many objects the form contains */
-
-    for ( obj = start_obj; obj; obj = obj->next )
-        cnt++;
-
-    if ( cnt < 2 )
-        return 0;
-
-    /* Get memory for temporary storing the 'u_vdata' pointers of all objects
-       and as many FL_RECT's */
-
-    if ( ( tmp_vdata = fl_malloc( cnt * sizeof *tmp_vdata ) ) )
-    {
-        if ( ! ( tmp_rects = fl_malloc( cnt * sizeof *tmp_rects ) ) )
-        {
-            fli_safe_free( tmp_vdata );
-            return 0;
-        }
-    }
-    else
-        return 0;
-
-    /* Save the 'u_vdata' pointers and replace them by pointers to the
-       bounding box rectangles */
-
-    for ( obj = start_obj; obj; obj = obj->next )
-    {
-        tmp_vdata[ i ] = obj->u_vdata;
-        obj->u_vdata = tmp_rects + i;
-        get_object_rect( obj, tmp_rects + i++, 0 );
-    }
-
-    return 1;
-}
-
-
-/***************************************
- * Another helper function for fli_recalc_intersections() - to be called when
- * it's finished, restoring all objects 'u_vdata' pointers and getting rid
- * of allocated memory.
- ***************************************/
-
-static void
-finish_recalc( FL_FORM   * form,
-               FL_OBJECT * start_obj )
-{
-    FL_OBJECT *obj;
-    int i = 0;
-
-    if ( ! tmp_vdata )
-        return;
-
-    for ( obj = start_obj ? start_obj : bg_object( form ); obj;
-          obj = obj->next )
-        obj->u_vdata = tmp_vdata[ i++ ];
-
-    fli_safe_free( tmp_rects );
-    fli_safe_free( tmp_vdata );
-}
-   
-
-/***************************************
  * Rechecks for all objects of a form if they are
  * partially or fully hidden by another object
  ***************************************/
@@ -3285,10 +3168,8 @@ fli_recalc_intersections( FL_FORM * form )
     if ( fl_current_form || ! form || ( form && form->frozen ) )
         return;
 
-    prep_recalc( form, NULL );
     for ( obj = bg_object( form ); obj && obj->next; obj = obj->next )
         obj->is_under = object_is_under( obj );
-    finish_recalc( form, NULL );
 }
 
 
@@ -3390,6 +3271,7 @@ fl_set_object_position( FL_OBJECT * obj,
         obj->y = y;
     }
 
+    fli_calc_object_bbox( obj );
     fli_handle_object( obj, FL_MOVEORIGIN, 0, 0, 0, NULL, 0 );
 
     if ( need_show )
@@ -3486,6 +3368,7 @@ fl_set_object_size( FL_OBJECT * obj,
         obj->h = FL_crnd( obj->ft2 - obj->ft1 );
     }
 
+    fli_calc_object_bbox( obj );
     fli_handle_object( obj, FL_RESIZED, 0, 0, 0, NULL, 0 );
 
     /* If there are child objects also inform them about the size change */
@@ -3541,17 +3424,15 @@ fl_get_object_bbox( FL_OBJECT * obj,
                     FL_Coord  * w,
                     FL_Coord  * h )
 {
-    XRectangle rect;
+    fli_calc_object_bbox( obj );
 
-    get_object_rect( obj, &rect, 0 );
-
-    *x = rect.x;
+    *x = obj->bbox.x;
     if ( ! fli_inverted_y || ! obj->form )
-        *y = rect.y;
+        *y = obj->bbox.y;
     else
-        *y = obj->form->h - rect.height - rect.y;
-    *w = rect.width;
-    *h = rect.height;
+        *y = obj->form->h - obj->bbox.height - obj->bbox.y;
+    *w = obj->bbox.width;
+    *h = obj->bbox.height;
 }
 
 
@@ -3612,11 +3493,11 @@ get_label_rect( const FL_OBJECT * obj,
  * Returns the area covered by the object and its label via a FL_RECT
  ***************************************/
 
-static void
-get_object_rect( const FL_OBJECT * obj,
-                 FL_RECT         * rect,
-                 int               extra )
+void
+fli_calc_object_bbox( FL_OBJECT * obj )
 {
+    int extra = 0;
+
     if (    obj->objclass == FL_FRAME
          || obj->objclass == FL_LABELFRAME
          || obj->objclass == FL_CANVAS
@@ -3625,20 +3506,16 @@ get_object_rect( const FL_OBJECT * obj,
               && obj->objclass <= FL_USER_CLASS_END ) )
         extra += FL_abs( obj->bw );
 
-    rect->x      = obj->x - extra;
-    rect->y      = obj->y - extra;
-    rect->width  = obj->w + 2 * extra + 1;
-    rect->height = obj->h + 2 * extra + 1;
-
-    /* Include the label into the box - but only for labels that are not
-       within the object. If "inside" labels extend beyond the limits of the
-       object things look ugly anyway and it doesn't seem to make too much
-       sense to slow down the program for this case. */
+    obj->bbox.x      = obj->x - extra;
+    obj->bbox.y      = obj->y - extra;
+    obj->bbox.width  = obj->w + 2 * extra + 1;
+    obj->bbox.height = obj->h + 2 * extra + 1;
 
     if ( obj->label && *obj->label && OL( obj ) )
     {
-        XRectangle lr;
-        fli_combine_rectangles( rect, get_label_rect( obj, &lr ) );
+        FL_RECT lr;
+
+        fli_combine_rectangles( &obj->bbox, get_label_rect( obj, &lr ) );
     }
 }
 

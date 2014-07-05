@@ -236,7 +236,6 @@ typedef struct {
 /* Some basic drawing routines */
 
 typedef XPoint      FL_POINT;
-typedef XRectangle  FL_RECT;
 
 /* Rectangles */
 

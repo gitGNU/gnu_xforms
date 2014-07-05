@@ -746,6 +746,10 @@ fli_scale_form( FL_FORM * form,
         obj->y = FL_crnd( obj->ft1 );
         obj->w = FL_crnd( obj->fl2 - obj->fl1 );
         obj->h = FL_crnd( obj->ft2 - obj->ft1 );
+
+        /* Recalculate th ebounding box (including the label) */
+
+        fli_calc_object_bbox( obj );
     }
 
     /* Only notify objects now - parent objects might have to adjust

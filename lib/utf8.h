@@ -40,6 +40,10 @@ char * utf8_next_char_pos( char * str );
 
 char * utf8_prev_char_pos( char * str );
 
+char * utf8_reverse( const char * str );
+
+char * utf8_reverse_in_place( char * str );
+
 
 #endif
 

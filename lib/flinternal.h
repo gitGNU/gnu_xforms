@@ -222,6 +222,8 @@ FL_OBJECT * fli_find_first( FL_FORM *,
                             FL_Coord,
                             FL_Coord );
 
+void fli_calc_object_bbox( FL_OBJECT * obj );
+
 void fli_show_object( FL_OBJECT * );
 
 void fli_recalc_intersections( FL_FORM * );

@@ -1044,14 +1044,6 @@ handle_EnterNotify_event( FL_FORM * evform )
     fli_int.keymask   = st_xev.xcrossing.state;
     fli_int.query_age = 0;
 
-    if (    button_down( fli_int.keymask )
-         && st_xev.xcrossing.mode != NotifyUngrab )
-        return;
-
-    if ( fli_int.mouseform )
-        fli_handle_form( fli_int.mouseform, FL_LEAVE,
-                         xmask2button( fli_int.keymask ), &st_xev );
-
 #if defined XlibSpecificationRelease
     /* If we've got an input context and the window changed we've got
        to switch it to the new window. Before we do so we also reset it
@@ -1065,6 +1057,7 @@ handle_EnterNotify_event( FL_FORM * evform )
 #else
         XFree( XmbResetIC( fli_context->xic ) );
 #endif
+        XUnsetICFocus( fli_context->xic );
         XSetICValues( fli_context->xic,
                       XNFocusWindow, win,
                       ( char * ) NULL );
@@ -1072,6 +1065,14 @@ handle_EnterNotify_event( FL_FORM * evform )
         fli_context->xic_win = win;
     }
 #endif
+
+    if (    button_down( fli_int.keymask )
+         && st_xev.xcrossing.mode != NotifyUngrab )
+        return;
+
+    if ( fli_int.mouseform )
+        fli_handle_form( fli_int.mouseform, FL_LEAVE,
+                         xmask2button( fli_int.keymask ), &st_xev );
 
     if ( evform )
     {

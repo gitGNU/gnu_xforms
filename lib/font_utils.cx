@@ -245,6 +245,9 @@ fli_get_fname( const FL_FONT * font,
 
 
 /***************************************
+ * Returns the width of a teh first 'len' characters of string when drawn
+ * with font 'f'. The string must be terminated by '\0' even if 'len' is
+ * smaller than the length of the string.
  ***************************************/
 
 int
@@ -269,20 +272,44 @@ fli_get_string_widthTABfs( XftFont    * f,
                            int          len )
 {
     int w,
-        tab;
-    const char * p,
-               * q;
+        tab_width;
+    const char * q;
 
-    tab = fli_get_tabpixels( f );
+    tab_width = fli_get_tabpixels( f );
 
-    for ( w = 0, q = s; *q && ( p = strchr( q, '\t' ) ) && ( p - s ) < len;
-          q = p + 1 )
-    {
+	w = 0;
+	q = s;
+
+	while ( *q == '\t' && q < s + len )
+	{
+		w += tab_width;
+		q++;
+	}
+
+	while ( q < s + len )
+	{
+		const char * p = strchr( q, '\t' );
+
+		if ( ! p || p > s + len )
+			p = s + len;
+
         w += fli_get_string_width( f, q, p - q );
-        w = ( ( w / tab ) + 1 ) * tab;
-    }
 
-    return w += fli_get_string_width( f, q, len - ( q - s ) );
+        if ( p == s + len )
+            break;
+
+		w = ( ( w / tab_width ) + 1 ) * tab_width;
+
+		q = p + 1;
+		
+		while ( *q == '\t' && q < s + len )
+		{
+			w += tab_width;
+			q++;
+		}
+	}
+
+    return w;
 }
 
 

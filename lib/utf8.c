@@ -185,7 +185,7 @@ utf8_get_char_bytes( FL_Char c )
 
 /***************************************
  * Returns the number of bytes in the UTF-8 character
- * pointed to by a char pointer (or =1 if it's no a
+ * pointed to by a char pointer (or -1 if it's not a
  * valid UTF-8 character)
  ***************************************/
 
@@ -249,6 +249,7 @@ utf8_get_prev_byte_count( const char * str )
 
 
 /***************************************
+ * Returns a pointer to the next character after the start of an UTF-8 string
  ***************************************/
 
 char *
@@ -258,10 +259,71 @@ utf8_next_char_pos( char * str )
 }
 
 
+/***************************************
+ * Returns a pointer to the character before the start of an UTF-8 string
+ * (this, of course, assumes that the pointer passed to the function
+ * points into a string).
+ ***************************************/
+
 char *
 utf8_prev_char_pos( char * str )
 {
     return str - utf8_get_prev_byte_count( str );
+}
+
+
+/***************************************
+ * Returns a new UTF-8 string with the contents of the input string reversed.
+ * The caller has to deallocate the memory for the returned string.
+ ***************************************/
+
+char *
+utf8_reverse( const char * str )
+{
+    size_t slen;
+    char *tmp;
+    char *p;
+    int cnt;
+
+    if ( ! str )
+        return NULL;
+
+    slen = strlen( str );
+    tmp = fl_malloc( slen + 1 );
+    p = tmp + slen;
+
+    *p = '\0';
+
+    while ( *str )
+    {
+        cnt = utf8_get_byte_count( str );
+        cnt *= cnt < 0 ? -1 : 1;
+
+        p -= cnt;
+        memcpy( p , str, cnt );
+        str += cnt;
+    }
+
+    return tmp;
+}
+
+
+/***************************************
+ * Reverses the contents of a UTF-8 string
+ ***************************************/
+
+char *
+utf8_reverse_in_place( char * str )
+{
+    char *tmp;
+
+    if ( ! str )
+        return NULL;
+
+    tmp = utf8_reverse( str );
+    strcpy( str, tmp );
+    fl_free( tmp );
+    return str;
 }
 
 

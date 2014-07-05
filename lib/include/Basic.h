@@ -695,6 +695,8 @@ typedef enum {
 typedef struct FL_FORM_    FL_FORM;
 typedef struct FL_OBJECT_  FL_OBJECT;
 typedef struct FL_pixmap_  FL_pixmap;
+typedef XRectangle  FL_RECT;
+
 
 struct FL_OBJECT_ {
     FL_FORM        * form;           /* the form this object belongs to */
@@ -718,6 +720,7 @@ struct FL_OBJECT_ {
                      ft2,
                      fb2;
     FL_Coord         bw;
+	FL_RECT          bbox;           /* area of object (including label) */
     FL_COLOR         col1,           /* colors of obj */
                      col2;
     char           * label;          /* object label */

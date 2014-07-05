@@ -644,7 +644,7 @@ fl_draw_frame( int      style,
         return;
 
     if ( ! ( B = ( bw > 0 ) ) )
-        bw = - bw;
+        bw *= -1;
 
     switch ( style )
     {

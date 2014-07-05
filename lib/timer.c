@@ -41,7 +41,7 @@
  ***************************************/
 
 static char *
-default_filter( FL_OBJECT * ob  FL_UNUSED_ARG,
+default_filter( FL_OBJECT * obj  FL_UNUSED_ARG,
                 double      totalsec )
 {
     static char buf[ 32 ];
@@ -75,31 +75,31 @@ default_filter( FL_OBJECT * ob  FL_UNUSED_ARG,
  ***************************************/
 
 static void
-draw_timer( FL_OBJECT * ob )
+draw_timer( FL_OBJECT * obj )
 {
     FL_COLOR col;
     char *str;
-    FLI_TIMER_SPEC *sp = ob->spec;
+    FLI_TIMER_SPEC *sp = obj->spec;
 
-    if ( ob->type == FL_HIDDEN_TIMER )
+    if ( obj->type == FL_HIDDEN_TIMER )
         return;
 
     if ( ! sp->on || sp->time_left > 0.0 )
-        col = ob->col1;
+        col = obj->col1;
     else if ( ( int ) ( sp->time_left / FLI_TIMER_BLINKRATE ) % 2 )
-        col = ob->col1;
+        col = obj->col1;
     else
-        col = ob->col2;
+        col = obj->col2;
 
-    fl_draw_box( ob->boxtype, ob->x, ob->y, ob->w, ob->h, col, ob->bw );
+    fl_draw_box( obj->boxtype, obj->x, obj->y, obj->w, obj->h, col, obj->bw );
 
-    if ( ob->type == FL_VALUE_TIMER && sp->time_left > 0.0 )
+    if ( obj->type == FL_VALUE_TIMER && sp->time_left > 0.0 )
     {
         double time_shown = sp->up ? sp->timer - sp->time_left : sp->time_left;
 
-        str = ( sp->filter ? sp->filter : default_filter )( ob, time_shown );
-        fl_draw_text( FL_ALIGN_CENTER, ob->x, ob->y, ob->w, ob->h,
-                      ob->lcol, ob->lstyle, ob->lsize, str );
+        str = ( sp->filter ? sp->filter : default_filter )( obj, time_shown );
+        fl_draw_text( FL_ALIGN_CENTER, obj->x, obj->y, obj->w, obj->h,
+                      obj->lcol, obj->lstyle, obj->lsize, str );
     }
 }
 
@@ -109,14 +109,14 @@ draw_timer( FL_OBJECT * ob )
  ***************************************/
 
 static int
-handle_timer( FL_OBJECT * ob,
+handle_timer( FL_OBJECT * obj,
               int         event,
               FL_Coord    mx   FL_UNUSED_ARG,
               FL_Coord    my   FL_UNUSED_ARG,
               FL_Char     key  FL_UNUSED_ARG,
               void      * ev   FL_UNUSED_ARG )
 {
-    FLI_TIMER_SPEC *sp = ob->spec;
+    FLI_TIMER_SPEC *sp = obj->spec;
     long sec,
          usec;
     double lasttime_left;
@@ -126,31 +126,31 @@ handle_timer( FL_OBJECT * ob,
     switch ( event )
     {
         case FL_ATTRIB :
-            if ( ob->type == FL_VALUE_TIMER )
-                ob->align = fl_to_outside_lalign( ob->align );
+            if ( obj->type == FL_VALUE_TIMER )
+                obj->align = fl_to_outside_lalign( obj->align );
             break;
 
         case FL_DRAW:
-            draw_timer( ob );
+            draw_timer( obj );
             /* fall through */
 
         case FL_DRAWLABEL:
-            if (    ob->type == FL_HIDDEN_TIMER
-                 || ( ob->type == FL_VALUE_TIMER && update_only ) )
+            if (    obj->type == FL_HIDDEN_TIMER
+                 || ( obj->type == FL_VALUE_TIMER && update_only ) )
                 break;
-            if ( fl_is_outside_lalign( ob->align ) )
-                fl_draw_text_beside( ob->align, ob->x, ob->y, ob->w, ob->h,
-                                     ob->lcol, ob->lstyle, ob->lsize,
-                                     ob->label );
+            if ( fl_is_outside_lalign( obj->align ) )
+                fl_draw_text_beside( obj->align, obj->x, obj->y, obj->w, obj->h,
+                                     obj->lcol, obj->lstyle, obj->lsize,
+                                     obj->label );
             else
-                fl_draw_text( ob->align, ob->x, ob->y, ob->w, ob->h,
-                              ob->lcol, ob->lstyle, ob->lsize,
-                              ob->label );
+                fl_draw_text( obj->align, obj->x, obj->y, obj->w, obj->h,
+                              obj->lcol, obj->lstyle, obj->lsize,
+                              obj->label );
             break;
 
         case FL_RELEASE:
-            if ( ob->type != FL_HIDDEN_TIMER && sp->time_left < 0.0 )
-                fl_set_timer( ob, 0.0 );
+            if ( obj->type != FL_HIDDEN_TIMER && sp->time_left < 0.0 )
+                fl_set_timer( obj, 0.0 );
             break;
 
         case FL_STEP:
@@ -167,30 +167,30 @@ handle_timer( FL_OBJECT * ob,
 
             if ( sp->time_left > 0.01 )
             {
-                if (    ob->type == FL_VALUE_TIMER
+                if (    obj->type == FL_VALUE_TIMER
                      && ( int ) ( 10.0 * sp->time_left ) !=
                                               ( int ) ( 10.0 * lasttime_left ) )
-                    fl_redraw_object( ob );
+                    fl_redraw_object( obj );
             }
             else if ( lasttime_left > 0.0 )
             {
-                if ( ob->type == FL_HIDDEN_TIMER )
-                    fl_set_timer( ob, 0.0 );
+                if ( obj->type == FL_HIDDEN_TIMER )
+                    fl_set_timer( obj, 0.0 );
                 else
-                    fl_redraw_object( ob );
+                    fl_redraw_object( obj );
                 update_only = 0;
                 ret = FL_RETURN_CHANGED | FL_RETURN_END;
                 break;
             }
             else if ( ( int ) ( lasttime_left / FLI_TIMER_BLINKRATE ) !=
                               ( int ) ( sp->time_left / FLI_TIMER_BLINKRATE ) )
-                fl_redraw_object( ob );
+                fl_redraw_object( obj );
 
             update_only = 0;
             break;
 
         case FL_FREEMEM:
-            fl_free( ob->spec );
+            fl_free( obj->spec );
             break;
     }
 
@@ -210,25 +210,24 @@ fl_create_timer( int          type,
                  FL_Coord     h,
                  const char * l )
 {
-    FL_OBJECT *ob;
     FLI_TIMER_SPEC *sp;
+    FL_OBJECT *obj = fl_make_object( FL_TIMER, type, x, y, w, h, l,
+                                     handle_timer );
 
-    ob = fl_make_object( FL_TIMER, type, x, y, w, h, l, handle_timer );
-
-    ob->boxtype   = FLI_TIMER_BOXTYPE;
-    ob->col1      = FLI_TIMER_COL1;
-    ob->col2      = FLI_TIMER_COL2;
+    obj->boxtype   = FLI_TIMER_BOXTYPE;
+    obj->col1      = FLI_TIMER_COL1;
+    obj->col2      = FLI_TIMER_COL2;
     if ( type != FL_VALUE_TIMER )
-        ob->align = FLI_TIMER_ALIGN;
+        obj->align = FLI_TIMER_ALIGN;
     else
-        ob->align     = FL_ALIGN_LEFT;
-    ob->lcol      = FLI_TIMER_LCOL;
-    ob->spec = sp = fl_calloc( 1, sizeof *sp );
+        obj->align     = FL_ALIGN_LEFT;
+    obj->lcol      = FLI_TIMER_LCOL;
+    obj->spec = sp = fl_calloc( 1, sizeof *sp );
 
-    fl_set_timer( ob, 0.0 );       /* disabled timer */
+    fl_set_timer( obj, 0.0 );       /* disabled timer */
     sp->filter = default_filter;
 
-    return ob;
+    return obj;
 }
 
 
@@ -244,12 +243,12 @@ fl_add_timer( int          type,
               FL_Coord     h,
               const char * l )
 {
-    FL_OBJECT *ob= fl_create_timer( type, x, y, w, h, l );
+    FL_OBJECT * obj = fl_create_timer( type, x, y, w, h, l );
 
-    fl_add_object( fl_current_form, ob );
-    if ( ob->type == FL_VALUE_TIMER )
-        fl_set_object_dblbuffer( ob, 1 );
-    return ob;
+    fl_add_object( fl_current_form, obj );
+    if ( obj->type == FL_VALUE_TIMER )
+        fl_set_object_dblbuffer( obj, 1 );
+    return obj;
 }
 
 
@@ -258,17 +257,17 @@ fl_add_timer( int          type,
  ***************************************/
 
 void
-fl_set_timer( FL_OBJECT * ob,
+fl_set_timer( FL_OBJECT * obj,
               double      total )
 {
-    FLI_TIMER_SPEC *sp = ob->spec;
+    FLI_TIMER_SPEC *sp = obj->spec;
 
     sp->time_left = sp->timer = total;
     sp->on = total > 0.0;
-    fl_set_object_automatic( ob, sp->on );
+    fl_set_object_automatic( obj, sp->on );
     fl_gettime( &sp->sec, &sp->usec );
-    if ( ob->type != FL_HIDDEN_TIMER )
-        fl_redraw_object( ob );
+    if ( obj->type != FL_HIDDEN_TIMER )
+        fl_redraw_object( obj );
 }
 
 
@@ -277,9 +276,9 @@ fl_set_timer( FL_OBJECT * ob,
  ***************************************/
 
 double
-fl_get_timer( FL_OBJECT * ob )
+fl_get_timer( FL_OBJECT * obj )
 {
-    FLI_TIMER_SPEC *sp = ob->spec;
+    FLI_TIMER_SPEC *sp = obj->spec;
 
     return sp->time_left > 0.0 ? sp->time_left : 0.0;
 }
@@ -289,10 +288,10 @@ fl_get_timer( FL_OBJECT * ob )
  ***************************************/
 
 void
-fl_set_timer_countup( FL_OBJECT * ob,
+fl_set_timer_countup( FL_OBJECT * obj,
                       int         yes )
 {
-    ( ( FLI_TIMER_SPEC * ) ob->spec )->up = yes;
+    ( ( FLI_TIMER_SPEC * ) obj->spec )->up = yes;
 }
 
 
@@ -300,16 +299,16 @@ fl_set_timer_countup( FL_OBJECT * ob,
  ***************************************/
 
 FL_TIMER_FILTER
-fl_set_timer_filter( FL_OBJECT       * ob,
+fl_set_timer_filter( FL_OBJECT       * obj,
                      FL_TIMER_FILTER   filter )
 {
-    FLI_TIMER_SPEC *sp = ob->spec;
+    FLI_TIMER_SPEC *sp = obj->spec;
     FL_TIMER_FILTER old = sp->filter;
 
     if ( filter != sp->filter )
     {
         sp->filter = filter;
-        fl_redraw_object( ob );
+        fl_redraw_object( obj );
     }
     return old;
 }
@@ -319,10 +318,10 @@ fl_set_timer_filter( FL_OBJECT       * ob,
  ***************************************/
 
 void
-fl_suspend_timer( FL_OBJECT * ob )
+fl_suspend_timer( FL_OBJECT * obj )
 {
-    ( ( FLI_TIMER_SPEC * ) ob->spec )->on = 0;
-    fl_set_object_automatic( ob, 0 );
+    ( ( FLI_TIMER_SPEC * ) obj->spec )->on = 0;
+    fl_set_object_automatic( obj, 0 );
 }
 
 
@@ -330,9 +329,9 @@ fl_suspend_timer( FL_OBJECT * ob )
  ***************************************/
 
 void
-fl_resume_timer( FL_OBJECT * ob )
+fl_resume_timer( FL_OBJECT * obj )
 {
-    FLI_TIMER_SPEC *sp = ob->spec;
+    FLI_TIMER_SPEC *sp = obj->spec;
     long sec, usec;
     double elapsed;
 
@@ -343,7 +342,7 @@ fl_resume_timer( FL_OBJECT * ob )
     fl_gettime( &sec, &usec );
     sp->sec = sec - ( long ) elapsed;
     sp->usec = usec - ( long ) ( ( elapsed - ( long ) elapsed ) * 1.0e6 );
-    fl_set_object_automatic( ob, 1 );
+    fl_set_object_automatic( obj, 1 );
     sp->on = 1;
 }
 
