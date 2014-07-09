@@ -115,7 +115,7 @@ extern FD_Opt fdopt;
 /******** in fd_main.c    *********/
 
 extern Window main_window;    /* The identifier of the main window */
-extern FL_Coord winw,
+extern FL_COORD winw,
                 winh;
 extern int changed;         /* Whether the file has changed. */
 extern char main_name[ ];   /* Main creation routine name */
@@ -174,11 +174,11 @@ void deletefrom_selection( FL_OBJECT * );    /* Deletes an object from a
 
 void clear_selection( void );    /* Clears the current selection */
 
-void resize_selection( FL_Coord,
-                       FL_Coord );
+void resize_selection( FL_COORD,
+                       FL_COORD );
 
-void move_selection( FL_Coord,
-                     FL_Coord );
+void move_selection( FL_COORD,
+                     FL_COORD );
 
 void deletegroupfrom_selection( FL_OBJECT * );   /* Deletes a group of objects
                                                     from a selection */
@@ -311,8 +311,8 @@ void redraw_the_form( int );
 /* Redraws the current form. The argument indicates whether the background
    should be redrawn. */
 
-void reshape_form_background( FL_Coord,
-                              FL_Coord );
+void reshape_form_background( FL_COORD,
+                              FL_COORD );
 
 /* loads the forms from a file */
 
@@ -369,10 +369,10 @@ void init_classes( void );
 
 FL_OBJECT * add_an_object( int,
                            int,
-                           FL_Coord,
-                           FL_Coord,
-                           FL_Coord,
-                           FL_Coord );
+                           FL_COORD,
+                           FL_COORD,
+                           FL_COORD,
+                           FL_COORD );
 
 /* Returns a pointer to the name of the class */
 
@@ -417,15 +417,15 @@ void fd_clear( int,
                int,
                int );
 
-void rect( FL_Coord,
-           FL_Coord,
-           FL_Coord,
-           FL_Coord );
+void rect( FL_COORD,
+           FL_COORD,
+           FL_COORD,
+           FL_COORD );
 
-void rectf( FL_Coord,
-            FL_Coord,
-            FL_Coord,
-            FL_Coord );
+void rectf( FL_COORD,
+            FL_COORD,
+            FL_COORD,
+            FL_COORD );
 
 int fl_qtest( void );
 
@@ -525,31 +525,31 @@ enum {
 extern FL_FORM * thetestform;
 
 FL_OBJECT * fl_create_simu_canvas( int,
-                                   FL_Coord,
-                                   FL_Coord,
-                                   FL_Coord,
-                                   FL_Coord,
+                                   FL_COORD,
+                                   FL_COORD,
+                                   FL_COORD,
+                                   FL_COORD,
                                   const char * );
 
 FL_OBJECT * fl_add_simu_canvas( int,
-                                FL_Coord,
-                                FL_Coord,
-                                FL_Coord,
-                                FL_Coord,
+                                FL_COORD,
+                                FL_COORD,
+                                FL_COORD,
+                                FL_COORD,
                                 const char * );
 
 FL_OBJECT * fl_create_simu_glcanvas( int,
-                                     FL_Coord,
-                                     FL_Coord,
-                                     FL_Coord,
-                                     FL_Coord,
+                                     FL_COORD,
+                                     FL_COORD,
+                                     FL_COORD,
+                                     FL_COORD,
                                      const char * );
 
 FL_OBJECT * fl_add_simu_glcanvas( int,
-                                  FL_Coord,
-                                  FL_Coord,
-                                  FL_Coord,
-                                  FL_Coord,
+                                  FL_COORD,
+                                  FL_COORD,
+                                  FL_COORD,
+                                  FL_COORD,
                                   const char * );
 
 /* Object class specific info handler */
@@ -651,31 +651,31 @@ void reverse_menu_marker( int n );
 #define FL_NTABFOLDER  50
 
 FL_OBJECT *fl_add_ntabfolder( int,
-                              FL_Coord,
-                              FL_Coord,
-                              FL_Coord,
-                              FL_Coord,
+                              FL_COORD,
+                              FL_COORD,
+                              FL_COORD,
+                              FL_COORD,
                               const char *);
 
 FL_OBJECT *fl_create_ntabfolder( int,
-                                 FL_Coord,
-                                 FL_Coord,
-                                 FL_Coord,
-                                 FL_Coord,
+                                 FL_COORD,
+                                 FL_COORD,
+                                 FL_COORD,
+                                 FL_COORD,
                                  const char * );
 
 FL_OBJECT *fl_add_nformbrowser( int,
-                                FL_Coord,
-                                FL_Coord,
-                                FL_Coord,
-                                FL_Coord,
+                                FL_COORD,
+                                FL_COORD,
+                                FL_COORD,
+                                FL_COORD,
                                 const char * );
 
 FL_OBJECT *fl_create_nformbrowser( int,
-                                   FL_Coord,
-                                   FL_Coord,
-                                   FL_Coord,
-                                   FL_Coord,
+                                   FL_COORD,
+                                   FL_COORD,
+                                   FL_COORD,
+                                   FL_COORD,
                                    const char * );
 
 void make_backup( const char * );

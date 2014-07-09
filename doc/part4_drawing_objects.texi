@@ -254,9 +254,9 @@ window, use the routines
 @findex fl_get_win_mouse()
 @anchor{fl_get_win_mouse()}
 @example
-Window fl_get_form_mouse(FL_FORM *form, FL_Coord *x, FL_Coord *y,
+Window fl_get_form_mouse(FL_FORM *form, FL_COORD *x, FL_COORD *y,
                          unsigned *keymask)
-Window fl_get_win_mouse(Window win, FL_Coord *x, FL_Coord *y,
+Window fl_get_win_mouse(Window win, FL_COORD *x, FL_COORD *y,
                         unsigned *keymask);
 @end example
 @noindent
@@ -270,7 +270,7 @@ relative to the root window
 @findex fl_get_mouse()
 @anchor{fl_get_mouse()}
 @example
-Window fl_get_mouse(FL_Coord *x, FL_Coord *y, unsigned *keymask);
+Window fl_get_mouse(FL_COORD *x, FL_COORD *y, unsigned *keymask);
 @end example
 @noindent
 The function returns the ID of the window the mouse is in.
@@ -280,7 +280,7 @@ use the following routine
 @findex fl_set_mouse()
 @anchor{fl_set_mouse()}
 @example
-void fl_set_mouse(FL_Coord x, FL_Coord y);
+void fl_set_mouse(FL_COORD x, FL_COORD y);
 @end example
 @noindent
 Use this function sparingly, it can be extremely annoying for the user
@@ -294,7 +294,7 @@ To avoid drawing outside a box the following routine exists:
 @findex fl_set_clipping()
 @anchor{fl_set_clipping()}
 @example
-void fl_set_clipping(FL_Coord x, FL_Coord y, FL_Coord w, FL_Coord h);
+void fl_set_clipping(FL_COORD x, FL_COORD y, FL_COORD w, FL_COORD h);
 @end example
 @noindent
 It sets a clipping region in the Forms Library's default @code{GC}
@@ -327,8 +327,8 @@ The area currently clipped to is returned by the function
 @findex fl_get_clipping()
 @anchor{fl_get_clipping()}
 @example
-int fl_get_clipping(int include_global, FL_Coord *x,FL_Coord *y,
-                        FL_Coord *width, FL_Coord *height);
+int fl_get_clipping(int include_global, FL_COORD *x,FL_COORD *y,
+                        FL_COORD *width, FL_COORD *height);
 @end example
 @noindent
 On return the four pointer arguments are set to the position and size
@@ -355,8 +355,8 @@ using the functions
 @anchor{fl_get_global_clipping()}
 @example
 int fl_is_global_clipped(void);
-int fl_get_global_clipping(FL_Coord *x,FL_Coord *y,
-                           FL_Coord *width, FL_Coord *height);
+int fl_get_global_clipping(FL_COORD *x,FL_COORD *y,
+                           FL_COORD *width, FL_COORD *height);
 @end example
 
 Clipping for text is controlled via a different @code{GC} and thus
@@ -370,10 +370,10 @@ needs to be set, tested for and unset using a different set of functions:
 @findex fl_unset_text_clipping()
 @anchor{fl_unset_text_clipping()}
 @example
-void fl_set_text_clipping(FL_Coord x,FL_Coord y,FL_Coord w,FL_Coord h);
+void fl_set_text_clipping(FL_COORD x,FL_COORD y,FL_COORD w,FL_COORD h);
 int fl_is_text_clipped(int include_global);
-int fl_get_text_clipping(int include_global, FL_Coord *x,FL_Coord *y,
-                         FL_Coord *width, FL_Coord *height);
+int fl_get_text_clipping(int include_global, FL_COORD *x,FL_COORD *y,
+                         FL_COORD *width, FL_COORD *height);
 void fl_unset_text_clipping(void);
 @end example
 
@@ -384,8 +384,8 @@ specific  @code{GC}:
 @findex fl_unset_gc_clipping()
 @anchor{fl_unset_gc_clipping()}
 @example
-void fl_set_gc_clipping(GC gc, FL_Coord x, FL_Coord y,
-                        FL_Coord width, FL_Coord height);
+void fl_set_gc_clipping(GC gc, FL_COORD x, FL_COORD y,
+                        FL_COORD width, FL_COORD height);
 void fl_unset_gc_clipping(GC gc);
 @end example
 @noindent
@@ -406,8 +406,8 @@ account (in contrast to the result of the
 label that isn't inside the object} the following routine exists:
 @findex fl_get_object_bbox()
 @example
-void fl_get_object_bbox(FL_OBJECT *obj, FL_Coord *x, FL_Coord *y,
-                        FL_Coord *w, FL_Coord *h);
+void fl_get_object_bbox(FL_OBJECT *obj, FL_COORD *x, FL_COORD *y,
+                        FL_COORD *w, FL_COORD *h);
 @end example
 
 For drawing text at the correct places you will need some information
@@ -525,9 +525,9 @@ The most basic drawing routines are for drawing rectangles:
 @findex fl_rect()
 @anchor{fl_rect()}
 @example
-void fl_rectf(FL_Coord x, FL_Coord y, FL_Coord w, FL_Coord h,
+void fl_rectf(FL_COORD x, FL_COORD y, FL_COORD w, FL_COORD h,
               FL_COLOR col);
-void fl_rect(FL_Coord x, FL_Coord y, FL_Coord w, FL_Coord h,
+void fl_rect(FL_COORD x, FL_COORD y, FL_COORD w, FL_COORD h,
              FL_COLOR col);
 @end example
 @noindent
@@ -540,7 +540,7 @@ use
 @findex fl_rectbound()
 @anchor{fl_rectbound()}
 @example
-void fl_rectbound(FL_Coord x, FL_Coord y, FL_Coord w, FL_Coord h,
+void fl_rectbound(FL_COORD x, FL_COORD y, FL_COORD w, FL_COORD h,
                   FL_COLOR col);
 @end example
 
@@ -551,9 +551,9 @@ employ
 @findex fl_roundrect()
 @anchor{fl_roundrect()}
 @example
-void fl_roundrectf(FL_Coord x, FL_Coord y, FL_Coord w, FL_Coord h,
+void fl_roundrectf(FL_COORD x, FL_COORD y, FL_COORD w, FL_COORD h,
                    FL_COLOR col);
-void fl_roundrect(FL_Coord x, FL_Coord y, FL_Coord w, FL_Coord h,
+void fl_roundrect(FL_COORD x, FL_COORD y, FL_COORD w, FL_COORD h,
                   FL_COLOR col);
 @end example
 
@@ -595,11 +595,11 @@ be used (use @code{w} equal to
 @findex fl_ovalbound()
 @anchor{fl_ovalbound()}
 @example
-void fl_ovalf(FL_Coord x, FL_Coord y, FL_Coord w, FL_Coord h,
+void fl_ovalf(FL_COORD x, FL_COORD y, FL_COORD w, FL_COORD h,
               FL_COLOR col);
-void fl_ovall(FL_Coord x, FL_Coord y, FL_Coord w, FL_Coord h,
+void fl_ovall(FL_COORD x, FL_COORD y, FL_COORD w, FL_COORD h,
               FL_COLOR col);
-void fl_ovalbound(FL_Coord x, FL_Coord y, FL_Coord w, FL_Coord h,
+void fl_ovalbound(FL_COORD x, FL_COORD y, FL_COORD w, FL_COORD h,
                   FL_COLOR col);
 @end example
 @noindent
@@ -611,8 +611,8 @@ trailing 'l' it's meant indicate that only a line will be drawn. And
 there's also the function
 @findex fl_oval()
 @example
-void fl_ovalf(int fill, FL_Coord x, FL_Coord y, FL_Coord w,
-              FL_Coord h, FL_COLOR col);
+void fl_ovalf(int fill, FL_COORD x, FL_COORD y, FL_COORD w,
+              FL_COORD h, FL_COLOR col);
 @end example
 which is invoked by both (the macros) @code{@ref{fl_ovalf()}}
 and @code{@ref{fl_ovall()}} with the first argument @code{fill}
@@ -629,9 +629,9 @@ circle with a black circumfence:
 @findex fl_circbound()
 @anchor{fl_circbound()}
 @example
-void fl_circ(FL_Coord x, FL_Coord y, FL_Coord r, FL_COLOR col);
-void fl_circf(FL_Coord x, FL_Coord y, FL_Coord r, FL_COLOR col);
-void fl_circbound(FL_Coord x, FL_Coord y, FL_Coord r, FL_COLOR col);
+void fl_circ(FL_COORD x, FL_COORD y, FL_COORD r, FL_COLOR col);
+void fl_circf(FL_COORD x, FL_COORD y, FL_COORD r, FL_COLOR col);
+void fl_circbound(FL_COORD x, FL_COORD y, FL_COORD r, FL_COLOR col);
 @end example
 @noindent
 Here @code{x} and @code{y} are the coordinates of the center of the
@@ -644,9 +644,9 @@ can be used
 @findex fl_arcf()
 @anchor{fl_arcf()}
 @example
-void fl_arc(FL_Coord x, FL_Coord y, FL_Coord radius,
+void fl_arc(FL_COORD x, FL_COORD y, FL_COORD radius,
             int start_theta, int end_theta, FL_COLOR col);
-void fl_arcf(FL_Coord x, FL_Coord y, FL_Coord radius,
+void fl_arcf(FL_COORD x, FL_COORD y, FL_COORD radius,
              int start_theta, int end_theta, FL_COLOR col);
 @end example
 @code{x} and @code{y} are the coordinates of the center and @code{r}
@@ -662,8 +662,8 @@ To draw elliptical arcs the following routine can be used:
 @findex fl_pieslice()
 @anchor{fl_pieslice()}
 @example
-void fl_pieslice(int fill, FL_Coord x, FL_Coord y, FL_Coord w,
-                 FL_Coord h, int start_theta, int end_theta,
+void fl_pieslice(int fill, FL_COORD x, FL_COORD y, FL_COORD w,
+                 FL_COORD h, int start_theta, int end_theta,
                  FL_COLOR col);
 @end example
 @noindent
@@ -678,8 +678,8 @@ using the following routine
 @findex fl_ovalarc(
 @anchor{fl_ovalarc(}
 @example
-void fl_ovalarc(int fill, FL_Coord x, FL_Coord y, FL_Coord w,
-                FL_Coord h, int theta, int dtheta, FL_COLOR col);
+void fl_ovalarc(int fill, FL_COORD x, FL_COORD y, FL_COORD w,
+                FL_COORD h, int theta, int dtheta, FL_COLOR col);
 @end example
 @noindent
 Here @code{theta} specifies the starting angle (again measured in
@@ -694,8 +694,8 @@ To connect two points with a straight line, use
 @findex fl_line()
 @anchor{fl_line()}
 @example
-void fl_line(FL_Coord x1, FL_Coord y1,
-             FL_Coord x2, FL_Coord y2, FL_COLOR col);
+void fl_line(FL_COORD x1, FL_COORD y1,
+             FL_COORD x2, FL_COORD y2, FL_COLOR col);
 @end example
 
 There is also a macro for drawing a line along the diagonal of a box
@@ -703,7 +703,7 @@ There is also a macro for drawing a line along the diagonal of a box
 @findex fl_diagline()
 @anchor{fl_diagline()}
 @example
-void fl_diagline(FL_Coord x, FL_Coord y, FL_Coord w, FL_Coord h,
+void fl_diagline(FL_COORD x, FL_COORD y, FL_COORD w, FL_COORD h,
                  FL_COLOR col);
 @end example
 
@@ -722,7 +722,7 @@ There are also routines to draw one or more pixels
 @findex fl_points()
 @anchor{fl_points()}
 @example
-void fl_point(FL_Coord x, FL_Coord y, FL_COLOR col);
+void fl_point(FL_COORD x, FL_COORD y, FL_COLOR col);
 void fl_points(FL_POINT *p, int np, FL_COLOR col);
 @end example
 @noindent
@@ -856,8 +856,8 @@ use it to draw the bounding box of the object.
 @findex fl_draw_box()
 @anchor{fl_draw_box()}
 @example
-void fl_draw_box(int style, FL_Coord x, FL_Coord y,
-                 FL_Coord w, FL_Coord h,
+void fl_draw_box(int style, FL_COORD x, FL_COORD y,
+                 FL_COORD w, FL_COORD h,
                  FL_COLOR col, int bw);
 @end example
 @noindent
@@ -873,8 +873,8 @@ There is also a routine for drawing a frame:
 @findex fl_draw_frame()
 @anchor{fl_draw_frame()}
 @example
-void fl_draw_frame(int style, FL_Coord x, FL_Coord y,
-                   FL_Coord w, FL_Coord h, FL_COLOR col, int bw)
+void fl_draw_frame(int style, FL_COORD x, FL_COORD y,
+                   FL_COORD w, FL_COORD h, FL_COLOR col, int bw)
 @end example
 @noindent
 All parameters have the usual meaning except that the frame is drawn
@@ -886,11 +886,11 @@ For drawing text there are two routines:
 @findex fl_draw_text_beside()
 @anchor{fl_draw_text_beside()}
 @example
-void fl_draw_text(int align, FL_Coord x, FL_Coord y, FL_Coord w,
-                  FL_Coord h, FL_COLOR col, int style, int size,
+void fl_draw_text(int align, FL_COORD x, FL_COORD y, FL_COORD w,
+                  FL_COORD h, FL_COLOR col, int style, int size,
                   const char *str);
-void fl_draw_text_beside(int align, FL_Coord x, FL_Coord y,
-                         FL_Coord w, FL_Coord h, FL_COLOR col,
+void fl_draw_text_beside(int align, FL_COORD x, FL_COORD y,
+                         FL_COORD w, FL_COORD h, FL_COLOR col,
                          int style, int size, const char *str);
 @end example
 @noindent
@@ -917,8 +917,8 @@ cursor can optionally be drawn
 @findex fl_draw_text_cursor()
 @anchor{fl_draw_text_cursor()}
 @example
-void fl_draw_text_cursor(int align, FL_Coord x, FL_Coord y,
-                         FL_Coord w, FL_Coord h, FL_COLOR col,
+void fl_draw_text_cursor(int align, FL_COORD x, FL_COORD y,
+                         FL_COORD w, FL_COORD h, FL_COLOR col,
                          int style, int size, char *str,
                          FL_COLOR ccol, int pos);
 @end example

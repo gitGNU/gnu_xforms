@@ -74,7 +74,7 @@ int
 main( int    argc,
       char * argv[ ] )
 {
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     ui = create_form_inv( );
 
     fl_show_form( ui->inv, FL_PLACE_CENTER | FL_FREE_SIZE, FL_TRANSIENT,

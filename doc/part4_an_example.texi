@@ -26,10 +26,10 @@ also contain some defaults for the boxtype and label alignment etc.
 The include file also has to declare all the functions available for
 this object class. I.e., it should contain:
 @example
-extern FL_OBJECT *fl_create_colbox(int, FL_Coord, FL_Coord, FL_Coord,
-                                   FL_Coord, const char *);
-extern FL_OBJECT *fl_add_colbox(int, FL_Coord, FL_Coord, FL_Coord,
-                                FL_Coord, const char *);
+extern FL_OBJECT *fl_create_colbox(int, FL_COORD, FL_COORD, FL_COORD,
+                                   FL_COORD, const char *);
+extern FL_OBJECT *fl_add_colbox(int, FL_COORD, FL_COORD, FL_COORD,
+                                FL_COORD, const char *);
 extern int fl_get_colorbox(FL_OBJECT *);
 @end example
 
@@ -43,8 +43,8 @@ typedef struct @{
     int counter;         /* no. of times pushed */
 @} COLBOX_SPEC;
 
-FL_OBJECT *fl_create_colbox(int type, FL_Coord x, FL_Coord y,
-                            FL_Coord w, FL_Coord h,
+FL_OBJECT *fl_create_colbox(int type, FL_COORD x, FL_COORD y,
+                            FL_COORD w, FL_COORD h,
                             const char *label) @{
     FL_OBJECT *obj;
 
@@ -62,8 +62,8 @@ FL_OBJECT *fl_create_colbox(int type, FL_Coord x, FL_Coord y,
     return obj;
 @}
 
-FL_OBJECT *fl_add_colbox(int type, FL_Coord x, FL_Coord y,
-                         FL_Coord w, FL_Coord h, const char *label) @{
+FL_OBJECT *fl_add_colbox(int type, FL_COORD x, FL_COORD y,
+                         FL_COORD w, FL_COORD h, const char *label) @{
     FL_OBJECT *obj = fl_create_colbox(type, x, y, w, h, label); 
     fl_add_object(fl_current_form, obj);
     return obj;
@@ -83,7 +83,7 @@ to be done is redrawing the object. This leads to the following piece
 of code:
 @example
 static int handle_colbox(FL_OBJECT *obj, int event,
-                         FL_Coord mx, FL_Coord my,
+                         FL_COORD mx, FL_COORD my,
                          int key, void *xev) @{
     switch (event) @{
         case FL_DRAW:              /* Draw box */

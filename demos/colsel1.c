@@ -88,7 +88,7 @@ main( int    argc,
 {
     FL_OBJECT *ret;
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
 
     makeform( );
     fl_scale_form( form, 4.0, 4.0 );

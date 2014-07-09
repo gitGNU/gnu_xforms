@@ -22,7 +22,7 @@
 
 typedef struct {
     int            val;             /* state of button (on/off) */
-    FL_Char        mousebut;        /* mouse button that caused the push     */
+    FL_VAL         mousebut;        /* mouse button that caused the push     */
     int            timdel;          /* time since last touch (TOUCH buttons) */
     int            event;           /* what event triggers redraw            */
     int            is_pushed;       /* set while drawn as pushed down        */

@@ -226,9 +226,9 @@ draw( FL_OBJECT * ob )
 static int
 handle_thumbwheel( FL_OBJECT * ob,
                    int         ev,
-                   FL_Coord    mx,
-                   FL_Coord    my,
-                   FL_Char     key,
+                   FL_COORD    mx,
+                   FL_COORD    my,
+                   FL_VAL      key,
                    void      * xev  FL_UNUSED_ARG )
 {
     FLI_THUMBWHEEL_SPEC *sp = ob->spec;
@@ -475,10 +475,10 @@ fl_set_thumbwheel_return( FL_OBJECT    * obj,
 
 FL_OBJECT *
 fl_create_thumbwheel( int          type,
-                      FL_Coord     x,
-                      FL_Coord     y,
-                      FL_Coord     w,
-                      FL_Coord     h,
+                      FL_COORD     x,
+                      FL_COORD     y,
+                      FL_COORD     w,
+                      FL_COORD     h,
                       const char * label )
 {
     FL_OBJECT *obj;
@@ -509,10 +509,10 @@ fl_create_thumbwheel( int          type,
 
 FL_OBJECT *
 fl_add_thumbwheel( int          type,
-                   FL_Coord     x,
-                   FL_Coord     y,
-                   FL_Coord     w,
-                   FL_Coord     h,
+                   FL_COORD     x,
+                   FL_COORD     y,
+                   FL_COORD     w,
+                   FL_COORD     h,
                    const char * label )
 {
     FL_OBJECT *obj = fl_create_thumbwheel( type, x, y, w, h, label );

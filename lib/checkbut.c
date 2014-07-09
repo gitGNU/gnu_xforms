@@ -42,7 +42,7 @@ static void
 draw_checkbutton( FL_OBJECT * ob,
                   int         event )
 {
-    FL_Coord xx,
+    FL_COORD xx,
              yy,
              ww,
              hh,
@@ -83,10 +83,10 @@ draw_checkbutton( FL_OBJECT * ob,
 
 FL_OBJECT *
 fl_create_checkbutton( int          type,
-                       FL_Coord     x,
-                       FL_Coord     y,
-                       FL_Coord     w,
-                       FL_Coord     h,
+                       FL_COORD     x,
+                       FL_COORD     y,
+                       FL_COORD     w,
+                       FL_COORD     h,
                        const char * label )
 {
     FL_OBJECT *obj;
@@ -109,10 +109,10 @@ fl_create_checkbutton( int          type,
 
 FL_OBJECT *
 fl_add_checkbutton( int          type,
-                    FL_Coord     x,
-                    FL_Coord     y,
-                    FL_Coord     w,
-                    FL_Coord     h,
+                    FL_COORD     x,
+                    FL_COORD     y,
+                    FL_COORD     w,
+                    FL_COORD     h,
                     const char * label )
 {
     FL_OBJECT *obj = fl_create_checkbutton( type, x, y, w, h, label );

@@ -48,17 +48,17 @@ typedef enum {
 /***** Routines *****/
 
 FL_EXPORT FL_OBJECT * fl_create_input( int          type,
-                                       FL_Coord     x,
-                                       FL_Coord     y,
-                                       FL_Coord     w,
-                                       FL_Coord     h,
+                                       FL_COORD     x,
+                                       FL_COORD     y,
+                                       FL_COORD     w,
+                                       FL_COORD     h,
                                        const char * label );
 
 FL_EXPORT FL_OBJECT * fl_add_input( int          type,
-                                    FL_Coord     x,
-                                    FL_Coord     y,
-                                    FL_Coord     w,
-                                    FL_Coord     h,
+                                    FL_COORD     x,
+                                    FL_COORD     y,
+                                    FL_COORD     w,
+                                    FL_COORD     h,
                                     const char * label );
 
 FL_EXPORT void fl_set_input( FL_OBJECT  * ob,
@@ -168,35 +168,35 @@ FL_EXPORT int fl_validate_input( FL_OBJECT *obj );
 typedef struct {
     /* basic editing */
 
-    FL_Char del_prev_char;     /* delete previous char    */
-    FL_Char del_next_char;     /* delete next char        */
-    FL_Char del_prev_word;     /* delete previous word    */
-    FL_Char del_next_word;     /* delete next word        */
+    FL_VAL del_prev_char;     /* delete previous char    */
+    FL_VAL del_next_char;     /* delete next char        */
+    FL_VAL del_prev_word;     /* delete previous word    */
+    FL_VAL del_next_word;     /* delete next word        */
 
     /* movement */
 
-    FL_Char moveto_prev_line;  /* one line  up             */
-    FL_Char moveto_next_line;  /* one line down            */
-    FL_Char moveto_prev_char;  /* one char left            */
-    FL_Char moveto_next_char;  /* one char right           */
-    FL_Char moveto_prev_word;  /* one word left            */
-    FL_Char moveto_next_word;  /* one word right           */
-    FL_Char moveto_prev_page;  /* one page up              */
-    FL_Char moveto_next_page;  /* one page down            */
-    FL_Char moveto_bol;        /* move to begining of line */
-    FL_Char moveto_eol;        /* move to end of line      */
-    FL_Char moveto_bof;        /* move to begin of file    */
-    FL_Char moveto_eof;        /* move to end of file      */
+    FL_VAL moveto_prev_line;  /* one line  up             */
+    FL_VAL moveto_next_line;  /* one line down            */
+    FL_VAL moveto_prev_char;  /* one char left            */
+    FL_VAL moveto_next_char;  /* one char right           */
+    FL_VAL moveto_prev_word;  /* one word left            */
+    FL_VAL moveto_next_word;  /* one word right           */
+    FL_VAL moveto_prev_page;  /* one page up              */
+    FL_VAL moveto_next_page;  /* one page down            */
+    FL_VAL moveto_bol;        /* move to begining of line */
+    FL_VAL moveto_eol;        /* move to end of line      */
+    FL_VAL moveto_bof;        /* move to begin of file    */
+    FL_VAL moveto_eof;        /* move to end of file      */
 
     /* misc. stuff */
 
-    FL_Char transpose;         /* switch two char positions */
-    FL_Char paste;             /* paste the edit buffer    */
-    FL_Char backspace;         /* another  del_prev_char   */
-    FL_Char del_to_bol;        /* cut to begining of line  */
-    FL_Char del_to_eol;        /* cut to end of line       */
-    FL_Char clear_field;       /* delete everything        */
-    FL_Char del_to_eos;        /* not implemented          */
+    FL_VAL transpose;         /* switch two char positions */
+    FL_VAL paste;             /* paste the edit buffer    */
+    FL_VAL backspace;         /* another  del_prev_char   */
+    FL_VAL del_to_bol;        /* cut to begining of line  */
+    FL_VAL del_to_eol;        /* cut to end of line       */
+    FL_VAL clear_field;       /* delete everything        */
+    FL_VAL del_to_eos;        /* not implemented          */
 } FL_EditKeymap;
 
 FL_EXPORT void fl_set_input_editkeymap( const FL_EditKeymap * keymap );

@@ -97,8 +97,8 @@ draw_barchart( FL_OBJECT * ob,
         j,
         n;
     float bwidth;       /* Width of a bar */
-    FL_Coord zeroh;     /* Height of zero value */
-    FL_Coord val,
+    FL_COORD zeroh;     /* Height of zero value */
+    FL_COORD val,
              xx,
              dx;
     float incr,         /* Increment per unit value */
@@ -132,7 +132,7 @@ draw_barchart( FL_OBJECT * ob,
     /* Draw the bars */
 
     n = 1;
-    if ( ( xfuzzy = bwidth - ( FL_Coord ) bwidth ) != 0.0 )
+    if ( ( xfuzzy = bwidth - ( FL_COORD ) bwidth ) != 0.0 )
         n = 1.0 / xfuzzy + 2;
 
     for ( e = entries, xx = x, i = 0, es = e + numb; e < es; e++, i++ )
@@ -175,7 +175,7 @@ draw_horbarchart( FL_OBJECT * ob,
     int numb = sp->numb;
     float bwidth;       /* Width of a bar                       */
     float incr;         /* Increment per unit value             */
-    FL_Coord lw,        /* Label width & Position of zero value */
+    FL_COORD lw,        /* Label width & Position of zero value */
              zeroh,
              dy,
              yy;
@@ -478,7 +478,7 @@ static void
 draw_chart( FL_OBJECT * ob )
 {
     FLI_CHART_SPEC *sp = ob->spec;
-    FL_Coord absbw = FL_abs( ob->bw );
+    FL_COORD absbw = FL_abs( ob->bw );
     float min = sp->min,
           max = sp->max;
     int i;
@@ -559,9 +559,9 @@ draw_chart( FL_OBJECT * ob )
 static int
 handle_chart( FL_OBJECT * ob,
               int         event,
-              FL_Coord    mx   FL_UNUSED_ARG,
-              FL_Coord    my   FL_UNUSED_ARG,
-              FL_Char     key  FL_UNUSED_ARG,
+              FL_COORD    mx   FL_UNUSED_ARG,
+              FL_COORD    my   FL_UNUSED_ARG,
+              FL_VAL      key  FL_UNUSED_ARG,
               void      * ev   FL_UNUSED_ARG )
 {
     switch ( event )
@@ -591,10 +591,10 @@ handle_chart( FL_OBJECT * ob,
 
 FL_OBJECT *
 fl_create_chart( int          type,
-                 FL_Coord     x,
-                 FL_Coord     y,
-                 FL_Coord     w,
-                 FL_Coord     h,
+                 FL_COORD     x,
+                 FL_COORD     y,
+                 FL_COORD     w,
+                 FL_COORD     h,
                  const char * label )
 {
     FL_OBJECT *obj;
@@ -633,10 +633,10 @@ fl_create_chart( int          type,
 
 FL_OBJECT *
 fl_add_chart( int          type,
-              FL_Coord     x,
-              FL_Coord     y,
-              FL_Coord     w,
-              FL_Coord     h,
+              FL_COORD     x,
+              FL_COORD     y,
+              FL_COORD     w,
+              FL_COORD     h,
               const char * label )
 {
     FL_OBJECT *obj = fl_create_chart( type, x, y, w, h, label );

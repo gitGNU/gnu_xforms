@@ -486,7 +486,7 @@ static void
 flps_draw_button( FL_OBJECT * ob )
 {
     FL_COLOR col = ( ( SPEC * ) ob->spec )->int_val ? ob->col2 : ob->col1;
-    FL_Coord dh, dw, ww, absbw = FL_abs( ob->bw );
+    FL_COORD dh, dw, ww, absbw = FL_abs( ob->bw );
     float off2 = 0.0;
 
     if ( ob->type == FL_HIDDEN_BUTTON )
@@ -537,7 +537,7 @@ static void
 flps_draw_labelbutton( FL_OBJECT * ob )
 {
     FL_COLOR save_col = ob->lcol;
-    FL_Coord dh,
+    FL_COORD dh,
              dw,
              ww,
              absbw = FL_abs(ob->bw);
@@ -2221,7 +2221,7 @@ flps_draw_spinner( FL_OBJECT * ob )
 
     if ( ob->w >= ob->h )
     {
-        FL_Coord bwh = FL_max( ob->h / 2, 1 );
+        FL_COORD bwh = FL_max( ob->h / 2, 1 );
         ob->h = 2 * bwh;
 
         input = flps_make_object( FL_INPUT,
@@ -2238,7 +2238,7 @@ flps_draw_spinner( FL_OBJECT * ob )
     }
     else
     {
-        FL_Coord bwh = FL_max( ob->w / 2, 1 );
+        FL_COORD bwh = FL_max( ob->w / 2, 1 );
         ob->w = 2 * bwh;
 
         input = flps_make_object( FL_INPUT,

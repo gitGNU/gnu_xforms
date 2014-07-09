@@ -149,20 +149,20 @@ windows but some don't.
 You can set the position or size to be used via the following calls
 @findex fl_set_form_position()
 @example
-void fl_set_form_position(FL_FORM *form, FL_Coord x, FL_Coord y);
+void fl_set_form_position(FL_FORM *form, FL_COORD x, FL_COORD y);
 @end example
 @noindent
 and
 @findex fl_set_form_size()
 @example
-void fl_set_form_size(FL_FORM *form, FL_Coord w, FL_Coord h);
+void fl_set_form_size(FL_FORM *form, FL_COORD w, FL_COORD h);
 @end example
 @noindent
 or, combining both these two functions,
 @findex fl_set_form_geometry()
 @example
-void fl_set_form_geometry(FL_FORM form*, FL_Coord x, FL_Coord y,
-                          FL_Coord w, FL_Coord h);
+void fl_set_form_geometry(FL_FORM form*, FL_COORD x, FL_COORD y,
+                          FL_COORD w, FL_COORD h);
 @end example
 @noindent
 before placing the form on the screen. (Actually the routines can also
@@ -195,7 +195,7 @@ mouse, use one of the following two routines to set the "hotspot"
 @findex fl_set_form_hotobject()
 @anchor{fl_set_form_hotobject()}
 @example
-void fl_set_form_hotspot(FL_FORM *form, FL_Coord x, FL_Coord y);
+void fl_set_form_hotspot(FL_FORM *form, FL_COORD x, FL_COORD y);
 void fl_set_form_hotobject(FL_FORM *form, FL_OBJECT *obj);
 @end example
 @noindent
@@ -1104,10 +1104,10 @@ Following is a partial list of the available routines:
 @findex fl_get_winsize()
 @findex fl_get_wingeometry()
 @example
-void fl_get_winorigin(Window win, FL_Coord *x, FL_Coord *y);
-void fl_get_winsize(Window win, FL_Coord *w, FL_Coord *h);
-void fl_get_wingeometry(Window win, FL_Coord *x, FL_Coord *y,
-                        FL_Coord *w, FL_Coord *h);
+void fl_get_winorigin(Window win, FL_COORD *x, FL_COORD *y);
+void fl_get_winsize(Window win, FL_COORD *w, FL_COORD *h);
+void fl_get_wingeometry(Window win, FL_COORD *x, FL_COORD *y,
+                        FL_COORD *w, FL_COORD *h);
 @end example
 @noindent
 All positions are relative to the root window.
@@ -1116,7 +1116,7 @@ There are also routines that can be used to obtain the current mouse
 position relative to the root window:
 @findex fl_get_mouse()
 @example
-Window fl_get_mouse(FL_Coord *x, FL_Coord *y,
+Window fl_get_mouse(FL_COORD *x, FL_COORD *y,
                     unsigned int *keymask);
 @end example
 @noindent
@@ -1127,7 +1127,7 @@ To obtain the mouse position relative to an arbitrary window, the
 following routine may be used
 @findex fl_get_win_mouse()
 @example
-Window fl_get_win_mouse(Window win, FL_Coord *x, FL_Coord *y,
+Window fl_get_win_mouse(Window win, FL_COORD *x, FL_COORD *y,
                         unsigned int *keymask);
 @end example
 
@@ -1161,13 +1161,13 @@ Once a callback function is bound and the specified condition is met,
 the callback function instead of returning the object.
 
 To bind a callback routine to an object, use the following
-@tindex FL_CALLBACKPTR
+@tindex FL_CALLBACK_PTR
 @findex fl_set_object_callback()
 @example
-typedef void (*FL_CALLBACKPTR)(FL_OBJECT *obj, long argument);
-FL_CALLBACKPTR fl_set_object_callback(FL_OBJECT *obj,
-                                      FL_CALLBACKPTR callback,
-                                      long argument);
+typedef void (*FL_CALLBACK_PTR)(FL_OBJECT *obj, long argument);
+FL_CALLBACK_PTR fl_set_object_callback(FL_OBJECT *obj,
+                                       FL_CALLBACK_PTR callback,
+                                       long argument);
 @end example
 @noindent
 where @code{callback} is the callback function. @code{argument} is an

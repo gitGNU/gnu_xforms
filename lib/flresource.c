@@ -506,13 +506,21 @@ init_resource_database( const char *appclass )
         M_warn( "init_resource_database", "System default %s loaded", buf );
     }
 
-    /* try XAPPLRESDIR */
+    fli_snprintf( buf, sizeof buf, "/etc/X11/app-defaults/%s", appclass );
+    M_info( "init_resource_database", "Trying Sys_default: %s", buf );
+    if ( ( fdb = XrmGetFileDatabase( buf ) ) )
+    {
+        XrmMergeDatabases( fdb, &fldatabase );
+        M_warn( "init_resource_database", "System default %s loaded", buf );
+    }
+
+    /* Try XAPPLRESDIR */
 
     M_info( "init_resource_database", "Trying XAPPLRESDIR" );
     if ( ( rstr = getenv( "XAPPLRESDIR" ) ) )
         handle_applresdir( rstr, appclass );
 
-    /* try server defined resources */
+    /* Try server defined resources */
 
     M_info( "init_resource_database", "Trying RESOURCE_MANAGER" );
     if ( ( rstr = XResourceManagerString( fl_display ) ) )
@@ -525,11 +533,19 @@ init_resource_database( const char *appclass )
     }
     else
     {
-        /* Try ~/.Xdefaults   */
+        /* Try ~/.Xdefaults and ~/.Xresources */
 
         if ( ( rstr = getenv( "HOME" ) ) )
         {
             fli_snprintf( buf, sizeof buf,"%s/.Xdefaults", rstr );
+            M_info( "init_resource_database", "Trying %s", buf );
+            if ( ( fdb = XrmGetFileDatabase( buf ) ) )
+            {
+                XrmMergeDatabases( fdb, &fldatabase );
+                M_warn( "init_resource_database", "%s loaded", buf );
+            }
+
+            fli_snprintf( buf, sizeof buf,"%s/.Xresources", rstr );
             M_info( "init_resource_database", "Trying %s", buf );
             if ( ( fdb = XrmGetFileDatabase( buf ) ) )
             {
@@ -576,11 +592,8 @@ init_resource_database( const char *appclass )
     errno = 0;
 
     if ( ! fldatabase )
-    {
         M_warn( "init_resource_database",
                 "Can't find any resource databases!" );
-        return;
-    }
 }
 
 
@@ -706,7 +719,7 @@ fl_set_resource( const char * str,
 
 
 /***************************************
- * internal resource initialization
+ * Internal resource initialization
  ***************************************/
 
 static void
@@ -1089,10 +1102,10 @@ fl_initialize( int        * na,
 
     /* Be paranoid */
 
-    if ( ! na || ! *na )
+    if ( ! na || *na <= 0 || ! arg )
     {
         M_err( "fl_initialize",
-               "XForms: argc == 0 or argv == NULL detected\n" );
+               "XForms: argc <= 0 or argv == NULL detected\n" );
         exit( 1 );
     }
 
@@ -1151,7 +1164,7 @@ fl_initialize( int        * na,
         buf[ sizeof buf - 1 ] = '\0';
     }
 
-    /* Open display and quit on failure */
+    /* Open display and bail out on failure */
 
     if ( ! ( fl_display = XOpenDisplay( buf ) ) )
     {

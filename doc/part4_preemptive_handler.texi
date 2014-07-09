@@ -22,30 +22,30 @@ thus does not offer the capability of overriding the built-in handler.
 It is much safer, however.
 
 The API to install a pre- or post-handler for an object is as follows
-@tindex FL_HANDLEPTR
+@tindex FL_HANDLE_PTR
 @findex fl_set_object_prehandler()
 @anchor{fl_set_object_prehandler()}
 @findex fl_set_object_posthandler()
 @anchor{fl_set_object_posthandler()}
 @example
-typedef int (*FL_HANDLEPTR)(FL_OBJECT *obj, int event,
-                            FL_Coord mx, FL_Coord my,
-                            FL_Char key, void *raw_event);
+typedef int (*FL_HANDLE_PTR)(FL_OBJECT *obj, int event,
+                             FL_COORD mx, FL_COORD my,
+                             FL_VAL key, void *raw_event);
 
 void fl_set_object_prehandler(FL_OBJECT *obj,
-                              FL_HANDLEPTR pre_handler);
+                              FL_HANDLE_PTR pre_handler);
 void fl_set_object_posthandler(FL_OBJECT *obj,
-                               FL_HANDLEPTR post_handler);
+                               FL_HANDLE_PTR post_handler);
 @end example
 @noindent
 @code{event} is a generic event of the Forms Library, that is,
 @code{@ref{FL_DRAW}}, @code{@ref{FL_ENTER}} etc. Parameters @code{mx}
 and @code{my} are the mouse position and @code{key} is the key
 pressed (the type
-@anchor{FL_Char}
-@tindex FL_Char
-@code{FL_Char} is an unsigned integer large enough to store the value
-of an UTF-8 character, i.e., with at least 32 bits). The last
+@anchor{FL_VAL}
+@tindex FL_VAL
+@code{FL_VAL} is an unsigned integer, large enough to store the value
+of an UTF-8 character, i.e., with at least 32 bits. The last
 parameter @code{raw_event} is a pointer to the XEvent (cast to a void
 pointer due to the different types of Xevents) that caused the
 invocation of the pre- or post-handler. But note: not all events of

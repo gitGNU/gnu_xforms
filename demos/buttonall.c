@@ -77,7 +77,7 @@ main( int    argc,
 {
     FD_buttform *fd_buttform;
 
-    fl_initialize( &argc, argv, 0, 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     fd_buttform = create_form_buttform( );
 
     /* fill-in form initialization code */

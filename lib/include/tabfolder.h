@@ -36,17 +36,17 @@ enum {
 };
 
 FL_EXPORT FL_OBJECT * fl_create_tabfolder( int          type,
-                                           FL_Coord     x,
-                                           FL_Coord     y,
-                                           FL_Coord     w,
-                                           FL_Coord     h,
+                                           FL_COORD     x,
+                                           FL_COORD     y,
+                                           FL_COORD     w,
+                                           FL_COORD     h,
                                            const char * label );
 
 FL_EXPORT FL_OBJECT * fl_add_tabfolder( int          type,
-                                        FL_Coord     x,
-                                        FL_Coord     y,
-                                        FL_Coord     w,
-                                        FL_Coord     h,
+                                        FL_COORD     x,
+                                        FL_COORD     y,
+                                        FL_COORD     w,
+                                        FL_COORD     h,
                                         const char * label );
 
 FL_EXPORT FL_OBJECT * fl_addto_tabfolder( FL_OBJECT  * ob,
@@ -105,10 +105,10 @@ FL_EXPORT const char * fl_get_active_folder_name( FL_OBJECT * ob );
 
 
 FL_EXPORT void fl_get_folder_area( FL_OBJECT * ob,
-                                   FL_Coord  * x,
-                                   FL_Coord  * y,
-                                   FL_Coord  * w,
-                                   FL_Coord  * h );
+                                   FL_COORD  * x,
+                                   FL_COORD  * y,
+                                   FL_COORD  * w,
+                                   FL_COORD  * h );
 
 FL_EXPORT void fl_replace_folder_bynumber( FL_OBJECT * ob,
                                            int         num,

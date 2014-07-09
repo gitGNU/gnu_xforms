@@ -40,17 +40,17 @@ typedef enum {
 /***** Routines *****/
 
 FL_EXPORT FL_OBJECT * fl_create_chart( int          type,
-                                       FL_Coord     x,
-                                       FL_Coord     y,
-                                       FL_Coord     w,
-                                       FL_Coord     h,
+                                       FL_COORD     x,
+                                       FL_COORD     y,
+                                       FL_COORD     w,
+                                       FL_COORD     h,
                                        const char * label );
 
 FL_EXPORT FL_OBJECT * fl_add_chart( int          type,
-                                    FL_Coord     x,
-                                    FL_Coord     y,
-                                    FL_Coord     w,
-                                    FL_Coord     h,
+                                    FL_COORD     x,
+                                    FL_COORD     y,
+                                    FL_COORD     w,
+                                    FL_COORD     h,
                                     const char * label );
 
 FL_EXPORT void fl_clear_chart( FL_OBJECT * ob );

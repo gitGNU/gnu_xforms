@@ -151,9 +151,9 @@ xmask2button( unsigned int mask )
 
 void
 fli_do_radio_push( FL_OBJECT * obj,
-                   FL_Coord    x,
-                   FL_Coord    y,
-                   FL_Char     key,
+                   FL_COORD    x,
+                   FL_COORD    y,
+                   FL_VAL      key,
                    void      * xev,
                    int         no_callbacks )
 {
@@ -200,15 +200,15 @@ fli_do_radio_push( FL_OBJECT * obj,
 
 static int
 do_shortcut( FL_FORM  * form,
-             FL_Char    key,
-             FL_Coord   x,
-             FL_Coord   y,
+             FL_VAL     key,
+             FL_COORD   x,
+             FL_COORD   y,
              XEvent   * xev )
 {
-    FL_Char key1,
-            key2;
+    FL_VAL key1,
+           key2;
     FL_OBJECT *obj;
-    FL_Char *s;
+    FL_VAL *s;
 
     key1 = key2 = key;
 
@@ -280,9 +280,9 @@ do_shortcut( FL_FORM  * form,
 
 int
 fli_do_shortcut( FL_FORM  * form,
-                 FL_Char    key,
-                 FL_Coord   x,
-                 FL_Coord   y,
+                 FL_VAL     key,
+                 FL_COORD   x,
+                 FL_COORD   y,
                  XEvent   * xev )
 {
     int ret = do_shortcut( form, key, x, y, xev );
@@ -304,9 +304,9 @@ fli_do_shortcut( FL_FORM  * form,
 
 static void
 handle_keyboard( FL_FORM  * form,
-                 FL_Char    key,
-                 FL_Coord   x,
-                 FL_Coord   y,
+                 FL_VAL     key,
+                 FL_COORD   x,
+                 FL_COORD   y,
                  void     * xev )
 {
     FL_OBJECT *obj,
@@ -422,11 +422,11 @@ handle_keyboard( FL_FORM  * form,
 void
 fli_handle_form( FL_FORM * form,
                  int       event,
-                 FL_Char   key,
+                 FL_VAL    key,
                  XEvent  * xev )
 {
     FL_OBJECT *obj = NULL;
-    FL_Coord x,
+    FL_COORD x,
              y;
 
     if ( ! form || form->visible != FL_VISIBLE )
@@ -637,7 +637,7 @@ static int ignored_fake_configure;
 static int
 button_is_really_down( void )
 {
-    FL_Coord x,
+    FL_COORD x,
              y;
     unsigned int km;
 
@@ -1272,7 +1272,7 @@ handle_Expose_event( FL_FORM  * evform,
 
     if ( ignored_fake_configure )
     {
-        FL_Coord neww,
+        FL_COORD neww,
                  newh;
 
         M_warn( "handle_Expose_event", "Run into trouble - correcting it" );

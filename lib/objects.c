@@ -113,14 +113,14 @@ bg_object( FL_FORM * form )
  ***************************************/
 
 FL_OBJECT *
-fl_make_object( int            objclass,
-                int            type,
-                FL_Coord       x,
-                FL_Coord       y,
-                FL_Coord       w,
-                FL_Coord       h,
-                const char   * label,
-                FL_HANDLEPTR   handle )
+fl_make_object( int             objclass,
+                int             type,
+                FL_COORD        x,
+                FL_COORD        y,
+                FL_COORD        w,
+                FL_COORD        h,
+                const char    * label,
+                FL_HANDLE_PTR   handle )
 {
     FL_OBJECT *obj;
 #ifdef FL_WIN32
@@ -1729,7 +1729,7 @@ fl_hide_object( FL_OBJECT * obj )
 
 int
 fli_convert_shortcut( const char * str,
-                      FL_Char    * sc )
+                      FL_VAL     * sc )
 {
     int i = 0;
     long offset = 0;
@@ -1888,8 +1888,8 @@ fl_set_object_shortcut( FL_OBJECT  * obj,
 {
     int scsize,
         n;
-    FL_Char sc[ MAX_SHORTCUTS + 1 ];   /* converted shortcuts - we need one
-                                          more than max for trailing 0 */
+    FL_VAL sc[ MAX_SHORTCUTS + 1 ];   /* converted shortcuts - we need one
+                                         more than max for trailing 0 */
 
     if ( ! obj )
     {
@@ -1935,7 +1935,7 @@ fl_set_object_shortcut( FL_OBJECT  * obj,
 
 void
 fl_set_object_shortcutkey( FL_OBJECT * obj,
-                           FL_Char     keysym )
+                           FL_VAL      keysym )
 {
     size_t n;
 
@@ -2008,8 +2008,8 @@ fl_get_focus_object( FL_FORM * form )
 FL_OBJECT *
 fli_find_object( FL_OBJECT * obj,
                  int         find,
-                 FL_Coord    mx,
-                 FL_Coord    my )
+                 FL_COORD    mx,
+                 FL_COORD    my )
 {
     for ( ; obj; obj = obj->next )
         if (    obj->objclass != FL_BEGIN_GROUP
@@ -2050,8 +2050,8 @@ fli_find_object( FL_OBJECT * obj,
 FL_OBJECT *
 fli_find_object_backwards( FL_OBJECT * obj,
                            int         find,
-                           FL_Coord    mx,
-                           FL_Coord    my )
+                           FL_COORD    mx,
+                           FL_COORD    my )
 {
     for ( ; obj; obj = obj->prev )
         if (    obj->objclass != FL_BEGIN_GROUP
@@ -2089,8 +2089,8 @@ fli_find_object_backwards( FL_OBJECT * obj,
 FL_OBJECT *
 fli_find_first( FL_FORM  * form,
                 int        find,
-                FL_Coord   mx,
-                FL_Coord   my )
+                FL_COORD   mx,
+                FL_COORD   my )
 {
     return fli_find_object( form->first, find, mx, my );
 }
@@ -2103,8 +2103,8 @@ fli_find_first( FL_FORM  * form,
 FL_OBJECT *
 fli_find_last( FL_FORM * form,
                int       find,
-               FL_Coord  mx,
-               FL_Coord  my )
+               FL_COORD  mx,
+               FL_COORD  my )
 {
     FL_OBJECT *last,
               *obj;
@@ -2536,8 +2536,8 @@ void unconditional_hide_tooltip( FL_OBJECT * obj )
 static int
 handle_object( FL_OBJECT * obj,
                int         event,
-               FL_Coord    mx,
-               FL_Coord    my,
+               FL_COORD    mx,
+               FL_COORD    my,
                int         key,
                XEvent    * xev,
                int         keep_ret )
@@ -2545,7 +2545,7 @@ handle_object( FL_OBJECT * obj,
     static unsigned long last_clicktime = 0;
     static int last_dblclick = 0,
                last_key = 0;
-    static FL_Coord last_mx,
+    static FL_COORD last_mx,
                     last_my;
     int cur_event;
     FL_OBJECT *p;
@@ -2731,9 +2731,9 @@ handle_object( FL_OBJECT * obj,
 void
 fli_handle_object( FL_OBJECT * obj,
                    int         event,
-                   FL_Coord    mx,
-                   FL_Coord    my,
-                   FL_Char     key,
+                   FL_COORD    mx,
+                   FL_COORD    my,
+                   FL_VAL      key,
                    XEvent    * xev,
                    int         enter_it )
 {
@@ -2744,7 +2744,7 @@ fli_handle_object( FL_OBJECT * obj,
        its 'returned' member is modified. If not, just the handler for
        the object is called, but it doesn't appear in the queue and the
        'returned' member remains unmodified. Also don't enter the object
-       into the queue if it's form doesn't exist or the forms window isn't
+       into the queue if its form doesn't exist or the forms window isn't
        mapped. */
 
     if ( enter_it && obj->form && obj->form->window )
@@ -2761,12 +2761,12 @@ fli_handle_object( FL_OBJECT * obj,
  * Sets the callback routine for the object
  ***************************************/
 
-FL_CALLBACKPTR
-fl_set_object_callback( FL_OBJECT      * obj,
-                        FL_CALLBACKPTR   callback,
-                        long             argument )
+FL_CALLBACK_PTR
+fl_set_object_callback( FL_OBJECT       * obj,
+                        FL_CALLBACK_PTR   callback,
+                        long              argument )
 {
-    FL_CALLBACKPTR old;
+    FL_CALLBACK_PTR old;
 
     if ( ! obj )
     {
@@ -3004,11 +3004,11 @@ fli_scale_object( FL_OBJECT * obj,
  * Register a preemptive object handler
  ***************************************/
 
-FL_HANDLEPTR
-fl_set_object_prehandler( FL_OBJECT    * obj,
-                          FL_HANDLEPTR   phandler )
+FL_HANDLE_PTR
+fl_set_object_prehandler( FL_OBJECT     * obj,
+                          FL_HANDLE_PTR   phandler )
 {
-    FL_HANDLEPTR oldh = obj->prehandle;
+    FL_HANDLE_PTR oldh = obj->prehandle;
 
     obj->prehandle = phandler;
     return oldh;
@@ -3018,11 +3018,11 @@ fl_set_object_prehandler( FL_OBJECT    * obj,
 /***************************************
  ***************************************/
 
-FL_HANDLEPTR
-fl_set_object_posthandler( FL_OBJECT    * obj,
-                           FL_HANDLEPTR   post )
+FL_HANDLE_PTR
+fl_set_object_posthandler( FL_OBJECT     * obj,
+                           FL_HANDLE_PTR   post )
 {
-    FL_HANDLEPTR oldh = obj->posthandle;
+    FL_HANDLE_PTR oldh = obj->posthandle;
 
     obj->posthandle = post;
     return oldh;
@@ -3074,8 +3074,13 @@ fl_draw_object_label( FL_OBJECT * obj )
         fl_draw_text( align, obj->x, obj->y, obj->w, obj->h,
                       obj->lcol, obj->lstyle, obj->lsize, obj->label );
     else
+    {
+#if FL_ENABLE_XFT
+        fli_bk_textcolor( fl_get_form_background_color( obj->form ) );
+#endif
         fl_draw_text_beside( align, obj->x, obj->y, obj->w, obj->h,
                              obj->lcol, obj->lstyle, obj->lsize, obj->label );
+    }
 }
 
 
@@ -3085,6 +3090,9 @@ fl_draw_object_label( FL_OBJECT * obj )
 void
 fl_draw_object_label_outside( FL_OBJECT * obj )
 {
+#if FL_ENABLE_XFT
+    fli_bk_textcolor( fl_get_form_background_color( obj->form ) );
+#endif
     fl_draw_text_beside( fl_to_outside_lalign( obj->align ),
                          obj->x, obj->y, obj->w, obj->h,
                          obj->lcol, obj->lstyle, obj->lsize, obj->label );
@@ -3178,10 +3186,10 @@ fli_recalc_intersections( FL_FORM * form )
 
 void
 fl_move_object( FL_OBJECT * obj,
-                FL_Coord    dx,
-                FL_Coord    dy )
+                FL_COORD    dx,
+                FL_COORD    dy )
 {
-     FL_Coord x,
+     FL_COORD x,
               y;
      if ( fli_inverted_y )
          dy = - dy;
@@ -3217,8 +3225,8 @@ fl_move_object( FL_OBJECT * obj,
 
 void
 fl_get_object_position( FL_OBJECT * obj,
-                        FL_Coord  * x,
-                        FL_Coord  * y )
+                        FL_COORD  * x,
+                        FL_COORD  * y )
 {
     *x = obj->x;
     *y = fli_inverted_y ? TRANSLATE_Y( obj, obj->form ) : obj->y;
@@ -3231,8 +3239,8 @@ fl_get_object_position( FL_OBJECT * obj,
 
 void
 fl_set_object_position( FL_OBJECT * obj,
-                        FL_Coord    x,
-                        FL_Coord    y )
+                        FL_COORD    x,
+                        FL_COORD    y )
 {
     int need_show = 0;
     double diff;
@@ -3285,8 +3293,8 @@ fl_set_object_position( FL_OBJECT * obj,
 
 void
 fl_get_object_size( FL_OBJECT * obj,
-                    FL_Coord  * w,
-                    FL_Coord  * h )
+                    FL_COORD  * w,
+                    FL_COORD  * h )
 {
     *w = obj->w;
     *h = obj->h;
@@ -3299,8 +3307,8 @@ fl_get_object_size( FL_OBJECT * obj,
 
 void
 fl_set_object_size( FL_OBJECT * obj,
-                    FL_Coord    w,
-                    FL_Coord    h )
+                    FL_COORD    w,
+                    FL_COORD    h )
 {
     int need_show = 0;
     double diff;
@@ -3387,10 +3395,10 @@ fl_set_object_size( FL_OBJECT * obj,
 
 void
 fl_get_object_geometry( FL_OBJECT * obj,
-                        FL_Coord  * x,
-                        FL_Coord  * y,
-                        FL_Coord  * w,
-                        FL_Coord  * h )
+                        FL_COORD  * x,
+                        FL_COORD  * y,
+                        FL_COORD  * w,
+                        FL_COORD  * h )
 {
     fl_get_object_position( obj, x, y );
     fl_get_object_size( obj, w, h );
@@ -3403,10 +3411,10 @@ fl_get_object_geometry( FL_OBJECT * obj,
 
 void
 fl_set_object_geometry( FL_OBJECT * obj,
-                        FL_Coord    x,
-                        FL_Coord    y,
-                        FL_Coord    w,
-                        FL_Coord    h )
+                        FL_COORD    x,
+                        FL_COORD    y,
+                        FL_COORD    w,
+                        FL_COORD    h )
 {
     fl_set_object_size( obj, w, h );
     fl_set_object_position( obj, x, y );
@@ -3419,10 +3427,10 @@ fl_set_object_geometry( FL_OBJECT * obj,
 
 void
 fl_get_object_bbox( FL_OBJECT * obj,
-                    FL_Coord  * x,
-                    FL_Coord  * y,
-                    FL_Coord  * w,
-                    FL_Coord  * h )
+                    FL_COORD  * x,
+                    FL_COORD  * y,
+                    FL_COORD  * w,
+                    FL_COORD  * h )
 {
     fli_calc_object_bbox( obj );
 
@@ -3738,7 +3746,7 @@ fli_set_object_visibility( FL_OBJECT * obj,
 
 int
 fli_mouse_wheel_to_keypress( int     * ev,
-                             FL_Char * key,
+                             FL_VAL  * key,
                              void    * xev )
 {
     if ( ! (    *ev == FL_RELEASE

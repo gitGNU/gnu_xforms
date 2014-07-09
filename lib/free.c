@@ -36,13 +36,13 @@
  ***************************************/
 
 FL_OBJECT *
-fl_create_free( int            type,
-                FL_Coord       x,
-                FL_Coord       y,
-                FL_Coord       w,
-                FL_Coord       h,
-                const char   * label,
-                FL_HANDLEPTR   handle )
+fl_create_free( int             type,
+                FL_COORD        x,
+                FL_COORD        y,
+                FL_COORD        w,
+                FL_COORD        h,
+                const char    * label,
+                FL_HANDLE_PTR   handle )
 {
     FL_OBJECT *obj;
 
@@ -73,13 +73,13 @@ fl_create_free( int            type,
  ***************************************/
 
 FL_OBJECT *
-fl_add_free( int            type,
-             FL_Coord       x,
-             FL_Coord       y,
-             FL_Coord       w,
-             FL_Coord       h,
-             const char   * label,
-             FL_HANDLEPTR   handle )
+fl_add_free( int             type,
+             FL_COORD        x,
+             FL_COORD        y,
+             FL_COORD        w,
+             FL_COORD        h,
+             const char    * label,
+             FL_HANDLE_PTR   handle )
 {
     FL_OBJECT *ob;
 

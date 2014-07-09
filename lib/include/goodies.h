@@ -115,8 +115,8 @@ FL_EXPORT void fl_set_choices_shortcut( const char *,
 /************ one liner ***************/
 
 FL_EXPORT void fl_show_oneliner( const char *,
-                                 FL_Coord,
-                                 FL_Coord );
+                                 FL_COORD,
+                                 FL_COORD );
 
 FL_EXPORT void fl_hide_oneliner( void );
 

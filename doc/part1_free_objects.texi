@@ -32,8 +32,8 @@ To add a free object to a form use the call
 @findex fl_add_free()
 @anchor{fl_add_free()}
 @example
-FL_OBJECT *fl_add_free(int type, FL_Coord x, FL_Coord y,
-                       FL_Coord w, FL_Coord h,
+FL_OBJECT *fl_add_free(int type, FL_COORD x, FL_COORD y,
+                       FL_COORD w, FL_COORD h,
                        const char *label, int (*handle)());
 @end example
 @noindent
@@ -47,8 +47,8 @@ object. The application program must supply this routine.
 This routine @code{handle} is called by the library whenever
 an action has to be performed. The routine should have the form:
 @example
-int handle(FL_OBJECT *obj, int event, FL_Coord mx, FL_Coord my,
-           FL_Char key, void *xev);
+int handle(FL_OBJECT *obj, int event, FL_COORD mx, FL_COORD my,
+           FL_VAL key, void *xev);
 @end example
 @noindent
 where @code{obj} is the object to which the event applies.
@@ -612,8 +612,8 @@ inside the free object by clicking either the left or right mouse
 button.
 @example
 int freeobject_handler(FL_OBJECT *obj, int event,
-                       FL_Coord mx, FL_Coord my,
-                       FL_Char key, void *xev) @{
+                       FL_COORD mx, FL_COORD my,
+                       FL_VAL key, void *xev) @{
     DrawFigure *dr;
 
     switch (event) @{

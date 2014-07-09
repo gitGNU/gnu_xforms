@@ -642,7 +642,7 @@ main( int    argc,
     static FLIMAGE_SETUP setup;
 
     fl_set_border_width( -2 );
-    fl_initialize( &argc, argv, 0, 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     fd_ibcanvas = create_form_ibcanvas( );
     fl_set_object_color( fd_ibcanvas->canvas, FL_COL1, FL_COL1 );
 

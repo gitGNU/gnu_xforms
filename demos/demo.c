@@ -80,7 +80,7 @@ main( int    argc,
 
      fl_set_border_width( 1 );
 
-     fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+     fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
      fl_clear_command_log( );
 
      create_the_forms( );

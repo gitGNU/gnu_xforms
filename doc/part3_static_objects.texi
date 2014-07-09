@@ -44,8 +44,8 @@ To add a box to a form you use the routine
 @findex fl_add_box()
 @anchor{fl_add_box()}
 @example
-FL_OBJECT *fl_add_box(int type, FL_Coord x, FL_Coord y,
-                      FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_box(int type, FL_COORD x, FL_COORD y,
+                      FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 The meaning of the parameters is as usual. The label is per default
@@ -165,8 +165,8 @@ To add a frame to a form you use the routine
 @findex fl_add_frame()
 @anchor{fl_add_frame()}
 @example
-FL_OBJECT *fl_add_frame(int type, FL_Coord x, FL_Coord y,
-                        FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_frame(int type, FL_COORD x, FL_COORD y,
+                        FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 The meaning of the parameters is as usual except that the frame is
@@ -251,8 +251,8 @@ To add a labelframe to a form you use the routine
 @findex fl_add_labelframe()
 @anchor{fl_add_labelframe()}
 @example
-FL_OBJECT *fl_add_labelframe(int type, FL_Coord x, FL_Coord y,
-                             FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_labelframe(int type, FL_COORD x, FL_COORD y,
+                             FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 The meaning of the parameters is as usual except that the frame is
@@ -346,8 +346,8 @@ To add a text to a form you use the routine
 @findex fl_add_text()
 @anchor{fl_add_text()}
 @example
-FL_OBJECT *fl_add_text(int type, FL_Coord x, FL_Coord y,
-                       FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_text(int type, FL_COORD x, FL_COORD y,
+                       FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 The meaning of the parameters is as usual. The label is by default
@@ -424,8 +424,8 @@ To add a bitmap to a form you use the routine
 @findex fl_add_bitmap()
 @anchor{fl_add_bitmap()}
 @example
-FL_OBJECT *fl_add_bitmap(int type, FL_Coord x, FL_Coord y,
-                         FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_bitmap(int type, FL_COORD x, FL_COORD y,
+                         FL_COORD w, FL_COORD h, const char *label);
 @end example
 The meaning of the parameters is as usual. The label is by default
 placed below the bitmap. The bitmap is empty on creation.
@@ -534,8 +534,8 @@ To add a pixmap to a form use the routine
 @findex fl_add_pixmap()
 @anchor{fl_add_pixmap()}
 @example
-FL_OBJECT *fl_add_pixmap(int type, FL_Coord x, FL_Coord y,
-                         FL_Coord w, FL_Coord h, const char *label)
+FL_OBJECT *fl_add_pixmap(int type, FL_COORD x, FL_COORD y,
+                         FL_COORD w, FL_COORD h, const char *label)
 @end example
 @noindent
 The meaning of the parameters is as usual. The label is by default
@@ -739,8 +739,8 @@ To add a clock to a form you use the routine
 @findex fl_add_clock()
 @anchor{fl_add_clock()}
 @example
-FL_OBJECT *fl_add_clock(int type, FL_Coord x, FL_Coord y,
-                        FL_Coord w, FL_Coord h, char label[])
+FL_OBJECT *fl_add_clock(int type, FL_COORD x, FL_COORD y,
+                        FL_COORD w, FL_COORD h, char label[])
 @end example
 @noindent
 The meaning of the parameters is as usual. The label is placed below
@@ -849,8 +849,8 @@ To add a chart object to a form use the routine
 @findex fl_add_chart()
 @anchor{fl_add_chart()}
 @example
-FL_OBJECT *fl_add_chart(int type, FL_Coord x, FL_Coord y,
-                        FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_chart(int type, FL_COORD x, FL_COORD y,
+                        FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 It shows an empty box on the screen with the label below it.

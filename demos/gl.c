@@ -277,7 +277,7 @@ menu_cb( FL_OBJECT * ob    FL_UNUSED_ARG,
 int main( int    argc,
           char * argv[ ] )
 {
-   fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+   fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
    ui = create_form_form( );
 
    /* fill-in form initialization code */

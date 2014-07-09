@@ -111,9 +111,9 @@ draw_timer( FL_OBJECT * obj )
 static int
 handle_timer( FL_OBJECT * obj,
               int         event,
-              FL_Coord    mx   FL_UNUSED_ARG,
-              FL_Coord    my   FL_UNUSED_ARG,
-              FL_Char     key  FL_UNUSED_ARG,
+              FL_COORD    mx   FL_UNUSED_ARG,
+              FL_COORD    my   FL_UNUSED_ARG,
+              FL_VAL      key  FL_UNUSED_ARG,
               void      * ev   FL_UNUSED_ARG )
 {
     FLI_TIMER_SPEC *sp = obj->spec;
@@ -204,10 +204,10 @@ handle_timer( FL_OBJECT * obj,
 
 FL_OBJECT *
 fl_create_timer( int          type,
-                 FL_Coord     x,
-                 FL_Coord     y,
-                 FL_Coord     w,
-                 FL_Coord     h,
+                 FL_COORD     x,
+                 FL_COORD     y,
+                 FL_COORD     w,
+                 FL_COORD     h,
                  const char * l )
 {
     FLI_TIMER_SPEC *sp;
@@ -237,10 +237,10 @@ fl_create_timer( int          type,
 
 FL_OBJECT *
 fl_add_timer( int          type,
-              FL_Coord     x,
-              FL_Coord     y,
-              FL_Coord     w,
-              FL_Coord     h,
+              FL_COORD     x,
+              FL_COORD     y,
+              FL_COORD     w,
+              FL_COORD     h,
               const char * l )
 {
     FL_OBJECT * obj = fl_create_timer( type, x, y, w, h, l );

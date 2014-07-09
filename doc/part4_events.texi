@@ -327,7 +327,7 @@ following routine must be used
 @findex fl_set_object_shortcutkey()
 @anchor{fl_set_object_shortcutkey()}
 @example
-void fl_set_object_shortcutkey(FL_OBJECT *obj, FL_Char key);
+void fl_set_object_shortcutkey(FL_OBJECT *obj, FL_VAL key);
 @end example
 @noindent
 where @code{key} is an X KeySym, for example @code{XK_Home},

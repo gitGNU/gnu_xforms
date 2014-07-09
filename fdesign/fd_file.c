@@ -606,7 +606,7 @@ load_object( void )
     int objclass;
     char *type_name;
     int type = 0;
-    FL_Coord x = 0,
+    FL_COORD x = 0,
              y = 0,
              w = 0,
              h = 0;
@@ -951,7 +951,7 @@ read_form( void )
 
     /* Create the new form */
 
-    cur_form = fl_bgn_form( FL_NO_BOX, ( FL_Coord ) w, ( FL_Coord ) h );
+    cur_form = fl_bgn_form( FL_NO_BOX, ( FL_COORD ) w, ( FL_COORD ) h );
     fl_end_form( );
 
     /* Read all objects until next form starts or end file seems to

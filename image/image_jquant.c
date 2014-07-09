@@ -97,7 +97,7 @@ typedef int FSERROR;        /* may need more than 16 bits */
 typedef int LOCFSERROR;     /* be sure calculation temps are big enough */
 #endif
 
-typedef FSERROR *FSERRPTR;  /* pointer to error array (in FAR storage!) */
+typedef FSERROR *FSERR_PTR; /* pointer to error array (in FAR storage!) */
 
 
 typedef struct
@@ -118,7 +118,7 @@ typedef box *boxptr;
 typedef struct
 {
     hist3d     histogram;              /* pointer to the 3D histogram array */
-    FSERRPTR   fserrors;               /* accumulated-errors array */
+    FSERR_PTR   fserrors;              /* accumulated-errors array */
     int      * error_limiter;          /* table for clamping applied error */
     int        on_odd_row;             /* flag to remember which row we're on */
     int      * colormap[ 3 ];          /* selected colormap */
@@ -774,7 +774,7 @@ pass2_fs_dither( SPEC            * sp,
     LOCFSERROR bpreverr0,
                bpreverr1,
                bpreverr2;       /* error for below/prev col */
-    FSERRPTR errorptr;          /* => fserrors[] at column before current */
+    FSERR_PTR errorptr;         /* => fserrors[] at column before current */
     unsigned short *outptr;     /* => current output pixel */
     histptr cachep;
     int dir;            /* +1 or -1 depending on direction */

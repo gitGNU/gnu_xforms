@@ -198,7 +198,7 @@ show_pixmap( FL_OBJECT * obj,
         src_y,
         m_dest_x,
         m_dest_y;
-    FL_Coord clip_x,
+    FL_COORD clip_x,
              clip_y,
              clip_w,
              clip_h;
@@ -393,9 +393,9 @@ draw_pixmap( FL_OBJECT * obj )
 static int
 handle_pixmap( FL_OBJECT * obj,
                int         event,
-               FL_Coord    mx   FL_UNUSED_ARG,
-               FL_Coord    my   FL_UNUSED_ARG,
-               FL_Char     key  FL_UNUSED_ARG,
+               FL_COORD    mx   FL_UNUSED_ARG,
+               FL_COORD    my   FL_UNUSED_ARG,
+               FL_VAL      key  FL_UNUSED_ARG,
                void      * ev   FL_UNUSED_ARG )
 {
 #if FL_DEBUG >= ML_DEBUG
@@ -432,10 +432,10 @@ handle_pixmap( FL_OBJECT * obj,
 
 FL_OBJECT *
 fl_create_pixmap( int          type,
-                  FL_Coord     x,
-                  FL_Coord     y,
-                  FL_Coord     w,
-                  FL_Coord     h,
+                  FL_COORD     x,
+                  FL_COORD     y,
+                  FL_COORD     w,
+                  FL_COORD     h,
                   const char * label )
 {
     FL_OBJECT *obj;
@@ -469,10 +469,10 @@ fl_create_pixmap( int          type,
 
 FL_OBJECT *
 fl_add_pixmap( int          type,
-               FL_Coord      x,
-               FL_Coord      y,
-               FL_Coord      w,
-               FL_Coord      h,
+               FL_COORD      x,
+               FL_COORD      y,
+               FL_COORD      w,
+               FL_COORD      h,
                const char * label )
 {
     FL_OBJECT *obj = fl_create_pixmap( type, x, y, w, h, label );
@@ -546,7 +546,7 @@ fl_set_pixmap_pixmap( FL_OBJECT * obj,
                       Pixmap      mask )
 {
     FLI_BUTTON_SPEC *sp;
-    FL_Coord w = 0,
+    FL_COORD w = 0,
              h = 0;
 
     CHECK( obj, "fl_set_pixmap_pixmap" );
@@ -761,10 +761,10 @@ cleanup_pixmapbutton( FL_OBJECT * obj )
 
 FL_OBJECT *
 fl_create_pixmapbutton( int          type,
-                        FL_Coord     x,
-                        FL_Coord     y,
-                        FL_Coord     w,
-                        FL_Coord     h,
+                        FL_COORD     x,
+                        FL_COORD     y,
+                        FL_COORD     w,
+                        FL_COORD     h,
                         const char * label )
 {
     FL_OBJECT *obj;
@@ -801,10 +801,10 @@ fl_create_pixmapbutton( int          type,
 
 FL_OBJECT *
 fl_add_pixmapbutton( int          type,
-                     FL_Coord     x,
-                     FL_Coord     y,
-                     FL_Coord     w,
-                     FL_Coord     h,
+                     FL_COORD     x,
+                     FL_COORD     y,
+                     FL_COORD     w,
+                     FL_COORD     h,
                      const char * label )
 {
     FL_OBJECT *obj;

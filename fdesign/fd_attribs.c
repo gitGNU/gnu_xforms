@@ -841,7 +841,7 @@ get_shortcut_string( const FL_OBJECT * obj )
 {
     static char tmps[ 127 ];
     char *p = tmps;
-    FL_Char *sc = obj->shortcut;
+    FL_VAL *sc = obj->shortcut;
     int n;
 
     for ( *p = '\0'; sc && *sc; sc++ )

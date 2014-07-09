@@ -40,7 +40,7 @@ main( int    argc,
     FL_FORM *form;
     FL_OBJECT *yes;
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
 
     form = fl_bgn_form( FL_UP_BOX, 320, 120 );
 
@@ -60,7 +60,7 @@ main( int    argc,
             break;
         }
         else
-            fprintf( stderr, "No is pushed\n" );
+            fprintf( stderr, "\"No\" has been pushed\n" );
     }
 
     fl_finish( );

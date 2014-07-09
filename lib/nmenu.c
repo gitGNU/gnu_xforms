@@ -26,9 +26,9 @@
 
 static int handle_nmenu( FL_OBJECT *,
                          int,
-                         FL_Coord,
-                         FL_Coord,
-                         FL_Char,
+                         FL_COORD,
+                         FL_COORD,
+                         FL_VAL,
                          void * );
 static void draw_menu( FL_OBJECT * );
 
@@ -48,10 +48,10 @@ static void draw_menu( FL_OBJECT * );
 
 FL_OBJECT *
 fl_create_nmenu( int          type,
-                 FL_Coord     x,
-                 FL_Coord     y,
-                 FL_Coord     w,
-                 FL_Coord     h,
+                 FL_COORD     x,
+                 FL_COORD     y,
+                 FL_COORD     w,
+                 FL_COORD     h,
                  const char * label )
 {
     FL_OBJECT *obj;
@@ -86,10 +86,10 @@ fl_create_nmenu( int          type,
 
 FL_OBJECT *
 fl_add_nmenu( int          type,
-              FL_Coord     x,
-              FL_Coord     y,
-              FL_Coord     w,
-              FL_Coord     h,
+              FL_COORD     x,
+              FL_COORD     y,
+              FL_COORD     w,
+              FL_COORD     h,
               const char * label )
 {
     FL_OBJECT *obj;
@@ -755,9 +755,9 @@ fl_set_nmenu_hl_text_color(FL_OBJECT * obj,
 static int
 handle_nmenu( FL_OBJECT * obj,
               int         event,
-              FL_Coord    mx   FL_UNUSED_ARG,
-              FL_Coord    my   FL_UNUSED_ARG,
-              FL_Char     key  FL_UNUSED_ARG,
+              FL_COORD    mx   FL_UNUSED_ARG,
+              FL_COORD    my   FL_UNUSED_ARG,
+              FL_VAL      key  FL_UNUSED_ARG,
               void      * ev   FL_UNUSED_ARG )
 {
     FLI_NMENU_SPEC *sp = obj->spec;

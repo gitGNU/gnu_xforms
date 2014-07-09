@@ -139,7 +139,7 @@ main( int    argc,
           y[ 25 ];
     int i;
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     xypui = create_form_axypform( );
    
     fl_set_object_dblbuffer( xypui->status, 1 );

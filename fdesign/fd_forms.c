@@ -119,8 +119,8 @@ set_form( int numb )
  ***************************************/
 
 void
-reshape_form_background( FL_Coord neww,
-                         FL_Coord newh )
+reshape_form_background( FL_COORD neww,
+                         FL_COORD newh )
 {
     if ( cur_form && cur_form->first )
     {
@@ -163,7 +163,7 @@ addform_cb( FL_OBJECT * obj  FL_UNUSED_ARG,
 {
     double w = 0,
            h = 0;
-    FL_Coord xx,
+    FL_COORD xx,
              yy;
     static int form_seq;
     const char *s;

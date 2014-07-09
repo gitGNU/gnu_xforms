@@ -45,8 +45,8 @@ To add a select object to a form use
 @findex fl_add_select()
 @anchor{fl_add_select()}
 @example
-FL_OBJECT *fl_add_select(int type, FL_Coord x, FL_Coord y,
-                         FL_Coord w, FL_Coord h, const char *label)
+FL_OBJECT *fl_add_select(int type, FL_COORD x, FL_COORD y,
+                         FL_COORD w, FL_COORD h, const char *label)
 @end example
 @noindent
 There are currently three types which just differ by the way they
@@ -582,8 +582,8 @@ To add a nmenu object use
 @findex fl_add_nmenu()
 @anchor{fl_add_nmenu()}
 @example
-FL_OBJECT *fl_add_nmenu(int type, FL_Coord x, FL_Coord y,
-                        FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_nmenu(int type, FL_COORD x, FL_COORD y,
+                        FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 There are currently three types:
@@ -1055,8 +1055,8 @@ To add a browser to a form use the routine
 @findex fl_add_browser()
 @anchor{fl_add_browser()}
 @example
-FL_OBJECT *fl_add_browser(int type, FL_Coord x, FL_Coord y,
-                          FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_browser(int type, FL_COORD x, FL_COORD y,
+                          FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 The meaning of the parameters is as usual. The label is placed below
@@ -1481,9 +1481,9 @@ horizontal and vertical direction can be set with the functions
 @findex fl_set_browser_rel_yoffset()
 @anchor{fl_set_browser_rel_yoffset()}
 @example
-void fl_set_browser_xoffset(FL_OBJECT *obj, FL_Coord xoff);
+void fl_set_browser_xoffset(FL_OBJECT *obj, FL_COORD xoff);
 void fl_set_browser_rel_xoffset(FL_OBJECT *obj, double xval);
-void fl_set_browser_yoffset(FL_OBJECT *obj, FL_Coord yoff);
+void fl_set_browser_yoffset(FL_OBJECT *obj, FL_COORD yoff);
 void fl_set_browser_rel_yoffset(FL_OBJECT *obj, double yval);
 @end example
 @noindent
@@ -1504,10 +1504,10 @@ current amount of scrolling:
 @findex fl_get_browser_rel_yoffset()
 @anchor{fl_get_browser_rel_yoffset()}
 @example
-FL_Coord fl_get_browser_xoffset(FL_OBJECT *obj);
-FL_Coord fl_get_browser_rel_xoffset(FL_OBJECT *obj);
-FL_Coord fl_get_browser_yoffset(FL_OBJECT *obj);
-FL_Coord fl_get_browser_rel_yoffset(FL_OBJECT *obj);
+FL_COORD fl_get_browser_xoffset(FL_OBJECT *obj);
+FL_COORD fl_get_browser_rel_xoffset(FL_OBJECT *obj);
+FL_COORD fl_get_browser_yoffset(FL_OBJECT *obj);
+FL_COORD fl_get_browser_rel_yoffset(FL_OBJECT *obj);
 @end example
 
 Finally, there's a function that tells you the vertical position of a
@@ -1753,7 +1753,7 @@ in pixels for the text area
 @findex fl_get_browser_dimension()
 @anchor{fl_get_browser_dimension()}
 @example
-void fl_get_browser_dimension(FL_OBJECT *obj, FL_Coord *x, FL_Coord *y,
+void fl_get_browser_dimension(FL_OBJECT *obj, FL_COORD *x, FL_COORD *y,
                               FL_COORD *w, FL_COORD *h);
 @end example
 @noindent

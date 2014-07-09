@@ -160,14 +160,14 @@ FL_EXPORT int fl_mode_capable( int mode,
 
 
 /* All pixmaps used by FL_OBJECT to simulate double buffering have the
- * following entries in the structure. FL_Coord x,y are used to shift
+ * following entries in the structure. FL_COORD x,y are used to shift
  * the origin of the drawing routines */
 
 struct FL_pixmap_ {
     Pixmap         pixmap;
     Window         win;
     Visual       * visual;
-    FL_Coord       x,
+    FL_COORD       x,
                    y,
                    w,
                    h;
@@ -191,18 +191,22 @@ typedef struct {
 	char          * name;
 	int             slant;
 	int             weight;
+	char          * style;
 	double          scale;
+	int             is_x11_font;
 	FL_SIZED_FONT * sized_fonts;
 	size_t          size_count;
 } FL_FONT;
 
 typedef enum {
+	FL_SLANT_NONE    = -1,
 	FL_SLANT_ROMAN   = XFT_SLANT_ROMAN,
 	FL_SLANT_ITALIC  = XFT_SLANT_ITALIC,
 	FL_SLANT_OBLIQUE = XFT_SLANT_OBLIQUE
 } FL_FONT_SLANT;
 
 typedef enum {
+	FL_WEIGHT_NONE     = -1,
 	FL_WEIGHT_LIGHT    = XFT_WEIGHT_LIGHT,
 	FL_WEIGHT_MEDIUM   = XFT_WEIGHT_MEDIUM,
 	FL_WEIGHT_DEMIBOLD = XFT_WEIGHT_DEMIBOLD,
@@ -240,16 +244,16 @@ typedef XPoint      FL_POINT;
 /* Rectangles */
 
 FL_EXPORT void fl_rectangle( int      fill,
-                             FL_Coord x,
-                             FL_Coord y,
-                             FL_Coord w,
-                             FL_Coord h,
+                             FL_COORD x,
+                             FL_COORD y,
+                             FL_COORD w,
+                             FL_COORD h,
                              FL_COLOR col );
 
-FL_EXPORT void fl_rectbound( FL_Coord x,
-                             FL_Coord y,
-                             FL_Coord w,
-                             FL_Coord h,
+FL_EXPORT void fl_rectbound( FL_COORD x,
+                             FL_COORD y,
+                             FL_COORD w,
+                             FL_COORD h,
                              FL_COLOR col );
 
 #define fl_rectf( x, y, w, h, c)   fl_rectangle( 1, x, y, w, h, c )
@@ -258,10 +262,10 @@ FL_EXPORT void fl_rectbound( FL_Coord x,
 /* Rectangle with rounded-corners */
 
 FL_EXPORT void fl_roundrectangle( int      fill,
-                                  FL_Coord x,
-                                  FL_Coord y,
-                                  FL_Coord w,
-                                  FL_Coord h,
+                                  FL_COORD x,
+                                  FL_COORD y,
+                                  FL_COORD w,
+                                  FL_COORD h,
                                   FL_COLOR col );
 
 #define fl_roundrectf( x, y, w, h, c )  fl_roundrectangle( 1, x, y, w, h, c )
@@ -286,14 +290,14 @@ FL_EXPORT void fl_lines( FL_POINT * xp,
                          int        n,
                          FL_COLOR   col );
 
-FL_EXPORT void fl_line( FL_Coord xi,
-                        FL_Coord yi,
-                        FL_Coord xf,
-                        FL_Coord yf,
+FL_EXPORT void fl_line( FL_COORD xi,
+                        FL_COORD yi,
+                        FL_COORD xf,
+                        FL_COORD yf,
                         FL_COLOR c );
 
-FL_EXPORT void fl_point( FL_Coord x,
-                         FL_Coord y,
+FL_EXPORT void fl_point( FL_COORD x,
+                         FL_COORD y,
                          FL_COLOR c );
 
 FL_EXPORT void fl_points( FL_POINT * p,
@@ -361,23 +365,23 @@ FL_EXPORT void fl_circbound( FL_COORD x,
                              FL_COLOR col );
 
 FL_EXPORT void fl_oval( int      fill,
-                        FL_Coord x,
-                        FL_Coord y,
-                        FL_Coord w,
-                        FL_Coord h,
+                        FL_COORD x,
+                        FL_COORD y,
+                        FL_COORD w,
+                        FL_COORD h,
                         FL_COLOR col );
 
-FL_EXPORT void fl_ovalbound( FL_Coord x,
-                             FL_Coord y,
-                             FL_Coord w,
-                             FL_Coord h,
+FL_EXPORT void fl_ovalbound( FL_COORD x,
+                             FL_COORD y,
+                             FL_COORD w,
+                             FL_COORD h,
                              FL_COLOR col );
 
 FL_EXPORT void fl_ovalarc( int      fill,
-                           FL_Coord x,
-                           FL_Coord y,
-                           FL_Coord w,
-                           FL_Coord h,
+                           FL_COORD x,
+                           FL_COORD y,
+                           FL_COORD w,
+                           FL_COORD h,
                            int      t0,
                            int      dt,
                            FL_COLOR col );
@@ -388,16 +392,16 @@ FL_EXPORT void fl_ovalarc( int      fill,
 
 /* Arcs */
 
-FL_EXPORT void fl_arcf( FL_COORD x,
+FL_EXPORT void fl_arcf( FL_Coord x,
                         FL_Coord y,
-                        FL_COORD r,
+                        FL_Coord r,
                         int      a1,
                         int      a2,
                         FL_COLOR col );
 
-FL_EXPORT void fl_arc( FL_COORD x,
+FL_EXPORT void fl_arc( FL_Coord x,
                        FL_Coord y,
-                       FL_COORD r,
+                       FL_Coord r,
                        int      a1,
                        int      a2,
                        FL_COLOR col );
@@ -868,22 +872,22 @@ FL_EXPORT void fl_set_text_clipping( FL_Coord x,
 
 FL_EXPORT void fl_unset_text_clipping( void );
 
-FL_EXPORT int fl_get_global_clipping( FL_COORD * x,
-                                      FL_COORD * y,
-                                      FL_COORD * w,
-                                      FL_COORD * h );
+FL_EXPORT int fl_get_global_clipping( FL_Coord * x,
+                                      FL_Coord * y,
+                                      FL_Coord * w,
+                                      FL_Coord * h );
 
 FL_EXPORT int fl_get_clipping( int        include_global,
-                               FL_COORD * x,
-                               FL_COORD * y,
-                               FL_COORD * w,
-                               FL_COORD * h );
+                               FL_Coord * x,
+                               FL_Coord * y,
+                               FL_Coord * w,
+                               FL_Coord * h );
 
 FL_EXPORT int fl_get_text_clipping( int        include_global,
-                                    FL_COORD * x,
-                                    FL_COORD * y,
-                                    FL_COORD * w,
-                                    FL_COORD * h );
+                                    FL_Coord * x,
+                                    FL_Coord * y,
+                                    FL_Coord * w,
+                                    FL_Coord * h );
 
 FL_EXPORT void fl_set_gc_clipping( GC       gc,
                                    FL_Coord x,

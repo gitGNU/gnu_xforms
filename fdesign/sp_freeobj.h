@@ -30,9 +30,9 @@ void freeobj_emit_spec_fd_code( FILE      * fp,
                                FL_OBJECT * obj );
 int noop_handle( FL_OBJECT * obj,
 				 int         e,
-				 FL_Coord    mx   FL_UNUSED_ARG,
-				 FL_Coord    my   FL_UNUSED_ARG,
-				 FL_Char     k    FL_UNUSED_ARG,
+				 FL_COORD    mx   FL_UNUSED_ARG,
+				 FL_COORD    my   FL_UNUSED_ARG,
+				 FL_VAL      k    FL_UNUSED_ARG,
 				 void      * xev  FL_UNUSED_ARG );
 
 #endif

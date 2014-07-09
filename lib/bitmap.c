@@ -53,17 +53,17 @@ free_bitmap( FLI_BUTTON_SPEC * p )
 
 static void
 drawit( Window   win,
-        FL_Coord x,
-        FL_Coord y,
-        FL_Coord w,
-        FL_Coord h,
-        FL_Coord src_x,
-        FL_Coord src_y,
+        FL_COORD x,
+        FL_COORD y,
+        FL_COORD w,
+        FL_COORD h,
+        FL_COORD src_x,
+        FL_COORD src_y,
         FL_COLOR fcol,
         FL_COLOR bcol,
         Pixmap   bitmap )
 {
-    FL_Coord clip_x,
+    FL_COORD clip_x,
              clip_y,
              clip_w,
              clip_h;
@@ -129,7 +129,7 @@ static void
 draw_bitmap( FL_OBJECT * obj )
 {
     FLI_BUTTON_SPEC *sp = obj->spec;
-    FL_Coord xx,                        /* position of bitmap */
+    FL_COORD xx,                        /* position of bitmap */
              yy;
 
     /* Draw the box */
@@ -160,9 +160,9 @@ draw_bitmap( FL_OBJECT * obj )
 static int
 handle_bitmap( FL_OBJECT * obj,
                int         event,
-               FL_Coord    mx   FL_UNUSED_ARG,
-               FL_Coord    my   FL_UNUSED_ARG,
-               FL_Char     key  FL_UNUSED_ARG,
+               FL_COORD    mx   FL_UNUSED_ARG,
+               FL_COORD    my   FL_UNUSED_ARG,
+               FL_VAL      key  FL_UNUSED_ARG,
                void      * ev   FL_UNUSED_ARG )
 {
     switch ( event )
@@ -191,10 +191,10 @@ handle_bitmap( FL_OBJECT * obj,
 
 FL_OBJECT *
 fl_create_bitmap( int          type,
-                  FL_Coord     x,
-                  FL_Coord     y,
-                  FL_Coord     w,
-                  FL_Coord     h,
+                  FL_COORD     x,
+                  FL_COORD     y,
+                  FL_COORD     w,
+                  FL_COORD     h,
                   const char * label )
 {
     FL_OBJECT *obj;
@@ -223,10 +223,10 @@ fl_create_bitmap( int          type,
 
 FL_OBJECT *
 fl_add_bitmap( int          type,
-               FL_Coord     x,
-               FL_Coord     y,
-               FL_Coord     w,
-               FL_Coord     h,
+               FL_COORD     x,
+               FL_COORD     y,
+               FL_COORD     w,
+               FL_COORD     h,
                const char * label )
 {
     FL_OBJECT *obj = fl_create_bitmap( type, x, y, w, h, label );
@@ -421,10 +421,10 @@ draw_bitmapbutton( FL_OBJECT * obj,
 
 FL_OBJECT *
 fl_create_bitmapbutton( int          type,
-                        FL_Coord     x,
-                        FL_Coord     y,
-                        FL_Coord     w,
-                        FL_Coord     h,
+                        FL_COORD     x,
+                        FL_COORD     y,
+                        FL_COORD     w,
+                        FL_COORD     h,
                         const char * label )
 {
     FL_OBJECT *obj;
@@ -447,10 +447,10 @@ fl_create_bitmapbutton( int          type,
 
 FL_OBJECT *
 fl_add_bitmapbutton( int          type,
-                     FL_Coord     x,
-                     FL_Coord     y,
-                     FL_Coord     w,
-                     FL_Coord     h,
+                     FL_COORD     x,
+                     FL_COORD     y,
+                     FL_COORD     w,
+                     FL_COORD     h,
                      const char * label )
 {
     FL_OBJECT *obj = fl_create_bitmapbutton( type, x, y, w, h, label );

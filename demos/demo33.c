@@ -38,7 +38,7 @@ main( int    argc,
     FL_FORM *form;
     FL_OBJECT *obj;
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
 
     form = fl_bgn_form( FL_UP_BOX, 200, 200 );
 

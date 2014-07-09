@@ -53,10 +53,10 @@ static GC dithered_gc;
 
 void
 fl_rectangle( int      fill,
-              FL_Coord x,
-              FL_Coord y,
-              FL_Coord w,
-              FL_Coord h,
+              FL_COORD x,
+              FL_COORD y,
+              FL_COORD w,
+              FL_COORD h,
               FL_COLOR col )
 {
     int bw = fli_dithered( fl_vmode ) && mono_dither( col );
@@ -201,10 +201,10 @@ fl_circbound( FL_COORD x,
 
 void
 fl_oval( int      fill,
-         FL_Coord x,
-         FL_Coord y,
-         FL_Coord w,
-         FL_Coord h,
+         FL_COORD x,
+         FL_COORD y,
+         FL_COORD w,
+         FL_COORD h,
          FL_COLOR col )
 {
     int bw = fli_dithered( fl_vmode ) && mono_dither( col );
@@ -246,10 +246,10 @@ fl_oval( int      fill,
  ***************************************/
 
 void
-fl_ovalbound( FL_Coord x,
-              FL_Coord y,
-              FL_Coord w,
-              FL_Coord h,
+fl_ovalbound( FL_COORD x,
+              FL_COORD y,
+              FL_COORD w,
+              FL_COORD h,
               FL_COLOR col )
 {
     if ( flx->win == None || w <= 0 || h <= 0 )
@@ -275,10 +275,10 @@ fl_ovalbound( FL_Coord x,
 
 void
 fl_ovalarc( int      fill,
-            FL_Coord x,
-            FL_Coord y,
-            FL_Coord w,
-            FL_Coord h,
+            FL_COORD x,
+            FL_COORD y,
+            FL_COORD w,
+            FL_COORD h,
             int      t0,
             int      dt,
             FL_COLOR col )
@@ -324,7 +324,7 @@ fl_ovalarc( int      fill,
 
 void
 fl_arcf( FL_COORD x,
-         FL_Coord y,
+         FL_COORD y,
          FL_COORD r,
          int      a1,
          int      a2,
@@ -339,7 +339,7 @@ fl_arcf( FL_COORD x,
 
 void
 fl_arc( FL_COORD x,
-        FL_Coord y,
+        FL_COORD y,
         FL_COORD r,
         int      a1,
         int      a2,
@@ -354,10 +354,10 @@ fl_arc( FL_COORD x,
 
 void
 fl_pieslice( int      fill,
-             FL_Coord x,
-             FL_Coord y,
-             FL_Coord w,
-             FL_Coord h,
+             FL_COORD x,
+             FL_COORD y,
+             FL_COORD w,
+             FL_COORD h,
              int      a1,
              int      a2,
              FL_COLOR col )
@@ -454,10 +454,10 @@ fl_lines( FL_POINT * xp,
  ***************************************/
 
 void
-fl_line( FL_Coord xi,
-         FL_Coord yi,
-         FL_Coord xf,
-         FL_Coord yf,
+fl_line( FL_COORD xi,
+         FL_COORD yi,
+         FL_COORD xf,
+         FL_COORD yf,
          FL_COLOR c )
 {
     if ( flx->win == None )
@@ -478,8 +478,8 @@ fl_line( FL_Coord xi,
  ***************************************/
 
 void
-fl_point( FL_Coord x,
-          FL_Coord y,
+fl_point( FL_COORD x,
+          FL_COORD y,
           FL_COLOR c )
 {
     if ( flx->win == None )
@@ -770,10 +770,10 @@ is_clipped( int type,
  ***************************************/
 
 void
-fli_set_global_clipping( FL_Coord x,
-                         FL_Coord y,
-                         FL_Coord w,
-                         FL_Coord h )
+fli_set_global_clipping( FL_COORD x,
+                         FL_COORD y,
+                         FL_COORD w,
+                         FL_COORD h )
 {
     /* Calling the function with a rectangle with a negative width or height
        results in switching off of global clipping */
@@ -929,10 +929,10 @@ fli_get_global_clip_rect( void )
  ***************************************/
 
 int
-fl_get_global_clipping( FL_Coord * x,
-                        FL_Coord * y,
-                        FL_Coord * w,
-                        FL_Coord * h )
+fl_get_global_clipping( FL_COORD * x,
+                        FL_COORD * y,
+                        FL_COORD * w,
+                        FL_COORD * h )
 {
     GET_RECT( clip_rect[ GLOBAL_CLIP ], x, y, w, h );
     return clipped_flags[ GLOBAL_CLIP ];
@@ -974,10 +974,10 @@ unset_clipping( int type,
 static void
 set_clipping( int      type,
               GC       gc,
-              FL_Coord x,
-              FL_Coord y,
-              FL_Coord w,
-              FL_Coord h )
+              FL_COORD x,
+              FL_COORD y,
+              FL_COORD w,
+              FL_COORD h )
 {
     if ( w < 0 || h < 0 )
     {
@@ -1025,10 +1025,10 @@ set_clipping( int      type,
 static int
 get_clipping( int        type,
               int        include_global,
-              FL_Coord * x,
-              FL_Coord * y,
-              FL_Coord * w,
-              FL_Coord * h )
+              FL_COORD * x,
+              FL_COORD * y,
+              FL_COORD * w,
+              FL_COORD * h )
 {
     if (    ! ( include_global && clipped_flags[ GLOBAL_CLIP ] )
          && clipped_flags[ type ] )
@@ -1079,10 +1079,10 @@ fl_is_clipped( int include_global )
  ***************************************/
 
 void
-fl_set_clipping( FL_Coord x,
-                 FL_Coord y,
-                 FL_Coord w,
-                 FL_Coord h )
+fl_set_clipping( FL_COORD x,
+                 FL_COORD y,
+                 FL_COORD w,
+                 FL_COORD h )
 {
     set_clipping( NORMAL_CLIP, flx->gc, x, y, w, h );
 }
@@ -1111,10 +1111,10 @@ fl_unset_clipping( void )
 
 int
 fl_get_clipping( int        include_global,
-                 FL_Coord * x,
-                 FL_Coord * y,
-                 FL_Coord * w,
-                 FL_Coord * h )
+                 FL_COORD * x,
+                 FL_COORD * y,
+                 FL_COORD * w,
+                 FL_COORD * h )
 {
     return get_clipping( NORMAL_CLIP, include_global, x, y, w, h );
 }
@@ -1142,10 +1142,10 @@ fl_is_text_clipped( int include_global )
  ***************************************/
 
 void
-fl_set_text_clipping( FL_Coord x,
-                      FL_Coord y,
-                      FL_Coord w,
-                      FL_Coord h )
+fl_set_text_clipping( FL_COORD x,
+                      FL_COORD y,
+                      FL_COORD w,
+                      FL_COORD h )
 {
 #if FL_ENABLE_XFT
     if ( w < 0 || h < 0 )
@@ -1236,10 +1236,10 @@ fl_unset_text_clipping( void )
 
 int
 fl_get_text_clipping( int        include_global,
-                      FL_Coord * x,
-                      FL_Coord * y,
-                      FL_Coord * w,
-                      FL_Coord * h )
+                      FL_COORD * x,
+                      FL_COORD * y,
+                      FL_COORD * w,
+                      FL_COORD * h )
 {
     return get_clipping( TEXT_CLIP, include_global, x, y, w, h );
 }
@@ -1254,10 +1254,10 @@ fl_get_text_clipping( int        include_global,
 
 void
 fl_set_gc_clipping( GC       gc,
-                    FL_Coord x,
-                    FL_Coord y,
-                    FL_Coord w,
-                    FL_Coord h )
+                    FL_COORD x,
+                    FL_COORD y,
+                    FL_COORD w,
+                    FL_COORD h )
 {
     clipped_flags[ GC_CLIP ] = 1;
     set_clipping( GC_CLIP, gc, x, y, w, h );
@@ -1285,10 +1285,10 @@ fl_unset_gc_clipping( GC gc )
  ***************************************/
 
 void
-fli_set_additional_clipping( FL_Coord x,
-                             FL_Coord y,
-                             FL_Coord w,
-                             FL_Coord h )
+fli_set_additional_clipping( FL_COORD x,
+                             FL_COORD y,
+                             FL_COORD w,
+                             FL_COORD h )
 {
     FL_RECT rect;
 

@@ -98,7 +98,7 @@ main( int    argc,
 {
 	int i;
 
-	fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+	fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
 
 	create_form_form( );
 	fl_set_object_color( result, FL_FREE_COL1, FL_FREE_COL1 );

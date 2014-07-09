@@ -457,13 +457,13 @@ control_init( FD_control * ui )
  ***************************************/
 
 void
-show_geometry( FL_Coord     x,
-               FL_Coord     y,
-               FL_Coord     w,
-               FL_Coord     h )
+show_geometry( FL_COORD     x,
+               FL_COORD     y,
+               FL_COORD     w,
+               FL_COORD     h )
 {
     char buf[ 128 ];
-    static FL_Coord lx = -1,
+    static FL_COORD lx = -1,
                     ly,
                     lw = -1,
                     lh;
@@ -573,7 +573,7 @@ typedef struct {
 
 static short *osize = NULL;
 static GEOM *oldgeom = NULL;
-static FL_Coord formw,
+static FL_COORD formw,
                 formh;           /* original form size */
 
 
@@ -996,10 +996,10 @@ func_cb( FL_OBJECT * obj  FL_UNUSED_ARG,
  ***************************************/
 
 static void
-draw_centering_symbol( FL_Coord x,
-                       FL_Coord y,
-                       FL_Coord w,
-                       FL_Coord h,
+draw_centering_symbol( FL_COORD x,
+                       FL_COORD y,
+                       FL_COORD w,
+                       FL_COORD h,
                        int      angle,
                        FL_COLOR col )
 {

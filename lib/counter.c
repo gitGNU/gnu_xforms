@@ -170,8 +170,8 @@ draw_counter( FL_OBJECT * ob )
 
 static void
 calc_mouse_obj( FL_OBJECT * ob,
-                FL_Coord    mx,
-                FL_Coord    my )
+                FL_COORD    mx,
+                FL_COORD    my )
 {
     FLI_COUNTER_SPEC *sp = ob->spec;
 
@@ -295,8 +295,8 @@ timeoutCB( int    val  FL_UNUSED_ARG,
 
 static void
 show_focus_obj( FL_OBJECT * ob,
-                FL_Coord    mx,
-                FL_Coord    my )
+                FL_COORD    mx,
+                FL_COORD    my )
 {
     FLI_COUNTER_SPEC *sp = ob->spec;
     unsigned int oldobj = sp->mouseobj;
@@ -308,33 +308,33 @@ show_focus_obj( FL_OBJECT * ob,
     if ( sp->mouseobj == oldobj )
         return;
 
-    if ( sp->mouseobj && sp->mouseobj != OB4 && sp->mouseobj != oldobj )
+    if ( oldobj && oldobj != OB4 )
+    {
+        sp->draw_type = oldobj;
+        fl_redraw_object( ob );
+    }
+
+    if ( sp->mouseobj && sp->mouseobj != OB4 )
     {
         FL_COLOR old = ob->col1;
+
         sp->draw_type = sp->mouseobj;
         ob->col1 = FL_MCOL;
         fl_redraw_object( ob );
-        sp->draw_type = oldobj;
         ob->col1 = old;
-        fl_redraw_object( ob );
-    }
-    else if ( ( sp->mouseobj == NONE || sp->mouseobj == OB4 ) && oldobj )
-    {
-        sp->draw_type = oldobj;
-        fl_redraw_object( ob );
     }
 }
 
 
 /***************************************
- * Handles mouse related events
+ * Handles some of the mouse related events (press, release and update)
  ***************************************/
 
 static int
 handle_mouse( FL_OBJECT * ob,
               int         event,
-              FL_Coord    mx,
-              FL_Coord    my )
+              FL_COORD    mx,
+              FL_COORD    my )
 {
     FLI_COUNTER_SPEC *sp = ob->spec;
     int ret = FL_RETURN_NONE;
@@ -351,7 +351,7 @@ handle_mouse( FL_OBJECT * ob,
             sp->start_val = sp->val;
             sp->cur_repeat_ms = sp->repeat_ms;
             calc_mouse_obj( ob, mx, my );
-            if ( sp->mouseobj != NONE )
+            if ( sp->mouseobj != NONE && sp->mouseobj != OB4 )
                 ret |= FL_RETURN_CHANGED;
             sp->timeout_id = -1;
             break;
@@ -376,7 +376,9 @@ handle_mouse( FL_OBJECT * ob,
            expired a change of the counters value is in order */
 
         case FL_UPDATE :
-            if ( sp->mouseobj != NONE && sp->timeout_id == -1 )
+            if (    sp->mouseobj != NONE
+                 && sp->mouseobj != OB4
+                 && sp->timeout_id == -1 )
                 ret |= FL_RETURN_CHANGED;
             break;
     }
@@ -443,9 +445,9 @@ handle_mouse( FL_OBJECT * ob,
 static int
 handle_counter( FL_OBJECT * ob,
                 int         event,
-                FL_Coord    mx,
-                FL_Coord    my,
-                FL_Char     key  FL_UNUSED_ARG,
+                FL_COORD    mx,
+                FL_COORD    my,
+                FL_VAL      key  FL_UNUSED_ARG,
                 void *      ev   FL_UNUSED_ARG )
 {
     FLI_COUNTER_SPEC *sp = ob->spec;
@@ -457,8 +459,7 @@ handle_counter( FL_OBJECT * ob,
             ob->align = fl_to_outside_lalign( ob->align );
             break;
 
-        case FL_DRAW:
-            draw_counter( ob );
+        case FL_DRAW:            draw_counter( ob );
             break;
 
         case FL_DRAWLABEL:
@@ -486,10 +487,6 @@ handle_counter( FL_OBJECT * ob,
             break;
 
         case FL_MOTION:
-            if ( key != FL_MBUTTON1 )
-                break;
-            /* fallthrough */
-
         case FL_ENTER:
         case FL_LEAVE:
             show_focus_obj( ob, mx, my );
@@ -510,10 +507,10 @@ handle_counter( FL_OBJECT * ob,
 
 FL_OBJECT *
 fl_create_counter( int          type,
-                   FL_Coord     x,
-                   FL_Coord     y,
-                   FL_Coord     w,
-                   FL_Coord     h,
+                   FL_COORD     x,
+                   FL_COORD     y,
+                   FL_COORD     w,
+                   FL_COORD     h,
                    const char * label )
 {
     FL_OBJECT *ob;
@@ -559,10 +556,10 @@ fl_create_counter( int          type,
 
 FL_OBJECT *
 fl_add_counter( int          type,
-                FL_Coord     x,
-                FL_Coord     y,
-                FL_Coord     w,
-                FL_Coord     h,
+                FL_COORD     x,
+                FL_COORD     y,
+                FL_COORD     w,
+                FL_COORD     h,
                 const char * label )
 {
     FL_OBJECT *ob = fl_create_counter( type, x, y, w, h, label );

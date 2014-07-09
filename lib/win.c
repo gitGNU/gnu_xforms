@@ -133,8 +133,8 @@ fli_default_xswa( void )
  ***************************************/
 
 void
-fl_initial_winsize( FL_Coord w,
-                    FL_Coord h )
+fl_initial_winsize( FL_COORD w,
+                    FL_COORD h )
 {
     st_xsh.width   = st_xsh.base_width = w;
     st_xsh.height  = st_xsh.base_height = h;
@@ -180,8 +180,8 @@ fl_winicon( Window win,
  ***************************************/
 
 void
-fl_winsize( FL_Coord w,
-            FL_Coord h )
+fl_winsize( FL_COORD w,
+            FL_COORD h )
 {
     fl_initial_winsize( w, h );
 
@@ -201,8 +201,8 @@ fl_winsize( FL_Coord w,
 
 void
 fl_winminsize( Window   win,
-               FL_Coord w,
-               FL_Coord h )
+               FL_COORD w,
+               FL_COORD h )
 {
     XSizeHints mxsh,
                *sh;
@@ -226,8 +226,8 @@ fl_winminsize( Window   win,
 
 void
 fl_winmaxsize( Window   win,
-               FL_Coord w,
-               FL_Coord h )
+               FL_COORD w,
+               FL_COORD h )
 {
     XSizeHints mxsh,
                *sh;
@@ -249,8 +249,8 @@ fl_winmaxsize( Window   win,
 
 void
 fl_winstepsize( Window   win,
-                FL_Coord dx,
-                FL_Coord dy )
+                FL_COORD dx,
+                FL_COORD dy )
 {
     XSizeHints mxsh,
                *sh;
@@ -279,8 +279,8 @@ fl_winstepsize( Window   win,
  ***************************************/
 
 void
-fl_winposition( FL_Coord x,
-                FL_Coord y )
+fl_winposition( FL_COORD x,
+                FL_COORD y )
 {
     st_xsh.x = x;
     st_xsh.y = y;
@@ -298,10 +298,10 @@ fl_winposition( FL_Coord x,
  ***************************************/
 
 void
-fl_initial_wingeometry( FL_Coord x,
-                        FL_Coord y,
-                        FL_Coord w,
-                        FL_Coord h )
+fl_initial_wingeometry( FL_COORD x,
+                        FL_COORD y,
+                        FL_COORD w,
+                        FL_COORD h )
 {
     fl_winposition( x, y );
     fl_initial_winsize( w, h );
@@ -312,10 +312,10 @@ fl_initial_wingeometry( FL_Coord x,
  ***************************************/
 
 void
-fl_wingeometry( FL_Coord x,
-                FL_Coord y,
-                FL_Coord w,
-                FL_Coord h )
+fl_wingeometry( FL_COORD x,
+                FL_COORD y,
+                FL_COORD w,
+                FL_COORD h )
 {
     fl_winposition( x, y );
     fl_winsize( w, h );
@@ -332,8 +332,8 @@ fl_wingeometry( FL_Coord x,
 
 void
 fl_winaspect( Window   win,
-              FL_Coord x,
-              FL_Coord y )
+              FL_COORD x,
+              FL_COORD y )
 {
     XSizeHints lxsh,
                *xsh;
@@ -394,8 +394,8 @@ fl_transient( void )
 
 void
 fl_winmove( Window   win,
-            FL_Coord dx,
-            FL_Coord dy)
+            FL_COORD dx,
+            FL_COORD dy)
 {
     if ( win )
         XMoveWindow( flx->display, win, dx, dy );
@@ -409,10 +409,10 @@ fl_winmove( Window   win,
 
 void
 fl_winreshape( Window   win,
-               FL_Coord dx,
-               FL_Coord dy,
-               FL_Coord w,
-               FL_Coord h )
+               FL_COORD dx,
+               FL_COORD dy,
+               FL_COORD w,
+               FL_COORD h )
 {
     if ( win )
         XMoveResizeWindow( flx->display, win, dx, dy, w, h );
@@ -434,8 +434,8 @@ fl_winreshape( Window   win,
 
 void
 fl_get_winsize( Window     win,
-                FL_Coord * w,
-                FL_Coord * h )
+                FL_COORD * w,
+                FL_COORD * h )
 {
     unsigned int ww,
                  hh,
@@ -457,8 +457,8 @@ fl_get_winsize( Window     win,
 
 void
 fl_get_winorigin( Window     win,
-                  FL_Coord * x,
-                  FL_Coord * y )
+                  FL_COORD * x,
+                  FL_COORD * y )
 {
     int xx,
         yy;
@@ -481,10 +481,10 @@ fl_get_winorigin( Window     win,
 
 void
 fl_get_wingeometry( Window     win,
-                    FL_Coord * x,
-                    FL_Coord * y,
-                    FL_Coord * w,
-                    FL_Coord * h )
+                    FL_COORD * x,
+                    FL_COORD * y,
+                    FL_COORD * w,
+                    FL_COORD * h )
 {
     int xx,
         yy;
@@ -897,12 +897,12 @@ fl_reset_winconstraints( Window win )
 
 void
 fl_winresize( Window   win,
-              FL_Coord neww,
-              FL_Coord newh )
+              FL_COORD neww,
+              FL_COORD newh )
 {
     XSizeHints lxsh;
     long fields;
-    FL_Coord curwh, curww;
+    FL_COORD curwh, curww;
 
     if ( ! win )
         return;
@@ -983,7 +983,7 @@ int
 fl_winisvalid( Window win )
 {
     int ( * old )( Display *, XErrorEvent * );
-    FL_Coord w,
+    FL_COORD w,
              h;
 
     badwin = 0;

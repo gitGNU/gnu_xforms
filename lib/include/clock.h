@@ -28,17 +28,17 @@ enum {
 
 
 FL_EXPORT FL_OBJECT * fl_create_clock( int          type,
-                                       FL_Coord     x,
-                                       FL_Coord     y,
-                                       FL_Coord     w,
-                                       FL_Coord     h,
+                                       FL_COORD     x,
+                                       FL_COORD     y,
+                                       FL_COORD     w,
+                                       FL_COORD     h,
                                        const char * s );
 
 FL_EXPORT FL_OBJECT * fl_add_clock( int          type,
-                                    FL_Coord     x,
-                                    FL_Coord     y,
-                                    FL_Coord     w,
-                                    FL_Coord     h,
+                                    FL_COORD     x,
+                                    FL_COORD     y,
+                                    FL_COORD     w,
+                                    FL_COORD     h,
                                     const char * s );
 
 FL_EXPORT void fl_get_clock( FL_OBJECT * ob,

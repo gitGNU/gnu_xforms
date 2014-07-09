@@ -302,10 +302,10 @@ static float offset[ ] =
  ***************************************/
 
 static int
-compute_rounded_corners( FL_Coord   x,
-                         FL_Coord   y,
-                         FL_Coord   w,
-                         FL_Coord   h,
+compute_rounded_corners( FL_COORD   x,
+                         FL_COORD   y,
+                         FL_COORD   w,
+                         FL_COORD   h,
                          Point    * point)
 {
     Point *xp;

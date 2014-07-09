@@ -51,7 +51,7 @@ main( int    argc,
 {
     FD_newbut *cbform ;
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     cbform = create_form_newbut( );
 
     fl_show_form( cbform->newbut, FL_PLACE_CENTER, FL_TRANSIENT, "test" );

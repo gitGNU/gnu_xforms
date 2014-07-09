@@ -41,9 +41,9 @@
 static int
 handle_simu_canvas( FL_OBJECT * ob,
                     int         event,
-                    FL_Coord    mx   FL_UNUSED_ARG,
-                    FL_Coord    my   FL_UNUSED_ARG,
-                    FL_Char     key  FL_UNUSED_ARG,
+                    FL_COORD    mx   FL_UNUSED_ARG,
+                    FL_COORD    my   FL_UNUSED_ARG,
+                    FL_VAL      key  FL_UNUSED_ARG,
                     void      * ev   FL_UNUSED_ARG )
 {
     int ftype;
@@ -76,10 +76,10 @@ handle_simu_canvas( FL_OBJECT * ob,
 
 FL_OBJECT *
 fl_create_simu_canvas( int          type,
-                       FL_Coord     x,
-                       FL_Coord     y,
-                       FL_Coord     w,
-                       FL_Coord     h,
+                       FL_COORD     x,
+                       FL_COORD     y,
+                       FL_COORD     w,
+                       FL_COORD     h,
                        const char * label )
 {
     FL_OBJECT *ob;
@@ -104,10 +104,10 @@ fl_create_simu_canvas( int          type,
 
 FL_OBJECT *
 fl_add_simu_canvas( int          type,
-                    FL_Coord     x,
-                    FL_Coord     y,
-                    FL_Coord     w,
-                    FL_Coord     h,
+                    FL_COORD     x,
+                    FL_COORD     y,
+                    FL_COORD     w,
+                    FL_COORD     h,
                     const char * label )
 {
     FL_OBJECT *ob;
@@ -125,10 +125,10 @@ fl_add_simu_canvas( int          type,
 
 FL_OBJECT *
 fl_create_simu_glcanvas( int          type,
-                         FL_Coord     x,
-                         FL_Coord     y,
-                         FL_Coord     w,
-                         FL_Coord     h,
+                         FL_COORD     x,
+                         FL_COORD     y,
+                         FL_COORD     w,
+                         FL_COORD     h,
                          const char * label )
 {
     FL_OBJECT *ob;
@@ -153,10 +153,10 @@ fl_create_simu_glcanvas( int          type,
 
 FL_OBJECT *
 fl_add_simu_glcanvas( int          type,
-                      FL_Coord     x,
-                      FL_Coord     y,
-                      FL_Coord     w,
-                      FL_Coord     h,
+                      FL_COORD     x,
+                      FL_COORD     y,
+                      FL_COORD     w,
+                      FL_COORD     h,
                       const char * label )
 {
     FL_OBJECT *ob;
@@ -174,9 +174,9 @@ fl_add_simu_glcanvas( int          type,
 static int
 handle_tabfolder( FL_OBJECT * ob,
                   int         event,
-                  FL_Coord    mx   FL_UNUSED_ARG,
-                  FL_Coord    my   FL_UNUSED_ARG,
-                  FL_Char     key  FL_UNUSED_ARG,
+                  FL_COORD    mx   FL_UNUSED_ARG,
+                  FL_COORD    my   FL_UNUSED_ARG,
+                  FL_VAL      key  FL_UNUSED_ARG,
                   void      * ev   FL_UNUSED_ARG )
 {
     if ( event == FL_DRAW )
@@ -195,10 +195,10 @@ handle_tabfolder( FL_OBJECT * ob,
 
 FL_OBJECT *
 fl_create_ntabfolder( int          type,
-                      FL_Coord     x,
-                      FL_Coord     y,
-                      FL_Coord     w,
-                      FL_Coord     h,
+                      FL_COORD     x,
+                      FL_COORD     y,
+                      FL_COORD     w,
+                      FL_COORD     h,
                       const char * label )
 {
     FL_OBJECT *ob;
@@ -221,10 +221,10 @@ fl_create_ntabfolder( int          type,
 
 FL_OBJECT *
 fl_add_ntabfolder( int          type,
-                   FL_Coord     x,
-                   FL_Coord     y,
-                   FL_Coord     w,
-                   FL_Coord     h,
+                   FL_COORD     x,
+                   FL_COORD     y,
+                   FL_COORD     w,
+                   FL_COORD     h,
                    const char * label )
 {
     FL_OBJECT *ob = fl_create_ntabfolder( type, x, y, w, h, label );
@@ -241,9 +241,9 @@ fl_add_ntabfolder( int          type,
 static int
 handle_formbrowser( FL_OBJECT * ob,
                     int         event,
-                    FL_Coord    mx   FL_UNUSED_ARG,
-                    FL_Coord    my   FL_UNUSED_ARG,
-                    FL_Char     key  FL_UNUSED_ARG,
+                    FL_COORD    mx   FL_UNUSED_ARG,
+                    FL_COORD    my   FL_UNUSED_ARG,
+                    FL_VAL      key  FL_UNUSED_ARG,
                     void      * ev   FL_UNUSED_ARG )
 {
     if ( event == FL_DRAW )
@@ -262,10 +262,10 @@ handle_formbrowser( FL_OBJECT * ob,
 
 FL_OBJECT *
 fl_create_nformbrowser( int          type,
-                        FL_Coord     x,
-                        FL_Coord     y,
-                        FL_Coord     w,
-                        FL_Coord     h,
+                        FL_COORD     x,
+                        FL_COORD     y,
+                        FL_COORD     w,
+                        FL_COORD     h,
                         const char * label )
 {
     FL_OBJECT *ob;
@@ -288,10 +288,10 @@ fl_create_nformbrowser( int          type,
 
 FL_OBJECT *
 fl_add_nformbrowser( int          type,
-                     FL_Coord     x,
-                     FL_Coord     y,
-                     FL_Coord     w,
-                     FL_Coord     h,
+                     FL_COORD     x,
+                     FL_COORD     y,
+                     FL_COORD     w,
+                     FL_COORD     h,
                      const char * label )
 {
     FL_OBJECT *ob = fl_create_nformbrowser( type, x, y, w, h, label );

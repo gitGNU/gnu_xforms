@@ -133,7 +133,7 @@ main( int    argc,
       char * argv[ ] )
 {
     fl_flip_yorigin( );
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     create_form_form( );
     fl_set_chart_bounds( chartobj, -1.5, 1.5 );
     fl_set_chart_maxnumb( chartobj, 80 );

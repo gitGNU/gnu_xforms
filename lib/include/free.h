@@ -33,18 +33,18 @@ typedef enum {
 
 #define FL_SLEEPING_FREE  FL_INACTIVE_FREE
 
-FL_EXPORT FL_OBJECT * fl_create_free( int            type,
-                                      FL_Coord       x,
-                                      FL_Coord       y,
-                                      FL_Coord       w,
-                                      FL_Coord       h,
-                                      const char   * label,
-                                      FL_HANDLEPTR   handle );
+FL_EXPORT FL_OBJECT * fl_create_free( int             type,
+                                      FL_COORD        x,
+                                      FL_COORD        y,
+                                      FL_COORD        w,
+                                      FL_COORD        h,
+                                      const char    * label,
+                                      FL_HANDLE_PTR   handle );
 
-FL_EXPORT FL_OBJECT * fl_add_free( int            type,
-                                   FL_Coord       x,
-                                   FL_Coord       y,
-                                   FL_Coord       w,
-                                   FL_Coord       h,
-                                   const char   * label,
-                                   FL_HANDLEPTR   handle );
+FL_EXPORT FL_OBJECT * fl_add_free( int             type,
+                                   FL_COORD        x,
+                                   FL_COORD        y,
+                                   FL_COORD         w,
+                                   FL_COORD        h,
+                                   const char    * label,
+                                   FL_HANDLE_PTR   handle );

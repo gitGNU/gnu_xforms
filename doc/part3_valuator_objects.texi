@@ -47,16 +47,16 @@ Adding an object To add a slider to a form use
 @findex fl_add_slider()
 @anchor{fl_add_slider()}
 @example
-FL_OBJECT *fl_add_slider(int type, FL_Coord x, FL_Coord y,
-                         FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_slider(int type, FL_COORD x, FL_COORD y,
+                         FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 or
 @findex fl_add_valslider()
 @anchor{fl_add_valslider()}
 @example
-FL_OBJECT *fl_add_valslider(int type, FL_Coord x, FL_Coord y,
-                            FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_valslider(int type, FL_COORD x, FL_COORD y,
+                            FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 The meaning of the parameters is as usual. The label is by default
@@ -409,8 +409,8 @@ To add a scrollbar to a form use
 @findex fl_add_scrollbar()
 @anchor{fl_add_scrollbar()}
 @example
-FL_OBJECT *fl_add_scrollbar(int type, FL_Coord x, FL_Coord y,
-                            FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_scrollbar(int type, FL_COORD x, FL_COORD y,
+                            FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 The meaning of the parameters is as usual. The label is by default
@@ -701,8 +701,8 @@ To add a dial to a form use
 @findex fl_add_dial()
 @anchor{fl_add_dial()}
 @example
-FL_OBJECT *fl_add_dial(int type, FL_Coord x, FL_Coord y,
-                       FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_dial(int type, FL_COORD x, FL_COORD y,
+                       FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 The meaning of the parameters is as usual. The label is by default
@@ -928,8 +928,8 @@ A positioner can be added to a form using the call
 @findex fl_add_positioner()
 @anchor{fl_add_positioner()}
 @example
-FL_OBJECT *fl_add_positioner(int type, FL_Coord x, FL_Coord y,
-                             FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_positioner(int type, FL_COORD x, FL_COORD y,
+                             FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 The meaning of the parameters is as usual. The label is placed below
@@ -1262,8 +1262,8 @@ To add a counter to a form use
 @findex fl_add_counter()
 @anchor{fl_add_counter()}
 @example
-FL_OBJECT *fl_add_counter(int type, FL_Coord x, FL_Coord y,
-                          FL_Coord w, FL_Coord h, const char *label)
+FL_OBJECT *fl_add_counter(int type, FL_COORD x, FL_COORD y,
+                          FL_COORD w, FL_COORD h, const char *label)
 @end example
 @noindent
 The meaning of the parameters is as usual. The label is by default
@@ -1525,8 +1525,8 @@ To add a spinner to a form use
 @findex fl_add_spinner()
 @anchor{fl_add_spinner()}
 @example
-FL_OBJECT *fl_add_spinner(int type, FL_Coord x, FL_Coord y,
-                          FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_spinner(int type, FL_COORD x, FL_COORD y,
+                          FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 The meaning of the parameters is as usual. The label is by default
@@ -1736,8 +1736,8 @@ To add a thumbwheel to a form use
 @findex fl_add_thumbwheel()
 @anchor{fl_add_thumbwheel()}
 @example
-FL_OBJECT *fl_add_thumbwheel(int type, FL_Coord x, FL_Coord y,
-                             FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_thumbwheel(int type, FL_COORD x, FL_COORD y,
+                             FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 The meaning of the parameters is as usual. The label is by default

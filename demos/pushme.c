@@ -34,7 +34,7 @@ main( int    argc,
 {
     FL_FORM *simpleform;
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     simpleform = fl_bgn_form( FL_UP_BOX, 230, 160 );
     fl_add_button( FL_NORMAL_BUTTON, 40, 50, 150, 60, "Push Me" );
     fl_end_form( );

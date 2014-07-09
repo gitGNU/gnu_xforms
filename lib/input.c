@@ -102,8 +102,8 @@ static int Input_Mode = FL_NORMAL_INPUT_MODE;
 static void
 get_margin( int        btype,
             int        bw,
-            FL_Coord * xm,
-            FL_Coord * ym )
+            FL_COORD * xm,
+            FL_COORD * ym )
 {
     if (    btype == FL_FLAT_BOX
          || btype == FL_NO_BOX
@@ -129,7 +129,7 @@ static void
 check_scrollbar_size( FL_OBJECT * obj )
 {
     FLI_INPUT_SPEC *sp = obj->spec;
-    FL_Coord xmargin,
+    FL_COORD xmargin,
              ymargin;
     int bw = FL_abs( obj->bw );
     int delta;
@@ -254,7 +254,7 @@ draw_input( FL_OBJECT * obj )
     FLI_INPUT_SPEC *sp = obj->spec;
     FL_COLOR col;
     FL_COLOR curscol = fli_dithered( fl_vmode ) ? FL_BLACK : sp->curscol;
-    FL_Coord xmargin,
+    FL_COORD xmargin,
              ymargin;
     int bw = FL_abs( obj->bw );
     int cx,
@@ -345,8 +345,8 @@ draw_input( FL_OBJECT * obj )
  ***************************************/
 
 static int
-handle_select( FL_Coord    mx,
-               FL_Coord    my,
+handle_select( FL_COORD    mx,
+               FL_COORD    my,
                FL_OBJECT * obj,
                int         movement,
                int         mode )
@@ -359,7 +359,7 @@ handle_select( FL_Coord    mx,
         oldbeg = sp->beginrange,
         oldend = sp->endrange;
     int bw = FL_abs( obj->bw );
-    FL_Coord xmargin,
+    FL_COORD xmargin,
              ymargin;
 
     if ( obj->type == FL_HIDDEN_INPUT )
@@ -567,7 +567,7 @@ static void set_default_keymap( int );
 
 static void
 handle_movement( FL_OBJECT * obj,
-                 FL_Char     key,
+                 FL_VAL      key,
                  int         slen,
                  int         startpos,
                  int         kmask )
@@ -786,7 +786,7 @@ handle_movement( FL_OBJECT * obj,
 
 static int
 handle_edit( FL_OBJECT * obj,
-             FL_Char     key,
+             FL_VAL      key,
              int         slen )
 {
     FLI_INPUT_SPEC *sp = obj->spec;
@@ -981,7 +981,7 @@ handle_edit( FL_OBJECT * obj,
 
 static int
 handle_normal_key( FL_OBJECT    * obj,
-                   FL_Char        key,
+                   FL_VAL         key,
                    int            slen )
 {
     FLI_INPUT_SPEC *sp = obj->spec;
@@ -1095,7 +1095,7 @@ handle_normal_key( FL_OBJECT    * obj,
 
 static int
 handle_key( FL_OBJECT    * obj,
-            FL_Char        key,
+            FL_VAL         key,
             unsigned int   kmask )
 {
     int ret = FL_RETURN_NONE;
@@ -1409,9 +1409,9 @@ do_XCut( FL_OBJECT * obj,
 static int
 handle_input( FL_OBJECT * obj,
               int         event,
-              FL_Coord    mx,
-              FL_Coord    my,
-              FL_Char     key,
+              FL_COORD    mx,
+              FL_COORD    my,
+              FL_VAL      key,
               void      * ev )
 {
     FLI_INPUT_SPEC *sp = obj->spec;
@@ -1650,9 +1650,9 @@ hsl_cb( FL_OBJECT * obj,
 static int
 input_pre( FL_OBJECT * obj,
            int         ev,
-           FL_Coord    mx,
-           FL_Coord    my,
-           FL_Char     key,
+           FL_COORD    mx,
+           FL_COORD    my,
+           FL_VAL      key,
            void      * xev )
 {
     FL_OBJECT *ext = obj->parent;
@@ -1668,9 +1668,9 @@ input_pre( FL_OBJECT * obj,
 static int
 input_post( FL_OBJECT * obj,
             int         ev,
-            FL_Coord    mx,
-            FL_Coord    my,
-            FL_Char     key,
+            FL_COORD    mx,
+            FL_COORD    my,
+            FL_VAL      key,
             void      * xev )
 {
     FL_OBJECT *ext = obj->parent;
@@ -1697,10 +1697,10 @@ input_cb( FL_OBJECT * obj,
 
 FL_OBJECT *
 fl_create_input( int          type,
-                 FL_Coord     x,
-                 FL_Coord     y,
-                 FL_Coord     w,
-                 FL_Coord     h,
+                 FL_COORD     x,
+                 FL_COORD     y,
+                 FL_COORD     w,
+                 FL_COORD     h,
                  const char * label )
 {
     FL_OBJECT *obj;
@@ -1784,9 +1784,9 @@ fl_create_input( int          type,
 static int
 fake_handle( FL_OBJECT * obj,
              int         event,
-             FL_Coord    mx   FL_UNUSED_ARG,
-             FL_Coord    my   FL_UNUSED_ARG,
-             FL_Char     key  FL_UNUSED_ARG,
+             FL_COORD    mx   FL_UNUSED_ARG,
+             FL_COORD    my   FL_UNUSED_ARG,
+             FL_VAL      key  FL_UNUSED_ARG,
              void      * ev   FL_UNUSED_ARG )
 {
     FLI_INPUT_SPEC *sp = obj->spec;
@@ -1815,10 +1815,10 @@ fake_handle( FL_OBJECT * obj,
 
 FL_OBJECT *
 fl_add_input( int          type,
-              FL_Coord     x,
-              FL_Coord     y,
-              FL_Coord     w,
-              FL_Coord     h,
+              FL_COORD     x,
+              FL_COORD     y,
+              FL_COORD     w,
+              FL_COORD     h,
               const char * label )
 {
     FL_OBJECT *obj;

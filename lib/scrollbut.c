@@ -44,8 +44,8 @@ draw_scrollbutton( FL_OBJECT * ob,
                    int         event )
 {
     FL_COLOR c1;
-    FL_Coord abw = FL_abs( ob->bw );
-    FL_Coord extra = abw;
+    FL_COORD abw = FL_abs( ob->bw );
+    FL_COORD extra = abw;
     int btype = FLI_TRIANGLE_UPBOX8;
     char *label = ob->label;
     int x = ob->x,
@@ -97,10 +97,10 @@ draw_scrollbutton( FL_OBJECT * ob,
 
 FL_OBJECT *
 fl_create_scrollbutton( int          type,
-                        FL_Coord     x,
-                        FL_Coord     y,
-                        FL_Coord     w,
-                        FL_Coord     h,
+                        FL_COORD     x,
+                        FL_COORD     y,
+                        FL_COORD     w,
+                        FL_COORD     h,
                         const char * label )
 {
     FL_OBJECT *ob;
@@ -122,10 +122,10 @@ fl_create_scrollbutton( int          type,
 
 FL_OBJECT *
 fl_add_scrollbutton( int          type,
-                     FL_Coord     x,
-                     FL_Coord     y,
-                     FL_Coord     w,
-                     FL_Coord     h,
+                     FL_COORD     x,
+                     FL_COORD     y,
+                     FL_COORD     w,
+                     FL_COORD     h,
                      const char * label )
 {
     FL_OBJECT *ob = fl_create_scrollbutton( type, x, y, w, h, label );

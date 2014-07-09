@@ -416,7 +416,7 @@ main( int    argc,
     FD_help_form * help;
     int i;
 
-    fl_initialize( &argc, argv, "Gravity Demo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     help = create_form_help( );
     grav = create_form_gravity( help );
     fl_set_app_mainform( grav->grav );

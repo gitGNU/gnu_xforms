@@ -1679,7 +1679,7 @@ static void
 draw_xyplot( FL_OBJECT * ob )
 {
     FLI_XYPLOT_SPEC *sp = ob->spec;
-    FL_Coord bw = FL_abs( ob->bw );
+    FL_COORD bw = FL_abs( ob->bw );
 
     draw_to_pixmap =    ob->use_pixmap
                      && ob->flpixmap
@@ -1837,11 +1837,11 @@ find_data( FL_OBJECT * ob,
 
 static int
 handle_mouse( FL_OBJECT * ob,
-              FL_Coord    mx,
-              FL_Coord    my )
+              FL_COORD    mx,
+              FL_COORD    my )
 {
     FLI_XYPLOT_SPEC *sp = ob->spec;
-    static FL_Coord lmx,
+    static FL_COORD lmx,
                     lmy;
     int i;
     int deltax = sp->ssize * ( sp->inspect ? 2.5 : 1.5 ) + 1;
@@ -1973,9 +1973,9 @@ handle_mouse( FL_OBJECT * ob,
 static int
 handle_xyplot( FL_OBJECT * ob,
                int         event,
-               FL_Coord    mx,
-               FL_Coord    my,
-               FL_Char     key  FL_UNUSED_ARG,
+               FL_COORD    mx,
+               FL_COORD    my,
+               FL_VAL      key  FL_UNUSED_ARG,
                void      * ev   FL_UNUSED_ARG )
 {
     FLI_XYPLOT_SPEC *sp = ob->spec;
@@ -2209,10 +2209,10 @@ init_spec( FL_OBJECT * obj )
 
 FL_OBJECT *
 fl_create_xyplot( int          t,
-                  FL_Coord     x,
-                  FL_Coord     y,
-                  FL_Coord     w,
-                  FL_Coord     h,
+                  FL_COORD     x,
+                  FL_COORD     y,
+                  FL_COORD     w,
+                  FL_COORD     h,
                   const char * l )
 {
     FL_OBJECT *obj = fl_make_object( FL_XYPLOT, t, x, y, w, h, l,
@@ -2240,10 +2240,10 @@ fl_create_xyplot( int          t,
 
 FL_OBJECT *
 fl_add_xyplot( int          t,
-               FL_Coord     x,
-               FL_Coord     y,
-               FL_Coord     w,
-               FL_Coord     h,
+               FL_COORD     x,
+               FL_COORD     y,
+               FL_COORD     w,
+               FL_COORD     h,
                const char * l )
 {
     FL_OBJECT *obj = fl_create_xyplot( t, x, y, w, h, l );

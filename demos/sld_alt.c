@@ -65,7 +65,7 @@ main( int    argc,
     FL_OBJECT *but,
               *obj;
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     form = fl_bgn_form( FL_UP_BOX, 300, 300 );
     sl = fl_add_slider( FL_VERT_SLIDER, 40, 40, 60, 220, "X" );
     fl_set_slider_value( sl, 0.5 );

@@ -74,7 +74,7 @@ rotate_it( FL_POINT * xp,
 static void
 draw_dial( FL_OBJECT * obj )
 {
-    FL_Coord x,
+    FL_COORD x,
              y,
              w,
              h,
@@ -130,7 +130,7 @@ draw_dial( FL_OBJECT * obj )
 
     if ( obj->type == FL_NORMAL_DIAL )
     {
-        FL_Coord r;
+        FL_COORD r;
 
         r = FL_min( 0.5 * iradius, 15 );
 
@@ -199,9 +199,9 @@ draw_dial( FL_OBJECT * obj )
 
 static int
 handle_mouse( FL_OBJECT * obj,
-              FL_Coord    mousex,
-              FL_Coord    mousey,
-              FL_Char     key )
+              FL_COORD    mousex,
+              FL_COORD    mousey,
+              FL_VAL      key )
 {
     FLI_DIAL_SPEC *sp = obj->spec;
     double oldv,
@@ -277,7 +277,7 @@ handle_mouse( FL_OBJECT * obj,
 static int
 handle_mouse_wheel( FL_OBJECT * obj,
                     XEvent *    xev,
-                    FL_Char     key )
+                    FL_VAL      key )
 {
     FLI_DIAL_SPEC *sp = obj->spec;
     double val,
@@ -332,9 +332,9 @@ handle_mouse_wheel( FL_OBJECT * obj,
 static int
 handle_dial( FL_OBJECT * obj,
              int         event,
-             FL_Coord    mx,
-             FL_Coord    my,
-             FL_Char     key,
+             FL_COORD    mx,
+             FL_COORD    my,
+             FL_VAL      key,
              void *      ev )
 {
     FLI_DIAL_SPEC *sp = obj->spec;
@@ -406,10 +406,10 @@ get_mapping( FLI_DIAL_SPEC *sp )
 
 FL_OBJECT *
 fl_create_dial( int          type,
-                FL_Coord     x,
-                FL_Coord     y,
-                FL_Coord     w,
-                FL_Coord     h,
+                FL_COORD     x,
+                FL_COORD     y,
+                FL_COORD     w,
+                FL_COORD     h,
                 const char * label )
 {
     FL_OBJECT *obj;
@@ -444,10 +444,10 @@ fl_create_dial( int          type,
 
 FL_OBJECT *
 fl_add_dial( int          type,
-             FL_Coord     x,
-             FL_Coord     y,
-             FL_Coord     w,
-             FL_Coord     h,
+             FL_COORD     x,
+             FL_COORD     y,
+             FL_COORD     w,
+             FL_COORD     h,
              const char * label )
 {
     FL_OBJECT *obj = fl_create_dial( type, x, y, w, h, label );

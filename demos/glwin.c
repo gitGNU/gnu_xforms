@@ -70,7 +70,7 @@ main( int    argc,
     GLXContext context;
     int config[ ] = { GLX_RGBA, GLX_DEPTH_SIZE, 16, GLX_DOUBLEBUFFER, None };
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     fd_glcontrol = create_form_glcontrol( );
 
     if ( ! ( glwin = fl_glwincreate( config, &context, 250, 250 ) ) )
@@ -193,7 +193,7 @@ int
 handle_expose( XEvent * xev,
                void   * data  FL_UNUSED_ARG )
 {
-    FL_Coord w ,h ;
+    FL_COORD w ,h ;
 
     fl_get_winsize( glwin, &w, &h );
     glViewport( 0,0, w, h );

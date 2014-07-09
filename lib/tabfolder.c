@@ -76,9 +76,9 @@ static void shift_tabs( FL_OBJECT *,
 static int
 handle_tabfolder( FL_OBJECT * ob,
                   int         event,
-                  FL_Coord    mx   FL_UNUSED_ARG,
-                  FL_Coord    my   FL_UNUSED_ARG,
-                  FL_Char     key  FL_UNUSED_ARG,
+                  FL_COORD    mx   FL_UNUSED_ARG,
+                  FL_COORD    my   FL_UNUSED_ARG,
+                  FL_VAL      key  FL_UNUSED_ARG,
                   void      * ev )
 {
     FL_FORM *folder;
@@ -201,10 +201,10 @@ form_cb( FL_OBJECT * ob    FL_UNUSED_ARG,
 
 FL_OBJECT *
 fl_create_tabfolder( int          type,
-                     FL_Coord     x,
-                     FL_Coord     y,
-                     FL_Coord     w,
-                     FL_Coord     h,
+                     FL_COORD     x,
+                     FL_COORD     y,
+                     FL_COORD     w,
+                     FL_COORD     h,
                      const char * label )
 {
     FL_OBJECT *ob;
@@ -258,10 +258,10 @@ fl_create_tabfolder( int          type,
 
 FL_OBJECT *
 fl_add_tabfolder( int          type,
-                  FL_Coord     x,
-                  FL_Coord     y,
-                  FL_Coord     w,
-                  FL_Coord     h,
+                  FL_COORD     x,
+                  FL_COORD     y,
+                  FL_COORD     w,
+                  FL_COORD     h,
                   const char * l )
 {
     FL_OBJECT *obj = fl_create_tabfolder( type, x, y, w, h, l );
@@ -966,10 +966,10 @@ fl_get_active_folder_name( FL_OBJECT * ob )
 
 void
 fl_get_folder_area( FL_OBJECT * ob,
-                    FL_Coord  * x,
-                    FL_Coord  * y,
-                    FL_Coord  * w,
-                    FL_Coord  * h )
+                    FL_COORD  * x,
+                    FL_COORD  * y,
+                    FL_COORD  * w,
+                    FL_COORD  * h )
 {
     FLI_TABFOLDER_SPEC *sp = ob->spec;
 

@@ -243,9 +243,9 @@ draw_dead_area( FL_OBJECT * obj )
 static int
 handle_browser( FL_OBJECT * obj,
                 int         event,
-                FL_Coord    mx   FL_UNUSED_ARG,
-                FL_Coord    my   FL_UNUSED_ARG,
-                FL_Char     key  FL_UNUSED_ARG,
+                FL_COORD    mx   FL_UNUSED_ARG,
+                FL_COORD    my   FL_UNUSED_ARG,
+                FL_VAL      key  FL_UNUSED_ARG,
                 void      * ev   FL_UNUSED_ARG )
 {
     FLI_BROWSER_SPEC *sp = obj->spec;
@@ -448,9 +448,9 @@ tb_dblcallback( FL_OBJECT * ob,
 static int
 tbpost( FL_OBJECT * ob,
         int         ev,
-        FL_Coord    mx,
-        FL_Coord    my,
-        FL_Char     key,
+        FL_COORD    mx,
+        FL_COORD    my,
+        FL_VAL      key,
         void      * xev )
 {
     FL_OBJECT *br = ob->parent;
@@ -465,9 +465,9 @@ tbpost( FL_OBJECT * ob,
 static int
 tbpre( FL_OBJECT * ob,
        int         ev,
-       FL_Coord    mx,
-       FL_Coord    my,
-       FL_Char     key,
+       FL_COORD    mx,
+       FL_COORD    my,
+       FL_VAL      key,
        void      * xev )
 {
 
@@ -501,10 +501,10 @@ fli_get_default_scrollbarsize( FL_OBJECT * ob )
 
 FL_OBJECT *
 fl_create_browser( int          type,
-                   FL_Coord     x,
-                   FL_Coord     y,
-                   FL_Coord     w,
-                   FL_Coord     h,
+                   FL_COORD     x,
+                   FL_COORD     y,
+                   FL_COORD     w,
+                   FL_COORD     h,
                    const char * label )
 {
     FL_OBJECT *ob;
@@ -592,10 +592,10 @@ fl_create_browser( int          type,
 
 FL_OBJECT *
 fl_add_browser( int          type,
-                FL_Coord     x,
-                FL_Coord     y,
-                FL_Coord     w,
-                FL_Coord     h,
+                FL_COORD     x,
+                FL_COORD     y,
+                FL_COORD     w,
+                FL_COORD     h,
                 const char * label )
 {
     FL_OBJECT *ob = fl_create_browser( type, x, y, w, h, label );
@@ -741,7 +741,7 @@ fl_clear_browser( FL_OBJECT * obj )
  * the number of pixels
  ***************************************/
 
-FL_Coord
+FL_COORD
 fl_get_browser_xoffset( FL_OBJECT * obj )
 {
     FLI_BROWSER_SPEC *sp = obj->spec;
@@ -772,7 +772,7 @@ fl_get_browser_rel_xoffset( FL_OBJECT * obj )
 
 void
 fl_set_browser_xoffset( FL_OBJECT * ob,
-                        FL_Coord    npixels )
+                        FL_COORD    npixels )
 {
     FLI_BROWSER_SPEC *sp = ob->spec;
 
@@ -803,7 +803,7 @@ fl_set_browser_rel_xoffset( FL_OBJECT * ob,
  * the number of pixels
  ***************************************/
 
-FL_Coord
+FL_COORD
 fl_get_browser_yoffset( FL_OBJECT * obj )
 {
     FLI_BROWSER_SPEC *sp = obj->spec;
@@ -834,7 +834,7 @@ fl_get_browser_rel_yoffset( FL_OBJECT * obj )
 
 void
 fl_set_browser_yoffset( FL_OBJECT * ob,
-                        FL_Coord    npixels )
+                        FL_COORD    npixels )
 {
     FLI_BROWSER_SPEC *sp = ob->spec;
 
@@ -1246,9 +1246,9 @@ fl_add_browser_line_f( FL_OBJECT  * ob,
  ***************************************/
 
 void
-fl_set_browser_dblclick_callback( FL_OBJECT      * ob,
-                                  FL_CALLBACKPTR   cb,
-                                  long             a )
+fl_set_browser_dblclick_callback( FL_OBJECT       * ob,
+                                  FL_CALLBACK_PTR   cb,
+                                  long              a )
 {
     FLI_BROWSER_SPEC *comp = ob->spec;
 
@@ -1299,10 +1299,10 @@ fl_set_browser_scrollbarsize( FL_OBJECT * ob,
 
 void
 fl_get_browser_dimension( FL_OBJECT * obj,
-                          FL_Coord  * x,
-                          FL_Coord  * y,
-                          FL_Coord  * w,
-                          FL_Coord  * h )
+                          FL_COORD  * x,
+                          FL_COORD  * y,
+                          FL_COORD  * w,
+                          FL_COORD  * h )
 {
     FLI_TBOX_SPEC *sp = ( ( FLI_BROWSER_SPEC * ) obj->spec )->tb->spec;
 

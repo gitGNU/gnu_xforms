@@ -39,24 +39,24 @@ typedef int ( * FL_MODIFY_CANVAS_PROP )( FL_OBJECT * );
 
 FL_EXPORT FL_OBJECT * fl_create_generic_canvas( int          canvas_class,
                                                 int          type,
-                                                FL_Coord     x,
-                                                FL_Coord     y,
-                                                FL_Coord     w,
-                                                FL_Coord     h,
+                                                FL_COORD     x,
+                                                FL_COORD     y,
+                                                FL_COORD     w,
+                                                FL_COORD     h,
                                                 const char * label );
 
 FL_EXPORT FL_OBJECT * fl_add_canvas( int          type,
-                                     FL_Coord     x,
-                                     FL_Coord     y,
-                                     FL_Coord     w,
-                                     FL_Coord     h,
+                                     FL_COORD     x,
+                                     FL_COORD     y,
+                                     FL_COORD     w,
+                                     FL_COORD     h,
                                      const char * label );
 
 FL_EXPORT FL_OBJECT * fl_create_canvas( int          type,
-                                        FL_Coord     x,
-                                        FL_Coord     y,
-                                        FL_Coord     w,
-                                        FL_Coord     h,
+                                        FL_COORD     x,
+                                        FL_COORD     y,
+                                        FL_COORD     w,
+                                        FL_COORD     h,
                                         const char * label );
 
 /* backward compatibility */

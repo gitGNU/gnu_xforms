@@ -195,7 +195,7 @@ main( int    argc,
           y[ 11 ];
     int i;
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     xypui = create_form_axypform( );
 
     /* Fill-in form initialization code */

@@ -572,8 +572,8 @@ handle_move( const XEvent * xev )
  ***************************************/
 
 void
-move_selection( FL_Coord dx,
-                FL_Coord dy )
+move_selection( FL_COORD dx,
+                FL_COORD dy )
 {
     int i;
     double x,
@@ -639,8 +639,8 @@ move_selection( FL_Coord dx,
 #define DELTA 0.2
 
 void
-resize_selection( FL_Coord dx,
-                  FL_Coord dy )
+resize_selection( FL_COORD dx,
+                  FL_COORD dy )
 {
     double x,
            y,

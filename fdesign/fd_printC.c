@@ -907,7 +907,7 @@ get_conversion_factor( void )
  ***************************************/
 
 int
-convert_u( FL_Coord l )
+convert_u( FL_COORD l )
 {
     return FL_nint( get_conversion_factor( ) * l );
 }
@@ -1195,8 +1195,8 @@ print_callbacks_and_globals( FILE    * fn,
         {
             if ( ! code )
             {
-                fprintf( fn, "int %s( FL_OBJECT *, int, FL_Coord, "
-                         "FL_Coord, int, void * );\n",
+                fprintf( fn, "int %s( FL_OBJECT *, int, FL_COORD, "
+                         "FL_COORD, int, void * );\n",
                          get_free_handle( obj, name ) );
             }
             else
@@ -1208,9 +1208,9 @@ print_callbacks_and_globals( FILE    * fn,
                              " ***************************************/\n\n"
                              "int\n%s( FL_OBJECT * obj,\n"
                              "%*s int         ev,\n"
-                             "%*s FL_Coord    mx,\n"
-                             "%*s FL_Coord    my,\n"
-                             "%*s int         key,\n"
+                             "%*s FL_COORD    mx,\n"
+                             "%*s FL_COORD    my,\n"
+                             "%*s FL_VAL      key,\n"
                              "%*s void      * xev )\n"
                              "{\n"
                              "    /* Free object handler code */\n\n"
@@ -1418,7 +1418,7 @@ output_main_newformat( FILE * fn,
 
     fprintf( fn, "\n" );
 
-    fprintf( fn, "    fl_initialize( &argc, argv, 0, 0, 0 );\n" );
+    fprintf( fn, "    fl_initialize( &argc, argv, NULL, NULL, 0 );\n" );
 
     if ( fdopt.use_x11_fonts )
         fprintf( fn, "#if FL_ENABLE_XFT\n"
@@ -1467,7 +1467,7 @@ output_main_altformat( FILE * fn,
 
     fprintf( fn, "int\nmain( int    argc,\n      char * argv[ ] )\n{\n" );
 
-    fprintf( fn, "    fl_initialize( &argc, argv, 0, 0, 0 );\n\n" );
+    fprintf( fn, "    fl_initialize( &argc, argv, NULL, NULL, 0 );\n\n" );
     if ( fdopt.use_x11_fonts )
         fprintf( fn, "#if FL_ENABLE_XFT\n"
                      "    fl_set_default_font+type( FL_X11_FONT_TYPE );\n"

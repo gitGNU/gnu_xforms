@@ -336,7 +336,7 @@ main( int    argc,
       char * argv[ ] )
 {
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     fd_canvasform = create_form_canvasform( );
 
     init_canvas( fd_canvasform );

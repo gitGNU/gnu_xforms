@@ -8,8 +8,8 @@ describes it. The section starts with a short description of the
 object, followed by the routine(s) to add it to a form. For (almost)
 all classes this routine has the same form
 @example
-FL_OBJECT *fl_add_CLASS(int type, FL_Coord x, FL_Coord y,
-                        FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_CLASS(int type, FL_COORD x, FL_COORD y,
+                        FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 Here @code{type} is the type of the object in its class. Most classes
@@ -23,8 +23,8 @@ printed but replaced by a symbol instead.
 
 For each object class there is also a routine
 @example
-FL_OBJECT *fl_create_CLASS(int type, FL_Coord x, FL_Coord y,
-                           FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_create_CLASS(int type, FL_COORD x, FL_COORD y,
+                           FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 that only creates the object but does not put it in the form. This

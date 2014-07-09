@@ -68,8 +68,8 @@ create_it( void )
 
 void
 fl_show_oneliner( const char * s,
-                  FL_Coord     x,
-                  FL_Coord     y )
+                  FL_COORD     x,
+                  FL_COORD     y )
 {
     int w,
         h;

@@ -53,9 +53,9 @@ static void attrib_change( FL_OBJECT * );
 static int
 handle_scrollbar( FL_OBJECT * obj,
                   int         event,
-                  FL_Coord    mx   FL_UNUSED_ARG,
-                  FL_Coord    my   FL_UNUSED_ARG,
-                  FL_Char     key  FL_UNUSED_ARG,
+                  FL_COORD    mx   FL_UNUSED_ARG,
+                  FL_COORD    my   FL_UNUSED_ARG,
+                  FL_VAL      key  FL_UNUSED_ARG,
                   void      * ev   FL_UNUSED_ARG )
 {
     switch ( event )
@@ -291,10 +291,10 @@ button_cb( FL_OBJECT * obj,
 
 FL_OBJECT *
 fl_create_scrollbar( int          type,
-                     FL_Coord     x,
-                     FL_Coord     y,
-                     FL_Coord     w,
-                     FL_Coord     h,
+                     FL_COORD     x,
+                     FL_COORD     y,
+                     FL_COORD     w,
+                     FL_COORD     h,
                      const char * l )
 {
     FLI_SCROLLBAR_SPEC *sp;
@@ -410,10 +410,10 @@ fl_create_scrollbar( int          type,
 
 FL_OBJECT *
 fl_add_scrollbar( int          type,
-                  FL_Coord     x,
-                  FL_Coord     y,
-                  FL_Coord     w,
-                  FL_Coord     h,
+                  FL_COORD     x,
+                  FL_COORD     y,
+                  FL_COORD     w,
+                  FL_COORD     h,
                   const char * l )
 {
     FL_OBJECT *obj = fl_create_scrollbar( type, x, y, w, h, l );

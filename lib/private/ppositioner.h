@@ -44,7 +44,7 @@ typedef struct {
     double  old_x,                /* values at start of ineraction */
             old_y;
     int     react_to[ 5 ];
-    FL_Char mousebut;
+    FL_VAL  mousebut;
     Pixmap  xpm,
             ypm;
     GC      copy_gc;

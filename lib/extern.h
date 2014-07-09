@@ -52,10 +52,10 @@ extern char fli_curfnt[ 127 ];
 extern FLI_WIN *fli_app_win;
 
 extern void fli_draw_tbox( int,
-                           FL_Coord,
-                           FL_Coord,
-                           FL_Coord,
-                           FL_Coord,
+                           FL_COORD,
+                           FL_COORD,
+                           FL_COORD,
+                           FL_COORD,
                            FL_COLOR,
                            int );
 

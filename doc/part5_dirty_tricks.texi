@@ -126,14 +126,14 @@ we just repeat the discussion for completeness as any use of
 pre-emptive handler is considered "dirty tricks".
 
 To register a pre-handler, use the following routine
-@tindex FL_HANDLEPTR
+@tindex FL_HANDLE_PTR
 @findex fl_set_object_prehandler()
 @example
-typedef int (*FL_HANDLEPTR)(FL_OBJECT *obj, int event,
-                            FL_Coord mx, FL_Coord my,
-                            int key, void *raw_event);
+typedef int (*FL_HANDLE_PTR)(FL_OBJECT *obj, int event,
+                             FL_COORD mx, FL_COORD my,
+                             int key, void *raw_event);
 
-void fl_set_object_prehandler(FL_OBJECT *, FL_HANDLEPTR prehandler);
+void fl_set_object_prehandler(FL_OBJECT *, FL_HANDLE_PTR prehandler);
 @end example
 @noindent
 where @code{event} is the generic event in the Forms Library, that is,
@@ -155,7 +155,7 @@ A similar mechanism exists for registering a post-handler, i.e., a
 handler invoked after the built-in handler is finished, by using
 @findex fl_set_object_posthandler()
 @example
-void fl_set_object_posthandler(FL_OBJECT *, FL_HANDLEPTR prehandler);
+void fl_set_object_posthandler(FL_OBJECT *, FL_HANDLE_PTR prehandler);
 @end example
 @noindent
 Whenever possible a post-handler should be used instead of a pre-handler.

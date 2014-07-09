@@ -47,7 +47,7 @@ draw_labelbutton( FL_OBJECT * ob,
 {
     FL_COLOR scol = ob->lcol;
     FL_COLOR col = ob->lcol;
-    FL_Coord dh,
+    FL_COORD dh,
              dw,
              ww,
              absbw = FL_abs( ob->bw );
@@ -81,10 +81,10 @@ draw_labelbutton( FL_OBJECT * ob,
 
 FL_OBJECT *
 fl_create_labelbutton( int          type,
-                       FL_Coord     x,
-                       FL_Coord     y,
-                       FL_Coord     w,
-                       FL_Coord     h,
+                       FL_COORD     x,
+                       FL_COORD     y,
+                       FL_COORD     w,
+                       FL_COORD     h,
                        const char * label)
 {
     FL_OBJECT *obj;
@@ -108,10 +108,10 @@ fl_create_labelbutton( int          type,
 
 FL_OBJECT *
 fl_add_labelbutton( int          type,
-                    FL_Coord     x,
-                    FL_Coord     y,
-                    FL_Coord     w,
-                    FL_Coord     h,
+                    FL_COORD     x,
+                    FL_COORD     y,
+                    FL_COORD     w,
+                    FL_COORD     h,
                     const char * label)
 {
     FL_OBJECT *obj = fl_create_labelbutton( type, x, y, w, h, label );

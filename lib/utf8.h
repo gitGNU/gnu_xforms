@@ -25,12 +25,12 @@
 
 ssize_t utf8_length( const char * str );
 
-int utf8_get_char_bytes( FL_Char c );
+int utf8_get_char_bytes( FL_VAL c );
 
-FL_Char utf8_to_num( const char * str );
+FL_VAL utf8_to_num( const char * str );
 
-int utf8_insert( FL_Char   key,
-                 char    * str );
+int utf8_insert( FL_VAL   key,
+                 char   * str );
 
 int utf8_get_byte_count( const char * str );
 

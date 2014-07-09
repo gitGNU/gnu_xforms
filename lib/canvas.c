@@ -545,9 +545,9 @@ fl_remove_canvas_handler( FL_OBJECT        * ob,
 static int
 handle_canvas( FL_OBJECT * ob,
                int         event,
-               FL_Coord    mx   FL_UNUSED_ARG,
-               FL_Coord    my   FL_UNUSED_ARG,
-               FL_Char     key  FL_UNUSED_ARG,
+               FL_COORD    mx   FL_UNUSED_ARG,
+               FL_COORD    my   FL_UNUSED_ARG,
+               FL_VAL      key  FL_UNUSED_ARG,
                void      * xev  FL_UNUSED_ARG )
 {
     FLI_CANVAS_SPEC *sp = ob->spec;
@@ -605,10 +605,10 @@ fli_hide_canvas( FL_OBJECT * ob )
 FL_OBJECT *
 fl_create_generic_canvas( int          canvas_class,
                           int          type,
-                          FL_Coord     x,
-                          FL_Coord     y,
-                          FL_Coord     w,
-                          FL_Coord     h,
+                          FL_COORD     x,
+                          FL_COORD     y,
+                          FL_COORD     w,
+                          FL_COORD     h,
                           const char * label )
 {
     FL_OBJECT *ob;
@@ -656,10 +656,10 @@ fl_create_generic_canvas( int          canvas_class,
 
 FL_OBJECT *
 fl_create_canvas( int          type,
-                  FL_Coord     x,
-                  FL_Coord     y,
-                  FL_Coord     w,
-                  FL_Coord     h,
+                  FL_COORD     x,
+                  FL_COORD     y,
+                  FL_COORD     w,
+                  FL_COORD     h,
                   const char * label )
 {
     return fl_create_generic_canvas( FL_CANVAS, type, x, y, w, h, label );

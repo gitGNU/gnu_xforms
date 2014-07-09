@@ -85,9 +85,9 @@ done_xyplot( FL_OBJECT * ob,
 static int
 post( FL_OBJECT * ob,
       int         ev,
-      FL_Coord    mx,
-      FL_Coord    my,
-      FL_Char     key,
+      FL_COORD    mx,
+      FL_COORD    my,
+      FL_VAL      key,
       void      * xev  FL_UNUSED_ARG )
 {
     if ( ev == FL_PUSH || ev == FL_MOTION )
@@ -125,7 +125,7 @@ main( int    argc,
     size_t i,
            j;
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     create_form_xyplot( );
 
     /* Make sure double buffer also works */

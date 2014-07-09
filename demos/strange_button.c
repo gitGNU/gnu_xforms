@@ -156,7 +156,7 @@ main( int    argc,
 {
     FD_x *fd_x;
 
-    fl_initialize( &argc, argv, 0, 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     fd_x = create_form_x( );
 
     fl_show_form( fd_x->x, FL_PLACE_CENTERFREE, FL_FULLBORDER,

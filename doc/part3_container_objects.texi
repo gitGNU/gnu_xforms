@@ -48,8 +48,8 @@ To add a tabbed folder to a form use the routine
 @findex fl_add_tabfolder()
 @anchor{fl_add_tabfolder()}
 @example
-FL_OBJECT *fl_add_tabfolder(int type, FL_Coord x, FL_Coord y,
-                            FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_tabfolder(int type, FL_COORD x, FL_COORD y,
+                            FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 The geometry indicated by @code{x}, @code{y}, @code{w}, and @code{h}
@@ -314,7 +314,7 @@ size
 @findex fl_get_folder_area()
 @anchor{fl_get_folder_area()}
 @example
-void fl_get_folder_area(FL_OBJECT *obj, FL_Coord *x, FL_Coord *y,
+void fl_get_folder_area(FL_OBJECT *obj, FL_COORD *x, FL_COORD *y,
                         FL_OBJECT *w, FL_OBJECT *h)
 @end example
 @noindent
@@ -423,8 +423,8 @@ Adding an object To add a formbrowser object to a form use the routine
 @findex fl_add_formbrowser()
 @anchor{fl_add_formbrowser()}
 @example
-FL_OBJECT *fl_add_formbrowser(int type, FL_Coord x, FL_Coord y,
-                              FL_Coord w, FL_Coord h,
+FL_OBJECT *fl_add_formbrowser(int type, FL_COORD x, FL_COORD y,
+                              FL_COORD w, FL_COORD h,
                               const char *label);
 @end example
 @noindent

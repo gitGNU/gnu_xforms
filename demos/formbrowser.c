@@ -115,7 +115,7 @@ int main( int    argc,
     FD_big *fd_big;
 
     fl_set_border_width( -2 );
-    fl_initialize( &argc, argv, 0, 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
 
     fd_buttonform = create_form_buttonform( );
     fd_staticform = create_form_staticform( );

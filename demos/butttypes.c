@@ -72,7 +72,7 @@ main( int    argc,
 {
     FD_form0 *fd_form0;
 
-    fl_initialize( &argc, argv, 0, 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     fd_form0 = create_form_form0( );
 
     /* fill-in form initialization code */

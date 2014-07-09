@@ -72,7 +72,7 @@ typedef struct {
     GC                bw_selectGC;   /* b&w selection text GC */
     FL_COLOR          bw_select_color;
     int               specialkey;   /* Key that indicates a special symbol */
-    FL_CALLBACKPTR    callback;      /* double and triple click callback */
+    FL_CALLBACK_PTR   callback;      /* double and triple click callback */
     long              callback_data; /* data for callback */
     int               old_yoffset;
     int               react_to_vert;
@@ -91,10 +91,10 @@ typedef struct {
 
 
 extern FL_OBJECT * fli_create_tbox( int,
-                                    FL_Coord,
-                                    FL_Coord,
-                                    FL_Coord,
-                                    FL_Coord,
+                                    FL_COORD,
+                                    FL_COORD,
+                                    FL_COORD,
+                                    FL_COORD,
                                     const char *);
 
 void fli_tbox_delete_line( FL_OBJECT * obj,
@@ -186,7 +186,7 @@ void fli_tbox_make_line_selectable( FL_OBJECT *,
                                     int );
 
 void fli_tbox_set_dblclick_callback( FL_OBJECT *,
-                                     FL_CALLBACKPTR,
+                                     FL_CALLBACK_PTR,
                                      long );
 
 int fli_tbox_get_num_lines( FL_OBJECT * );

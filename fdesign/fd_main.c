@@ -84,7 +84,7 @@ print_version( int die )
 char xform_header[ 128 ] = "forms.h";
 char glcanvas_header[ 128 ] = "glcanvas.h";
 Window main_window = None;       /* The main screen window */
-FL_Coord winw,
+FL_COORD winw,
          winh;
 
 
@@ -888,7 +888,8 @@ main( int    argc,
 
     fl_set_defaults( mask, &cntl );
 
-    if ( ! ( fd_display = fl_initialize( &argc, argv, 0, fd_cmdopt, Ncopt ) ) )
+    if ( ! ( fd_display = fl_initialize( &argc, argv, NULL,
+                                         fd_cmdopt, Ncopt ) ) )
         exit( 1 );
 
 #if FL_ENABLE_XFT

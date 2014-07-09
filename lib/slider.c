@@ -166,7 +166,7 @@ draw_slider( FL_OBJECT * ob )
 {
     FLI_SLIDER_SPEC *sp = ob->spec;
     char valstr[ 64 ];
-    FL_Coord bx = ob->x,    /* value box */
+    FL_COORD bx = ob->x,    /* value box */
              by = ob->y,
              bw = ob->w,
              bh = ob->h;
@@ -237,8 +237,8 @@ draw_slider( FL_OBJECT * ob )
 
 static int
 is_off_knob( FL_OBJECT * obj,
-             FL_Coord    mx,
-             FL_Coord    my )
+             FL_COORD    mx,
+             FL_COORD    my )
 {
     FLI_SCROLLBAR_KNOB knob;
     FLI_SLIDER_SPEC *sp = obj->spec;
@@ -290,8 +290,8 @@ is_off_knob( FL_OBJECT * obj,
 
 static double
 get_newvalue( FL_OBJECT    * ob,
-              FL_Coord       mx,
-              FL_Coord       my )
+              FL_COORD       mx,
+              FL_COORD       my )
 {
     FLI_SLIDER_SPEC *sp = ob->spec;
     double newval = 0.0;
@@ -344,8 +344,8 @@ scrollbar_timeout( int    val   FL_UNUSED_ARG,
 
 static void
 handle_enter( FL_OBJECT * obj,
-              FL_Coord    mx,
-              FL_Coord    my )
+              FL_COORD    mx,
+              FL_COORD    my )
 {
     FLI_SLIDER_SPEC *sp = obj->spec;
 
@@ -398,9 +398,9 @@ handle_leave( FL_OBJECT * obj )
 
 static int
 handle_mouse( FL_OBJECT    * obj,
-              FL_Coord       mx,
-              FL_Coord       my,
-              FL_Char        key )
+              FL_COORD       mx,
+              FL_COORD       my,
+              FL_VAL         key )
 {
     FLI_SLIDER_SPEC *sp = obj->spec;
     double newval;
@@ -456,9 +456,9 @@ handle_mouse( FL_OBJECT    * obj,
 
 static int
 handle_motion( FL_OBJECT * obj,
-               FL_Coord    mx,
-               FL_Coord    my,
-               FL_Char     key,
+               FL_COORD    mx,
+               FL_COORD    my,
+               FL_VAL      key,
                void      * ev )
 {
     FLI_SLIDER_SPEC *sp = obj->spec;
@@ -524,9 +524,9 @@ handle_motion( FL_OBJECT * obj,
 
 static int
 handle_push( FL_OBJECT * obj,
-             FL_Coord    mx,
-             FL_Coord    my,
-             FL_Char     key,
+             FL_COORD    mx,
+             FL_COORD    my,
+             FL_VAL      key,
              void      * ev )
 {
     FLI_SLIDER_SPEC *sp = obj->spec;
@@ -597,9 +597,9 @@ handle_push( FL_OBJECT * obj,
 
 static int
 handle_update( FL_OBJECT * obj,
-               FL_Coord    mx,
-               FL_Coord    my,
-               FL_Char     key )
+               FL_COORD    mx,
+               FL_COORD    my,
+               FL_VAL      key )
 {
     FLI_SLIDER_SPEC *sp = obj->spec;
     int ret;
@@ -617,7 +617,7 @@ handle_update( FL_OBJECT * obj,
 
 static int
 handle_scroll( FL_OBJECT * obj,
-               FL_Char     key,
+               FL_VAL      key,
                int         key_state )
 {
     FLI_SLIDER_SPEC *sp = obj->spec;
@@ -650,9 +650,9 @@ handle_scroll( FL_OBJECT * obj,
 
 static int
 handle_release( FL_OBJECT * obj,
-                FL_Coord    mx,
-                FL_Coord    my,
-                FL_Char     key,
+                FL_COORD    mx,
+                FL_COORD    my,
+                FL_VAL      key,
                 void      * ev )
 {
     FLI_SLIDER_SPEC *sp = obj->spec;
@@ -702,9 +702,9 @@ handle_release( FL_OBJECT * obj,
 static int
 handle_slider( FL_OBJECT * ob,
                int         event,
-               FL_Coord    mx,
-               FL_Coord    my,
-               FL_Char     key,
+               FL_COORD    mx,
+               FL_COORD    my,
+               FL_VAL      key,
                void      * ev )
 {
     FLI_SLIDER_SPEC *sp = ob->spec;
@@ -796,10 +796,10 @@ handle_slider( FL_OBJECT * ob,
 static FL_OBJECT *
 create_slider( int          objclass,
                int          type,
-               FL_Coord     x,
-               FL_Coord     y,
-               FL_Coord     w,
-               FL_Coord     h,
+               FL_COORD     x,
+               FL_COORD     y,
+               FL_COORD     w,
+               FL_COORD     h,
                const char * label )
 {
     FL_OBJECT *obj = fl_make_object( objclass, type, x, y, w, h, label,
@@ -851,10 +851,10 @@ create_slider( int          objclass,
 static FL_OBJECT *
 add_slider( int          objclass,
             int          type,
-            FL_Coord     x,
-            FL_Coord     y,
-            FL_Coord     w,
-            FL_Coord     h,
+            FL_COORD     x,
+            FL_COORD     y,
+            FL_COORD     w,
+            FL_COORD     h,
             const char * label )
 {
     FL_OBJECT *obj = create_slider( objclass, type, x, y, w, h, label );
@@ -876,10 +876,10 @@ add_slider( int          objclass,
 
 FL_OBJECT *
 fl_create_slider( int          type,
-                  FL_Coord     x,
-                  FL_Coord     y,
-                  FL_Coord     w,
-                  FL_Coord     h,
+                  FL_COORD     x,
+                  FL_COORD     y,
+                  FL_COORD     w,
+                  FL_COORD     h,
                   const char * label )
 {
     return create_slider( FL_SLIDER, type, x, y, w, h, label );
@@ -891,10 +891,10 @@ fl_create_slider( int          type,
 
 FL_OBJECT *
 fl_add_slider( int          type,
-               FL_Coord     x,
-               FL_Coord     y,
-               FL_Coord     w,
-               FL_Coord     h,
+               FL_COORD     x,
+               FL_COORD     y,
+               FL_COORD     w,
+               FL_COORD     h,
                const char * label )
 {
     return add_slider( FL_SLIDER, type, x, y, w, h, label );
@@ -906,10 +906,10 @@ fl_add_slider( int          type,
 
 FL_OBJECT *
 fl_create_valslider( int          type,
-                     FL_Coord     x,
-                     FL_Coord     y,
-                     FL_Coord     w,
-                     FL_Coord     h,
+                     FL_COORD     x,
+                     FL_COORD     y,
+                     FL_COORD     w,
+                     FL_COORD     h,
                      const char * label )
 {
     return create_slider( FL_VALSLIDER, type, x, y, w, h, label );
@@ -921,10 +921,10 @@ fl_create_valslider( int          type,
 
 FL_OBJECT *
 fl_add_valslider( int          type,
-                  FL_Coord     x,
-                  FL_Coord     y,
-                  FL_Coord     w,
-                  FL_Coord     h,
+                  FL_COORD     x,
+                  FL_COORD     y,
+                  FL_COORD     w,
+                  FL_COORD     h,
                   const char * label )
 {
     return add_slider( FL_VALSLIDER, type, x, y, w, h, label );

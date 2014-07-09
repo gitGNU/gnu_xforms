@@ -55,8 +55,8 @@ typedef struct {
     char tname[ MAX_TYPE_NAME_LEN ];
 } TDEF;
 
-typedef FL_OBJECT * ( * FL_ADDPTR ) ( int, FL_Coord, FL_Coord, FL_Coord,
-                                      FL_Coord, const char * );
+typedef FL_OBJECT * ( * FL_ADD_PTR ) ( int, FL_COORD, FL_COORD, FL_COORD,
+                                       FL_COORD, const char * );
 
 typedef struct {
     int          cn;
@@ -65,7 +65,7 @@ typedef struct {
     char         cname[ MAX_CLASS_NAME_LEN ];         /* add_XXX */
     char         formal_cname[ MAX_CLASS_NAME_LEN ];
     FL_OBJECT  * defobj1;                             /* to specific type */
-    FL_ADDPTR    createit,
+    FL_ADD_PTR   createit,
                  addit;
     int          var_boxtype;   /* means default boxtype may depend on type */
     int          default_type;
@@ -76,8 +76,9 @@ typedef struct {
 static CDEF classes[ MAXCLASSES ];
 static int cnumb = 0;
 
-typedef FL_OBJECT * ( * FL_ADDFREEPTR )( int, FL_Coord, FL_Coord, FL_Coord,
-                                         FL_Coord, const char *, FL_HANDLEPTR );
+typedef FL_OBJECT * ( * FL_ADDFREE_PTR )( int, FL_COORD, FL_COORD, FL_COORD,
+                                          FL_COORD, const char *,
+                                          FL_HANDLE_PTR );
 
 
 /***************************************
@@ -85,12 +86,12 @@ typedef FL_OBJECT * ( * FL_ADDFREEPTR )( int, FL_Coord, FL_Coord, FL_Coord,
  ***************************************/
 
 static void
-add_class_def( int         numb,
-               char      * formal_name,
-               char      * name,
-               FL_ADDPTR   createit,
-               FL_ADDPTR   addit,
-               int         bl )
+add_class_def( int          numb,
+               char       * formal_name,
+               char       * name,
+               FL_ADD_PTR   createit,
+               FL_ADD_PTR   addit,
+               int          bl )
 {
     int i;
 
@@ -200,10 +201,10 @@ set_var_boxtype( int cn,
 
 static FL_OBJECT *
 fd_create_free( int          type,
-                FL_Coord     x,
-                FL_Coord     y,
-                FL_Coord     w,
-                FL_Coord     h,
+                FL_COORD     x,
+                FL_COORD     y,
+                FL_COORD     w,
+                FL_COORD     h,
                 const char * l )
 {
     return fl_create_free( type, x, y, w, h, l, noop_handle );
@@ -215,10 +216,10 @@ fd_create_free( int          type,
 
 static FL_OBJECT *
 fd_add_free( int          type,
-             FL_Coord     x,
-             FL_Coord     y,
-             FL_Coord     w,
-             FL_Coord     h,
+             FL_COORD     x,
+             FL_COORD     y,
+             FL_COORD     w,
+             FL_COORD     h,
              const char * l )
 {
     FL_OBJECT *obj = fl_add_free( type, x, y, w, h, l, noop_handle );
@@ -852,10 +853,10 @@ set_testing_bitmap( FL_OBJECT * obj )
 FL_OBJECT *
 add_an_object( int      objclass,
                int      type,
-               FL_Coord x,
-               FL_Coord y,
-               FL_Coord w,
-               FL_Coord h )
+               FL_COORD x,
+               FL_COORD y,
+               FL_COORD w,
+               FL_COORD h )
 {
     FL_OBJECT *obj = NULL;
     CDEF *cls;

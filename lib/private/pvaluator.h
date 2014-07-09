@@ -46,23 +46,23 @@ typedef struct {
     double        rdelta;       /* "right mouse " step   */
     double        sstep;        /* small step for counter */
     double        lstep;        /* large step for counter */
-    FL_Coord      x,            /* draw (dbl buffer): adjustment report box */
+    FL_COORD      x,            /* draw (dbl buffer): adjustment report box */
                   y,
                   w,
                   h;
     double        slsize;       /* size of the slider             */
     FL_VAL_FILTER filter;
-    FL_Coord      offx;
-    FL_Coord      offy;
-    FL_Coord      mx,           /* mouse: after adjustment for report box  */
+    FL_COORD      offx;
+    FL_COORD      offy;
+    FL_COORD      mx,           /* mouse: after adjustment for report box  */
                   my,
                   mw,
                   mh;
-    FL_Coord      old_mx,
+    FL_COORD      old_mx,
                   old_my;
     int           mouse,        /* part the mouse is on                    */
                   lmouse;
-    FL_Coord      ww[ 5 ],      /* for counter                             */
+    FL_COORD      ww[ 5 ],      /* for counter                             */
                   xx[ 5 ];
     int           changed;
     unsigned int  mouseobj;

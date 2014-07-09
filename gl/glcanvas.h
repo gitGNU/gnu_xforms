@@ -12,17 +12,17 @@ extern "C"
 /* OpenGL canvases */
 
 FL_EXPORT FL_OBJECT * fl_create_glcanvas( int          type,
-										  FL_Coord     x,
-										  FL_Coord     y,
-										  FL_Coord     w,
-										  FL_Coord     h,
+										  FL_COORD     x,
+										  FL_COORD     y,
+										  FL_COORD     w,
+										  FL_COORD     h,
 										  const char * label );
 
 FL_EXPORT FL_OBJECT * fl_add_glcanvas( int          type,
-									   FL_Coord     x,
-									   FL_Coord     y,
-									   FL_Coord     w,
-									   FL_Coord     h,
+									   FL_COORD     x,
+									   FL_COORD     y,
+									   FL_COORD     w,
+									   FL_COORD     h,
 									   const char * label );
 
 FL_EXPORT void fl_set_glcanvas_defaults( const int * config );

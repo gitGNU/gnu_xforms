@@ -35,7 +35,7 @@ typedef struct {
     FL_OBJECT                  * tb;            /* the textbox                */
     FL_OBJECT                  * hsl;           /* horizontal scrollbar       */
     FL_OBJECT                  * vsl;           /* vertical scrollbar         */
-    FL_CALLBACKPTR               callback;
+    FL_CALLBACK_PTR              callback;
     long                         callback_data;
     double                       hsize,
                                  vsize;

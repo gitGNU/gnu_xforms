@@ -137,7 +137,7 @@ int main(int argc, char *argv[]) @{
               *no,
               *but;
 
-    fl_initialize(&argc, argv, "FormDemo", 0, 0);
+    fl_initialize(&argc, argv, "FormDemo", NULL, 0);
 
     form = fl_bgn_form(FL_UP_BOX, 320, 120);
     fl_add_box(FL_NO_BOX, 160, 40, 0, 0, "Do you want to Quit?");
@@ -150,11 +150,11 @@ int main(int argc, char *argv[]) @{
     while (1) @{
         if (fl_do_forms() == yes)
         @{
-            printf("Yes is pushed\n");
+            printf("\"Yes\" has been pushed\n");
             break;
         @}
         else
-            printf("No is pushed\n");
+            printf("\"No\" has been pushed\n");
     @}
 
     fl_finish();

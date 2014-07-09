@@ -55,7 +55,7 @@ main( int    argc,
          str2[ 100 ];
     const char *s;
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
 
 #if 0
     fl_set_resource( FLOKLabel, "Go" );

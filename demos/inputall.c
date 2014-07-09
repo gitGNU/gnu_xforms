@@ -89,7 +89,7 @@ main( int    argc,
 {
     FD_input *fd_input;
 
-    fl_initialize( &argc, argv, 0, 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     fd_input = create_form_input( );
 
     fl_set_object_dblbuffer( fd_input->report, 1 );

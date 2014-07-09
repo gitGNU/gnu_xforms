@@ -173,8 +173,8 @@ constraints using the following routines prior to calling
 @findex fl_winsize()
 @anchor{fl_winsize()}
 @example
-void fl_initial_winsize(FL_Coord w, FL_Coord h);
-void fl_winsize(FL_Coord w, FL_Coord h);
+void fl_initial_winsize(FL_COORD w, FL_COORD h);
+void fl_winsize(FL_COORD w, FL_COORD h);
 @end example
 @noindent
 These two routines set the preferred window size. @code{w} and
@@ -206,8 +206,8 @@ functions:
 @findex fl_winmaxsize()
 @anchor{fl_winmaxsize()}
 @example
-void fl_winminsize(Window window, FL_Coord minw, FL_Coord minh);
-void fl_winmaxsize(Window window, FL_Coord maxw, FL_Coord maxh);
+void fl_winminsize(Window window, FL_COORD minw, FL_COORD minh);
+void fl_winmaxsize(Window window, FL_COORD maxw, FL_COORD maxh);
 @end example
 @noindent
 These two routines can also be used after a window has become visible.
@@ -227,7 +227,7 @@ preferred position of a window to be opened:
 @findex fl_winposition()
 @anchor{fl_winposition()}
 @example
-void fl_winposition(FL_Coord x, FL_Coord y);
+void fl_winposition(FL_COORD x, FL_COORD y);
 @end example
 @noindent
 where @code{x} and @code{y} are the coordinates of the upper-left
@@ -240,10 +240,10 @@ single function call:
 @findex fl_wingeometry()
 @anchor{fl_wingeometry()}
 @example
-void fl_initial_wingeometry(FL_Coord x, FL_Coord y,
-                            FL_Coord w, FL_Coord h);
-void fl_wingeometry(FL_Coord x, FL_Coord y,
-                    FL_Coord w, FL_Coord h);
+void fl_initial_wingeometry(FL_COORD x, FL_COORD y,
+                            FL_COORD w, FL_COORD h);
+void fl_wingeometry(FL_COORD x, FL_COORD y,
+                    FL_COORD w, FL_COORD h);
 @end example
 @noindent
 Again, windows for which @code{@ref{fl_wingeometry()}} had been
@@ -254,7 +254,7 @@ the window to be created:
 @findex fl_winaspect()
 @anchor{fl_winaspect()}
 @example
-void fl_winaspect(Window win, FL_Coord x, FL_Coord y);
+void fl_winaspect(Window win, FL_COORD x, FL_COORD y);
 @end example
 @noindent
 This will set the aspect ratio of the window for later interactive
@@ -342,10 +342,10 @@ active window win:
 @findex fl_get_wingeometry()
 @anchor{fl_get_wingeometry()}
 @example
-void fl_get_winsize(Window win, FL_Coord *w, FL_Coord *h);
-void fl_get_winorigin(Window win, FL_Coord *x, FL_Coord *y);
-void fl_get_wingeometry(Window win, FL_Coord *x, FL_Coord *y,
-                        FL_Coord *w, FL_Coord *h);
+void fl_get_winsize(Window win, FL_COORD *w, FL_COORD *h);
+void fl_get_winorigin(Window win, FL_COORD *x, FL_COORD *y);
+void fl_get_wingeometry(Window win, FL_COORD *x, FL_COORD *y,
+                        FL_COORD *w, FL_COORD *h);
 @end example
 @noindent
 All values returned are in pixels. The origin of a window is measured
@@ -356,7 +356,7 @@ is available:
 @findex fl_winresize()
 @anchor{fl_winresize()}
 @example
-void fl_winresize(Window win, FL_Coord neww, FL_Coord newh);
+void fl_winresize(Window win, FL_COORD neww, FL_COORD newh);
 @end example
 @noindent
 Resizing will not change the origin of the window (relative to the
@@ -369,15 +369,15 @@ To move a window without resizing it use the following function:
 @findex fl_winmove()
 @anchor{fl_winmove()}
 @example
-void fl_winmove(Window win, FL_Coord newx, FL_Coord newy);
+void fl_winmove(Window win, FL_COORD newx, FL_COORD newy);
 @end example
 
  To move and resize a window, use the following routine
 @findex fl_winreshape()
 @anchor{fl_winreshape()}
 @example
-void fl_winreshape(Window win, FL_Coord newx, FL_Coord newy,
-                   FL_Coord neww, FL_Coord newh);
+void fl_winreshape(Window win, FL_COORD newx, FL_COORD newy,
+                   FL_COORD neww, FL_COORD newh);
 @end example
 
 The following routine is available to iconify a window

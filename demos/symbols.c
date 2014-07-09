@@ -133,7 +133,7 @@ main( int    argc,
 {
     FL_FORM *form;
 
-    fl_initialize( &argc, argv , 0, 0, 0 );
+    fl_initialize( &argc, argv , "FormDemo", NULL, 0 );
     form = make_symbols( );
     fl_show_form( form, FL_PLACE_FREE, FL_FULLBORDER, "test" );
 

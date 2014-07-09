@@ -39,9 +39,9 @@
 
 static int handle_tbox( FL_OBJECT *,
                         int,
-                        FL_Coord,
-                        FL_Coord,
-                        FL_Char,
+                        FL_COORD,
+                        FL_COORD,
+                        FL_VAL,
                         void * );
 
 static GC create_gc( FL_OBJECT *,
@@ -58,10 +58,10 @@ static GC create_gc( FL_OBJECT *,
 
 FL_OBJECT *
 fli_create_tbox( int          type,
-                 FL_Coord     x,
-                 FL_Coord     y,
-                 FL_Coord     w,
-                 FL_Coord     h,
+                 FL_COORD     x,
+                 FL_COORD     y,
+                 FL_COORD     w,
+                 FL_COORD     h,
                  const char * label )
 {
     FL_OBJECT *obj;
@@ -1462,9 +1462,9 @@ fli_tbox_get_selection( FL_OBJECT *obj )
  ***************************************/
 
 void
-fli_tbox_set_dblclick_callback( FL_OBJECT      * obj,
-                                FL_CALLBACKPTR   cb,
-                                long             data )
+fli_tbox_set_dblclick_callback( FL_OBJECT       * obj,
+                                FL_CALLBACK_PTR   cb,
+                                long              data )
 {
     FLI_TBOX_SPEC *sp = obj->spec;
 
@@ -1950,7 +1950,7 @@ fli_tbox_get_bottomline( FL_OBJECT * obj )
 
 static int
 handle_keyboard( FL_OBJECT * obj,
-                 FL_Char     key )
+                 FL_VAL      key )
 {
     FLI_TBOX_SPEC *sp = obj->spec;
     int old_select_line = sp->select_line;
@@ -2089,7 +2089,7 @@ handle_keyboard( FL_OBJECT * obj,
 
 static int
 find_mouse_line( FL_OBJECT * obj,
-                 FL_Coord    my )
+                 FL_COORD    my )
 {
     FLI_TBOX_SPEC *sp = obj->spec;
     int line;
@@ -2159,7 +2159,7 @@ fli_tbox_react_to_hori( FL_OBJECT * obj,
 
 static int
 handle_mouse( FL_OBJECT * obj,
-              FL_Coord    my,
+              FL_COORD    my,
               int         ev )
 {
     FLI_TBOX_SPEC *sp = obj->spec;
@@ -2340,9 +2340,9 @@ handle_mouse( FL_OBJECT * obj,
 static int
 handle_tbox( FL_OBJECT * obj,
              int         ev,
-             FL_Coord    mx  FL_UNUSED_ARG,
-             FL_Coord    my,
-             FL_Char     key,
+             FL_COORD    mx  FL_UNUSED_ARG,
+             FL_COORD    my,
+             FL_VAL      key,
              void      * xev )
 {
     FLI_TBOX_SPEC *sp = obj->spec;

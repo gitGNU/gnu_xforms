@@ -132,7 +132,8 @@ fli_convert_to_full_xlfd( const char * pattern )
 	int available = 0;
 	char ** list;
 	static char * result = NULL;
-	XftFont * font;
+	XFontStruct * xfs;
+	XftFont *font;
 	char *qm;
 	char * sp,
 		 * sp2;
@@ -150,17 +151,18 @@ fli_convert_to_full_xlfd( const char * pattern )
 	/* Now try to get the "real" name of the font, Xft doesn't like
 	   alialises etc. */
 
-	XFontStruct * info = XLoadQueryFont( fl_display, list[ 0 ] );
+	if ( ! ( xfs = XLoadQueryFont( fl_display, list[ 0 ] ) ) )
+		return NULL;
 
-	for ( i = 0; ! value && i < info->n_properties; i++ )
+	for ( i = 0; ! value && i < xfs->n_properties; i++ )
 	{
 
 		char * atom = XGetAtomName( fl_display,
-									info->properties[ i ].name );
+									xfs->properties[ i ].name );
 
 		if ( ! strcmp( "FONT", atom ) )
 			value = XGetAtomName( fl_display,
-								  info->properties[ i ].card32 );
+								  xfs->properties[ i ].card32 );
 
 
 		XFree( atom );
@@ -172,12 +174,12 @@ fli_convert_to_full_xlfd( const char * pattern )
 		XFree( value );
 	}
 
-	XFreeFontInfo( NULL, info, 1 );
+	XFreeFont( fl_display, xfs );
 
 	if ( list )
 		XFreeFontNames( list );
 
-	/* Bail out if there was no fitting file name */
+	/* Bail out if there was no fitting font name */
 
 	if ( ! result )
 		return NULL;
@@ -198,7 +200,7 @@ fli_convert_to_full_xlfd( const char * pattern )
 	if ( sp2 != sp )
 		memmove( sp, sp2, strlen( sp2 ) + 1 );
 
-	/* And replace the following 10th of points field also by a '*', but
+	/* Also replace the following 10th of points field by a '*', but
 	   remember its position, we'll replace it by a '?' if the font can
 	   be loaded. */
 
@@ -211,7 +213,7 @@ fli_convert_to_full_xlfd( const char * pattern )
 	if ( sp2 != sp )
 		memmove( sp, sp2, strlen( sp2 ) + 1 );
 
-	/* Try to load the font */
+	/* Also try to load the font using Xft */
 
 	if ( ( font = XftFontOpenXlfd( flx->display, flx->screen, result ) ) )
 	{
@@ -368,3 +370,57 @@ fli_cv_fname( const FL_FONT * f )
 }
 
 
+/***************************************
+ ***************************************/
+
+void
+fli_try_xft_font( char           ** family,
+				  FL_FONT_SLANT   * slant,
+				  FL_FONT_WEIGHT  * weight,
+				  char           ** style )
+{
+	XftFont * f;
+	FcChar8 * fam, *st;
+
+
+	if ( *slant == FL_SLANT_NONE && *weight == FL_WEIGHT_NONE )
+		f = XftFontOpenName( fl_display, fl_screen, *family );
+	else
+	{
+		if ( *weight == FL_WEIGHT_NONE )
+			f = XftFontOpen( fl_display, fl_screen,
+							 XFT_FAMILY, XftTypeString,  *family,
+							 XFT_SLANT,  XftTypeInteger, *slant,
+							 NULL );
+		else if ( *slant == FL_SLANT_NONE )
+			f = XftFontOpen( fl_display, fl_screen,
+							 XFT_FAMILY, XftTypeString,  *family,
+							 XFT_WEIGHT, XftTypeInteger, *weight,
+							 NULL );
+		else
+			f = XftFontOpen( fl_display, fl_screen,
+							 XFT_FAMILY, XftTypeString,  *family,
+							 XFT_SLANT,  XftTypeInteger, *slant,
+							 XFT_WEIGHT, XftTypeInteger, *weight,
+							 NULL );
+	}
+
+	if ( FcResultMatch == FcPatternGetString( f->pattern, FC_FAMILY, 0, &fam ) )
+		*family = fl_strdup( ( char * ) fam );
+	else
+		*family = strdup( *family );
+
+	if ( FcResultMatch != FcPatternGetInteger( f->pattern, FC_SLANT, 0, slant ) )
+		*slant = FL_SLANT_ROMAN;
+
+	if ( FcResultMatch != FcPatternGetInteger( f->pattern, FC_WEIGHT, 0,
+											   weight ) )
+		*weight = FL_WEIGHT_MEDIUM;
+
+	if ( FcResultMatch == FcPatternGetString( f->pattern, FC_STYLE, 0, &st ) )
+		*style = fl_strdup( ( char * ) st );
+	else
+		*style = NULL;
+
+	XftFontClose( fl_display, f );
+}

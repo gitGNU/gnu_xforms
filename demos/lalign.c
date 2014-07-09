@@ -60,7 +60,7 @@ main( int    argc,
 {
     int align;
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     fd_form0 = create_form_form0( );
 
     /* Fill-in form initialization code */

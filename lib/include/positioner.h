@@ -40,17 +40,17 @@ typedef int ( * FL_POSITIONER_VALIDATOR )( FL_OBJECT * obj,
 /***** Routines *****/
 
 FL_EXPORT FL_OBJECT * fl_create_positioner( int          type,
-                                            FL_Coord     x,
-                                            FL_Coord     y,
-                                            FL_Coord     w,
-                                            FL_Coord     h,
+                                            FL_COORD     x,
+                                            FL_COORD     y,
+                                            FL_COORD     w,
+                                            FL_COORD     h,
                                             const char * label );
 
 FL_EXPORT FL_OBJECT * fl_add_positioner( int          type,
-                                         FL_Coord     x,
-                                         FL_Coord     y,
-                                         FL_Coord     w,
-                                         FL_Coord     h,
+                                         FL_COORD     x,
+                                         FL_COORD     y,
+                                         FL_COORD     w,
+                                         FL_COORD     h,
                                          const char * label );
 
 FL_EXPORT int fl_set_positioner_values( FL_OBJECT * obj,

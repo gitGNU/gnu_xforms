@@ -21,8 +21,8 @@ button object classes. One of the routines is
 @anchor{fl_create_generic_button()}
 @example
 FL_OBJECT *fl_create_generic_button(int objclass, int type,
-                                    FL_Coord x, FL_Coord y,
-                                    FL_Coord w, FL_Coord h,
+                                    FL_COORD x, FL_COORD y,
+                                    FL_COORD w, FL_COORD h,
                                     const char *label);
 @end example
 @noindent
@@ -79,11 +79,11 @@ that uses this button class:
 
 #define FL_NBUTTON  FL_USER_CLASS_START
 
-extern  FL_OBJECT *fl_create_nbutton(int, FL_Coord, FL_Coord,
-                                     FL_Coord, FL_Coord,
+extern  FL_OBJECT *fl_create_nbutton(int, FL_COORD, FL_COORD,
+                                     FL_COORD, FL_COORD,
                                      const char *);
-extern FL_OBJECT *fl_add_nbutton(int, FL_Coord, FL_Coord,
-                                 FL_Coord, FL_Coord, const char *);
+extern FL_OBJECT *fl_add_nbutton(int, FL_COORD, FL_COORD,
+                                 FL_COORD, FL_COORD, const char *);
 
 #endif
 @end example
@@ -141,8 +141,8 @@ Next, following the standard procedures of the Forms Library, we code
 a separate routine that creates the new button@footnote{A separate
 creation routine is useful for integration into the Form Designer.}
 @example
-FL_OBJECT *fl_create_nbutton(int type, FL_Coord x, FL_Coord y,
-                             FL_Coord w, FL_Coord h,
+FL_OBJECT *fl_create_nbutton(int type, FL_COORD x, FL_COORD y,
+                             FL_COORD w, FL_COORD h,
                              const char *label) @{
     FL_OBJECT *obj;
 
@@ -160,8 +160,8 @@ FL_OBJECT *fl_create_nbutton(int type, FL_Coord x, FL_Coord y,
 You will also need a routine that adds the newly created button to a
 form
 @example
-FL_OBJECT *fl_add_nbutton(int type, FL_Coord x, FL_Coord y,
-                          FL_Coord w, FL_Coord h, const char *label) @{
+FL_OBJECT *fl_add_nbutton(int type, FL_COORD x, FL_COORD y,
+                          FL_COORD w, FL_COORD h, const char *label) @{
     FL_OBJECT *obj = fl_create_nbutton(type, x, y, w, h, label);
 
     fl_add_object(fl_current_form, obj);
@@ -206,11 +206,11 @@ prototypes in the header file @file{crossbut.h}:
 
 #define FL_CROSSBUTTON (FL_USER_CLASS_START + 2)
 
-extern FL_OBJECT *fl_add_crossbutton(int, FL_Coord, FL_Coord,
-                                     FL_Coord, FL_Coord, const char *);
+extern FL_OBJECT *fl_add_crossbutton(int, FL_COORD, FL_COORD,
+                                     FL_COORD, FL_COORD, const char *);
 
-extern FL_OBJECT *fl_create_crossbutton(int, FL_Coord, FL_Coord,
-                                        FL_Coord, FL_Coord,
+extern FL_OBJECT *fl_create_crossbutton(int, FL_COORD, FL_COORD,
+                                        FL_COORD, FL_COORD,
                                         const char *);
 #endif
 @end example
@@ -226,7 +226,7 @@ put it into @file{crossbut.c}:
 /** How to draw it */
 
 static void draw_crossbutton(FL_OBJECT *obj, int event ) @{
-    FL_Coord xx, yy, ww, hh;
+    FL_COORD xx, yy, ww, hh;
     int val = fl_get_button(obj);
 
     /* There is no visual change when mouse enters/leaves the box */
@@ -275,8 +275,8 @@ The rest of the code simply takes care of interfaces:
 @example
 /* creation routine */
 
-FL_OBJECT * fl_create_crossbutton(int type, FL_Coord x, FL_Coord y,
-                                  FL_Coord w, FL_Coord h,
+FL_OBJECT * fl_create_crossbutton(int type, FL_COORD x, FL_COORD y,
+                                  FL_COORD w, FL_COORD h,
                                   const char *label) @{
     FL_OBJECT *obj;
 
@@ -298,8 +298,8 @@ FL_OBJECT * fl_create_crossbutton(int type, FL_Coord x, FL_Coord y,
 
 /* interface routine to add a crossbutton to a form */
 
-FL_OBJECT *fl_add_crossbutton(int type, FL_Coord x, FL_Coord y,
-                              FL_Coord w, FL_Coord h,
+FL_OBJECT *fl_add_crossbutton(int type, FL_COORD x, FL_COORD y,
+                              FL_COORD w, FL_COORD h,
                               const char *label) @{
    FL_OBJECT *obj = fl_create_crossbutton(type, x, y, w, h, label);
 

@@ -101,7 +101,7 @@ main( int    argc,
 {
     FD_fbform *fd_fbform;
 
-    fl_initialize( &argc, argv, 0, 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     fd_fbform = create_form_fbform( );
     fl_set_browser_fontstyle( fd_fbform->browser, FL_FIXED_STYLE );
 

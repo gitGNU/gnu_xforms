@@ -41,13 +41,13 @@
 static int UL_thickness = -1;
 static int UL_propwidth = 1;    /* 1 for proportional, 0 for constant */
 
-static void do_underline( FL_Coord,
-                          FL_Coord,
+static void do_underline( FL_COORD,
+                          FL_COORD,
                           const char *,
                           int );
 
-static void do_underline_all( FL_Coord,
-                              FL_Coord,
+static void do_underline_all( FL_COORD,
+                              FL_COORD,
                               const char *,
                               int,
                               unsigned long *,
@@ -175,10 +175,10 @@ fli_get_max_pixels_line( void )
 
 int
 fli_draw_string( int           align,
-                 FL_Coord      x,
-                 FL_Coord      y,
-                 FL_Coord      w,
-                 FL_Coord      h,
+                 FL_COORD      x,
+                 FL_COORD      y,
+                 FL_COORD      w,
+                 FL_COORD      h,
                  int           clip,
                  FL_COLOR      backcol,
                  FL_COLOR      forecol,
@@ -192,7 +192,11 @@ fli_draw_string( int           align,
                  int           img,
                  int           topline,
                  int           endline,
+#if ! FL_ENABLE_XFT
+                 FL_COLOR      bkcol  FL_UNUSED_ARG )
+#else
                  FL_COLOR      bkcol )
+#endif
 {
     int i;
     int lnumb = 0;           /* number of lines in string */
@@ -322,7 +326,7 @@ fli_draw_string( int           align,
                 break;
 
             case FL_ALIGN_CENTER :
-                line->x = x + 0.5 * ( w - width );
+                line->x = FL_crnd( x + 0.5 * ( w - width ) );
                 break;
 
             case FL_ALIGN_RIGHT :
@@ -341,8 +345,9 @@ fli_draw_string( int           align,
                 break;
 
             case FL_ALIGN_CENTER :
-                line->y =   y + 0.5 * h + ( i - 0.5 * lnumb ) * flx->fheight
-                          + flx->fasc;
+                line->y = FL_crnd(   y + 0.5 * h + ( i - 0.5 * lnumb )
+                                             * flx->fheight
+                                   + flx->fasc );
                 break;
 
             case FL_ALIGN_BOTTOM :
@@ -363,7 +368,9 @@ fli_draw_string( int           align,
     /* Set foreground and background color for text */
 
     fli_textcolor( forecol );
+#if ! FL_ENABLE_XFT
     fli_bk_textcolor( bkcol );
+#endif
 
     /* Draw all the lines requested */
 
@@ -516,14 +523,14 @@ fli_draw_string( int           align,
         if ( horalign == FL_ALIGN_LEFT )
             xc = x;
         else if ( horalign == FL_ALIGN_CENTER )
-            xc = x + 0.5 * w - 1;
+            xc = FL_crnd( x + 0.5 * w - 1 );
         else
             xc = x + w - 2;
 
         if ( vertalign == FL_ALIGN_BOTTOM )
             yc = y + h - 1 - flx->fasc;
         else if ( vertalign == FL_ALIGN_CENTER )
-            yc = y + 0.5 * ( h - flx->fheight );
+            yc = FL_crnd( y + 0.5 * ( h - flx->fheight ) );
         else
             yc = y;
 
@@ -616,14 +623,14 @@ fl_get_label_char_at_mouse( FL_OBJECT * obj )
 
 int
 fli_get_pos_in_string( int          align,
-                       FL_Coord     x,
-                       FL_Coord     y,
-                       FL_Coord     w,
-                       FL_Coord     h,
+                       FL_COORD     x,
+                       FL_COORD     y,
+                       FL_COORD     w,
+                       FL_COORD     h,
                        int          style,
                        int          size,
-                       FL_Coord     xpos,
-                       FL_Coord     ypos,
+                       FL_COORD     xpos,
+                       FL_COORD     ypos,
                        const char * str,
                        int        * xp,
                        int        * yp,
@@ -682,7 +689,7 @@ fli_get_pos_in_string( int          align,
             break;
 
         case FL_ALIGN_CENTER :
-            toppos = y + 0.5 * ( h - lnumb * fheight );
+            toppos = FL_crnd( y + 0.5 * ( h - lnumb * fheight ) );
             break;
 
         case FL_ALIGN_BOTTOM :
@@ -725,7 +732,7 @@ fli_get_pos_in_string( int          align,
             break;
 
         case FL_ALIGN_CENTER :
-            xstart = x + 0.5 * ( w - width );
+            xstart = FL_crnd( x + 0.5 * ( w - width ) );
             break;
 
         case FL_ALIGN_RIGHT :
@@ -800,10 +807,10 @@ fli_get_pos_in_string( int          align,
 
 static void
 fli_draw_text_cursor( int          align,   /* alignment in box */
-                      FL_Coord     x,       /* bounding box geometry */
-                      FL_Coord     y,
-                      FL_Coord     w,
-                      FL_Coord     h,
+                      FL_COORD     x,       /* bounding box geometry */
+                      FL_COORD     y,
+                      FL_COORD     w,
+                      FL_COORD     h,
                       const char * str,     /* string to draw */
                       int          style,   /* font style and size */
                       int          size,
@@ -824,10 +831,10 @@ fli_draw_text_cursor( int          align,   /* alignment in box */
 
 void
 fl_draw_text_cursor( int          align,   /* alignment in box */
-                     FL_Coord     x,       /* box geometry */
-                     FL_Coord     y,
-                     FL_Coord     w,
-                     FL_Coord     h,
+                     FL_COORD     x,       /* box geometry */
+                     FL_COORD     y,
+                     FL_COORD     w,
+                     FL_COORD     h,
                      FL_COLOR     c,       /* text color */
                      int          style,   /* font style and size */
                      int          size,
@@ -844,16 +851,16 @@ fl_draw_text_cursor( int          align,   /* alignment in box */
  * Draws text inside of a box
  ***************************************/
 
-#define D( x, y, c )                                      \
+#define D( x, y, c, bk )                                     \
     fli_draw_text_cursor( align, x, y, w, h, str,         \
                           style, size, c, bc, 0, bk, -1 )
 
 void
 fli_draw_text_inside( int          align,
-                      FL_Coord     x,
-                      FL_Coord     y,
-                      FL_Coord     w,
-                      FL_Coord     h,
+                      FL_COORD     x,
+                      FL_COORD     y,
+                      FL_COORD     w,
+                      FL_COORD     h,
                       const char * str,
                       int          style,
                       int          size,
@@ -905,33 +912,51 @@ fli_draw_text_inside( int          align,
 
     /* Take care of special effects stuff  */
 
+#if FL_ENABLE_XFT
+    if ( special && bk )
+        fli_draw_text_cursor( align, x, y, w, h, str, style, size,
+                              c, bc, FL_NOCOLOR, bk, -1 );
+#endif
+
+    if ( special && bk )
+        fli_draw_text_cursor( align, x, y, w, h, str, style, size,
+                              c, bc, FL_NOCOLOR, bk, -1 );
+
     if ( special == FL_SHADOW_STYLE )
     {
         int e = size / 18 + 2;
 
-        D( x + e, y + e, FL_RIGHT_BCOL );
+        D( x + e, y + e, FL_RIGHT_BCOL, bk );
     }
     else if ( special == FL_ENGRAVED_STYLE )
     {
         int e = size / 36 + 1;
 
-        D( x - e, y,     FL_RIGHT_BCOL );
-        D( x,     y - e, FL_RIGHT_BCOL );
-        D( x - e, y - e, FL_RIGHT_BCOL );
-        D( x + e, y,     FL_TOP_BCOL );
-        D( x,     y + e, FL_TOP_BCOL );
-        D( x + e, y + e, FL_TOP_BCOL );
+#if FL_ENABLE_XFT
+        D( x + e, y,     FL_TOP_BCOL, bk );
+#else
+        D( x + e, y,     FL_TOP_BCOL, 0 );
+#endif
+        D( x,     y + e, FL_TOP_BCOL, 0 );
+        D( x + e, y + e, FL_TOP_BCOL, 0 );
+        D( x - e, y,     FL_RIGHT_BCOL, 0 );
+        D( x,     y - e, FL_RIGHT_BCOL, 0 );
+        D( x - e, y - e, FL_RIGHT_BCOL, 0 );
     }
     else if ( special == FL_EMBOSSED_STYLE )
     {
         int e = size / 36 + 1;
 
-        D( x - e, y,     FL_TOP_BCOL );
-        D( x,     y - e, FL_TOP_BCOL );
-        D( x - e, y - e, FL_TOP_BCOL );
-        D( x + e, y,     FL_RIGHT_BCOL );
-        D( x,     y + e, FL_RIGHT_BCOL );
-        D( x + e, y + e, FL_RIGHT_BCOL );
+#if FL_ENABLE_XFT
+        D( x - e, y,     FL_TOP_BCOL, bk );
+#else
+        D( x - e, y,     FL_TOP_BCOL, 0 );
+#endif
+        D( x,     y - e, FL_TOP_BCOL, 0 );
+        D( x - e, y - e, FL_TOP_BCOL, 0 );
+        D( x + e, y,     FL_RIGHT_BCOL, 0 );
+        D( x,     y + e, FL_RIGHT_BCOL, 0 );
+        D( x + e, y + e, FL_RIGHT_BCOL, 0 );
     }
 
     fli_draw_text_cursor( align, x, y, w, h, str, style, size,
@@ -945,10 +970,10 @@ fli_draw_text_inside( int          align,
 
 void
 fl_draw_text( int          align,
-              FL_Coord     x,
-              FL_Coord     y,
-              FL_Coord     w,
-              FL_Coord     h,
+              FL_COORD     x,
+              FL_COORD     y,
+              FL_COORD     w,
+              FL_COORD     h,
               FL_COLOR     c,
               int          style,
               int          size,
@@ -964,10 +989,10 @@ fl_draw_text( int          align,
 
 void
 fl_draw_text_beside( int          align,
-                     FL_Coord     x,
-                     FL_Coord     y,
-                     FL_Coord     w,
-                     FL_Coord     h,
+                     FL_COORD     x,
+                     FL_COORD     y,
+                     FL_COORD     w,
+                     FL_COORD     h,
                      FL_COLOR     c,
                      int          style,
                      int          size,
@@ -1009,8 +1034,14 @@ fl_draw_text_beside( int          align,
     y += dy;
 
     fli_get_outside_align( align, x, y, w, h, &newa, &newx, &newy );
-    fl_draw_text( newa, newx, newy, w, h, c, style, size, str );
+
+#if FL_ENABLE_XFT
+    fli_draw_text_inside( newa, newx, newy, w, h, str, style, size, c, 0, 1 );
+#else
+    fli_draw_text_inside( newa, newx, newy, w, h, str, style, size, c, 0, 0 );
+#endif
 }
+
 
 
 /***************************************
@@ -1044,8 +1075,8 @@ fli_get_underline_rect(
 #else
                         XFontStruct * fs,
 #endif
-                        FL_Coord      x,
-                        FL_Coord      y,
+                        FL_COORD      x,
+                        FL_COORD      y,
                         const char  * str,
                         int           n )
 {
@@ -1111,8 +1142,8 @@ fli_get_underline_rect(
  ***************************************/
 
 static void
-do_underline( FL_Coord     x,
-              FL_Coord     y,
+do_underline( FL_COORD     x,
+              FL_COORD     y,
               const char * cstr,
               int          n )
 {
@@ -1138,8 +1169,8 @@ do_underline( FL_Coord     x,
  ***************************************/
 
 static void
-do_underline_all( FL_Coord        x,
-                  FL_Coord        y,
+do_underline_all( FL_COORD        x,
+                  FL_COORD        y,
                   const char    * str,
                   int             n,
                   unsigned long * ul_pos,
@@ -1326,10 +1357,13 @@ draw_string( Display        * display,
     {
         XGlyphInfo extents;
 
+#if defined X_HAVE_UTF8_STRING
         XftTextExtentsUtf8( display, font, str, len, &extents );
-
-        XftDrawRect( flx->bgdraw, &flx->bktextcolor, x, y,
-                     extents.width, font->height );
+#else
+        XftTextExtents8( display, font, str, len, &extents );
+#endif
+        XftDrawRect( flx->bgdraw, &flx->bktextcolor, x - extents.x,
+                     y - extents.y, extents.width, extents.height );
     }
 
     fli_textcolor( fg_color );

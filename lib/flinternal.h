@@ -183,7 +183,7 @@ extern FL_FORM * keyform;           /* keyboard focus form */
 extern FL_OBJECT * fli_pushobj;
 extern FL_OBJECT * fli_mouseobj;
 
-extern FL_Coord fli_mousex,
+extern FL_COORD fli_mousex,
                 fli_mousey;
 extern unsigned int fli_keymask;
 
@@ -204,23 +204,23 @@ void fli_scale_form( FL_FORM *,
 
 void fli_handle_form( FL_FORM * form,
                       int       event,
-                      FL_Char   key,
+                      FL_VAL    key,
                       XEvent  * xevent );
 
 FL_OBJECT *fli_end_group( void );
 
 void fli_handle_object( FL_OBJECT *,
                         int,
-                        FL_Coord,
-                        FL_Coord,
-                        FL_Char,
+                        FL_COORD,
+                        FL_COORD,
+                        FL_VAL,
                         XEvent *,
                         int );
 
 FL_OBJECT * fli_find_first( FL_FORM *,
                             int,
-                            FL_Coord,
-                            FL_Coord );
+                            FL_COORD,
+                            FL_COORD );
 
 void fli_calc_object_bbox( FL_OBJECT * obj );
 
@@ -230,18 +230,18 @@ void fli_recalc_intersections( FL_FORM * );
 
 FL_OBJECT * fli_find_last( FL_FORM *,
                            int,
-                           FL_Coord,
-                           FL_Coord );
+                           FL_COORD,
+                           FL_COORD );
 
 FL_OBJECT *fli_find_object( FL_OBJECT *,
                             int,
-                            FL_Coord,
-                            FL_Coord );
+                            FL_COORD,
+                            FL_COORD );
 
 FL_OBJECT *fli_find_object_backwards( FL_OBJECT *,
                                       int,
-                                      FL_Coord,
-                                      FL_Coord );
+                                      FL_COORD,
+                                      FL_COORD );
 
 void fli_insert_object( FL_OBJECT *,
                         FL_OBJECT * );
@@ -255,7 +255,7 @@ void fli_set_object_visibility( FL_OBJECT * obj,
 
 
 int fli_mouse_wheel_to_keypress( int       * ev,
-                                 FL_Char   * key,
+                                 FL_VAL    * key,
                                  void      * xev );
 
 void fli_notify_object( FL_OBJECT * obj,
@@ -318,14 +318,14 @@ long fli_query_namedcolor( const char *s );
 void fli_free_xtext_workmem( void );
 
 int fli_get_pos_in_string( int,
-                           FL_Coord,
-                           FL_Coord,
-                           FL_Coord,
-                           FL_Coord,
+                           FL_COORD,
+                           FL_COORD,
+                           FL_COORD,
+                           FL_COORD,
                            int,
                            int,
-                           FL_Coord,
-                           FL_Coord,
+                           FL_COORD,
+                           FL_COORD,
                            const char *,
                            int *,
                            int *,
@@ -342,10 +342,10 @@ int fli_draw_stringTAB( Drawable,
                         int );
 
 int fli_draw_string( int,
-                     FL_Coord,
-                     FL_Coord,
-                     FL_Coord,
-                     FL_Coord,
+                     FL_COORD,
+                     FL_COORD,
+                     FL_COORD,
+                     FL_COORD,
                      int,
                      FL_COLOR,
                      FL_COLOR,
@@ -365,23 +365,23 @@ int fli_get_max_pixels_line( void );
 
 void fli_init_fonts( void );
 
-void fli_canonicalize_rect( FL_Coord *,
-                            FL_Coord *,
-                            FL_Coord *,
-                            FL_Coord * );
+void fli_canonicalize_rect( FL_COORD *,
+                            FL_COORD *,
+                            FL_COORD *,
+                            FL_COORD * );
 
 void fli_get_goodie_title( FL_FORM *,
                            const char * );
 
-void fli_add_q_icon( FL_Coord,
-                     FL_Coord,
-                     FL_Coord,
-                     FL_Coord );
+void fli_add_q_icon( FL_COORD,
+                     FL_COORD,
+                     FL_COORD,
+                     FL_COORD );
 
-void fli_add_warn_icon( FL_Coord,
-                        FL_Coord,
-                        FL_Coord,
-                        FL_Coord );
+void fli_add_warn_icon( FL_COORD,
+                        FL_COORD,
+                        FL_COORD,
+                        FL_COORD );
 
 void fli_check_key_focus( const char *,
                           Window );
@@ -394,8 +394,8 @@ FL_RECT * fli_get_underline_rect(
 #else
                                   XFontStruct *,
 #endif
-                                  FL_Coord,
-                                  FL_Coord,
+                                  FL_COORD,
+                                  FL_COORD,
                                   const char *,
                                   int );
 
@@ -410,10 +410,10 @@ typedef struct {
 /* Routines in sldraw.c. */
 
 typedef struct {
-    FL_Coord x;
-    FL_Coord y;
-    FL_Coord w;
-    FL_Coord h;
+    FL_COORD x;
+    FL_COORD y;
+    FL_COORD w;
+    FL_COORD h;
 } FLI_SCROLLBAR_KNOB;
 
 enum {
@@ -434,24 +434,24 @@ void fli_draw_slider( FL_OBJECT *,
                       int );
 
 void fli_draw_checkbox( int      type,
-                        FL_Coord x,
-                        FL_Coord y,
-                        FL_Coord w,
-                        FL_Coord h,
+                        FL_COORD x,
+                        FL_COORD y,
+                        FL_COORD w,
+                        FL_COORD h,
                         FL_COLOR col,
                         int      bw );
 
-void fli_set_global_clipping( FL_Coord,
-                              FL_Coord,
-                              FL_Coord,
-                              FL_Coord );
+void fli_set_global_clipping( FL_COORD,
+                              FL_COORD,
+                              FL_COORD,
+                              FL_COORD );
 
 void fli_unset_global_clipping( void );
 
-void fli_set_additional_clipping( FL_Coord,
-                                  FL_Coord,
-                                  FL_Coord,
-                                  FL_Coord );
+void fli_set_additional_clipping( FL_COORD,
+                                  FL_COORD,
+                                  FL_COORD,
+                                  FL_COORD );
 
 FL_RECT * fli_get_global_clip_rect( void );
 
@@ -615,7 +615,7 @@ typedef struct {
     size_t          auto_count;
     int             unmanaged_count;
 
-    FL_Coord        mousex,            /* last recorded mouse position */
+    FL_COORD        mousex,            /* last recorded mouse position */
                     mousey;
     unsigned int    keymask;           /* state of buttons and modifier keys */
     unsigned int    query_age;         /* age of recorded information */
@@ -640,9 +640,9 @@ void fli_watch_io( FLI_IO_REC *,
                    long );
 
 int fli_do_shortcut( FL_FORM *,
-                     FL_Char,
-                     FL_Coord,
-                     FL_Coord,
+                     FL_VAL,
+                     FL_COORD,
+                     FL_COORD,
                      XEvent * );
 
 int fli_test_lalign( int          align,
@@ -784,7 +784,7 @@ void fli_hide_and_get_region( FL_OBJECT *,
                               Region    * );
 
 int fli_convert_shortcut( const char *,
-                          FL_Char * );
+                          FL_VAL * );
 
 int fli_get_underline_pos( const char *,
                            const char * );
@@ -967,9 +967,9 @@ void fli_hide_tooltip( void );
 int fli_is_tooltip_form( FL_FORM * );
 
 void fli_do_radio_push( FL_OBJECT *,
-                        FL_Coord,
-                        FL_Coord,
-                        FL_Char,
+                        FL_COORD,
+                        FL_COORD,
+                        FL_VAL,
                         void *,
                         int );
 
@@ -988,10 +988,10 @@ void fli_switch_target( FLI_TARGET * );
 void fli_restore_target( void );
 
 void fli_draw_text_inside( int align,
-                           FL_Coord,
-                           FL_Coord,
-                           FL_Coord,
-                           FL_Coord,
+                           FL_COORD,
+                           FL_COORD,
+                           FL_COORD,
+                           FL_COORD,
                            const char *,
                            int,
                            int,
@@ -1001,8 +1001,8 @@ void fli_draw_text_inside( int align,
 
 /* Misc. stuff */
 
-void fli_add_vertex( FL_Coord x,
-                     FL_Coord y );
+void fli_add_vertex( FL_COORD x,
+                     FL_COORD y );
 
 void fli_add_float_vertex( float x,
                            float y );
@@ -1151,6 +1151,11 @@ int fli_get_string_widthTABfs( XftFont    * fs,
 
 XftFont * fli_get_font_struct( int style,
                                int size );
+
+void fli_try_xft_font( char           ** family,
+                       FL_FONT_SLANT   * slant,
+                       FL_FONT_WEIGHT  * weight,
+                       char           ** style );
 
 char * fli_cv_fname( const FL_FONT * f );
 

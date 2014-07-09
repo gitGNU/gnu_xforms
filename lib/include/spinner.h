@@ -27,17 +27,17 @@ typedef enum {
 } FL_SPINNER_TYPE;
 
 FL_EXPORT FL_OBJECT * fl_create_spinner( int            type,
-                                         FL_Coord       x,
-                                         FL_Coord       y,
-                                         FL_Coord       w,
-                                         FL_Coord       h,
+                                         FL_COORD       x,
+                                         FL_COORD       y,
+                                         FL_COORD       w,
+                                         FL_COORD       h,
                                          const char * label );
 
 FL_EXPORT FL_OBJECT * fl_add_spinner( int            type,
-                                      FL_Coord   x,
-                                      FL_Coord   y,
-                                      FL_Coord   w,
-                                      FL_Coord   h,
+                                      FL_COORD   x,
+                                      FL_COORD   y,
+                                      FL_COORD   w,
+                                      FL_COORD   h,
                                       const char * label );
 
 FL_EXPORT double fl_get_spinner_value( FL_OBJECT * obj );

@@ -87,7 +87,7 @@ main( int    argc,
     FD_form *ui;
     char str[ 32 ];
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     ui = create_form_form( );
     sprintf( str, "%.2f", sc );
     fl_set_input( ui->scaleobj, str );

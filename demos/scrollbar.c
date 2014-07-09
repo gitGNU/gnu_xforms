@@ -101,7 +101,7 @@ int main( int    argc,
 {
     FD_scb *fd_scb;
 
-    fl_initialize( &argc, argv, 0, 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     fd_scb = create_form_scb( );
 
     fl_show_form( fd_scb->scb, FL_PLACE_CENTERFREE, FL_FULLBORDER, "form0" );

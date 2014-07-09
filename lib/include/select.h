@@ -28,17 +28,17 @@ typedef enum {
 } FL_SELECT_TYPE;
 
 FL_EXPORT FL_OBJECT *fl_create_select( int,
-                                       FL_Coord,
-                                       FL_Coord,
-                                       FL_Coord,
-                                       FL_Coord,
+                                       FL_COORD,
+                                       FL_COORD,
+                                       FL_COORD,
+                                       FL_COORD,
                                        const char * );
 
 FL_EXPORT FL_OBJECT *fl_add_select( int,
-                                    FL_Coord,
-                                    FL_Coord,
-                                    FL_Coord,
-                                    FL_Coord,
+                                    FL_COORD,
+                                    FL_COORD,
+                                    FL_COORD,
+                                    FL_COORD,
                                     const char * );
 
 FL_EXPORT int fl_clear_select( FL_OBJECT * );

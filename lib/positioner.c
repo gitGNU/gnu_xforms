@@ -67,12 +67,12 @@ handle_background( FL_OBJECT * obj,
 {
     FLI_POSITIONER_SPEC *sp = obj->spec;
     
-    FL_Coord absbw = FL_abs( obj->bw );
-    FL_Coord x0 = obj->x + absbw + 1,
+    FL_COORD absbw = FL_abs( obj->bw );
+    FL_COORD x0 = obj->x + absbw + 1,
              y0 = obj->y + absbw + 1;
-    FL_Coord w = obj->w - 2 * absbw - 2,
+    FL_COORD w = obj->w - 2 * absbw - 2,
              h = obj->h - 2 * absbw - 2;
-    FL_Coord xo = FL_crnd( flinear( sp->lxval, sp->xmin, sp->xmax,
+    FL_COORD xo = FL_crnd( flinear( sp->lxval, sp->xmin, sp->xmax,
                                     x0, x0 + w - 1 ) ),
              yo = FL_crnd( flinear( sp->lyval, sp->ymin, sp->ymax,
                                     y0 + h - 1, y0 ) ),
@@ -154,12 +154,12 @@ static void
 draw_positioner( FL_OBJECT * obj )
 {
     FLI_POSITIONER_SPEC *sp = obj->spec;
-    FL_Coord absbw = FL_abs( obj->bw );
-    FL_Coord x0 = obj->x + absbw + 1,
+    FL_COORD absbw = FL_abs( obj->bw );
+    FL_COORD x0 = obj->x + absbw + 1,
              y0 = obj->y + absbw + 1;
-    FL_Coord w = obj->w - 2 * absbw - 2,
+    FL_COORD w = obj->w - 2 * absbw - 2,
              h = obj->h - 2 * absbw - 2;
-    FL_Coord x = FL_crnd( flinear( sp->xval, sp->xmin, sp->xmax,
+    FL_COORD x = FL_crnd( flinear( sp->xval, sp->xmin, sp->xmax,
                                    x0, x0 + w - 1 ) ),
              y = FL_crnd( flinear( sp->yval, sp->ymin, sp->ymax,
                                    y0 + h - 1, y0 ) );
@@ -195,14 +195,14 @@ draw_positioner( FL_OBJECT * obj )
 
 static int
 handle_mouse( FL_OBJECT * obj,
-              FL_Coord    mx,
-              FL_Coord    my )
+              FL_COORD    mx,
+              FL_COORD    my )
 {
     FLI_POSITIONER_SPEC * sp = obj->spec;
-    FL_Coord absbw = FL_abs( obj->bw );
-    FL_Coord x1 = obj->x + absbw + 1,
+    FL_COORD absbw = FL_abs( obj->bw );
+    FL_COORD x1 = obj->x + absbw + 1,
              y1 = obj->y + absbw + 1;
-    FL_Coord w1 = obj->w - 2 * absbw - 2,
+    FL_COORD w1 = obj->w - 2 * absbw - 2,
              h1 = obj->h - 2 * absbw - 2;
     double oldx = sp->xval,
            oldy = sp->yval;
@@ -261,9 +261,9 @@ handle_mouse( FL_OBJECT * obj,
 static int
 handle_positioner( FL_OBJECT * obj,
                    int         event,
-                   FL_Coord    mx,
-                   FL_Coord    my,
-                   FL_Char     key  FL_UNUSED_ARG,
+                   FL_COORD    mx,
+                   FL_COORD    my,
+                   FL_VAL      key  FL_UNUSED_ARG,
                    void      * ev   FL_UNUSED_ARG )
 {
     FLI_POSITIONER_SPEC *sp = obj->spec;
@@ -367,10 +367,10 @@ handle_positioner( FL_OBJECT * obj,
 
 FL_OBJECT *
 fl_create_positioner( int          type,
-                      FL_Coord     x,
-                      FL_Coord     y,
-                      FL_Coord     w,
-                      FL_Coord     h,
+                      FL_COORD     x,
+                      FL_COORD     y,
+                      FL_COORD     w,
+                      FL_COORD     h,
                       const char * label )
 {
     FL_OBJECT * obj;
@@ -421,10 +421,10 @@ fl_create_positioner( int          type,
 
 FL_OBJECT *
 fl_add_positioner( int          type,
-                   FL_Coord     x,
-                   FL_Coord     y,
-                   FL_Coord     w,
-                   FL_Coord     h,
+                   FL_COORD     x,
+                   FL_COORD     y,
+                   FL_COORD     w,
+                   FL_COORD     h,
                    const char * label )
 {
     FL_OBJECT *ob = fl_create_positioner( type, x, y, w, h, label );

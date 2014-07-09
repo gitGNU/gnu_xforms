@@ -47,7 +47,7 @@ int
 main( int    argc,
       char * argv[ ] )
 {
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     fd_ttt = create_form_ttt( );
 
     fl_show_form( fd_ttt->ttt, FL_PLACE_CENTER, FL_TRANSIENT, "PixmapBrowser" );

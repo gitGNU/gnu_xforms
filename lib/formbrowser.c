@@ -54,9 +54,9 @@ static void form_cb( FL_OBJECT * ob,
                      void      * data );
 static int handle_formbrowser( FL_OBJECT * ob,
                                int         event,
-                               FL_Coord    mx,
-                               FL_Coord    my,
-                               FL_Char     key,
+                               FL_COORD    mx,
+                               FL_COORD    my,
+                               FL_VAL      key,
                                void      * ev );
 static void hcb( FL_OBJECT * ob,
                  long        data );
@@ -76,10 +76,10 @@ static void set_formbrowser_return( FL_OBJECT    * obj,
 
 FL_OBJECT *
 fl_create_formbrowser( int          type,
-                       FL_Coord     x,
-                       FL_Coord     y,
-                       FL_Coord     w,
-                       FL_Coord     h,
+                       FL_COORD     x,
+                       FL_COORD     y,
+                       FL_COORD     w,
+                       FL_COORD     h,
                        const char * label )
 {
     FL_OBJECT *ob;
@@ -89,7 +89,9 @@ fl_create_formbrowser( int          type,
 
     ob = fl_make_object( FL_FORMBROWSER, type, x, y, w, h, label,
                          handle_formbrowser );
+
     fl_set_coordunit( FL_COORD_PIXEL );
+
     ob->boxtype    = FL_FORMBROWSER_BOXTYPE;
     ob->align      = FL_FORMBROWSER_ALIGN;
     ob->col1       = FL_FORMBROWSER_COL1;
@@ -157,10 +159,10 @@ fl_create_formbrowser( int          type,
 
 FL_OBJECT *
 fl_add_formbrowser( int          type,
-                    FL_Coord     x,
-                    FL_Coord     y,
-                    FL_Coord     w,
-                    FL_Coord     h,
+                    FL_COORD     x,
+                    FL_COORD     y,
+                    FL_COORD     w,
+                    FL_COORD     h,
                     const char * label )
 {
 
@@ -811,9 +813,9 @@ display_forms( FLI_FORMBROWSER_SPEC * sp )
 static int
 handle_formbrowser( FL_OBJECT * ob,
                     int         event,
-                    FL_Coord    mx   FL_UNUSED_ARG,
-                    FL_Coord    my   FL_UNUSED_ARG,
-                    FL_Char     key  FL_UNUSED_ARG,
+                    FL_COORD    mx   FL_UNUSED_ARG,
+                    FL_COORD    my   FL_UNUSED_ARG,
+                    FL_VAL      key  FL_UNUSED_ARG,
                     void      * ev   FL_UNUSED_ARG )
 {
     FLI_FORMBROWSER_SPEC *sp = ob->spec;

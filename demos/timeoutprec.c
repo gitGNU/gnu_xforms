@@ -119,7 +119,7 @@ main( int    argc,
    FD_form *fd_form;
 
    
-   fl_initialize( &argc, argv, 0, 0, 0 );
+   fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
    fd_form = create_form_form( );
 
    /* fill-in form initialization code */

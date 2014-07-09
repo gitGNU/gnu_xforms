@@ -39,10 +39,10 @@ void
 move_cb( FL_OBJECT * ob  FL_UNUSED_ARG,
          long        data )
 {
-    static FL_Coord dx = 8,
+    static FL_COORD dx = 8,
                     dy = 8;
-    FL_OBJECT *but = ( FL_OBJECT * ) data;
-    FL_Coord x,
+    FL_OBJECT * but = ( FL_OBJECT * ) data;
+    FL_COORD x,
              y,
              w,
              h;
@@ -71,7 +71,7 @@ main( int    argc,
     FL_OBJECT *but,
               *obj;
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
 
     form = fl_bgn_form( FL_DOWN_BOX, 400, 200 );
     but = fl_add_button( FL_NORMAL_BUTTON, 140, 160, 70, 35, "Exit" );

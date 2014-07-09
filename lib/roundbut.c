@@ -43,7 +43,7 @@ draw_roundbutton( FL_OBJECT * ob,
                   int         event )
 {
     int c1;
-    FL_Coord xx,
+    FL_COORD xx,
              yy,
              rr;
 
@@ -87,10 +87,10 @@ draw_roundbutton( FL_OBJECT * ob,
 
 FL_OBJECT *
 fl_create_roundbutton( int          type,
-                       FL_Coord     x,
-                       FL_Coord     y,
-                       FL_Coord     w,
-                       FL_Coord     h,
+                       FL_COORD     x,
+                       FL_COORD     y,
+                       FL_COORD     w,
+                       FL_COORD     h,
                        const char * label )
 {
     FL_OBJECT *ob;
@@ -114,10 +114,10 @@ fl_create_roundbutton( int          type,
 
 FL_OBJECT *
 fl_add_roundbutton( int          type,
-                    FL_Coord     x,
-                    FL_Coord     y,
-                    FL_Coord     w,
-                    FL_Coord     h,
+                    FL_COORD     x,
+                    FL_COORD     y,
+                    FL_COORD     w,
+                    FL_COORD     h,
                     const char * label )
 {
     FL_OBJECT *ob = fl_create_roundbutton( type, x, y, w, h, label );

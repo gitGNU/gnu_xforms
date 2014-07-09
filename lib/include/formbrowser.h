@@ -85,17 +85,17 @@ FL_EXPORT int fl_find_formbrowser_form_number( FL_OBJECT * ob,
                                                FL_FORM   * form );
 
 FL_EXPORT FL_OBJECT * fl_add_formbrowser( int          type,
-                                          FL_Coord     x,
-                                          FL_Coord     y,
-                                          FL_Coord     w,
-                                          FL_Coord     h,
+                                          FL_COORD     x,
+                                          FL_COORD     y,
+                                          FL_COORD     w,
+                                          FL_COORD     h,
                                           const char * label );
 
 FL_EXPORT FL_OBJECT * fl_create_formbrowser( int          type,
-                                             FL_Coord     x,
-                                             FL_Coord     y,
-                                             FL_Coord     w,
-                                             FL_Coord     h,
+                                             FL_COORD     x,
+                                             FL_COORD     y,
+                                             FL_COORD     w,
+                                             FL_COORD     h,
                                              const char * label );
 
 FL_EXPORT int fl_get_formbrowser_numforms( FL_OBJECT * ob );

@@ -40,7 +40,7 @@ main( int    argc,
               *but,
               *obj;
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     form = fl_bgn_form( FL_UP_BOX, 150 ,300 );
     sl1 = fl_add_slider( FL_VERT_SLIDER, 20, 20, 40, 180, "X" );
     sl2 = fl_add_slider( FL_VERT_SLIDER, 90, 20, 40, 180, "1-X" );

@@ -63,9 +63,9 @@ FD_form0 *fd_form0;
 int
 preemptive_handler( FL_OBJECT * ob   FL_UNUSED_ARG,
                     int         event,
-                    FL_Coord    mx   FL_UNUSED_ARG,
-                    FL_Coord    my   FL_UNUSED_ARG,
-                    FL_Char     key  FL_UNUSED_ARG,
+                    FL_COORD    mx   FL_UNUSED_ARG,
+                    FL_COORD    my   FL_UNUSED_ARG,
+                    FL_VAL      key  FL_UNUSED_ARG,
                     void *      xev  FL_UNUSED_ARG )
 {
     int override = fl_get_button( fd_form0->override );
@@ -141,9 +141,9 @@ do_tips( int    id  FL_UNUSED_ARG,
 int
 post_handler( FL_OBJECT * ob,
               int         event,
-              FL_Coord    mx   FL_UNUSED_ARG,
-              FL_Coord    my   FL_UNUSED_ARG,
-              FL_Char     key  FL_UNUSED_ARG,
+              FL_COORD    mx   FL_UNUSED_ARG,
+              FL_COORD    my   FL_UNUSED_ARG,
+              FL_VAL      key  FL_UNUSED_ARG,
               void *      xev  FL_UNUSED_ARG )
 {
     if ( ! ob->u_vdata )
@@ -184,7 +184,7 @@ int
 main( int    argc,
       char * argv[ ] )
 {
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
 
     fd_form0 = create_form_form0( );
 

@@ -37,7 +37,7 @@ main( int    argc,
     int old_col = 1,
         new_col = 0;
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
 
     while ( old_col != new_col )
     {

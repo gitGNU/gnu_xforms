@@ -36,17 +36,17 @@ typedef enum {
 /***** Routines *****/
 
 FL_EXPORT FL_OBJECT * fl_create_browser( int          type,
-                                         FL_Coord     x,
-                                         FL_Coord     y,
-                                         FL_Coord     w,
-                                         FL_Coord     h,
+                                         FL_COORD     x,
+                                         FL_COORD     y,
+                                         FL_COORD     w,
+                                         FL_COORD     h,
                                          const char * label );
 
 FL_EXPORT FL_OBJECT * fl_add_browser( int          type,
-                                      FL_Coord     x,
-                                      FL_Coord     y,
-                                      FL_Coord     w,
-                                      FL_Coord     h,
+                                      FL_COORD     x,
+                                      FL_COORD     y,
+                                      FL_COORD     w,
+                                      FL_COORD     h,
                                       const char * label );
 
 FL_EXPORT void fl_clear_browser( FL_OBJECT * ob );
@@ -151,31 +151,31 @@ FL_EXPORT void fl_set_browser_line_selectable( FL_OBJECT * ob,
                                                int         flag );
 
 FL_EXPORT void fl_get_browser_dimension( FL_OBJECT * ob,
-                                         FL_Coord  * x,
-                                         FL_Coord  * y,
-                                         FL_Coord  * w,
-                                         FL_Coord  * h );
+                                         FL_COORD  * x,
+                                         FL_COORD  * y,
+                                         FL_COORD  * w,
+                                         FL_COORD  * h );
 
-FL_EXPORT void fl_set_browser_dblclick_callback( FL_OBJECT      * ob,
-                                                 FL_CALLBACKPTR   cb,
-                                                 long             a );
+FL_EXPORT void fl_set_browser_dblclick_callback( FL_OBJECT       * ob,
+                                                 FL_CALLBACK_PTR   cb,
+                                                 long              a );
 
-FL_EXPORT FL_Coord fl_get_browser_xoffset( FL_OBJECT * ob );
+FL_EXPORT FL_COORD fl_get_browser_xoffset( FL_OBJECT * ob );
 
 FL_EXPORT double fl_get_browser_rel_xoffset( FL_OBJECT * ob );
 
 FL_EXPORT void fl_set_browser_xoffset( FL_OBJECT * ob,
-                                       FL_Coord    npixels );
+                                       FL_COORD    npixels );
 
 FL_EXPORT void fl_set_browser_rel_xoffset( FL_OBJECT * ob,
                                            double      val );
 
-FL_EXPORT FL_Coord fl_get_browser_yoffset( FL_OBJECT * ob );
+FL_EXPORT FL_COORD fl_get_browser_yoffset( FL_OBJECT * ob );
 
 FL_EXPORT double fl_get_browser_rel_yoffset( FL_OBJECT * ob );
 
 FL_EXPORT void fl_set_browser_yoffset( FL_OBJECT * ob,
-                                       FL_Coord    npixels );
+                                       FL_COORD    npixels );
 
 FL_EXPORT void fl_set_browser_rel_yoffset( FL_OBJECT * ob,
                                            double      val );

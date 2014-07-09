@@ -44,7 +44,7 @@ main( int    argc,
    FL_FORM *form;
    int i;
 
-   fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+   fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
 
    form = create_form( );
 

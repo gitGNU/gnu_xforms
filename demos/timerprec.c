@@ -119,7 +119,7 @@ main( int    argc,
     FD_form0 *fd_form0;
     Start_Time start_time;
 
-    fl_initialize( &argc, argv, 0, 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
 
     fd_form0 = create_form_form0( );
     fd_form0->vdata = &start_time;

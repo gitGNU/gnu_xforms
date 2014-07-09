@@ -96,7 +96,7 @@ int
 main( int    argc,
       char * argv[ ] )
 {
-    fl_initialize( &argc, argv, "S", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
 
     S = create_form_S( );
 

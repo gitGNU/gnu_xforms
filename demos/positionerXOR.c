@@ -67,7 +67,7 @@ main( int     argc,
               * obj;
 
     fl_set_border_width( -2 );
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
 
     form = fl_bgn_form( FL_UP_BOX, 350, 250 );
 

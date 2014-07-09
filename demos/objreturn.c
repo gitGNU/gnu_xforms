@@ -112,7 +112,7 @@ main( int    argc,
 {
     fl_set_border_width( -2 );
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     fd_form0 = create_form_form0( );
 
     /* fill-in form initialization code */

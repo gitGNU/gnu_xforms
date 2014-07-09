@@ -41,9 +41,9 @@ FL_COLOR cole;
 int
 handle_free1( FL_OBJECT * obj,
 			  int         event,
-			  FL_Coord    mx   FL_UNUSED_ARG,
-			  FL_Coord    my   FL_UNUSED_ARG,
-			  FL_Char     key  FL_UNUSED_ARG,
+			  FL_COORD    mx   FL_UNUSED_ARG,
+			  FL_COORD    my   FL_UNUSED_ARG,
+			  FL_VAL      key  FL_UNUSED_ARG,
 			  void      * ev   FL_UNUSED_ARG )
 {
     static int dcol = 1;
@@ -99,7 +99,7 @@ main( int    argc,
         depth,
         col;
 
-    fl_initialize(&argc, argv, "FormDemo", 0, 0);
+    fl_initialize(&argc, argv, "FormDemo", NULL, 0);
 
     form = fl_bgn_form( FL_UP_BOX, 400, 400 );
     obj = fl_add_button( FL_NORMAL_BUTTON, 320, 20, 40, 30, "Exit" );

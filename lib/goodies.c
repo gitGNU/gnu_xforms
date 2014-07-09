@@ -173,10 +173,10 @@ fli_handle_goodie_font( FL_OBJECT * ob1,
  ***************************************/
 
 static void
-fli_box_vert( FL_Coord x,
-              FL_Coord y,
-              FL_Coord w,
-              FL_Coord h )
+fli_box_vert( FL_COORD x,
+              FL_COORD y,
+              FL_COORD w,
+              FL_COORD h )
 {
     int halfh = 0.5 * h,
         halfw = 0.5 * w;
@@ -194,9 +194,9 @@ fli_box_vert( FL_Coord x,
 static int
 draw_box( FL_OBJECT * ob,
           int         ev,
-          FL_Coord    x   FL_UNUSED_ARG,
-          FL_Coord    y   FL_UNUSED_ARG,
-          FL_Char     k   FL_UNUSED_ARG,
+          FL_COORD    x   FL_UNUSED_ARG,
+          FL_COORD    y   FL_UNUSED_ARG,
+          FL_VAL      k   FL_UNUSED_ARG,
           void      * sp  FL_UNUSED_ARG )
 {
     int p = ( FL_max( ob->w, ob->h ) / 2 ) * 2 + 1;
@@ -228,10 +228,10 @@ draw_box( FL_OBJECT * ob,
  ***************************************/
 
 void
-fli_add_q_icon( FL_Coord x,
-               FL_Coord y,
-               FL_Coord w,
-               FL_Coord h )
+fli_add_q_icon( FL_COORD x,
+               FL_COORD y,
+               FL_COORD w,
+               FL_COORD h )
 {
     FL_OBJECT *obj;
 
@@ -247,10 +247,10 @@ fli_add_q_icon( FL_Coord x,
  ***************************************/
 
 void
-fli_add_warn_icon( FL_Coord x,
-                   FL_Coord y,
-                   FL_Coord w,
-                   FL_Coord h )
+fli_add_warn_icon( FL_COORD x,
+                   FL_COORD y,
+                   FL_COORD w,
+                   FL_COORD h )
 {
     FL_OBJECT *obj;
 

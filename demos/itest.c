@@ -656,7 +656,7 @@ main( int    argc,
     FD_annotationform *fd_annotationform;
 
     fl_set_border_width( -2 );
-    fl_initialize( &argc, argv, 0, 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     fd_is_mainform = create_form_is_mainform( );
     fd_viewform = create_form_viewform( );
     fd_processform = create_form_processform( );

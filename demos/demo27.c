@@ -267,7 +267,7 @@ drawit( OBJ * obj )
 void
 drawobject( void )
 {
-    FL_Coord x0,
+    FL_COORD x0,
              y0;
     unsigned int km;
     OBJ *cur_obj = ob + onumb;
@@ -351,7 +351,7 @@ main( int    argc,
       char * argv[ ] )
 {
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     init_colorpart( );
     init_controlpart( );
     init_mainpart( );

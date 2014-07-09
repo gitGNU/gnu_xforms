@@ -118,7 +118,7 @@ main( int    argc,
 {
     FL_OBJECT *obj;
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     create_form_form( );
 
     fl_show_form( form, FL_PLACE_CENTER | FL_FREE_SIZE, FL_FULLBORDER,

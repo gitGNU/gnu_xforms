@@ -50,7 +50,7 @@ main( int    argc,
    int i,
        j;
 
-   fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+   fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
 
    form = create_form( );
 

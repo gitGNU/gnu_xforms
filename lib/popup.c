@@ -2724,7 +2724,7 @@ static void
 convert_shortcut( const char     * shortcut,
                   FL_POPUP_ENTRY * entry )
 {
-    FL_Char sc[ MAX_SHORTCUTS + 1 ];
+    FL_VAL sc[ MAX_SHORTCUTS + 1 ];
     int cnt;
 
     if (    entry->label && *entry->label

@@ -65,7 +65,7 @@ typedef struct
 {
     char         * str;             /* label                        */
     FL_PUP_CB      icb;             /* callback                     */
-    FL_Char      * shortcut;        /* shortcut keys                */
+    FL_VAL       * shortcut;        /* shortcut keys                */
     int            subm;            /* sub menu                     */
     unsigned int   mode;            /* various attributes           */
     int            ret;             /* %x stuff                     */
@@ -872,8 +872,8 @@ handle_shortcut( PopUP        * m,
     MenuItem **mi = m->item;
     int i,
         j;
-    FL_Char sc,
-            alt;
+    FL_VAL sc,
+           alt;
 
     for ( i = 0; i < m->nitems; i++ )
     {
@@ -1912,7 +1912,7 @@ draw_title( Display  * d,
  ***************************************/
 
 static int extpos = 0;
-static FL_Coord extx = 0,
+static FL_COORD extx = 0,
                 exty = 0;
 static int align_bottom = 0;
 

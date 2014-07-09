@@ -248,7 +248,7 @@ void
 get_mouse_pos( double * xx,
                double * yy )
 {
-    FL_Coord x,
+    FL_COORD x,
              y;
     unsigned int kmask;
 
@@ -379,10 +379,10 @@ color( unsigned long n )
  ***************************************/
 
 void
-rectf( FL_Coord x1,
-       FL_Coord y1,
-       FL_Coord x2,
-       FL_Coord y2 )
+rectf( FL_COORD x1,
+       FL_COORD y1,
+       FL_COORD x2,
+       FL_COORD y2 )
 {
     int x = x1,
         y = y1,
@@ -398,12 +398,12 @@ rectf( FL_Coord x1,
  ***************************************/
 
 void
-rect( FL_Coord x1,
-      FL_Coord y1,
-      FL_Coord x2,
-      FL_Coord y2 )
+rect( FL_COORD x1,
+      FL_COORD y1,
+      FL_COORD x2,
+      FL_COORD y2 )
 {
-    FL_Coord x = x1,
+    FL_COORD x = x1,
              y = y1,
              w = x2 - x1,
              h = y2 - y1;

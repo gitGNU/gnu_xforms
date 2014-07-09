@@ -49,17 +49,17 @@ typedef enum {
 } FL_XYPLOT_GRID_TYPE;
 
 FL_EXPORT FL_OBJECT * fl_create_xyplot( int          t,
-                                        FL_Coord     x,
-                                        FL_Coord     y,
-                                        FL_Coord     w,
-                                        FL_Coord     h,
+                                        FL_COORD     x,
+                                        FL_COORD     y,
+                                        FL_COORD     w,
+                                        FL_COORD     h,
                                         const char * label );
 
 FL_EXPORT FL_OBJECT * fl_add_xyplot( int          t,
-                                     FL_Coord     x,
-                                     FL_Coord     y,
-                                     FL_Coord     w,
-                                     FL_Coord     h,
+                                     FL_COORD     x,
+                                     FL_COORD     y,
+                                     FL_COORD     w,
+                                     FL_COORD     h,
                                      const char * label );
 
 FL_EXPORT void fl_set_xyplot_data( FL_OBJECT  * ob,

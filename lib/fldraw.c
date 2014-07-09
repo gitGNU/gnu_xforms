@@ -38,10 +38,10 @@
 
 
 static void fl_foldertab_box( int,
-                              FL_Coord,
-                              FL_Coord,
-                              FL_Coord,
-                              FL_Coord,
+                              FL_COORD,
+                              FL_COORD,
+                              FL_COORD,
+                              FL_COORD,
                               FL_COLOR,
                               int );
 
@@ -55,10 +55,10 @@ static void fl_foldertab_box( int,
  ***************************************/
 
 void
-fli_canonicalize_rect( FL_Coord * x,
-                       FL_Coord * y,
-                       FL_Coord * w,
-                       FL_Coord * h )
+fli_canonicalize_rect( FL_COORD * x,
+                       FL_COORD * y,
+                       FL_COORD * w,
+                       FL_COORD * h )
 {
     if ( *w < 0 )
     {
@@ -82,10 +82,10 @@ fli_canonicalize_rect( FL_Coord * x,
 int flrectboundcolor = FL_BLACK;
 
 void
-fl_rectbound( FL_Coord x,
-              FL_Coord y,
-              FL_Coord w,
-              FL_Coord h,
+fl_rectbound( FL_COORD x,
+              FL_COORD y,
+              FL_COORD w,
+              FL_COORD h,
               FL_COLOR col )
 {
     fli_canonicalize_rect( &x, &y, &w, &h );
@@ -116,16 +116,16 @@ static double offset[ ] = { 0.0, 0.07612, 0.29289, 0.61732, 1.0 };
  ***************************************/
 
 static void
-compute_round_corners( FL_Coord   x,
-                       FL_Coord   y,
-                       FL_Coord   w,
-                       FL_Coord   h,
+compute_round_corners( FL_COORD   x,
+                       FL_COORD   y,
+                       FL_COORD   w,
+                       FL_COORD   h,
                        FL_POINT * point )
 {
     size_t i;
     double rs = 0.45 * FL_min( w, h );
     static double old_rs = -1;
-    static FL_Coord o[ RN ];
+    static FL_COORD o[ RN ];
 
     if ( rs > MAX_RADIUS )
         rs = MAX_RADIUS;
@@ -170,10 +170,10 @@ compute_round_corners( FL_Coord   x,
 
 void
 fl_roundrectangle( int      fill,
-                   FL_Coord x,
-                   FL_Coord y,
-                   FL_Coord w,
-                   FL_Coord h,
+                   FL_COORD x,
+                   FL_COORD y,
+                   FL_COORD w,
+                   FL_COORD h,
                    FL_COLOR col )
 {
     FL_POINT point[ 4 * RN + 1 ];  /* need one extra for closing of polygon! */
@@ -196,10 +196,10 @@ fl_roundrectangle( int      fill,
 
 static void
 fl_rounded3dbox( int      style,
-                 FL_Coord x,
-                 FL_Coord y,
-                 FL_Coord w,
-                 FL_Coord h,
+                 FL_COORD x,
+                 FL_COORD y,
+                 FL_COORD w,
+                 FL_COORD h,
                  FL_COLOR col,
                  int bw )
 {
@@ -250,10 +250,10 @@ fl_rounded3dbox( int      style,
 
 static void
 fl_oval3dbox( int      style,
-              FL_Coord x,
-              FL_Coord y,
-              FL_Coord w,
-              FL_Coord h,
+              FL_COORD x,
+              FL_COORD y,
+              FL_COORD w,
+              FL_COORD h,
               FL_COLOR col,
               int bw )
 {
@@ -334,10 +334,10 @@ fl_oval3dbox( int      style,
 
 void
 fl_draw_box( int      style,
-             FL_Coord x,
-             FL_Coord y,
-             FL_Coord w,
-             FL_Coord h,
+             FL_COORD x,
+             FL_COORD y,
+             FL_COORD w,
+             FL_COORD h,
              FL_COLOR c,
              int      bw_in )
 {
@@ -345,7 +345,7 @@ fl_draw_box( int      style,
     int B,
         dp = fli_dithered( fl_vmode ),
         bw = bw_in;
-    FL_Coord cx,
+    FL_COORD cx,
              cy,
              cw,
              ch;
@@ -558,10 +558,10 @@ fl_draw_box( int      style,
 
 void
 fli_draw_checkbox( int      type,
-                   FL_Coord x,
-                   FL_Coord y,
-                   FL_Coord w,
-                   FL_Coord h,
+                   FL_COORD x,
+                   FL_COORD y,
+                   FL_COORD w,
+                   FL_COORD h,
                    FL_COLOR col,
                    int      bw )
 {
@@ -629,10 +629,10 @@ fli_draw_checkbox( int      type,
 
 void
 fl_draw_frame( int      style,
-               FL_Coord x,
-               FL_Coord y,
-               FL_Coord w,
-               FL_Coord h,
+               FL_COORD x,
+               FL_COORD y,
+               FL_COORD w,
+               FL_COORD h,
                FL_COLOR c,
                int      bw )
 {
@@ -795,8 +795,8 @@ static FL_COLOR pcol;
  ***************************************/
 
 void
-fli_add_vertex( FL_Coord x,
-                FL_Coord y )
+fli_add_vertex( FL_COORD x,
+                FL_COORD y )
 {
     if ( npt >= MAX_BUF_POINT )
     {
@@ -910,10 +910,10 @@ fl_set_default_tabfolder_corner( int n )
 
 static void
 fl_foldertab_box( int      style,
-                  FL_Coord x,
-                  FL_Coord y,
-                  FL_Coord w,
-                  FL_Coord h,
+                  FL_COORD x,
+                  FL_COORD y,
+                  FL_COORD w,
+                  FL_COORD h,
                   FL_COLOR c,
                   int      bw )
 {
@@ -1121,10 +1121,10 @@ fl_foldertab_box( int      style,
 
 void
 fli_draw_tbox( int      style,
-               FL_Coord x,
-               FL_Coord y,
-               FL_Coord w,
-               FL_Coord h,
+               FL_COORD x,
+               FL_COORD y,
+               FL_COORD w,
+               FL_COORD h,
                FL_COLOR c,
                int bw_in )
 {

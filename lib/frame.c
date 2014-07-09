@@ -39,9 +39,9 @@
 static int
 handle_frame( FL_OBJECT * ob,
               int         event,
-              FL_Coord    mx   FL_UNUSED_ARG,
-              FL_Coord    my   FL_UNUSED_ARG,
-              FL_Char     key  FL_UNUSED_ARG,
+              FL_COORD    mx   FL_UNUSED_ARG,
+              FL_COORD    my   FL_UNUSED_ARG,
+              FL_VAL      key  FL_UNUSED_ARG,
               void *      ev   FL_UNUSED_ARG )
 {
     switch ( event )
@@ -70,10 +70,10 @@ handle_frame( FL_OBJECT * ob,
 
 FL_OBJECT *
 fl_create_frame( int          type,
-                 FL_Coord     x,
-                 FL_Coord     y,
-                 FL_Coord     w,
-                 FL_Coord     h,
+                 FL_COORD     x,
+                 FL_COORD     y,
+                 FL_COORD     w,
+                 FL_COORD     h,
                  const char * label )
 {
     FL_OBJECT *obj;
@@ -96,10 +96,10 @@ fl_create_frame( int          type,
 
 FL_OBJECT *
 fl_add_frame( int          type,
-              FL_Coord     x,
-              FL_Coord     y,
-              FL_Coord     w,
-              FL_Coord     h,
+              FL_COORD     x,
+              FL_COORD     y,
+              FL_COORD     w,
+              FL_COORD     h,
               const char * label )
 {
     FL_OBJECT *obj = fl_create_frame( type, x, y, w, h, label );

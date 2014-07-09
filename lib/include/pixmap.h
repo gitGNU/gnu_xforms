@@ -26,17 +26,17 @@ typedef enum {
 } FL_PIXMAP_TYPE;
 
 FL_EXPORT FL_OBJECT * fl_create_pixmap( int          type,
-                                        FL_Coord     x,
-                                        FL_Coord     y,
-                                        FL_Coord     w,
-                                        FL_Coord     h,
+                                        FL_COORD     x,
+                                        FL_COORD     y,
+                                        FL_COORD     w,
+                                        FL_COORD     h,
                                         const char * label );
 
 FL_EXPORT FL_OBJECT * fl_add_pixmap( int          type,
-                                     FL_Coord     x,
-                                     FL_Coord     y,
-                                     FL_Coord     w,
-                                     FL_Coord     h,
+                                     FL_COORD     x,
+                                     FL_COORD     y,
+                                     FL_COORD     w,
+                                     FL_COORD     h,
                                      const char * label );
 
 FL_EXPORT void fl_set_pixmap_data( FL_OBJECT   * ob,

@@ -45,7 +45,7 @@ draw_lightbutton( FL_OBJECT * ob,
     int c1,
         c2,
         libox;
-    FL_Coord xx,
+    FL_COORD xx,
              yy,
              ww,
              hh,
@@ -153,10 +153,10 @@ draw_lightbutton( FL_OBJECT * ob,
 
 FL_OBJECT *
 fl_create_lightbutton( int          type,
-                       FL_Coord     x,
-                       FL_Coord     y,
-                       FL_Coord     w,
-                       FL_Coord     h,
+                       FL_COORD     x,
+                       FL_COORD     y,
+                       FL_COORD     w,
+                       FL_COORD     h,
                        const char * label )
 {
     FL_OBJECT *ob;
@@ -180,10 +180,10 @@ fl_create_lightbutton( int          type,
 
 FL_OBJECT *
 fl_add_lightbutton( int          type,
-                    FL_Coord     x,
-                    FL_Coord     y,
-                    FL_Coord     w,
-                    FL_Coord     h,
+                    FL_COORD     x,
+                    FL_COORD     y,
+                    FL_COORD     w,
+                    FL_COORD     h,
                     const char * label )
 {
     FL_OBJECT *ob = fl_create_lightbutton( type, x, y, w, h, label );

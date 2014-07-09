@@ -123,7 +123,7 @@ int
 main( int    argc,
       char * argv[ ] )
 {
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     makeforms( );
     fl_show_form( form1, FL_PLACE_CENTER, FL_NOBORDER, "Timer" );
     fl_set_timer( tim, TIME );

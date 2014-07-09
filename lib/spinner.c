@@ -46,7 +46,7 @@ static void
 set_geom( FL_OBJECT * obj )
 {
     FLI_SPINNER_SPEC *sp = obj->spec;
-    FL_Coord bwh;
+    FL_COORD bwh;
 
     if ( obj->w >= obj->h )
     {
@@ -117,9 +117,9 @@ set_geom( FL_OBJECT * obj )
 static int
 handle_spinner( FL_OBJECT * obj,
                 int         event,
-                FL_Coord    mx   FL_UNUSED_ARG,
-                FL_Coord    my   FL_UNUSED_ARG,
-                FL_Char     key  FL_UNUSED_ARG,
+                FL_COORD    mx   FL_UNUSED_ARG,
+                FL_COORD    my   FL_UNUSED_ARG,
+                FL_VAL      key  FL_UNUSED_ARG,
                 void      * ev   FL_UNUSED_ARG )
 {
     FLI_SPINNER_SPEC *sp = obj->spec;
@@ -300,10 +300,10 @@ spinner_callback( FL_OBJECT * obj,
 
 FL_OBJECT *
 fl_create_spinner( int          type,
-                   FL_Coord     x,
-                   FL_Coord     y,
-                   FL_Coord     w,
-                   FL_Coord     h,
+                   FL_COORD     x,
+                   FL_COORD     y,
+                   FL_COORD     w,
+                   FL_COORD     h,
                    const char * label )
 {
     FL_OBJECT *obj;
@@ -370,10 +370,10 @@ fl_create_spinner( int          type,
 
 FL_OBJECT *
 fl_add_spinner( int          type,
-                FL_Coord     x,
-                FL_Coord     y,
-                FL_Coord     w,
-                FL_Coord     h,
+                FL_COORD     x,
+                FL_COORD     y,
+                FL_COORD     w,
+                FL_COORD     h,
                 const char * label )
 {
     FL_OBJECT *obj = fl_create_spinner( type, x, y, w, h, label );

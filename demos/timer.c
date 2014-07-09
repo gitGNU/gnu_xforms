@@ -126,7 +126,7 @@ main( int    argc,
 
    fl_set_border_width( -2 );
 
-   fl_initialize( &argc, argv, 0, 0, 0 );
+   fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
    fd_timerform = create_form_timerform( );
 
    /* fill-in form initialization code */

@@ -653,7 +653,7 @@ specifications:
 @findex fl_fit_object_label()
 @anchor{fl_fit_object_label()}
 @example
-void fl_fit_object_label(FL_OBJECT *obj, FL_Coord hm, FL_Coord vm);
+void fl_fit_object_label(FL_OBJECT *obj, FL_COORD hm, FL_COORD vm);
 @end example
 @noindent
 where @code{hm} and @code{vm} are the horizontal and vertical margins
@@ -710,7 +710,7 @@ To start the definition of a form call
 @findex fl_bgn_form()
 @anchor{fl_bgn_form()}
 @example
-FL_FORM *fl_bgn_form(int type, FL_Coord w, FL_Coord h);
+FL_FORM *fl_bgn_form(int type, FL_COORD w, FL_COORD h);
 @end example
 @noindent
 When the form is created it automatically acquires one object, a box
@@ -941,8 +941,8 @@ belongs to) the functions
 @findex fl_get_object_position()
 @anchor{fl_get_object_position()}
 @example
-void fl_set_object_position(FL_OBJECT *obj, FL_Coord x, FL_Coord y);
-void fl_get_object_position(FL_OBJECT *obj, FL_Coord *x, FL_Coord *y);
+void fl_set_object_position(FL_OBJECT *obj, FL_COORD x, FL_COORD y);
+void fl_get_object_position(FL_OBJECT *obj, FL_COORD *x, FL_COORD *y);
 @end example
 @noindent
 exist. If the object is visible it's redrawn at the new position.
@@ -952,7 +952,7 @@ the function
 @findex fl_move_object()
 @anchor{fl_move_object()}
 @example
-void fl_move_object(FL_OBJECT *obj, FL_Coord dx, FL_Coord dy);
+void fl_move_object(FL_OBJECT *obj, FL_COORD dx, FL_COORD dy);
 @end example
 @noindent
 where @code{dx} and @code{dy} are the amounts by which the object
@@ -964,8 +964,8 @@ To change or inquire about the size of an object use
 @findex fl_get_object_size()
 @anchor{fl_get_object_size()}
 @example
-void fl_set_object_size(FL_OBJECT *obj, FL_Coord w, FL_Coord h);
-void fl_get_object_size(FL_OBJECT *obj, FL_Coord *w, FL_Coord *h);
+void fl_set_object_size(FL_OBJECT *obj, FL_COORD w, FL_COORD h);
+void fl_get_object_size(FL_OBJECT *obj, FL_COORD *w, FL_COORD *h);
 @end example
 @noindent
 When changing the size of the object the position of its upper left
@@ -978,10 +978,10 @@ functions
 @findex fl_get_object_geometry()
 @anchor{fl_get_object_geometry()}
 @example
-void fl_set_object_geometry(FL_OBJECT *obj, FL_Coord x, FL_Coord y,
-                            FL_Coord w, FL_Coord h);
-void fl_get_object_geometry(FL_OBJECT *obj, FL_Coord *x, FL_Coord *y,
-                            FL_Coord (*w, FL_Coord *h);
+void fl_set_object_geometry(FL_OBJECT *obj, FL_COORD x, FL_COORD y,
+                            FL_COORD w, FL_COORD h);
+void fl_get_object_geometry(FL_OBJECT *obj, FL_COORD *x, FL_COORD *y,
+                            FL_COORD (*w, FL_COORD *h);
 @end example
 @noindent
 can be used.
@@ -998,8 +998,8 @@ There's a second function for calculation an objects geometry:
 @findex fl_get_object_bbox()
 @anchor{fl_get_object_bbox()}
 @example
-void fl_get_object_bbox(FL_OBJECT *obj, FL_Coord *x, FL_Coord *y,
-                        FL_Coord *w, FL_Coord *h);
+void fl_get_object_bbox(FL_OBJECT *obj, FL_COORD *x, FL_COORD *y,
+                        FL_COORD *w, FL_COORD *h);
 @end example
 @noindent
 The difference between this functions and
@@ -1658,10 +1658,10 @@ and size can be set before by using the routines
 @findex fl_scale_form()
 @anchor{fl_scale_form()}
 @example
-void fl_set_form_position(FL_FORM *form, FL_Coord x, FL_Coord y);
-void fl_set_form_size(FL_FORM *form, FL_Coord w, FL_Coord h);
-void fl_set_form_geometry(FL_FORM form*, FL_Coord x, FL_Coord y,
-                          FL_Coord w, FL_Coord h);
+void fl_set_form_position(FL_FORM *form, FL_COORD x, FL_COORD y);
+void fl_set_form_size(FL_FORM *form, FL_COORD w, FL_COORD h);
+void fl_set_form_geometry(FL_FORM form*, FL_COORD x, FL_COORD y,
+                          FL_COORD w, FL_COORD h);
 void fl_scale_form(FL_FORM *form, double xsc, double ysc);
 @end example
 @noindent
@@ -1707,8 +1707,8 @@ available
 @findex fl_set_form_maxsize()
 @anchor{fl_set_form_maxsize()}
 @example
-void fl_set_form_minsize(FL_FORM *form, FL_Coord minw, FL_Coord minh);
-void fl_set_form_maxsize(FL_FORM *form, FL_Coord maxw, FL_Coord maxh);
+void fl_set_form_minsize(FL_FORM *form, FL_COORD minw, FL_COORD minh);
+void fl_set_form_maxsize(FL_FORM *form, FL_COORD maxw, FL_COORD maxh);
 @end example
 
 Although these two routines can be used before or after a form becomes

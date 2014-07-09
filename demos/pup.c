@@ -45,9 +45,9 @@ static void init_menu( void );
 
 static int post( FL_OBJECT *, 
                  int,
-                 FL_Coord,
-                 FL_Coord,
-                 FL_Char,
+                 FL_COORD,
+                 FL_COORD,
+                 FL_VAL,
                  void * );
 
 
@@ -64,7 +64,7 @@ main( int    argc,
     aa.vclass = FL_DefaultVisual;
     fl_set_defaults( mask, &aa );
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
 
     create_form_pup( );
 
@@ -90,9 +90,9 @@ main( int    argc,
 static int
 post( FL_OBJECT * ob,
       int         ev,
-      FL_Coord    mx   FL_UNUSED_ARG,
-      FL_Coord    my   FL_UNUSED_ARG,
-      FL_Char     key  FL_UNUSED_ARG,
+      FL_COORD    mx   FL_UNUSED_ARG,
+      FL_COORD    my   FL_UNUSED_ARG,
+      FL_VAL      key  FL_UNUSED_ARG,
       void      * xev  FL_UNUSED_ARG )
 {
     static int n1 = -1,

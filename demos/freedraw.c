@@ -71,7 +71,7 @@ int
 main( int    argc,
       char * argv[ ] )
 {
-    dpy = fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    dpy = fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     drawui = create_form_drawfree( );
     fl_set_object_color( drawui->colorobj, FL_FREE_COL1, FL_FREE_COL1 );
     draw_initialize( drawui );
@@ -284,9 +284,9 @@ clear_cb( FL_OBJECT * ob       FL_UNUSED_ARG,
 int
 freeobject_handler( FL_OBJECT * ob,
 					int         event,
-					FL_Coord    mx,
-					FL_Coord    my,
-					FL_Char     key,
+					FL_COORD    mx,
+					FL_COORD    my,
+					FL_VAL      key,
 					void      * xev  FL_UNUSED_ARG )
 {
     DrawFigure *dr;

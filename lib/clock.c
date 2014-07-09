@@ -87,10 +87,10 @@ static double sechand[ 4 ][ 2 ] =
  ***************************************/
 
 static void
-draw_hand( FL_Coord x,
-           FL_Coord y,
-           FL_Coord w,
-           FL_Coord h,
+draw_hand( FL_COORD x,
+           FL_COORD y,
+           FL_COORD w,
+           FL_COORD h,
            double   a[ ][ 2 ],
            double   ra,
            FL_COLOR fc,
@@ -125,10 +125,10 @@ static int updating;
  ***************************************/
 
 static void
-show_hands( FL_Coord x,
-            FL_Coord y,
-            FL_Coord w,
-            FL_Coord h,
+show_hands( FL_COORD x,
+            FL_COORD y,
+            FL_COORD w,
+            FL_COORD h,
             FL_COLOR fcolor,
             FL_COLOR bcolor )
 {
@@ -151,10 +151,10 @@ show_hands( FL_Coord x,
 
 static void
 draw_clock( int      type  FL_UNUSED_ARG,
-            FL_Coord x,
-            FL_Coord y,
-            FL_Coord w,
-            FL_Coord h,
+            FL_COORD x,
+            FL_COORD y,
+            FL_COORD w,
+            FL_COORD h,
             FL_COLOR col1  FL_UNUSED_ARG,
             FL_COLOR col2 )
 {
@@ -219,9 +219,9 @@ draw_digitalclock( FL_OBJECT * ob )
 static int
 handle_clock( FL_OBJECT * ob,
               int         event,
-              FL_Coord    x   FL_UNUSED_ARG,
-              FL_Coord    y   FL_UNUSED_ARG,
-              FL_Char     k   FL_UNUSED_ARG,
+              FL_COORD    x   FL_UNUSED_ARG,
+              FL_COORD    y   FL_UNUSED_ARG,
+              FL_VAL      k   FL_UNUSED_ARG,
               void *      ev  FL_UNUSED_ARG )
 {
     time_t ticks;
@@ -291,10 +291,10 @@ handle_clock( FL_OBJECT * ob,
 
 FL_OBJECT *
 fl_create_clock( int          type,
-                 FL_Coord     x,
-                 FL_Coord     y,
-                 FL_Coord     w,
-                 FL_Coord     h,
+                 FL_COORD     x,
+                 FL_COORD     y,
+                 FL_COORD     w,
+                 FL_COORD     h,
                  const char * s )
 {
     FL_OBJECT *obj;
@@ -319,10 +319,10 @@ fl_create_clock( int          type,
 
 FL_OBJECT *
 fl_add_clock( int          type,
-              FL_Coord     x,
-              FL_Coord     y,
-              FL_Coord     w,
-              FL_Coord     h,
+              FL_COORD     x,
+              FL_COORD     y,
+              FL_COORD     w,
+              FL_COORD     h,
               const char * s )
 
 {

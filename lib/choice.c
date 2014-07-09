@@ -132,7 +132,7 @@ draw_droplist_choice( FL_OBJECT * ob )
 {
     FL_COLOR c1;
     FLI_CHOICE_SPEC *sp = ob->spec;
-    FL_Coord dw = ob->h,
+    FL_COORD dw = ob->h,
              dx = ob->w - dw,
              bw;
 
@@ -309,9 +309,9 @@ do_pup( FL_OBJECT * ob )
 static int
 handle_choice( FL_OBJECT * ob,
                int         event,
-               FL_Coord    mx,
-               FL_Coord    my,
-               FL_Char     key,
+               FL_COORD    mx,
+               FL_COORD    my,
+               FL_VAL      key,
                void *      ev   FL_UNUSED_ARG )
 {
     FLI_CHOICE_SPEC *sp = ob->spec;
@@ -500,10 +500,10 @@ handle_choice( FL_OBJECT * ob,
 
 FL_OBJECT *
 fl_create_choice( int          type,
-                  FL_Coord     x,
-                  FL_Coord     y,
-                  FL_Coord     w,
-                  FL_Coord     h,
+                  FL_COORD     x,
+                  FL_COORD     y,
+                  FL_COORD     w,
+                  FL_COORD     h,
                   const char * label )
 {
     FL_OBJECT *obj;
@@ -544,10 +544,10 @@ fl_create_choice( int          type,
 
 FL_OBJECT *
 fl_add_choice( int          type,
-               FL_Coord     x,
-               FL_Coord     y,
-               FL_Coord     w,
-               FL_Coord     h,
+               FL_COORD     x,
+               FL_COORD     y,
+               FL_COORD     w,
+               FL_COORD     h,
                const char * l )
 {
     FL_OBJECT *ob;

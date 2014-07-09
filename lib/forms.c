@@ -42,8 +42,8 @@
 #define CMMToPixel( a )       FL_crnd( ( a ) * fl_dpi / 2540.0 )
 #define CPointToPixel( a )    FL_crnd( ( a ) * fl_dpi / 7200.0 )
 
-static FL_FORM * create_new_form( FL_Coord,
-                                  FL_Coord );
+static FL_FORM * create_new_form( FL_COORD,
+                                  FL_COORD );
 static void force_visible( FL_FORM * );
 static void set_form_property( FL_FORM *,
                                unsigned int );
@@ -260,8 +260,8 @@ fl_win_to_form( Window win )
  ***************************************/
 
 static FL_FORM *
-create_new_form( FL_Coord w,
-                 FL_Coord h )
+create_new_form( FL_COORD w,
+                 FL_COORD h )
 {
     FL_FORM *form;
 
@@ -340,8 +340,8 @@ create_new_form( FL_Coord w,
 
 FL_FORM *
 fl_bgn_form( int      type,
-             FL_Coord w,
-             FL_Coord h )
+             FL_COORD w,
+             FL_COORD h )
 {
     if ( ! fli_no_connection && ! flx->display )
     {
@@ -568,7 +568,7 @@ fl_unfreeze_all_forms( void )
 static void
 reshape_form( FL_FORM * form )
 {
-    FL_Coord w,
+    FL_COORD w,
              h,
              dummy;
     int top,
@@ -799,8 +799,8 @@ fl_scale_form( FL_FORM * form,
 
 void
 fl_set_form_minsize( FL_FORM * form,
-                     FL_Coord  w,
-                     FL_Coord  h )
+                     FL_COORD  w,
+                     FL_COORD  h )
 {
     if ( ! form )
     {
@@ -818,8 +818,8 @@ fl_set_form_minsize( FL_FORM * form,
 
 void
 fl_set_form_maxsize( FL_FORM * form,
-                     FL_Coord  w,
-                     FL_Coord  h )
+                     FL_COORD  w,
+                     FL_COORD  h )
 {
     if ( ! form )
     {
@@ -869,8 +869,8 @@ fl_set_form_dblbuffer( FL_FORM * form,
 
 void
 fl_set_form_size( FL_FORM * form,
-                  FL_Coord  w,
-                  FL_Coord  h )
+                  FL_COORD  w,
+                  FL_COORD  h )
 {
     if ( ! form )
     {
@@ -889,10 +889,10 @@ fl_set_form_size( FL_FORM * form,
 
 void
 fl_set_form_position( FL_FORM * form,
-                      FL_Coord  x,
-                      FL_Coord  y )
+                      FL_COORD  x,
+                      FL_COORD  y )
 {
-    FL_Coord oldx,
+    FL_COORD oldx,
              oldy;
 
     if ( ! form )
@@ -1030,8 +1030,8 @@ fl_get_form_background_color( FL_FORM * form )
 
 void
 fl_set_form_hotspot( FL_FORM * form,
-                     FL_Coord  x,
-                     FL_Coord  y )
+                     FL_COORD  x,
+                     FL_COORD  y )
 {
     if ( ! form )
     {
@@ -1154,7 +1154,7 @@ fl_prepare_form_window( FL_FORM    * form,
     long screenw,
          screenh,
          dont_fix_size = 0;
-    FL_Coord mx,
+    FL_COORD mx,
              my;
 
     if ( border == 0 )
@@ -1885,10 +1885,10 @@ fl_set_atclose( FL_FORM_ATCLOSE   fmclose,
 
 void
 fl_set_form_geometry( FL_FORM  * form,
-                      FL_Coord   x,
-                      FL_Coord   y,
-                      FL_Coord   w,
-                      FL_Coord   h )
+                      FL_COORD   x,
+                      FL_COORD   y,
+                      FL_COORD   w,
+                      FL_COORD   h )
 {
     fl_set_form_position( form, x, y );
     fl_set_form_size( form, w, h );
@@ -1992,9 +1992,9 @@ fl_get_form_event_cmask( FL_FORM * form )
  ***************************************/
 
 void
-fl_set_form_callback( FL_FORM            * form,
-                      FL_FORMCALLBACKPTR   callback,
-                      void *               d )
+fl_set_form_callback( FL_FORM             * form,
+                      FL_FORMCALLBACK_PTR   callback,
+                      void *                d )
 {
     if ( ! form )
     {
@@ -2092,8 +2092,8 @@ simple_form_rescale( FL_FORM * form,
 
 void
 fl_fit_object_label( FL_OBJECT * obj,
-                     FL_Coord    xmargin,
-                     FL_Coord    ymargin )
+                     FL_COORD    xmargin,
+                     FL_COORD    ymargin )
 {
     int sw,
         sh,

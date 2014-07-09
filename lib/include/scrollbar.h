@@ -49,17 +49,17 @@ typedef enum {
 
 
 FL_EXPORT FL_OBJECT * fl_create_scrollbar( int          type,
-                                           FL_Coord     x,
-                                           FL_Coord     y,
-                                           FL_Coord     w,
-                                           FL_Coord     h,
+                                           FL_COORD     x,
+                                           FL_COORD     y,
+                                           FL_COORD     w,
+                                           FL_COORD     h,
                                            const char * label );
 
 FL_EXPORT FL_OBJECT * fl_add_scrollbar( int          type,
-                                        FL_Coord     x,
-                                        FL_Coord     y,
-                                        FL_Coord     w,
-                                        FL_Coord     h,
+                                        FL_COORD     x,
+                                        FL_COORD     y,
+                                        FL_COORD     w,
+                                        FL_COORD     h,
                                         const char * label );
 
 FL_EXPORT double fl_get_scrollbar_value( FL_OBJECT * ob );

@@ -110,7 +110,7 @@ FD_form *
 create_form( void )
 {
     FL_OBJECT *obj;
-    FL_Coord x  = 20,
+    FL_COORD x  = 20,
              dx = 80,
              dy = 28;
     FD_form *fdui = fl_calloc( 1, sizeof *fdui );
@@ -171,7 +171,7 @@ main( int    argc,
    FD_form *fdui;
    FL_OBJECT *o;
 
-   fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+   fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
 
    fdui = create_form( );
 

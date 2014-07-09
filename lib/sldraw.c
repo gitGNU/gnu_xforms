@@ -180,11 +180,11 @@ fli_draw_slider( FL_OBJECT  * ob,
              h = sp->h;
     int sltype = ob->type;
     int bw = ob->bw;
-    FL_Coord xsl,
+    FL_COORD xsl,
              ysl,
              hsl,
              wsl;
-    FL_Coord absbw = FL_abs( bw );
+    FL_COORD absbw = FL_abs( bw );
     FLI_SCROLLBAR_KNOB knob;
 
     fli_calc_slider_size( ob, &knob );

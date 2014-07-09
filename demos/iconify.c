@@ -47,7 +47,7 @@ main( int    argc,
     unsigned int w,
                  h;
 
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
 
     form = create_form_form( );
     p = fl_read_pixmapfile( fl_root, "crab.xpm", &w, &h, &mask, 0, 0, 0 );

@@ -90,7 +90,7 @@ void
 draw_normal_button( FL_OBJECT * obj,
                     int         event  FL_UNUSED_ARG )
 {
-    FL_Coord dh,
+    FL_COORD dh,
              dw,
              ww,
              absbw = FL_abs( obj->bw );
@@ -262,9 +262,9 @@ wait_for_release( XKeyEvent * ev )
 static int
 handle_button( FL_OBJECT * obj,
                int         event,
-               FL_Coord    mx,
-               FL_Coord    my,
-               FL_Char     key,
+               FL_COORD    mx,
+               FL_COORD    my,
+               FL_VAL      key,
                void      * ev )
 {
     static int oldval;
@@ -466,10 +466,10 @@ handle_button( FL_OBJECT * obj,
 FL_OBJECT *
 fl_create_generic_button( int          objclass,
                           int          type,
-                          FL_Coord     x,
-                          FL_Coord     y,
-                          FL_Coord     w,
-                          FL_Coord     h,
+                          FL_COORD     x,
+                          FL_COORD     y,
+                          FL_COORD     w,
+                          FL_COORD     h,
                           const char * label )
 {
     FL_OBJECT *obj;
@@ -572,10 +572,10 @@ fl_get_button_numb( FL_OBJECT * obj )
 
 FL_OBJECT *
 fl_create_button( int          type,
-                  FL_Coord     x,
-                  FL_Coord     y,
-                  FL_Coord     w,
-                  FL_Coord     h,
+                  FL_COORD     x,
+                  FL_COORD     y,
+                  FL_COORD     w,
+                  FL_COORD     h,
                   const char * label )
 {
     FL_OBJECT *obj;
@@ -598,10 +598,10 @@ fl_create_button( int          type,
 
 FL_OBJECT *
 fl_add_button( int          type,
-               FL_Coord     x,
-               FL_Coord     y,
-               FL_Coord     w,
-               FL_Coord     h,
+               FL_COORD     x,
+               FL_COORD     y,
+               FL_COORD     w,
+               FL_COORD     h,
                const char * label)
 {
     FL_OBJECT *obj = fl_create_button( type, x, y, w, h, label );

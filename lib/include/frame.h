@@ -34,31 +34,31 @@ typedef enum {
 } FL_FRAME_TYPE;
 
 FL_EXPORT FL_OBJECT * fl_create_frame( int          type,
-                                       FL_Coord     x,
-                                       FL_Coord     y,
-                                       FL_Coord     w,
-                                       FL_Coord     h,
+                                       FL_COORD     x,
+                                       FL_COORD     y,
+                                       FL_COORD     w,
+                                       FL_COORD     h,
                                        const char * label );
 
 FL_EXPORT FL_OBJECT * fl_add_frame( int          type,
-                                    FL_Coord     x,
-                                    FL_Coord     y,
-                                    FL_Coord     w,
-                                    FL_Coord     h,
+                                    FL_COORD     x,
+                                    FL_COORD     y,
+                                    FL_COORD     w,
+                                    FL_COORD     h,
                                     const char * label );
 
 /* labeld frame */
 
 FL_EXPORT FL_OBJECT * fl_create_labelframe( int          type,
-                                            FL_Coord     x,
-                                            FL_Coord     y,
-                                            FL_Coord     w,
-                                            FL_Coord     h,
+                                            FL_COORD     x,
+                                            FL_COORD     y,
+                                            FL_COORD     w,
+                                            FL_COORD     h,
                                             const char * label );
 
 FL_EXPORT FL_OBJECT * fl_add_labelframe( int          type,
-                                         FL_Coord     x,
-                                         FL_Coord     y,
-                                         FL_Coord     w,
-                                         FL_Coord     h,
+                                         FL_COORD     x,
+                                         FL_COORD     y,
+                                         FL_COORD     w,
+                                         FL_COORD     h,
                                          const char * label );

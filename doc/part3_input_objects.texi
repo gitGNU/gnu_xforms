@@ -27,8 +27,8 @@ Adding an object To add an input field to a form you use the routine
 @findex fl_add_input()
 @anchor{fl_add_input()}
 @example
-FL_OBJECT *fl_add_input(int type, FL_Coord x, FL_Coord y,
-                        FL_Coord w, FL_Coord h, const char *label)
+FL_OBJECT *fl_add_input(int type, FL_COORD x, FL_COORD y,
+                        FL_COORD w, FL_COORD h, const char *label)
 @end example
 @noindent
 The meaning of the parameters is as usual. The label is by default

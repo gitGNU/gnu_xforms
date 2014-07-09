@@ -27,7 +27,7 @@
  *
  *   Public routines:
  *
- *   fl_add_symbol(const char *name, FL_DRAWPTR how, int scalable);
+ *   fl_add_symbol(const char *name, FL_DRAW_PTR how, int scalable);
  *   fl_draw_symbol(const char *name, x, y, w, h, FL_COLOR col)
  */
 
@@ -53,9 +53,9 @@
 
 typedef struct
 {
-    FL_DRAWPTR   drawit;        /* how to draw it   */
-    char       * name;          /* symbol name      */
-    int          scalable;      /* currently unused */
+    FL_DRAW_PTR   drawit;        /* how to draw it   */
+    char        * name;          /* symbol name      */
+    int           scalable;      /* currently unused */
 } SYMBOL;
 
 static SYMBOL * symbols = NULL;     /* list of symbols */
@@ -107,9 +107,9 @@ find_symbol( const char * name )
  ***************************************/
 
 int
-fl_add_symbol( const char * name,
-               FL_DRAWPTR   drawit,
-               int          scalable  FL_UNUSED_ARG )
+fl_add_symbol( const char  * name,
+               FL_DRAW_PTR   drawit,
+               int           scalable  FL_UNUSED_ARG )
 {
     SYMBOL *s;
 
@@ -178,15 +178,15 @@ fl_delete_symbol( const char * name )
 
 int
 fl_draw_symbol( const char * label,
-                FL_Coord     x,
-                FL_Coord     y,
-                FL_Coord     w,
-                FL_Coord     h,
+                FL_COORD     x,
+                FL_COORD     y,
+                FL_COORD     w,
+                FL_COORD     h,
                 FL_COLOR     col )
 {
     int pos,
         equalscale = 0;
-    FL_Coord dx = 0,
+    FL_COORD dx = 0,
              dy = 0;
     int rotated = 0,
         delta = 0;
@@ -280,7 +280,7 @@ fl_draw_symbol( const char * label,
     {
         x += ( w - h ) / 2;
         y += ( h - w ) / 2;
-        swapit( FL_Coord, w, h );
+        swapit( FL_COORD, w, h );
     }
 
     if ( fl_is_clipped( 0 ) )
@@ -309,8 +309,8 @@ fl_draw_symbol( const char * label,
  ***************************************/
 
 static void
-rotate_it( FL_Coord xc,
-           FL_Coord yc,
+rotate_it( FL_COORD xc,
+           FL_COORD yc,
            FL_POINT xpnts[ ],
            int      i,
            int      a )
@@ -401,10 +401,10 @@ rotate_it( FL_Coord xc,
  ***************************************/
 
 static void
-draw_returnarrow( FL_Coord x,
-                  FL_Coord y,
-                  FL_Coord w,
-                  FL_Coord h,
+draw_returnarrow( FL_COORD x,
+                  FL_COORD y,
+                  FL_COORD w,
+                  FL_COORD h,
                   int      angle  FL_UNUSED_ARG,
                   FL_COLOR col )
 {
@@ -442,10 +442,10 @@ draw_returnarrow( FL_Coord x,
  ***************************************/
 
 static void
-draw_long_arrow_right( FL_Coord x,
-                       FL_Coord y,
-                       FL_Coord w,
-                       FL_Coord h,
+draw_long_arrow_right( FL_COORD x,
+                       FL_COORD y,
+                       FL_COORD w,
+                       FL_COORD h,
                        int      angle,
                        FL_COLOR col )
 {
@@ -493,10 +493,10 @@ draw_long_arrow_right( FL_Coord x,
  ***************************************/
 
 static void
-draw_arrow_right( FL_Coord x,
-                  FL_Coord y,
-                  FL_Coord w,
-                  FL_Coord h,
+draw_arrow_right( FL_COORD x,
+                  FL_COORD y,
+                  FL_COORD w,
+                  FL_COORD h,
                   int      angle,
                   FL_COLOR col )
 {
@@ -534,10 +534,10 @@ draw_arrow_right( FL_Coord x,
  ***************************************/
 
 static void
-draw_arrow_tip_right( FL_Coord x,
-                      FL_Coord y,
-                      FL_Coord w,
-                      FL_Coord h,
+draw_arrow_tip_right( FL_COORD x,
+                      FL_COORD y,
+                      FL_COORD w,
+                      FL_COORD h,
                       int      angle,
                       FL_COLOR col )
 {
@@ -570,10 +570,10 @@ draw_arrow_tip_right( FL_Coord x,
  ***************************************/
 
 static void
-draw_arrow_double_tip_right( FL_Coord x,
-                             FL_Coord y,
-                             FL_Coord w,
-                             FL_Coord h,
+draw_arrow_double_tip_right( FL_COORD x,
+                             FL_COORD y,
+                             FL_COORD w,
+                             FL_COORD h,
                              int      angle,
                              FL_COLOR col )
 {
@@ -616,10 +616,10 @@ draw_arrow_double_tip_right( FL_Coord x,
  ***************************************/
 
 static void
-draw_arrow_left( FL_Coord x,
-                 FL_Coord y,
-                 FL_Coord w,
-                 FL_Coord h,
+draw_arrow_left( FL_COORD x,
+                 FL_COORD y,
+                 FL_COORD w,
+                 FL_COORD h,
                  int      angle,
                  FL_COLOR col )
 {
@@ -633,10 +633,10 @@ draw_arrow_left( FL_Coord x,
  ***************************************/
 
 static void
-draw_arrow_tip_left( FL_Coord x,
-                     FL_Coord y,
-                     FL_Coord w,
-                     FL_Coord h,
+draw_arrow_tip_left( FL_COORD x,
+                     FL_COORD y,
+                     FL_COORD w,
+                     FL_COORD h,
                      int      angle,
                      FL_COLOR col )
 {
@@ -650,10 +650,10 @@ draw_arrow_tip_left( FL_Coord x,
  ***************************************/
 
 static void
-draw_arrow_double_tip_left( FL_Coord x,
-                            FL_Coord y,
-                            FL_Coord w,
-                            FL_Coord h,
+draw_arrow_double_tip_left( FL_COORD x,
+                            FL_COORD y,
+                            FL_COORD w,
+                            FL_COORD h,
                             int      angle,
                             FL_COLOR col )
 {
@@ -667,14 +667,14 @@ draw_arrow_double_tip_left( FL_Coord x,
  ***************************************/
 
 static void
-draw_circle( FL_Coord x,
-             FL_Coord y,
-             FL_Coord w,
-             FL_Coord h,
+draw_circle( FL_COORD x,
+             FL_COORD y,
+             FL_COORD w,
+             FL_COORD h,
              int      angle  FL_UNUSED_ARG,
              FL_COLOR col )
 {
-    FL_Coord xo = x + w / 2,
+    FL_COORD xo = x + w / 2,
              yo = y + h / 2;
     int rr,
         s = 3 + 0.04 * ( w + h );
@@ -693,10 +693,10 @@ draw_circle( FL_Coord x,
  ***************************************/
 
 static void
-draw_square( FL_Coord x,
-             FL_Coord y,
-             FL_Coord w,
-             FL_Coord h,
+draw_square( FL_COORD x,
+             FL_COORD y,
+             FL_COORD w,
+             FL_COORD h,
              int      angle  FL_UNUSED_ARG,
              FL_COLOR col )
 {
@@ -718,10 +718,10 @@ draw_square( FL_Coord x,
  ***************************************/
 
 static void
-draw_plus( FL_Coord x,
-           FL_Coord y,
-           FL_Coord w,
-           FL_Coord h,
+draw_plus( FL_COORD x,
+           FL_COORD y,
+           FL_COORD w,
+           FL_COORD h,
            int      angle,
            FL_COLOR col )
 {
@@ -762,14 +762,14 @@ draw_plus( FL_Coord x,
  ***************************************/
 
 static void
-draw_menu( FL_Coord x,
-           FL_Coord y,
-           FL_Coord w,
-           FL_Coord h,
+draw_menu( FL_COORD x,
+           FL_COORD y,
+           FL_COORD w,
+           FL_COORD h,
            int      angle  FL_UNUSED_ARG,
            FL_COLOR col )
 {
-    FL_Coord wm = ( w - 8 ) * 0.5,
+    FL_COORD wm = ( w - 8 ) * 0.5,
              hm = ( h - 8 ) * 0.5;
     int xc = x + w / 2,
         yc = y + h / 2;
@@ -792,16 +792,16 @@ draw_menu( FL_Coord x,
  ***************************************/
 
 static void
-draw_line( FL_Coord x,
-           FL_Coord y,
-           FL_Coord w,
-           FL_Coord h,
+draw_line( FL_COORD x,
+           FL_COORD y,
+           FL_COORD w,
+           FL_COORD h,
            int      angle,
            FL_COLOR col )
 {
     FL_POINT xpoint[ 3 ],
              *xp;
-    FL_Coord xc = x + w / 2,
+    FL_COORD xc = x + w / 2,
              yc = y + h / 2;
 
     ShrinkBox( x, y, w, h, 3 );
@@ -821,10 +821,10 @@ draw_line( FL_Coord x,
  ***************************************/
 
 static void
-draw_ripplelines( FL_Coord x,
-                  FL_Coord y,
-                  FL_Coord w,
-                  FL_Coord h,
+draw_ripplelines( FL_COORD x,
+                  FL_COORD y,
+                  FL_COORD w,
+                  FL_COORD h,
                   int      angle,
                   FL_COLOR col  FL_UNUSED_ARG )
 {
@@ -855,7 +855,7 @@ draw_ripplelines( FL_Coord x,
         int e, i;
 
         y += ( h - w ) / 2;
-        swapit( FL_Coord, w, h );
+        swapit( FL_COORD, w, h );
 
         e = h < 15;
         for ( i = 0; i < 3; i++ )
@@ -878,16 +878,16 @@ draw_ripplelines( FL_Coord x,
  ***************************************/
 
 static void
-draw_dnline( FL_Coord x,
-             FL_Coord y,
-             FL_Coord w,
-             FL_Coord h,
+draw_dnline( FL_COORD x,
+             FL_COORD y,
+             FL_COORD w,
+             FL_COORD h,
              int      angle,
              FL_COLOR col  FL_UNUSED_ARG )
 {
     FL_POINT xpnt[ 3 ],
              *xp;
-    FL_Coord yc = y + h / 2;
+    FL_COORD yc = y + h / 2;
 
     ShrinkBox( x, y, w, h, 3 );
 
@@ -916,16 +916,16 @@ draw_dnline( FL_Coord x,
  ***************************************/
 
 static void
-draw_upline( FL_Coord x,
-             FL_Coord y,
-             FL_Coord w,
-             FL_Coord h,
+draw_upline( FL_COORD x,
+             FL_COORD y,
+             FL_COORD w,
+             FL_COORD h,
              int      angle,
              FL_COLOR col  FL_UNUSED_ARG )
 {
     FL_POINT xpnt[ 3 ],
              *xp;
-    FL_Coord yc = y + h / 2;
+    FL_COORD yc = y + h / 2;
 
     ShrinkBox( x, y, w, h, 3 );
 
@@ -954,16 +954,16 @@ draw_upline( FL_Coord x,
  ***************************************/
 
 static void
-draw_uparrow( FL_Coord x,
-              FL_Coord y,
-              FL_Coord w,
-              FL_Coord h,
+draw_uparrow( FL_COORD x,
+              FL_COORD y,
+              FL_COORD w,
+              FL_COORD h,
               int      a,
               FL_COLOR col  FL_UNUSED_ARG )
 {
-    FL_Coord xc = x + ( w + 1 ) / 2,
+    FL_COORD xc = x + ( w + 1 ) / 2,
              dx;
-    FL_Coord yc = y + ( h + 1 ) / 2,
+    FL_COORD yc = y + ( h + 1 ) / 2,
              dy;
     int d = 3 + ( w + h ) * 0.06;
 
@@ -973,7 +973,7 @@ draw_uparrow( FL_Coord x,
     {
         /* undo driver's transformation */
 
-        swapit( FL_Coord, w, h );
+        swapit( FL_COORD, w, h );
 
         dx = w / 2;
         dy = h / 2;
@@ -985,7 +985,7 @@ draw_uparrow( FL_Coord x,
     }
     else if ( a == 270 )
     {
-        swapit( FL_Coord, w, h );
+        swapit( FL_COORD, w, h );
 
         dx = w / 2;
         dy = h / 2;
@@ -1019,16 +1019,16 @@ draw_uparrow( FL_Coord x,
  ***************************************/
 
 static void
-draw_dnarrow( FL_Coord x,
-              FL_Coord y,
-              FL_Coord w,
-              FL_Coord h,
+draw_dnarrow( FL_COORD x,
+              FL_COORD y,
+              FL_COORD w,
+              FL_COORD h,
               int      a,
               FL_COLOR col  FL_UNUSED_ARG )
 {
-    FL_Coord xc = x + ( w + 1 ) / 2,
+    FL_COORD xc = x + ( w + 1 ) / 2,
              dx;
-    FL_Coord yc = y + ( h + 1 ) / 2,
+    FL_COORD yc = y + ( h + 1 ) / 2,
              dy;
     int d = 3 + ( w + h ) * 0.06;
 
@@ -1038,7 +1038,7 @@ draw_dnarrow( FL_Coord x,
     {
         /* undo driver's transformation */
 
-        swapit( FL_Coord, w, h );
+        swapit( FL_COORD, w, h );
 
         dx = w / 2;
         dy = h / 2;
@@ -1049,7 +1049,7 @@ draw_dnarrow( FL_Coord x,
     }
     else if ( a == 270 )
     {
-        swapit( FL_Coord, w, h );
+        swapit( FL_COORD, w, h );
 
         dx = w / 2;
         dy = h / 2;
@@ -1084,10 +1084,10 @@ draw_dnarrow( FL_Coord x,
  ***************************************/
 
 static void
-draw_double_arrow( FL_Coord x,
-                   FL_Coord y,
-                   FL_Coord w,
-                   FL_Coord h,
+draw_double_arrow( FL_COORD x,
+                   FL_COORD y,
+                   FL_COORD w,
+                   FL_COORD h,
                    int      angle,
                    FL_COLOR col )
 {
@@ -1128,10 +1128,10 @@ draw_double_arrow( FL_Coord x,
  ***************************************/
 
 static void
-draw_arrow_bar_right( FL_Coord x,
-                      FL_Coord y,
-                      FL_Coord w,
-                      FL_Coord h,
+draw_arrow_bar_right( FL_COORD x,
+                      FL_COORD y,
+                      FL_COORD w,
+                      FL_COORD h,
                       int      angle,
                       FL_COLOR col )
 {
@@ -1185,10 +1185,10 @@ draw_arrow_bar_right( FL_Coord x,
  ***************************************/
 
 static void
-draw_arrow_bar_left( FL_Coord x,
-                     FL_Coord y,
-                     FL_Coord w,
-                     FL_Coord h,
+draw_arrow_bar_left( FL_COORD x,
+                     FL_COORD y,
+                     FL_COORD w,
+                     FL_COORD h,
                      int      angle,
                      FL_COLOR col )
 {
@@ -1203,10 +1203,10 @@ draw_arrow_bar_left( FL_Coord x,
  ***************************************/
 
 static void
-draw_arrow_tip_bar_right( FL_Coord x,
-                          FL_Coord y,
-                          FL_Coord w,
-                          FL_Coord h,
+draw_arrow_tip_bar_right( FL_COORD x,
+                          FL_COORD y,
+                          FL_COORD w,
+                          FL_COORD h,
                           int      angle,
                           FL_COLOR col )
 {
@@ -1250,10 +1250,10 @@ draw_arrow_tip_bar_right( FL_Coord x,
  ***************************************/
 
 static void
-draw_arrow_tip_bar_left( FL_Coord x,
-                         FL_Coord y,
-                         FL_Coord w,
-                         FL_Coord h,
+draw_arrow_tip_bar_left( FL_COORD x,
+                         FL_COORD y,
+                         FL_COORD w,
+                         FL_COORD h,
                          int      angle,
                          FL_COLOR col )
 {
@@ -1267,10 +1267,10 @@ draw_arrow_tip_bar_left( FL_Coord x,
  ***************************************/
 
 static void
-draw_bar_arrow_tip_right( FL_Coord x,
-                          FL_Coord y,
-                          FL_Coord w,
-                          FL_Coord h,
+draw_bar_arrow_tip_right( FL_COORD x,
+                          FL_COORD y,
+                          FL_COORD w,
+                          FL_COORD h,
                           int      angle,
                           FL_COLOR col )
 {
@@ -1322,10 +1322,10 @@ draw_bar_arrow_tip_right( FL_Coord x,
  ***************************************/
 
 static void
-draw_bar_arrow_tip_left( FL_Coord x,
-                         FL_Coord y,
-                         FL_Coord w,
-                         FL_Coord h,
+draw_bar_arrow_tip_left( FL_COORD x,
+                         FL_COORD y,
+                         FL_COORD w,
+                         FL_COORD h,
                          int      angle,
                          FL_COLOR col )
 {

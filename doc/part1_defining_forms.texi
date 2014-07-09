@@ -41,7 +41,7 @@ A form consists of a collection of objects. A form definition is started
 with the routine 
 @findex fl_bgn_form()
 @example
-FL_FORM *fl_bgn_form(int type, FL_Coord w, FL_Coord h);
+FL_FORM *fl_bgn_form(int type, FL_COORD w, FL_COORD h);
 @end example
 @noindent
 @code{w} and @code{h} indicate the width and height of the form (in
@@ -77,8 +77,8 @@ visually group other objects together. The background of each form is
 a box. To add a box to a form you use the routine
 @findex fl_add_box()
 @example
-FL_OBJECT *fl_add_box(int type, FL_Coord x, FL_Coord y,
-                      FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_box(int type, FL_COORD x, FL_COORD y,
+                      FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 where @code{type} indicates the shape of the box. The Forms
@@ -190,8 +190,8 @@ form in any color you like. Placing a text object is done with the
 routine
 @findex fl_add_text()
 @example
-FL_OBJECT *fl_add_text(int type, FL_Coord x, FL_Coord y,
-                       FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_text(int type, FL_COORD x, FL_COORD y,
+                       FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 where @code{type} indicates the shape of the text. The Forms Library at
@@ -227,8 +227,8 @@ them again and radio buttons that make other buttons be released. Adding
 a button to a form can be done using the following routine
 @findex fl_add_button()
 @example
-FL_OBJECT *fl_add_button(int type, FL_Coord x, FL_Coord y,
-                         FL_Coord w, FL_Coord h,
+FL_OBJECT *fl_add_button(int type, FL_COORD x, FL_COORD y,
+                         FL_COORD w, FL_COORD h,
                          const char *label);
 @end example
 @noindent
@@ -353,8 +353,8 @@ Sliders are useful in letting the user indicate a value between some
 fixed bounds. A slider is added to a form using the routine
 @findex fl_add_slider()
 @example
-FL_OBJECT *fl_add_slider(int type, FL_Coord x, FL_Coord y,
-                         FL_Coord w, FL_Coord h,
+FL_OBJECT *fl_add_slider(int type, FL_COORD x, FL_COORD y,
+                         FL_COORD w, FL_COORD h,
                          const char *label);
 @end example
 
@@ -401,8 +401,8 @@ to the slider itself, its current value is also shown.
 To add a valslider, use
 @findex fl_add_valslider()
 @example
-FL_OBJECT *fl_add_valslider(int type, FL_Coord x, FL_Coord y,
-                            FL_Coord w, FL_Coord h,
+FL_OBJECT *fl_add_valslider(int type, FL_COORD x, FL_COORD y,
+                            FL_COORD w, FL_COORD h,
                             const char *label);
 @end example
 
@@ -419,8 +419,8 @@ the Forms Library. An input field is a field that can be edited by the
 user using the keyboard. To add an input field to a form use
 @findex fl_add_input()
 @example
-FL_OBJECT *fl_add_input(int type, FL_Coord x, FL_Coord y,
-                        FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_input(int type, FL_COORD x, FL_COORD y,
+                        FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 The main type of input field available is @code{FL_NORMAL_INPUT}. The
@@ -1915,8 +1915,8 @@ directly using
 @findex fl_draw_symbol()
 @anchor{fl_draw_symbol()}
 @example
-int fl_draw_symbol(const char *symbolname, FL_Coord x, FL_Coord y,
-                   FL_Coord w, FL_Coord h, FL_Color col);
+int fl_draw_symbol(const char *symbolname, FL_COORD x, FL_COORD y,
+                   FL_COORD w, FL_COORD h, FL_Color col);
 @end example
 @noindent
 (the function returns @code{1} on success and @code{0} on failure
@@ -1941,7 +1941,7 @@ reserved and currently has no meaning. Best set it to @code{0}.
 
 The routine @code{drawit()} should have the form
 @example
-void drawit(FL_Coord x, FL_Coord y, FL_Coord w, FL_Coord h,
+void drawit(FL_COORD x, FL_COORD y, FL_COORD w, FL_COORD h,
             int angle, FL_COLOR col);
 @end example
 @noindent

@@ -75,7 +75,7 @@ main( int    argc,
 {
     FD_twheelform *fd_twheelform;
 
-    fl_initialize( &argc, argv, 0, 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     fd_twheelform = create_form_twheelform( );
 
     /* show the first form */

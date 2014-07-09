@@ -70,8 +70,8 @@ fli_check_key_focus( const char * s,
  ***************************************/
 
 Window
-fl_get_mouse( FL_Coord     * x,
-              FL_Coord     * y,
+fl_get_mouse( FL_COORD     * x,
+              FL_COORD     * y,
               unsigned int * keymask )
 {
     Window rjunk,
@@ -97,8 +97,8 @@ fl_get_mouse( FL_Coord     * x,
 
 Window
 fl_get_win_mouse( Window         win,
-                  FL_Coord     * x,
-                  FL_Coord     * y,
+                  FL_COORD     * x,
+                  FL_COORD     * y,
                   unsigned int * keymask )
 {
     Window rjunk,
@@ -122,8 +122,8 @@ fl_get_win_mouse( Window         win,
 
 Window
 fl_get_form_mouse( FL_FORM      * form,
-                   FL_Coord     * x,
-                   FL_Coord     * y,
+                   FL_COORD     * x,
+                   FL_COORD     * y,
                    unsigned int * keymask )
 {
     Window win = None;
@@ -145,8 +145,8 @@ fl_get_form_mouse( FL_FORM      * form,
  ***************************************/
 
 void
-fl_set_mouse( FL_Coord mx,
-              FL_Coord my )
+fl_set_mouse( FL_COORD mx,
+              FL_COORD my )
 {
     XWarpPointer( flx->display, None, fl_root, 0, 0, 0, 0, mx, my );
 }

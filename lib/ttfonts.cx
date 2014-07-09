@@ -76,10 +76,13 @@ fli_init_fonts( void )
 		
             fl_fonts[ font_count ].slant  = default_styles[ j ].slant;
             fl_fonts[ font_count ].weight = default_styles[ j ].weight;
-            fl_fonts[ font_count ].scale = 1.0;
+            fl_fonts[ font_count ].style  = NULL;
+            fl_fonts[ font_count ].scale  = 1.0;
 
             fl_fonts[ font_count ].sized_fonts = NULL;
-            fl_fonts[ font_count ].size_count = 0;
+            fl_fonts[ font_count ].size_count  = 0;
+
+            fl_fonts[ font_count ].is_x11_font = 0;
         }
 
     flx->textdraw = fl_state[ fl_vmode ].textdraw =
@@ -92,7 +95,6 @@ fli_init_fonts( void )
                                           fl_state[ fl_vmode ].xvinfo->visual,
                                           fl_state[ fl_vmode ].colormap );
 }
-
 
 
 /***************************************
@@ -185,52 +187,50 @@ fl_get_font_name( int index )
     if ( ! f )
         return NULL;
 
-    if ( f->slant == -1 || f->weight == -1 )
+    if ( f->is_x11_font )
     {
         fli_safe_free( name );
-        name = fl_strdup( f->name );
+        return fl_strdup( f->name );
     }
-    else
+
+    if ( f->style == NULL )
     {
-        name = fl_realloc( name, strlen( f->name ) + 25 );
+        name = fl_realloc( name, strlen( f->name ) + 31 );
         strcpy( name, f->name );
 
         switch ( f->slant )
         {
-            case XFT_SLANT_ROMAN :
-                strcat( name, ": Roman, " );
-                break;
-
             case XFT_SLANT_ITALIC :
-                strcat( name, ": Italc, " );
+                strcat( name, ":slant=Italc" );
                 break;
 
             case XFT_SLANT_OBLIQUE :
-                strcat( name, ": Oblique, " );
+                strcat( name, ":slant=Oblique" );
         }
 
         switch ( f->weight )
         {
             case XFT_WEIGHT_LIGHT :
-                strcat( name, "Light" );
-                break;
-
-            case XFT_WEIGHT_MEDIUM :
-                strcat( name, "Medium" );
+                strcat( name, ":weight=Light" );
                 break;
 
             case XFT_WEIGHT_DEMIBOLD :
-                strcat( name, "Demibold" );
+                strcat( name, ":weight=Demibold" );
                 break;
 
             case XFT_WEIGHT_BOLD :
-                strcat( name, "Bold" );
+                strcat( name, ":weight=Bold" );
                 break;
 
             case XFT_WEIGHT_BLACK :
-                strcat( name, "Black" );
+                strcat( name, ":weight=Black" );
                 break;
         }
+    }
+    else
+    {
+        name = fl_realloc( name, strlen( f->name ) + strlen( f->style ) + 8 );
+        sprintf( name, "%s:style=%s", f->name, f->style );
     }
 
 	return name;
@@ -276,6 +276,9 @@ fl_set_font_name( int          index,
 {
 	FL_FONT * f;
 	char * full_name;
+    FL_FONT_SLANT slant;
+    FL_FONT_WEIGHT weight;
+    char * style;
 
     /* Index can't be arbitrary, otherwise it might conflict with the
        "special" flags for shadow, engraved and embossed */
@@ -313,12 +316,11 @@ fl_set_font_name( int          index,
 			XftFontClose( fl_display, f->sized_fonts[ --f->size_count ].font );
 
 		fli_safe_free( f->sized_fonts );
+        fli_safe_free( f->style );
 		f->size_count = 0;
 		fli_safe_free( f->name );
 
 		f->name = fl_strdup( full_name );
-		f->slant = f->weight = -1;
-		f->scale = 1.0;
 	}
 	else
 	{
@@ -328,10 +330,8 @@ fl_set_font_name( int          index,
 
 		f->index       = index;
 		f->name        = fl_strdup( full_name );
-		f->slant       = f->weight = -1;
 		f->sized_fonts = NULL;
 		f->size_count  = 0;
-		f->scale       = 1.0;
 
         /* Sort the user defined fonts by index to allow faster retrieval
            by using bsearch() */
@@ -339,6 +339,12 @@ fl_set_font_name( int          index,
 		qsort( fl_fonts + NUM_DEFAULT_FONTS, font_count - NUM_DEFAULT_FONTS,
                sizeof *fl_fonts, fli_font_index_compare );
 	}
+
+    f->slant       = FL_SLANT_NONE;
+    f->weight      = FL_WEIGHT_NONE;
+    f->style       = NULL;
+    f->scale       = 1.0;
+    f->is_x11_font = 1;
 
 	return 0;
 }
@@ -374,7 +380,9 @@ fl_set_xft_font_name( int              index,
                       FL_FONT_SLANT    slant,
                       FL_FONT_WEIGHT   weight )
 {
-	FL_FONT *f;
+	FL_FONT * f;
+    char * family = name;
+    char * style = NULL;
 
     /* Index can't be arbitrary, otherwise it might conflict with the
        "special" flags for shadow, engraved or embossed */
@@ -391,33 +399,37 @@ fl_set_xft_font_name( int              index,
         return -1;
     }
 
-	if (    slant != FL_SLANT_ROMAN
-		 && slant != FL_SLANT_ITALIC
-		 && slant != FL_SLANT_OBLIQUE )
-	{
-        M_warn( "fl_set_xft_font_name", "Invalid slant for font" );
-        return -1;
-    }
-		
-	if (    weight != FL_WEIGHT_LIGHT
-		 && weight != FL_WEIGHT_MEDIUM
-		 && weight != FL_WEIGHT_DEMIBOLD
-		 && weight != FL_WEIGHT_BOLD
-		 && weight != FL_WEIGHT_BLACK )
-	{
-        M_warn( "fl_set_xft_font_name", "Invalid weight for font" );
-        return -1;
-    }
-
     if ( ! flx || ! flx->display )
-	{
-		M_warn( "fl_set_xft_font_name",
+    {
+        M_warn( "fl_set_xft_font_name",
                 "Can't load font before fl_initialize()" );
         return 1;
-	}
+    }
 
-	/* Now that we have tested the font as far as possible (actually opening
-       it doesn't make sense since it always succeeds) we can either replace
+    if (    slant != FL_SLANT_ROMAN
+		 && slant != FL_SLANT_ITALIC
+		 && slant != FL_SLANT_OBLIQUE )
+        slant = FL_SLANT_NONE;
+
+    if (    weight != FL_WEIGHT_LIGHT
+         && weight != FL_WEIGHT_MEDIUM
+         && weight != FL_WEIGHT_DEMIBOLD
+         && weight != FL_WEIGHT_BOLD
+         && weight != FL_WEIGHT_BLACK )
+        weight = FL_WEIGHT_NONE;
+
+    if ( strchr( name, ':' ) )
+    {
+        slant = FL_SLANT_NONE;
+        weight = FL_WEIGHT_NONE;
+    }
+
+    /* Open the font at the default size to be able to figure out what we
+       will really get */
+
+    fli_try_xft_font( &family, &slant, &weight, &style );
+
+	/* Now that we have all information about the font as we can either replace
        an existing font entry or create a new one. */
 
 	if ( ( f = fl_get_font_from_index( index ) ) )
@@ -426,13 +438,16 @@ fl_set_xft_font_name( int              index,
 			XftFontClose( fl_display, f->sized_fonts[ --f->size_count ].font );
 
 		fli_safe_free( f->sized_fonts );
+        fli_safe_free( f->style );
 		f->size_count = 0;
 		fli_safe_free( f->name );
 
-		f->name   = fl_strdup( name );
-		f->slant  = slant;
-		f->weight = weight;
-        f->scale  = 1.0;
+        f->name        = family;
+        f->slant       = slant;
+        f->weight      = weight;
+        f->style       = style;
+        f->scale       = 1.0;
+        f->is_x11_font = 0;
 	}
 	else
 	{
@@ -440,13 +455,17 @@ fl_set_xft_font_name( int              index,
 
         f = fl_fonts + font_count - 1;
 
-		f->index        = index;
-		f->name         = fl_strdup( name );
-		f->slant        = slant;
-		f->weight       = weight;
-		f->scale        = 1.0;
-		f->sized_fonts  = NULL;
-		f->size_count   = 0;
+		f->index       = index;
+		f->sized_fonts = NULL;
+        f->style       = style;
+		f->size_count  = 0;
+
+        f->name        = family;
+        f->slant       = slant;
+        f->weight      = weight;
+        f->style       = style;
+        f->scale       = 1.0;
+        f->is_x11_font = 0;
 
         /* Sort the user defined fonts by index to make them easier to find */
 
@@ -500,6 +519,7 @@ fl_unload_font( int index )
     /* Deallocate memory used for the unloaded fonts */
 
     fl_free( f->sized_fonts );
+    fl_free( f->style );
     fl_free( f->name );
 
     /* Get rid of the now unused entry in the array of fonts */
@@ -604,14 +624,6 @@ fl_get_font_struct( int style,
 		return NULL;
 	}
 
-	/* Size must be positive */
-
-    if ( size <= 0 )
-    {
-        M_info( "fl_get_font_struct", "Invalid size argument" );
-		return NULL;
-	}
- 
 	/* If font is already loaded return it directly */
 
     if (    f->size_count
@@ -624,21 +636,32 @@ fl_get_font_struct( int style,
 	f->sized_fonts = realloc( f->sized_fonts,
 							  ( f->size_count + 1 ) * sizeof *f->sized_fonts );
 
-	/* This is a normal Xft font if its slant (and weight) are non-negative,
+	/* This is a normal Xft font slant and weight are set or only the style,
 	   so load it with XftFontOpen(). Otherwise it's an X11 font and we need
 	   to insert the size into the name and load it using XftFontOpenXlfd()
 	   (which can fail!) */
 
-	if ( f->slant != -1 && f->weight != -1 )
-		xf = f->sized_fonts[ f->size_count ].font =
-			XftFontOpen( fl_display, fl_screen,
-						 XFT_FAMILY, XftTypeString, f->name,
-						 XFT_SIZE,   XftTypeDouble,
-						 global_font_scale * f->scale * size,
-						 XFT_SLANT,  XftTypeInteger, f->slant,
-						 XFT_WEIGHT, XftTypeInteger, f->weight,
-						 NULL );
-	else
+	if ( ! f->is_x11_font )
+    {
+        if ( f->style )
+            xf = f->sized_fonts[ f->size_count ].font =
+                XftFontOpen( fl_display, fl_screen,
+                             XFT_FAMILY, XftTypeString, f->name,
+                             XFT_SIZE,   XftTypeDouble,
+                             global_font_scale * f->scale * size,
+                             XFT_STYLE, XftTypeString, f->style,
+                             NULL );
+        else
+            xf = f->sized_fonts[ f->size_count ].font =
+                XftFontOpen( fl_display, fl_screen,
+                             XFT_FAMILY, XftTypeString, f->name,
+                             XFT_SIZE,   XftTypeDouble,
+                             global_font_scale * f->scale * size,
+                             XFT_SLANT,  XftTypeInteger, f->slant,
+                             XFT_WEIGHT, XftTypeInteger, f->weight,
+                             NULL );
+    }
+    else
 	{
 		char * name = fli_get_fname( f, size );
 

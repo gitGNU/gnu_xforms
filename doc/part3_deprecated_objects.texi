@@ -47,8 +47,8 @@ To add a choice object to a form use the routine
 @findex fl_add_choice()
 @anchor{fl_add_choice()}
 @example
-FL_OBJECT *fl_add_choice(int type, FL_Coord x, FL_Coord y,
-                         FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_choice(int type, FL_COORD x, FL_COORD y,
+                         FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 It shows a box on the screen with the label to the left of it and the
@@ -367,8 +367,8 @@ To add a menu to a form use the routine
 @findex fl_add_menu()
 @anchor{fl_add_menu()}
 @example
-FL_OBJECT *fl_add_menu(int type, FL_Coord x, FL_Coord y,
-                       FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_menu(int type, FL_COORD x, FL_COORD y,
+                       FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 It shows a box on the screen with the label centered in it.

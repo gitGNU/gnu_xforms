@@ -403,7 +403,7 @@ ff_match_float( float * p )
  ***************************************/
 
 static int
-ff_match_coord( FL_Coord * p,
+ff_match_coord( FL_COORD * p,
                 int        need_positive )
 {
     int val;
@@ -950,8 +950,8 @@ ff_match_type( char ** p )
  *  b) %l   match long  (requires long *)
  *  b) %d   match int (requires int *)
  *  c) %u   match unsigned int (requires int *)
- *  d) %D   match FL_Coord (requires FL_Coord *)
- *  e) %U   match FL_Coord with positive value (requires FL_Coord *)
+ *  d) %D   match FL_COORD (requires FL_COORD *)
+ *  e) %U   match FL_COORD with positive value (requires FL_COORD *)
  *  f) %s   match string (trimmed of spaces at start and end) (requires char **)
  *  g) %S   match string (with all spaces) (requires char **)
  *  h) %h   match string, stopping at the first space (requires char **)
@@ -1031,9 +1031,9 @@ ff_read( const char * format,
                     r = ff_match_uint( va_arg( ap, unsigned int * ) );
                     break;
 
-                case 'D' :                    /* FL_Coord ('U' for positive) */
+                case 'D' :                    /* FL_COORD ('U' for positive) */
                 case 'U' :
-                    r = ff_match_coord( va_arg( ap, FL_Coord * ), *fp == 'U' );
+                    r = ff_match_coord( va_arg( ap, FL_COORD * ), *fp == 'U' );
                     break;
 
                 case 's' :                    /* trimmed string */

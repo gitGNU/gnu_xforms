@@ -52,8 +52,8 @@ To add a timer to a form you use the routine
 @findex fl_add_timer()
 @anchor{fl_add_timer()}
 @example
-FL_OBJECT *fl_add_timer(int type, FL_Coord x, FL_Coord y,
-                        FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_timer(int type, FL_COORD x, FL_COORD y,
+                        FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 The meaning of the parameters is as usual.
@@ -216,8 +216,8 @@ To add an xyplot object to a form use the routine
 @findex fl_add_xyplot()
 @anchor{fl_add_xyplot()}
 @example
-FL_OBJECT *fl_add_xyplot(int type, FL_Coord x, FL_Coord y,
-                         FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_xyplot(int type, FL_COORD x, FL_COORD y,
+                         FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 It shows an empty box on the screen with the label per default below it.
@@ -1080,8 +1080,8 @@ Adding an object To add a canvas to a form you use the routine
 @findex fl_add_canvas()
 @anchor{fl_add_canvas()}
 @example
-FL_OBJECT *fl_add_canvas(int type, FL_Coord x, FL_Coord y,
-                         FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_canvas(int type, FL_COORD x, FL_COORD y,
+                         FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 The meaning of the parameters is as usual. The label is not drawn but
@@ -1356,8 +1356,8 @@ To add an OpenGL canvas to a form, use the following routine
 @findex fl_add_glcanvas()
 @anchor{fl_add_glcanvas()}
 @example
-FL_OBJECT *fl_add_glcanvas(int type, FL_Coord x, FL_Coord y,
-                           FL_Coord w, FL_Coord h, const char *label);
+FL_OBJECT *fl_add_glcanvas(int type, FL_COORD x, FL_COORD y,
+                           FL_COORD w, FL_COORD h, const char *label);
 @end example
 @noindent
 where @code{type} is the same as for a normal canvas. A "glcanvas"

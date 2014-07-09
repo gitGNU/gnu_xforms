@@ -72,10 +72,10 @@ utf8_length( const char * str )
  * Converts an UTF-8 character in a string to a number
  ***************************************/
 
-FL_Char
+FL_VAL
 utf8_to_num( const char * str )
 {
-    FL_Char ret;
+    FL_VAL ret;
     const unsigned char * p = ( const unsigned char * ) str;
 
     if ( *p < 0x7F )
@@ -119,8 +119,8 @@ utf8_to_num( const char * str )
  ***************************************/
 
 int
-utf8_insert( FL_Char   key,
-             char    * str )
+utf8_insert( FL_VAL   key,
+             char   * str )
 {
     if ( key <= 0x7F )
     {
@@ -159,7 +159,7 @@ utf8_insert( FL_Char   key,
  ***************************************/
 
 int
-utf8_get_char_bytes( FL_Char c )
+utf8_get_char_bytes( FL_VAL c )
 {
     int len = 1;
 

@@ -30,18 +30,18 @@ typedef enum {
 
 FL_EXPORT FL_OBJECT *fl_create_nmenu(
         int,
-        FL_Coord,
-        FL_Coord,
-        FL_Coord,
-        FL_Coord,
+        FL_COORD,
+        FL_COORD,
+        FL_COORD,
+        FL_COORD,
         const char * );
 
 FL_EXPORT FL_OBJECT *fl_add_nmenu(
         int,
-        FL_Coord,
-        FL_Coord,
-        FL_Coord,
-        FL_Coord,
+        FL_COORD,
+        FL_COORD,
+        FL_COORD,
+        FL_COORD,
         const char *
         );
 

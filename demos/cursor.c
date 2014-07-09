@@ -118,7 +118,7 @@ main( int    argc,
     FD_cursor *fd_cursor;
 
     fl_set_border_width( -2 );
-    fl_initialize( &argc, argv, "FormDemo", 0, 0 );
+    fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     fd_cursor = create_form_cursor( );
 
     /* fill-in form initialization code */

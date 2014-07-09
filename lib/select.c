@@ -28,12 +28,12 @@
 static void timeout_cb( int, void * );
 static int handle_select( FL_OBJECT *,
                           int,
-                          FL_Coord,
-                          FL_Coord,
-                          FL_Char,
+                          FL_COORD,
+                          FL_COORD,
+                          FL_VAL,
                           void * );
 static int handle_push( FL_OBJECT *,
-                        FL_Char );
+                        FL_VAL );
 static FL_POPUP_RETURN * find_first_item( FL_OBJECT * );
 static FL_POPUP_RETURN * find_last_item( FL_OBJECT * );
 static FL_POPUP_RETURN * find_next_item( FL_OBJECT * );
@@ -53,10 +53,10 @@ static void draw_droplist( FL_OBJECT * );
 
 FL_OBJECT *
 fl_create_select( int          type,
-                  FL_Coord     x,
-                  FL_Coord     y,
-                  FL_Coord     w,
-                  FL_Coord     h,
+                  FL_COORD     x,
+                  FL_COORD     y,
+                  FL_COORD     w,
+                  FL_COORD     h,
                   const char * label )
 {
     FL_OBJECT *obj;
@@ -95,10 +95,10 @@ fl_create_select( int          type,
 
 FL_OBJECT *
 fl_add_select( int          type,
-               FL_Coord     x,
-               FL_Coord     y,
-               FL_Coord     w,
-               FL_Coord     h,
+               FL_COORD     x,
+               FL_COORD     y,
+               FL_COORD     w,
+               FL_COORD     h,
                const char * label )
 {
     FL_OBJECT *obj;
@@ -914,9 +914,9 @@ timeout_cb( int    val  FL_UNUSED_ARG,
 static int
 handle_select( FL_OBJECT * obj,
                int         event,
-               FL_Coord    mx   FL_UNUSED_ARG,
-               FL_Coord    my   FL_UNUSED_ARG,
-               FL_Char     key,
+               FL_COORD    mx   FL_UNUSED_ARG,
+               FL_COORD    my   FL_UNUSED_ARG,
+               FL_VAL      key,
                void      * ev   FL_UNUSED_ARG )
 {
     FLI_SELECT_SPEC *sp = obj->spec;
@@ -1026,7 +1026,7 @@ handle_select( FL_OBJECT * obj,
 
 static int
 handle_push( FL_OBJECT * obj,
-             FL_Char     key )
+             FL_VAL      key )
 {
     FLI_SELECT_SPEC *sp = obj->spec;
     FL_POPUP_RETURN *ret = NULL;

@@ -88,10 +88,10 @@ static void copy_attributes( int *,
 
 FL_OBJECT *
 fl_add_glcanvas( int          type,
-                 FL_Coord     x,
-                 FL_Coord     y,
-                 FL_Coord     w,
-                 FL_Coord     h,
+                 FL_COORD     x,
+                 FL_COORD     y,
+                 FL_COORD     w,
+                 FL_COORD     h,
                  const char * label )
 {
     FL_OBJECT * ob = fl_create_glcanvas( type, x, y, w, h, label );
@@ -211,10 +211,10 @@ fl_activate_glcanvas( FL_OBJECT * ob )
 
 FL_OBJECT *
 fl_create_glcanvas( int          type,
-                    FL_Coord     x,
-                    FL_Coord     y,
-                    FL_Coord     w,
-                    FL_Coord     h,
+                    FL_COORD     x,
+                    FL_COORD     y,
+                    FL_COORD     w,
+                    FL_COORD     h,
                     const char * label )
 {
     FL_OBJECT *ob = fl_create_canvas( type, x, y, w, h, label );

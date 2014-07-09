@@ -110,7 +110,7 @@ int
 main( int    argc,
       char * argv[ ] )
 {
-    fl_initialize( &argc, argv, "ColorEditor", 0, 0 );
+    fl_initialize( &argc, argv, "ColorEditor", NULL, 0 );
     makeform( );
 
     fl_show_form( form, FL_PLACE_MOUSE, FL_TRANSIENT, "Color Editor" );
