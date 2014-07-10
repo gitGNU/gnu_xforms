@@ -938,7 +938,7 @@ handle_select( FL_OBJECT * obj,
                 draw_select( obj );
             else
                 draw_droplist( obj );
-            /* fall through */
+            break;
 
         case FL_DRAWLABEL :
             fl_draw_text_beside( obj->align, obj->x, obj->y,

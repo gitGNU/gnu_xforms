@@ -71,7 +71,7 @@ handle_scrollbar( FL_OBJECT * obj,
             if ( IsThin( obj->type ) )
                 fl_draw_box( obj->boxtype, obj->x, obj->y, obj->w, obj->h,
                              obj->col1, obj->bw );
-            /* fall through */
+            break;
 
         case FL_DRAWLABEL :
             fl_draw_object_label_outside( obj );

@@ -406,7 +406,7 @@ handle_pixmap( FL_OBJECT * obj,
     {
         case FL_DRAW:
             draw_pixmap( obj );
-            /* fall through */
+            break;
 
         case FL_DRAWLABEL:
             fl_draw_object_label( obj );

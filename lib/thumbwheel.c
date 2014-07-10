@@ -76,9 +76,7 @@ draw( FL_OBJECT * ob )
     FL_COLOR c1,
              c2;
 
-    if ( sp->draw_type == COMPLETE_DRAW )
-        fl_draw_box( ob->boxtype, ob->x, ob->y, ob->w, ob->h, ob->col1,
-                     ob->bw );
+    fl_draw_box( ob->boxtype, ob->x, ob->y, ob->w, ob->h, ob->col1, ob->bw );
 
     x = ob->x + absbw;
     y = ob->y + absbw;
@@ -214,9 +212,6 @@ draw( FL_OBJECT * ob )
             fl_line( x0 - w2 + 11, y + 1, x0 + w2 - 11, y + 1, FL_TOP_BCOL );
         }
     }
-
-    if ( sp->draw_type == COMPLETE_DRAW )
-        fl_draw_object_label_outside( ob );
 }
 
 
@@ -246,12 +241,10 @@ handle_thumbwheel( FL_OBJECT * ob,
 
         case FL_DRAW:
             draw( ob );
-            sp->draw_type = COMPLETE_DRAW;
             break;
 
         case FL_DRAWLABEL:
-            if ( sp->draw_type == COMPLETE_DRAW )
-                fl_draw_object_label_outside( ob );
+            fl_draw_object_label_outside( ob );
             break;
 
         case FL_PUSH:

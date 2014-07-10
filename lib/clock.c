@@ -243,7 +243,7 @@ handle_clock( FL_OBJECT * ob,
             else
                 draw_clock( ob->type, ob->x, ob->y, ob->w, ob->h,
                             ob->col1, ob->col2 );
-            /* fall through */
+            break;
 
         case FL_DRAWLABEL :
             if ( ! updating )

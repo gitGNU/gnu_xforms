@@ -169,7 +169,7 @@ handle_bitmap( FL_OBJECT * obj,
     {
         case FL_DRAW :
             draw_bitmap( obj );
-            /* fall through */
+            break;
 
         case FL_DRAWLABEL :
             fl_draw_object_label( obj );

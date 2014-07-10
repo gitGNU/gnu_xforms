@@ -276,9 +276,6 @@ fl_set_font_name( int          index,
 {
 	FL_FONT * f;
 	char * full_name;
-    FL_FONT_SLANT slant;
-    FL_FONT_WEIGHT weight;
-    char * style;
 
     /* Index can't be arbitrary, otherwise it might conflict with the
        "special" flags for shadow, engraved and embossed */
@@ -320,7 +317,13 @@ fl_set_font_name( int          index,
 		f->size_count = 0;
 		fli_safe_free( f->name );
 
-		f->name = fl_strdup( full_name );
+		f->name        = fl_strdup( full_name );
+        f->slant       = FL_SLANT_NONE;
+        f->weight      = FL_WEIGHT_NONE;
+        f->style       = NULL;
+        f->scale       = 1.0;
+        f->is_x11_font = 1;
+
 	}
 	else
 	{
@@ -330,6 +333,11 @@ fl_set_font_name( int          index,
 
 		f->index       = index;
 		f->name        = fl_strdup( full_name );
+        f->slant       = FL_SLANT_NONE;
+        f->weight      = FL_WEIGHT_NONE;
+        f->style       = NULL;
+        f->scale       = 1.0;
+        f->is_x11_font = 1;
 		f->sized_fonts = NULL;
 		f->size_count  = 0;
 
@@ -339,12 +347,6 @@ fl_set_font_name( int          index,
 		qsort( fl_fonts + NUM_DEFAULT_FONTS, font_count - NUM_DEFAULT_FONTS,
                sizeof *fl_fonts, fli_font_index_compare );
 	}
-
-    f->slant       = FL_SLANT_NONE;
-    f->weight      = FL_WEIGHT_NONE;
-    f->style       = NULL;
-    f->scale       = 1.0;
-    f->is_x11_font = 1;
 
 	return 0;
 }
@@ -381,7 +383,7 @@ fl_set_xft_font_name( int              index,
                       FL_FONT_WEIGHT   weight )
 {
 	FL_FONT * f;
-    char * family = name;
+    char * family = ( char * ) name;
     char * style = NULL;
 
     /* Index can't be arbitrary, otherwise it might conflict with the

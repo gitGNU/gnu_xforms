@@ -1465,7 +1465,7 @@ handle_input( FL_OBJECT * obj,
             copy_attributes( sp->input, sp->dummy );
             if ( sp->input->type != FL_HIDDEN_INPUT )
                 draw_input( sp->input );
-            /* fall through */
+            break;
 
         case FL_DRAWLABEL:
             if ( sp->input->type != FL_MULTILINE_INPUT )

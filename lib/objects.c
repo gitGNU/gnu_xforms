@@ -1687,6 +1687,8 @@ fl_hide_object( FL_OBJECT * obj )
         fli_hide_and_get_region( obj, &reg );
     }
 
+    fli_recalc_intersections( obj->form );
+
     /* No redraw is needed if the object has no form or the form isn't shown
        or is frozen. */
 
@@ -2272,7 +2274,7 @@ objects_intersect( const FL_OBJECT * obj1,
                    const FL_OBJECT * obj2 )
 {
     return    obj1->bbox.x + obj1->bbox.width  > obj2->bbox.x
-           && obj2->bbox.x + obj2->bbox.width  > obj2->bbox.x
+           && obj2->bbox.x + obj2->bbox.width  > obj1->bbox.x
            && obj1->bbox.y + obj1->bbox.height > obj2->bbox.y
            && obj2->bbox.y + obj2->bbox.height > obj1->bbox.y;
 }
@@ -2369,13 +2371,12 @@ redraw( FL_FORM * form,
 
 
 /***************************************
- * Exported function for drawing a form
+ * Exported function for redrawing a form
  ***************************************/
 
 void
 fl_redraw_form( FL_FORM * form )
 {
-    fli_recalc_intersections( form );
     redraw( form, 1 );
 }
 
@@ -2416,14 +2417,10 @@ fl_unfreeze_form( FL_FORM * form )
         return;
     }
 
-    /* If the form becomes unfrozen at last and is visible recalculate
-       overlaps between the objects and then redraw all objects that have
-       been marked for a redraw since it became frozen or, if some objects
-       became hidden during that time, all objects. */
+    /* If the form becomes unfrozen redraw all objects marked for a redraw */
 
     if ( --form->frozen == 0 && form->visible == FL_VISIBLE )
     {
-        fli_recalc_intersections( form );
         redraw( form, form->in_redraw & HIDE_WHILE_FROZEN );
         form->in_redraw &= ~ HIDE_WHILE_FROZEN;
     }
@@ -3090,6 +3087,9 @@ fl_draw_object_label( FL_OBJECT * obj )
 void
 fl_draw_object_label_outside( FL_OBJECT * obj )
 {
+    if ( ! obj->label || ! *obj->label )
+        return;
+
 #if FL_ENABLE_XFT
     fli_bk_textcolor( fl_get_form_background_color( obj->form ) );
 #endif
@@ -3516,8 +3516,8 @@ fli_calc_object_bbox( FL_OBJECT * obj )
 
     obj->bbox.x      = obj->x - extra;
     obj->bbox.y      = obj->y - extra;
-    obj->bbox.width  = obj->w + 2 * extra + 1;
-    obj->bbox.height = obj->h + 2 * extra + 1;
+    obj->bbox.width  = obj->w + 2 * extra;
+    obj->bbox.height = obj->h + 2 * extra;
 
     if ( obj->label && *obj->label && OL( obj ) )
     {

@@ -192,7 +192,7 @@ fli_draw_string( int           align,
                  int           img,
                  int           topline,
                  int           endline,
-#if ! FL_ENABLE_XFT
+#if FL_ENABLE_XFT
                  FL_COLOR      bkcol  FL_UNUSED_ARG )
 #else
                  FL_COLOR      bkcol )
@@ -1367,6 +1367,8 @@ draw_string( Display        * display,
     }
 
     fli_textcolor( fg_color );
+
+//    fprintf( stderr, "%*s\n", ( int ) len, str );
 
     XftDrawStringUtf8( flx->textdraw, &flx->textcolor, font, x, y, str, len );
 }

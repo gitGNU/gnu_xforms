@@ -48,7 +48,7 @@ handle_box( FL_OBJECT * obj,
         case FL_DRAW:
             fl_draw_box( obj->boxtype, obj->x, obj->y, obj->w, obj->h,
                          obj->col1, obj->bw );
-            /* fall through */
+            break;
 
         case FL_DRAWLABEL:
             if ( obj->label && *obj->label )

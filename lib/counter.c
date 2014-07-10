@@ -46,13 +46,13 @@
    finally OB4 the field with the counters value. */
 
 enum {
-    NONE,
-    OB0 =  1,
-    OB1 =  2,
-    OB2 =  4,
-    OB3 =  8,
-    OB4 = 16,
-    ALL = 31
+    NONE = 0,
+    OB0  =  1,
+    OB1  =  2,
+    OB2  =  4,
+    OB3  =  8,
+    OB4  = 16,
+    ALL  = 31
 };
 
 
@@ -156,9 +156,6 @@ draw_counter( FL_OBJECT * ob )
         fl_draw_text( FL_ALIGN_CENTER, sp->xx[ 3 ], ob->y, sp->ww[ 3 ], ob->h,
                       ob->col2, 0, 0, "@#>>" );
     }
-
-    if ( sp->draw_type == ALL )
-        fl_draw_object_label_outside( ob );
 
     sp->draw_type = ALL;
 }
@@ -367,6 +364,7 @@ handle_mouse( FL_OBJECT * ob,
                 sp->timeout_id = -1;
             }
 
+            sp->draw_type = sp->mouseobj;
             sp->mouseobj = NONE;
             fl_redraw_object( ob );
             ret |= FL_RETURN_END;
@@ -459,7 +457,8 @@ handle_counter( FL_OBJECT * ob,
             ob->align = fl_to_outside_lalign( ob->align );
             break;
 
-        case FL_DRAW:            draw_counter( ob );
+        case FL_DRAW:
+            draw_counter( ob );
             break;
 
         case FL_DRAWLABEL:

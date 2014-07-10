@@ -53,8 +53,7 @@ handle_lframe( FL_OBJECT * ob,
         align,
         bw = FL_abs( ob->bw ),
         dy;
-    int margin,
-        len;
+    int margin;
 
     switch ( event )
     {
@@ -73,14 +72,14 @@ handle_lframe( FL_OBJECT * ob,
         case FL_DRAW :
             fl_draw_frame( ob->type, ob->x, ob->y, ob->w, ob->h,
                            ob->col1, ob->bw );
-            /* fall through */
+            break;
 
         case FL_DRAWLABEL :
-            if ( ! ( len = strlen( ob->label ) ) )
-                return 0;
+            if ( ! *ob->label )
+                break;
 
             fl_get_string_dimension( ob->lstyle, ob->lsize,
-                                     ob->label, len, &sw, &sh );
+                                     ob->label, strlen( ob->label ), &sw, &sh );
 
             align = fl_to_outside_lalign( ob->align );
 

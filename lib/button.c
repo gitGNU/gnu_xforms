@@ -288,9 +288,6 @@ handle_button( FL_OBJECT * obj,
             }
             break;
 
-        case FL_DRAWLABEL :
-            break;          /* TODO. Missing labels */
-
         case FL_LEAVE:
             /* FL_MENU_BUTTON objects never get a FL_RELEASE event,
                so we have to "fake" one */

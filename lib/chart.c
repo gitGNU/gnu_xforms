@@ -568,7 +568,7 @@ handle_chart( FL_OBJECT * ob,
     {
         case FL_DRAW:
             draw_chart( ob );
-            /* fall through */
+            break;
 
         case FL_DRAWLABEL:
             fl_draw_object_label( ob );

@@ -132,12 +132,14 @@ handle_timer( FL_OBJECT * obj,
 
         case FL_DRAW:
             draw_timer( obj );
-            /* fall through */
+            break;
 
         case FL_DRAWLABEL:
-            if (    obj->type == FL_HIDDEN_TIMER
+            if (    ! * obj->label
+                 || obj->type == FL_HIDDEN_TIMER
                  || ( obj->type == FL_VALUE_TIMER && update_only ) )
                 break;
+
             if ( fl_is_outside_lalign( obj->align ) )
                 fl_draw_text_beside( obj->align, obj->x, obj->y, obj->w, obj->h,
                                      obj->lcol, obj->lstyle, obj->lsize,

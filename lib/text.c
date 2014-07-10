@@ -55,7 +55,7 @@ handle_text( FL_OBJECT * ob,
         case FL_DRAW:
             fl_draw_box( ob->boxtype, ob->x, ob->y, ob->w, ob->h, ob->col1,
                          ob->bw );
-            /* fall through */
+            break;
 
         case FL_DRAWLABEL:
             fl_set_text_clipping( ob->x + FL_abs( ob->bw ), ob->y + 2,

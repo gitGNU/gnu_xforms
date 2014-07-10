@@ -138,8 +138,7 @@ handle_spinner( FL_OBJECT * obj,
                 set_geom( obj );
                 sp->attrib = 0;
             }
-
-            /* fall through */
+            break;
 
         case FL_DRAWLABEL :
             fl_draw_object_label_outside( obj );

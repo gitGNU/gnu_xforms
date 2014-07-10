@@ -1367,6 +1367,7 @@ fl_show_form_window( FL_FORM * form )
     fl_winshow( form->window );
     form->visible = FL_VISIBLE;
     reshape_form( form );
+    fli_recalc_intersections( form );
     fl_redraw_form( form );
 
     /* TODO: somehow formbrowser objects get drawn incorrectly the first
@@ -2078,7 +2079,6 @@ simple_form_rescale( FL_FORM * form,
             fli_scale_object( obj, scale, scale );
 
     fli_recalc_intersections( form );
-
     fl_redraw_form( form );
 }
 

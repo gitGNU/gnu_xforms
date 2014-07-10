@@ -266,7 +266,7 @@ handle_browser( FL_OBJECT * obj,
             }
 
             draw_dead_area( obj );
-            /* fall through */
+            break;
 
         case FL_DRAWLABEL:
             fl_draw_object_label( obj );
