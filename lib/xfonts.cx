@@ -126,6 +126,7 @@ fli_init_fonts( void )
         {
             defaultfset = XCreateFontSet( flx->display, *p, &missing_list,
                                           &missing_count, &def_string );
+            XFreeStringList( missing_list );
             if ( ! defaultfset )
             {
                 XFreeFont( flx->display, defaultfs );
@@ -360,7 +361,7 @@ try_get_font_struct( int numb,
         if ( size == abs( flf->size[ i ] ) )
             fs = flf->fs[ i ];
 
-    /* Return it if font has already been loaded (i.e. is in the cache) */
+    /* Return it if font is in the cache */
 
     if ( fs )
         return fs;
@@ -388,6 +389,7 @@ try_get_font_struct( int numb,
         fset = XCreateFontSet( flx->display, fli_curfnt, &missing_list,
                                &missing_count, &def_string );
 
+        XFreeStringList( missing_list );
         if ( ! fset )
         {
             XFreeFont( flx->display, fs );
@@ -485,8 +487,7 @@ fl_get_font_set( int style,
     FL_FONT *flf = fl_fonts;
     XFontSet fset;
 
-    if ( special_style( style ) )
-        style %= FL_SHADOW_STYLE;
+    style %= FL_SHADOW_STYLE;
 
     /* Avoid trying to use negative or zero font size */
 
@@ -505,9 +506,9 @@ fl_get_font_set( int style,
 
     for ( fset = NULL, i = 0; ! fset && i < flf->nsize; i++ )
         if ( size == abs( flf->size[ i ] ) )
-            fset = flf->font_set[ i ];
+            return flf->font_set[ i ];
 
-    return fset;
+    return NULL;
 }
 #endif
 
@@ -864,9 +865,6 @@ get_font_set_from_struct( const XFontStruct * fs )
  * Some compatibility stuff, i.e. functions that were never documented
  * and were removed from V0.89, but apparently this broke some applications
  * that were using them. Put back in 10/22/00.
- ***************************************/
-
-/***************************************
  ***************************************/
 
 GC

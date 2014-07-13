@@ -1105,8 +1105,6 @@ void fli_textcolor( FL_COLOR col );
 
 void fli_bk_textcolor( FL_COLOR col );
 
-char * fli_fix_dirname( char * dir );
-
 Cursor fli_get_cursor_byname( int name );
 
 void fli_hide_canvas( FL_OBJECT * ob );
@@ -1117,8 +1115,6 @@ int fli_vclass_val( const char * v );
 
 void fli_set_ul_property( int prop,
                           int thickness );
-
-int fli_is_valid_dir( const char * name );
 
 #if FL_ENABLE_XFT
 int fli_font_index_compare( const void * arg1,

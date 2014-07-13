@@ -902,6 +902,9 @@ fl_set_tabstop( const char * s )
 int
 fli_get_tabpixels( XftFont * f )
 {
+    static int width = -1;
+    static XftFont *prev_f;
+
 	if ( ! f )
 	{
 		M_warn( "fli_get_tabpixels", "NULL font argument" );
@@ -911,7 +914,13 @@ fli_get_tabpixels( XftFont * f )
     if ( ! tabstop )
         fl_set_tabstop( "aaaaaaaa" );
 
-    return fli_get_string_width( f, tabstop, strlen( tabstop ) );
+    if ( f != prev_f || width == -1 )
+    {
+        prev_f = f;
+        width = fli_get_string_width( f, tabstop, strlen( tabstop ) );
+    }
+
+    return width;
 }
 
 

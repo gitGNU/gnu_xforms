@@ -637,7 +637,7 @@ fl_get_dirlist( const char * dir,
  **********************************************************************/
 
 int
-fli_is_valid_dir( const char *name )
+fl_is_valid_dir( const char *name )
 {
     struct stat stbuf;
 
@@ -666,7 +666,7 @@ static void add_one( char *,
                      char * );
 
 char *
-fli_fix_dirname( char * dir )
+fl_fix_dirname( char * dir )
 {
     static char ldir[ FL_PATH_MAX ],
                 one[ FL_PATH_MAX ];
@@ -1051,8 +1051,6 @@ fli_getcwd( char * buf,
 #else
     return getcwd( buf, len );
 #endif
-
-
 }
 
 

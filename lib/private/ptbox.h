@@ -37,8 +37,7 @@ typedef struct {
     int            align;            /* alignment of text */
     int            is_underlined;    /* whether to draw underlined */
     int            is_separator;     /* is this a separator line? */
-    int            is_special;       /* does it need special GC? */
-    GC             specialGC;        /* GC for if not default font/color */
+    int            is_special;
     FL_COLOR       special_color;
     int            incomp_esc;       /* text has incomplete escape sequence */
 } TBOX_LINE;
@@ -63,9 +62,7 @@ typedef struct {
     int               def_style;     /* default font style */
     int               def_align;     /* default alignment */
     int               def_height;    /* height of line with default font size */
-    GC                defaultGC;     /* text drawing GC */
     FL_COLOR          default_color; /* text drawing GC */
-    GC                backgroundGC;  /* background GC */
     GC                selectGC;      /* background for selection GC */
     GC                nonselectGC;   /* for text of non-selectable lines */
     FL_COLOR          nonselect_color;

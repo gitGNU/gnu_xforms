@@ -1471,7 +1471,6 @@ FL_EXPORT void fl_draw_text_beside( int          align,
 									int          size,
 									const char * str );
 
-#define fl_drw_text_cursor fl_draw_text_cursor
 FL_EXPORT void fl_draw_text_cursor( int          align,
 									FL_COORD     x,
 									FL_COORD     y,
@@ -1483,8 +1482,8 @@ FL_EXPORT void fl_draw_text_cursor( int          align,
 									const char * str,
 									FL_COLOR     cc,
 									int          pos );
+#define fl_drw_text_cursor fl_draw_text_cursor
 
-#define fl_draw_box fl_draw_box
 FL_EXPORT void fl_draw_box( int      style,
 							FL_COORD x,
 							FL_COORD y,
@@ -1492,6 +1491,7 @@ FL_EXPORT void fl_draw_box( int      style,
 							FL_COORD h,
 							FL_COLOR c,
 							int      bw_in );
+#define fl_drw_box fl_draw_box
 
 typedef void ( * FL_DRAW_PTR )( FL_COORD,
 								FL_COORD,

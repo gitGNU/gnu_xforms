@@ -96,10 +96,7 @@ fli_create_tbox( int          type,
     sp->def_style     = FL_NORMAL_STYLE;
     sp->def_align     = FL_ALIGN_LEFT;
     sp->def_height    = 0;
-    sp->defaultGC     = None;
-    sp->backgroundGC  = None;
     sp->selectGC      = None;
-    sp->nonselectGC   = None;
     sp->bw_selectGC   = None;
     sp->specialkey    = '@';
     sp->select_line   = -1;
@@ -152,14 +149,6 @@ fli_tbox_delete_line( FL_OBJECT * obj,
         sp->lines[ i ]->y -= sp->lines[ line ]->h;
 
     sp->max_height -= sp->lines[ line ]->h;
-
-    /* Get rid of special GC for the line */
-
-    if ( sp->lines[ line ]->specialGC )
-    {
-        XFreeGC( flx->display, sp->lines[ line ]->specialGC );
-        sp->lines[ line ]->specialGC = None;
-    }
 
     /* Deallocate memory for the text of the line to delete */
 
@@ -314,7 +303,6 @@ fli_tbox_insert_line( FL_OBJECT  * obj,
     tl->align         = sp->def_align;
     tl->color         = obj->lcol;
     tl->is_special    = 0;
-    tl->specialGC     = None;
     tl->incomp_esc    = 0;
 
     /* Check for flags at the start of the line. When we're done 'p' will
@@ -500,17 +488,16 @@ fli_tbox_insert_line( FL_OBJECT  * obj,
     {
         sp->max_width = tl->w;
         for ( i = 0; i < sp->num_lines; i++ )
-            if ( fl_is_center_lalign( sp->lines[ i ]->align ) )
+            if ( sp->lines[ i ]->align == FL_ALIGN_CENTER )
                 sp->lines[ i ]->x = ( sp->max_width - sp->lines[ i ]->w ) / 2;
-            else if ( fl_to_outside_lalign( sp->lines[ i ]->align ) ==
-                                                             FL_ALIGN_RIGHT )
+            else if ( sp->lines[ i ]->align == FL_ALIGN_RIGHT )
                 sp->lines[ i ]->x = sp->max_width - sp->lines[ i ]->w;
     }
     else
     {
-        if ( fl_is_center_lalign( tl->align ) )
+        if ( tl->align == FL_ALIGN_CENTER )
             tl->x = ( sp->max_width - tl->w ) / 2;
-        else if ( fl_to_outside_lalign( tl->align ) == FL_ALIGN_RIGHT )
+        else if ( tl->align == FL_ALIGN_RIGHT )
             tl->x = sp->max_width - tl->w;
     }
 
@@ -531,8 +518,7 @@ fli_tbox_insert_line( FL_OBJECT  * obj,
     sp->max_height += tl->h;
 
     /* Set flag if the line isn't to be drawn in default style, size and
-       color. We don't create a GC yet since this might be called before
-       the textbox is visible! */
+       color. */
 
     if (    tl->style != sp->def_style
          || tl->size  != sp->def_size
@@ -691,17 +677,16 @@ fli_tbox_add_chars( FL_OBJECT  * obj,
 
         sp->max_width = tl->w;
         for ( i = 0; i < sp->num_lines; i++ )
-            if ( fl_is_center_lalign( sp->lines[ i ]->align ) )
+            if ( sp->lines[ i ]->align == FL_ALIGN_CENTER )
                 sp->lines[ i ]->x = ( sp->max_width - sp->lines[ i ]->w ) / 2;
-            else if ( fl_to_outside_lalign( sp->lines[ i ]->align ) ==
-                                                              FL_ALIGN_RIGHT )
+            else if ( sp->lines[ i ]->align == FL_ALIGN_RIGHT )
                 sp->lines[ i ]->x = sp->max_width - sp->lines[ i ]->w;
     }
     else
     {
-        if ( fl_is_center_lalign( tl->align ) )
+        if ( tl->align == FL_ALIGN_CENTER )
             tl->x = ( sp->max_width - tl->w ) / 2;
-        else if ( fl_to_outside_lalign( tl->align ) == FL_ALIGN_RIGHT )
+        else if ( tl->align == FL_ALIGN_RIGHT )
             tl->x = sp->max_width - tl->w;
     }
 
@@ -765,12 +750,6 @@ fli_tbox_clear( FL_OBJECT * obj )
 
     for ( i = 0; i < sp->num_lines; i++ )
     {
-        if ( sp->lines[ i ]->specialGC )
-        {
-            XFreeGC( flx->display, sp->lines[ i ]->specialGC );
-            sp->lines[ i ]->specialGC = None;
-        }
-
         fli_safe_free( sp->lines[ i ]->fulltext );
         fli_safe_free( sp->lines[ i ] );
     }
@@ -868,7 +847,7 @@ fli_tbox_set_fontsize( FL_OBJECT * obj,
     int old_no_redraw = sp->no_redraw;
     int i;
 
-    if ( size < FL_TINY_SIZE || size > FL_HUGE_SIZE )
+    if ( size <= 0 )
         return;
 
     sp->def_size = size;
@@ -959,12 +938,11 @@ fli_tbox_set_fontstyle( FL_OBJECT * obj,
     int old_no_redraw = sp->no_redraw;
     int i;
 
-    if ( style < FL_NORMAL_STYLE || style > FL_TIMESBOLDITALIC_STYLE )
+    if (    ! fl_get_font_name( style % FL_SHADOW_STYLE )
+         || sp->def_style == style )
         return;
 
     sp->def_style = style;
-
-    sp->attrib = 1;
 
     if ( sp->num_lines == 0 )
         return;
@@ -1018,12 +996,12 @@ fli_tbox_set_fontstyle( FL_OBJECT * obj,
     sp->max_height =   sp->lines[ sp->num_lines - 1 ]->y
                      + sp->lines[ sp->num_lines - 1 ]->h;
 
-    sp->attrib = 1;
-
     sp->no_redraw = 1;
     fli_tbox_set_rel_xoffset( obj, old_xrel );
     fli_tbox_set_rel_yoffset( obj, old_yrel );
+
     sp->no_redraw = old_no_redraw;
+    sp->attrib = 1;
 }
 
 
@@ -1410,26 +1388,7 @@ fli_tbox_make_line_selectable( FL_OBJECT * obj,
     }
 
     if ( tl->selectable != state )
-    {
         tl->selectable = state;
-
-        if ( tl->is_special )
-        {
-            if ( tl->specialGC )
-            {
-                XFreeGC( flx->display, tl->specialGC );
-                sp->lines[ line ]->specialGC = None;
-            }
-
-            if ( FL_ObjWin( obj ) )
-            {
-                tl->specialGC = create_gc( obj,
-                                           state ? obj->lcol : FL_INACTIVE,
-                                           sp->x, sp->y, sp->w, sp->h );
-                tl->special_color = state ? obj->lcol : FL_INACTIVE;
-            }
-        }
-    }
 
     if ( ! sp->no_redraw )
         fl_redraw_object( obj );
@@ -1563,10 +1522,9 @@ fli_tbox_prepare_drawing( FL_OBJECT * obj )
     /* Recalculate horizontal positions of all lines */
 
     for ( i = 0; i < sp->num_lines; i++ )
-        if ( fl_is_center_lalign( sp->lines[ i ]->align ) )
+        if ( sp->lines[ i ]->align == FL_ALIGN_CENTER )
             sp->lines[ i ]->x = ( sp->max_width - sp->lines[ i ]->w ) / 2;
-        else if ( fl_to_outside_lalign( sp->lines[ i ]->align ) ==
-                                                          FL_ALIGN_RIGHT )
+        else if ( sp->lines[ i ]->align == FL_ALIGN_RIGHT )
             sp->lines[ i ]->x = sp->max_width - sp->lines[ i ]->w;
 
     /* We might get called before the textbox is shown and then the
@@ -1575,42 +1533,18 @@ fli_tbox_prepare_drawing( FL_OBJECT * obj )
     if ( ! FL_ObjWin( obj ) )
         return;
 
-    /* Create default GC for text drawing */
-
-    if ( sp->defaultGC )
-        XFreeGC( flx->display, sp->defaultGC );
-
-    sp->defaultGC = create_gc( obj, obj->lcol,
-                               sp->x, sp->y, sp->w, sp->h );
     sp->default_color = obj->lcol;
 
-    /* Create background GC for redraw deselected lines */
-
-    if ( sp->backgroundGC )
-        XFreeGC( flx->display, sp->backgroundGC );
-
-    sp->backgroundGC = create_gc( obj, obj->col1,
-                                  sp->x - ( LEFT_MARGIN > 0 ),
-                                  sp->y, sp->w + ( LEFT_MARGIN > 0 ), sp->h );
-
-    /* Create select GC for marking selected lines */
+    /* Create select GC for selected lines */
 
     if ( sp->selectGC )
         XFreeGC( flx->display, sp->selectGC );
 
     sp->selectGC = create_gc( obj,
-                              fli_dithered( fl_vmode ) ?
-                              FL_BLACK : obj->col2,
+                              fli_dithered( fl_vmode ) ? FL_BLACK : obj->col2,
                               sp->x - ( LEFT_MARGIN > 0 ), sp->y,
-                              sp->w + ( LEFT_MARGIN > 0 ), sp->h );
+                              sp->w + 2 * ( LEFT_MARGIN > 0 ), sp->h );
 
-    /* Create GC for text of non-selectable lines */
-
-    if ( sp->nonselectGC )
-        XFreeGC( flx->display, sp->nonselectGC );
-
-    sp->nonselectGC = create_gc( obj, FL_INACTIVE,
-                                 sp->x, sp->y, sp->w, sp->h );
     sp->nonselect_color = FL_INACTIVE;
 
     /* Special GC for text of selected lines in B&W */
@@ -1622,33 +1556,15 @@ fli_tbox_prepare_drawing( FL_OBJECT * obj )
 
         sp->bw_selectGC = create_gc( obj, FL_WHITE,
                                      sp->x - ( LEFT_MARGIN > 0 ), sp->y,
-                                     sp->w + ( LEFT_MARGIN > 0 ), sp->h );
+                                     sp->w + 2 * ( LEFT_MARGIN > 0 ), sp->h );
         sp->bw_select_color = FL_WHITE;
     }
 
-    /* Lines with non-default fonts or colors have their own GCs */
-
-    for ( i = 0; i < sp->num_lines;  i++ )
-    {
-        TBOX_LINE *tl = sp->lines[ i ];
-
-        if ( ! tl->is_special )
-            continue;
-
-        if ( tl->specialGC )
-        {
-            XFreeGC( flx->display, tl->specialGC );
-            tl->specialGC = None;
-        }
-
-        tl->specialGC = create_gc( obj, tl->color,
-                                   sp->x, sp->y, sp->w, sp->h );
-        tl->special_color = tl->color;
-    }
-
     sp->no_redraw = 1;
+
     fli_tbox_set_rel_xoffset( obj, old_xrel );
     fli_tbox_set_rel_yoffset( obj, old_yrel );
+
     sp->no_redraw = old_no_redraw;
 }
 
@@ -1665,26 +1581,14 @@ free_tbox_spec( FL_OBJECT * obj )
 
     for ( i = 0; i < sp->num_lines; i++ )
     {
-        if ( sp->lines[ i ]->specialGC )
-            XFreeGC( flx->display, sp->lines[ i ]->specialGC );
-
         fli_safe_free( sp->lines[ i ]->fulltext );
         fli_safe_free( sp->lines[ i ] );
     }
 
     fli_safe_free( sp->lines );
 
-    if ( sp->defaultGC )
-        XFreeGC( flx->display, sp->defaultGC );
-
-    if ( sp->backgroundGC )
-        XFreeGC( flx->display, sp->backgroundGC );
-
     if ( sp->selectGC )
         XFreeGC( flx->display, sp->selectGC );
-
-    if ( sp->nonselectGC )
-        XFreeGC( flx->display, sp->nonselectGC );
 
     if ( sp->bw_selectGC )
         XFreeGC( flx->display, sp->bw_selectGC );
@@ -1706,15 +1610,12 @@ draw_tbox( FL_OBJECT * obj )
     fl_draw_box( obj->boxtype, obj->x, obj->y, obj->w, obj->h,
                  obj->col1, obj->bw );
 
-    if ( sp->num_lines == 0 )
-        return;
-
-    fl_set_clipping( obj->x, obj->y, obj->w, obj->h );
+    fl_set_text_clipping( obj->x + sp->x, obj->y + sp->y,
+                          sp->w + ( LEFT_MARGIN > 0 ), sp->h );
 
     for ( i = 0; i < sp->num_lines; i++ )
     {
         TBOX_LINE *tl;
-        GC activeGC = sp->defaultGC;
         FL_COLOR active_color = sp->default_color;
 
         tl = sp->lines[ i ];
@@ -1722,7 +1623,9 @@ draw_tbox( FL_OBJECT * obj )
         if ( tl->y + tl->h < sp->yoffset )   /* if line is above tbox */
             continue;
 
-        if ( tl->y >= sp->h + sp->yoffset )  /* if line is below tbox */
+        /* We're done when the line is below the tbox */
+
+        if ( tl->y >= sp->h + sp->yoffset )
             break;
 
         /* Separator lines obviously need to be treated differently from
@@ -1744,11 +1647,10 @@ draw_tbox( FL_OBJECT * obj )
 
         if ( tl->selected )
         {
-            fli_apply_clipping_to_gc( sp->selectGC );
             XFillRectangle( flx->display, FL_ObjWin( obj ), sp->selectGC,
-                            obj->x + sp->x - ( LEFT_MARGIN > 0 ),
+                            obj->x + sp->x,
                             obj->y + sp->y + tl->y - sp->yoffset,
-                            sp->w + ( LEFT_MARGIN > 0 ), tl->h );
+                            obj->w, tl->h );
         }
 
         /* If there's no text or the text isn't visible within the textbox
@@ -1763,23 +1665,11 @@ draw_tbox( FL_OBJECT * obj )
            a special GC just for that line */
 
         if ( ! tl->selectable )
-        {
-            activeGC = sp->nonselectGC;
             active_color = sp->nonselect_color;
-        }
 
         if ( tl->is_special )
         {
-            if ( ! tl->specialGC )
-            {
-                tl->specialGC = create_gc( obj,
-                                           tl->selectable ?
-                                           tl->color : FL_INACTIVE,
-                                           sp->x, sp->y, sp->w, sp->h );
-                tl->special_color = tl->selectable ? tl->color : FL_INACTIVE;
-            }
-
-            activeGC = tl->specialGC;
+            tl->special_color = tl->selectable ? tl->color : FL_INACTIVE;
             active_color = tl->special_color;
         }
 
@@ -1791,7 +1681,6 @@ draw_tbox( FL_OBJECT * obj )
             XSetForeground( flx->display, sp->bw_selectGC,
                             fl_get_flcolor( FL_WHITE ) );
             sp->bw_select_color = FL_WHITE;
-            activeGC = sp->bw_selectGC;
             active_color = sp->bw_select_color;
         }
 
@@ -1804,25 +1693,13 @@ draw_tbox( FL_OBJECT * obj )
                          ( fli_dithered( fl_vmode ) && tl->selected ) ?
                          FL_WHITE : tl->color );
 
-        if ( activeGC != sp->bw_selectGC )
-            fl_set_text_clipping( obj->x + sp->x,
-                                  obj->y + sp->y,
-                                  sp->w, sp->h );
-        else
-            fl_set_text_clipping( obj->x + sp->x - ( LEFT_MARGIN > 0 ),
-                                  obj->y + sp->y,
-                                  sp->w + ( LEFT_MARGIN > 0 ), sp->h );
-
-
         fli_draw_stringTAB( FL_ObjWin( obj ), active_color,
                             obj->x + sp->x - sp->xoffset + tl->x,
                             obj->y + sp->y - sp->yoffset + tl->y + tl->asc,
                             tl->style, tl->size, tl->text, tl->len, 0 );
-
-        fl_unset_text_clipping( );
     }
 
-    fl_unset_clipping( );
+    fl_unset_text_clipping( );
 }
 
 

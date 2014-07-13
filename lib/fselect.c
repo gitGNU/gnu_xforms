@@ -332,7 +332,7 @@ select_cb( FL_OBJECT * obj,
         if ( isdblclick )
         {
             strcat( append_slash( lfs->dname ), seltext );
-            fli_fix_dirname( lfs->dname );
+            fl_fix_dirname( lfs->dname );
             if ( fill_entries( lfs->browser, NULL, 0 ) < 0 )
                 fli_del_tail_slash( lfs->dname );
             *seltext = '\0';
@@ -354,7 +354,7 @@ select_cb( FL_OBJECT * obj,
                 if ( lfs->fselect_cb )
                     lfs->fselect_cb( fn, lfs->callback_data );
 
-                if ( fli_is_valid_dir( fn ) )
+                if ( fl_is_valid_dir( fn ) )
                     fl_set_directory( fn );
             }
             else
@@ -386,8 +386,8 @@ fl_set_directory( const char * p )
     if ( strcmp( tmpdir, fs->dname ) == 0 )
         return 0;
 
-    fli_fix_dirname( tmpdir );
-    if ( ! fli_is_valid_dir( tmpdir ) )
+    fl_fix_dirname( tmpdir );
+    if ( ! fl_is_valid_dir( tmpdir ) )
     {
         M_err( "fl_set_directory", "invalid directory: %s", tmpdir );
         return 1;
@@ -853,10 +853,10 @@ fl_show_fselector( const char * message,
     /* Update directory only if requested dir is valid. This way, passing
        NULL for dir has the effect of keeping us where we were the last time */
 
-    if ( fli_is_valid_dir( dir ) )
+    if ( fl_is_valid_dir( dir ) )
         strcpy( fs->dname, dir );
 
-    fli_fix_dirname( fs->dname );
+    fl_fix_dirname( fs->dname );
 
     *fs->filename = '\0';
 
@@ -940,12 +940,12 @@ fl_show_fselector( const char * message,
             else
                 fli_sstrcpy( fs->dname, tmp, sizeof fs->dname );
 
-            fli_fix_dirname( fs->dname );
+            fl_fix_dirname( fs->dname );
 
             if ( fs->fselect_cb )
                 fs->fselect_cb( fs->dname, fs->callback_data );
 
-            if ( fli_is_valid_dir( fs->dname ) )
+            if ( fl_is_valid_dir( fs->dname ) )
             {
                 fill_entries( fs->browser, 0, 1 );
                 fl_set_input( fs->input, "" );
@@ -959,7 +959,7 @@ fl_show_fselector( const char * message,
                 while ( ( p = strrchr( fs->dname, '/' ) ) )
                 {
                     *p = '\0';
-                    if ( fli_is_valid_dir( fs->dname ) )
+                    if ( fl_is_valid_dir( fs->dname ) )
                         break;
                 }
             }

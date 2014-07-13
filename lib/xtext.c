@@ -209,6 +209,7 @@ fli_draw_string( int           align,
     XftFont * font = fl_get_font_struct( style, size );
 #else
 #if defined X_HAVE_UTF8_STRING
+    XFontSet font_set;
     DrawString drawIt = img ? Xutf8DrawImageString : Xutf8DrawString;
 #else
     DrawString drawIt = img ? XDrawImageString : XDrawString;
@@ -274,6 +275,8 @@ fli_draw_string( int           align,
        for that make sure the correct font is set up */
 
     fl_set_font( style, size );
+    font_set = fl_get_font_set( style, size );
+
     fli_get_hv_align( align, &horalign, &vertalign );
 
     for ( i = topline; i < endline; i++ )
@@ -398,7 +401,7 @@ fli_draw_string( int           align,
                      ( const XftChar8 * ) line->str, line->len, img );
 #else
 #if defined X_HAVE_UTF8_STRING
-        drawIt( flx->display, flx->win, fl_get_font_set( style, size ),
+        drawIt( flx->display, flx->win, font_set,
                 flx->textgc, line->x, line->y, line->str, line->len );
 #else
         drawIt( flx->display, flx->win, flx->textgc,
@@ -457,7 +460,7 @@ fli_draw_string( int           align,
 #else
             fli_textcolor( backcol );
 #if defined X_HAVE_UTF8_STRING
-            drawIt( flx->display, flx->win,  fl_get_font_set( style, size ),
+            drawIt( flx->display, flx->win, font_set,
                     flx->textgc, xsel, line->y, line->str + start, len );
 #else
             drawIt( flx->display, flx->win, flx->textgc, xsel,
@@ -1248,6 +1251,7 @@ fli_draw_stringTAB( Drawable     win,
     GC gc;
     XFontStruct * fs;
 #if defined X_HAVE_UTF8_STRING
+    XFontSet font_set;
     DrawString drawIt = img ? Xutf8DrawImageString : Xutf8DrawString;
 #else
     DrawString drawIt = img ? XDrawImageString : XDrawString;
@@ -1265,6 +1269,9 @@ fli_draw_stringTAB( Drawable     win,
 #else
     gc = XCreateGC( flx->display, win, 0, NULL );
     fs = fl_get_font_struct( style, size );
+#if defined X_HAVE_UTF8_STRING
+    font_set = fl_get_font_set( style, size );
+#endif
 #endif
 
     /* Figure out how wide a tab is (approximately) */
@@ -1304,8 +1311,8 @@ fli_draw_stringTAB( Drawable     win,
                      ( const XftChar8 * ) q, p - q, img );
 #else
 #if defined X_HAVE_UTF8_STRING
-        drawIt( flx->display, win,  fl_get_font_set( style, size ),
-                gc, x + w, y, ( char * ) q, p - q );
+        drawIt( flx->display, win, font_set, gc, x + w, y,
+                ( char * ) q, p - q );
 #else
         drawIt( flx->display, win, gc, x + w, y, ( char * ) q, p - q );
 #endif
@@ -1367,8 +1374,6 @@ draw_string( Display        * display,
     }
 
     fli_textcolor( fg_color );
-
-//    fprintf( stderr, "%*s\n", ( int ) len, str );
 
     XftDrawStringUtf8( flx->textdraw, &flx->textcolor, font, x, y, str, len );
 }
