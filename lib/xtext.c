@@ -63,27 +63,6 @@ draw_string( Display        * display,
              const XftChar8 * str,
              size_t           len,
              int              draw_background );
-#else
-/* type fitting both XDrawString() and XDrawImageString() */
-
-#if defined X_HAVE_UTF8_STRING
-typedef void ( * DrawString )( Display    * display,
-                               Drawable     d,
-                               XFontSet     font_set,
-                               GC           gc,
-                               int          x,
-                               int          y,
-                               const char * string,
-                               int          length );
-#else
-typedef int ( * DrawString )( Display    * display,
-                              Drawable     d,
-                              GC           gc,
-                              int          x,
-                              int          y,
-                              const char * string,
-                              int          length );
-#endif
 #endif
 
 #define NUM_LINES_INCREMENT  32
@@ -208,12 +187,7 @@ fli_draw_string( int           align,
 #if FL_ENABLE_XFT
     XftFont * font = fl_get_font_struct( style, size );
 #else
-#if defined X_HAVE_UTF8_STRING
     XFontSet font_set;
-    DrawString drawIt = img ? Xutf8DrawImageString : Xutf8DrawString;
-#else
-    DrawString drawIt = img ? XDrawImageString : XDrawString;
-#endif
 #endif
 
     /* Check if anything has to be drawn at all - do nothing if we either
@@ -275,7 +249,10 @@ fli_draw_string( int           align,
        for that make sure the correct font is set up */
 
     fl_set_font( style, size );
-    font_set = fl_get_font_set( style, size );
+# if ! FL_ENABLE_XFT
+    if ( fli_context->xic )
+        font_set = fl_get_font_set( style, size );
+#endif
 
     fli_get_hv_align( align, &horalign, &vertalign );
 
@@ -400,13 +377,22 @@ fli_draw_string( int           align,
         draw_string( flx->display, font, forecol, line->x, line->y,
                      ( const XftChar8 * ) line->str, line->len, img );
 #else
+        if ( fli_context->xic )
+        {
 #if defined X_HAVE_UTF8_STRING
-        drawIt( flx->display, flx->win, font_set,
-                flx->textgc, line->x, line->y, line->str, line->len );
+            ( img ? Xutf8DrawImageString : Xutf8DrawString )
+                ( flx->display, flx->win, font_set,
+                  flx->textgc, line->x, line->y, line->str, line->len );
 #else
-        drawIt( flx->display, flx->win, flx->textgc,
-                line->x, line->y, line->str, line->len );
+            ( img ? XmbDrawImageString : XmbDrawString )
+                ( flx->display, flx->win, font_set,
+                  flx->textgc, line->x, line->y, line->str, line->len );
 #endif
+        }
+        else
+            ( img ? XDrawImageString : XDrawString )
+                ( flx->display, flx->win, flx->textgc,
+                  line->x, line->y, line->str, line->len );
 #endif
 
         /* Draw selection area if required - for this we need to draw
@@ -459,13 +445,22 @@ fli_draw_string( int           align,
                          ( const XftChar8 * ) ( line->str + start ), len, img );
 #else
             fli_textcolor( backcol );
+            if ( fli_context->xic )
+            {
 #if defined X_HAVE_UTF8_STRING
-            drawIt( flx->display, flx->win, font_set,
-                    flx->textgc, xsel, line->y, line->str + start, len );
+                ( img ? Xutf8DrawImageString : Xutf8DrawString )
+                    ( flx->display, flx->win, font_set,
+                      flx->textgc, xsel, line->y, line->str + start, len );
 #else
-            drawIt( flx->display, flx->win, flx->textgc, xsel,
-                    line->y, line->str + start, len );
+                ( img ? XmbDrawImageString : XmbDrawString )
+                    ( flx->display, flx->win, font_set,
+                      flx->textgc, xsel, line->y, line->str + start, len );
 #endif
+            }
+            else
+                ( img ? XDrawImageString : XDrawString )
+                    ( flx->display, flx->win, flx->textgc, xsel,
+                      line->y, line->str + start, len );
 #endif
             fli_textcolor( forecol );
 
@@ -1094,12 +1089,26 @@ fli_get_underline_rect(
 #if FL_ENABLE_XFT
     XGlyphInfo extents;
 
-    XftTextExtentsUtf8( fl_display, fs, ( const XftChar8 * ) "_", 1,
-                        &extents );
+#if defined X_HAVE_UTF8_STRING
+    if ( fli_context->xic )
+        XftTextExtentsUtf8( fl_display, fs, ( const XftChar8 * ) "_", 1,
+                            &extents );
+    else
+#endif
+    XftTextExtents8( fl_display, fs, ( const XftChar8 * ) "_", 1,
+                     &extents );
+
     ul_thickness = extents.height;
 
-    XftTextExtentsUtf8( fl_display, fs,
-                        ( const XftChar8 * ) str + n, 1, &extents );
+#if defined X_HAVE_UTF8_STRING
+    if ( fli_context->xic )
+        XftTextExtentsUtf8( fl_display, fs,
+                            ( const XftChar8 * ) str + n, 1, &extents );
+    else
+#endif
+        XftTextExtents8( fl_display, fs,
+                         ( const XftChar8 * ) str + n, 1, &extents );
+
     ul_pos = extents.height - extents.y + ul_thickness / 4 + 1;
 #else
     if ( UL_thickness < 0 )
@@ -1192,8 +1201,15 @@ do_underline_all( FL_COORD        x,
     {
         XGlyphInfo extents;
 
-        XftTextExtentsUtf8( fl_display, flx->fs, ( const XftChar8 * ) "_", 1,
-                            &extents );
+#if defined X_HAVE_UTF8_STRING
+        if ( fli_context->xic )
+            XftTextExtentsUtf8( fl_display, flx->fs, ( const XftChar8 * ) "_",
+                                1, &extents );
+        else
+#endif
+            XftTextExtents8( fl_display, flx->fs, ( const XftChar8 * ) "_", 1,
+                             &extents );
+
         *ul_thickness = extents.height;
     }
 #else
@@ -1208,8 +1224,16 @@ do_underline_all( FL_COORD        x,
 #if FL_ENABLE_XFT
     {
         XGlyphInfo extents;
-        XftTextExtentsUtf8( fl_display, flx->fs,
-                            ( const XftChar8 * ) str, n, &extents );
+
+#if defined X_HAVE_UTF8_STRING
+        if ( fli_context->xic )
+            XftTextExtentsUtf8( fl_display, flx->fs,
+                                ( const XftChar8 * ) str, n, &extents );
+        else
+#endif
+            XftTextExtents8( fl_display, flx->fs,
+                             ( const XftChar8 * ) str, n, &extents );
+
         *ul_pos = extents.height - extents.y + *ul_thickness / 4 + 1;
     }
 #else
@@ -1250,12 +1274,7 @@ fli_draw_stringTAB( Drawable     win,
 #else
     GC gc;
     XFontStruct * fs;
-#if defined X_HAVE_UTF8_STRING
     XFontSet font_set;
-    DrawString drawIt = img ? Xutf8DrawImageString : Xutf8DrawString;
-#else
-    DrawString drawIt = img ? XDrawImageString : XDrawString;
-#endif
     FL_COORD cx, cy, cw, ch;
 #endif
 
@@ -1269,9 +1288,8 @@ fli_draw_stringTAB( Drawable     win,
 #else
     gc = XCreateGC( flx->display, win, 0, NULL );
     fs = fl_get_font_struct( style, size );
-#if defined X_HAVE_UTF8_STRING
-    font_set = fl_get_font_set( style, size );
-#endif
+    if ( fli_context->xic )
+        font_set = fl_get_font_set( style, size );
 #endif
 
     /* Figure out how wide a tab is (approximately) */
@@ -1310,12 +1328,21 @@ fli_draw_stringTAB( Drawable     win,
         draw_string( flx->display, fs, color, x + w, y,
                      ( const XftChar8 * ) q, p - q, img );
 #else
+        if ( fli_context->xic )
+        {
 #if defined X_HAVE_UTF8_STRING
-        drawIt( flx->display, win, font_set, gc, x + w, y,
-                ( char * ) q, p - q );
+            ( img ? Xutf8DrawImageString : Xutf8DrawString )
+                ( flx->display, win, font_set, gc, x + w, y,
+                  ( char * ) q, p - q );
 #else
-        drawIt( flx->display, win, gc, x + w, y, ( char * ) q, p - q );
+            ( img ? XmbDrawImageString : XmbDrawString )
+                ( flx->display, win, font_set, gc, x + w, y,
+                  ( char * ) q, p - q );
 #endif
+        }
+        else
+            ( img ? XDrawImageString : XDrawString )
+                ( flx->display, win, gc, x + w, y, ( char * ) q, p - q );
 #endif
 
         if ( p == s + len )
@@ -1365,17 +1392,26 @@ draw_string( Display        * display,
         XGlyphInfo extents;
 
 #if defined X_HAVE_UTF8_STRING
-        XftTextExtentsUtf8( display, font, str, len, &extents );
-#else
-        XftTextExtents8( display, font, str, len, &extents );
+        if ( fli_context->xic )
+            XftTextExtentsUtf8( display, font, str, len, &extents );
+        else
 #endif
+            XftTextExtents8( display, font, str, len, &extents );
+
         XftDrawRect( flx->bgdraw, &flx->bktextcolor, x - extents.x,
                      y - extents.y, extents.width, extents.height );
     }
 
     fli_textcolor( fg_color );
 
-    XftDrawStringUtf8( flx->textdraw, &flx->textcolor, font, x, y, str, len );
+#if defined X_HAVE_UTF8_STRING
+        if ( fli_context->xic )
+            XftDrawStringUtf8( flx->textdraw, &flx->textcolor, font,
+                               x, y, str, len );
+        else
+#endif
+            XftDrawString8( flx->textdraw, &flx->textcolor, font,
+                            x, y, str, len );
 }
 #endif
 

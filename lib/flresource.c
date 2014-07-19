@@ -992,12 +992,12 @@ setup_im_and_ic( void )
 
     /* First check if a valid and supported locale is set */
 
-    if (    ! setlocale( LC_ALL, "" )
+    if (    ! setlocale( LC_CTYPE, "" )
          || ! XSupportsLocale( )
          || ! XSetLocaleModifiers( "" ) )
     {
-        M_err( "setup_im_and_ic",
-               "Unsupported or invalid locale, can't set input method" );
+        M_warn( "setup_im_and_ic",
+                "Unsupported or invalid locale, can't set input method" );
         return;
     }
 
@@ -1328,7 +1328,6 @@ fl_initialize( int        * na,
 
     fl_vmode = fli_initialize_program_visual( );
     fli_init_colormap( fl_vmode );
-    fli_init_fonts( );
     fli_init_context( );
 
 #ifdef XlibSpecificationRelease
@@ -1337,6 +1336,7 @@ fl_initialize( int        * na,
     setup_im_and_ic( );
 #endif
 
+    fli_init_fonts( );
     fli_default_xswa( );
     fli_init_stipples( );
 

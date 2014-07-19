@@ -27,6 +27,7 @@
 #endif
 
 #include "include/forms.h"
+#include <stdlib.h>
 
 
 /***************************************

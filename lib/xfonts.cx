@@ -36,9 +36,7 @@
 #include <locale.h>
 
 static XFontStruct * defaultfs;
-#if defined X_HAVE_UTF8_STRING
 static XFontSet defaultfset;
-#endif
 
 static XFontStruct * try_get_font_struct( int,
                                           int,
@@ -46,9 +44,7 @@ static XFontStruct * try_get_font_struct( int,
 static char * get_fname( const char *,
                          int );
 
-#if defined X_HAVE_UTF8_STRING
 static XFontSet get_font_set_from_struct( const XFontStruct * fs );
-#endif
 
 /*
  * Question marks indicate the sizes in tenth of a point. It will be
@@ -86,12 +82,10 @@ fli_init_fonts( void )
     FL_FONT *flf;
     const char ** f = bitmap_fonts;
     static int initialized;
-#if defined X_HAVE_UTF8_STRING
     int missing_count;
     char **missing_list, *def_string;
     char * old_locale;
     int locale_needs_reset = 0;
-#endif
     const char * def_names[ ] = { DEFAULTF1, DEFAULTF2, NULL };
     const char ** p;
 
@@ -109,20 +103,20 @@ fli_init_fonts( void )
 
     /* Load a default font */
 
-#if defined X_HAVE_UTF8_STRING
-    old_locale = setlocale( LC_CTYPE, "" );
-    if ( ! old_locale || ! strcmp( old_locale, "C" ) )
+    if ( fli_context->xic )
     {
-        locale_needs_reset = 1;
-        setlocale( LC_CTYPE, "C.UTF-8" );
+        old_locale = setlocale( LC_CTYPE, "" );
+        if ( ! old_locale || ! strcmp( old_locale, "C" ) )
+        {
+            locale_needs_reset = 1;
+            setlocale( LC_CTYPE, "C.UTF-8" );
+        }
     }
-#endif
 
     for ( p = def_names; ! defaultfs && p; p++ )
     {
         defaultfs = XLoadQueryFont( flx->display, *p );
-#if defined X_HAVE_UTF8_STRING
-        if ( defaultfs )
+        if ( fli_context->xic && defaultfs )
         {
             defaultfset = XCreateFontSet( flx->display, *p, &missing_list,
                                           &missing_count, &def_string );
@@ -133,14 +127,10 @@ fli_init_fonts( void )
                 defaultfs = NULL;
             }
         }
-#endif
     }
 
-#if defined X_HAVE_UTF8_STRING
-    if ( locale_needs_reset )
+    if ( fli_context->xic && locale_needs_reset )
         setlocale( LC_CTYPE, old_locale );
-#endif
-
 
     /* Load a couple of fonts at normal size to prevent the caching code from
        using bad looking replacement if strange sizes are requested */
@@ -311,11 +301,9 @@ try_get_font_struct( int numb,
 {
     FL_FONT *flf = fl_fonts;
     XFontStruct *fs = NULL;
-#if defined X_HAVE_UTF8_STRING
     XFontSet fset;
     int missing_count;
     char **missing_list, *def_string;
-#endif
     int i,
         is_subst = 0;
     char * old_locale;
@@ -372,34 +360,36 @@ try_get_font_struct( int numb,
 
     strcpy( fli_curfnt, get_fname( flf->fname, size ) );
 
-#if defined X_HAVE_UTF8_STRING
-    old_locale = setlocale( LC_CTYPE, "" );
-    if ( ! old_locale || ! strcmp( old_locale, "C" ) )
+    if ( fli_context->xic )
     {
-        locale_needs_reset = 1;
-        setlocale( LC_CTYPE, "C.UTF-8" );
-    }
-#endif
-
-    fs = XLoadQueryFont( flx->display, fli_curfnt );
-
-#if defined X_HAVE_UTF8_STRING
-    if ( fs )
-    {
-        fset = XCreateFontSet( flx->display, fli_curfnt, &missing_list,
-                               &missing_count, &def_string );
-
-        XFreeStringList( missing_list );
-        if ( ! fset )
+        old_locale = setlocale( LC_CTYPE, "" );
+        if ( ! old_locale || ! strcmp( old_locale, "C" ) )
         {
-            XFreeFont( flx->display, fs );
-            fs = NULL;
+            locale_needs_reset = 1;
+            setlocale( LC_CTYPE, "C.UTF-8" );
         }
     }
 
-    if ( locale_needs_reset )
-        setlocale( LC_CTYPE, old_locale );
-#endif
+    fs = XLoadQueryFont( flx->display, fli_curfnt );
+
+    if ( fli_context->xic )
+    {
+        if ( fs )
+        {
+            fset = XCreateFontSet( flx->display, fli_curfnt, &missing_list,
+                                   &missing_count, &def_string );
+
+            XFreeStringList( missing_list );
+            if ( ! fset )
+            {
+                XFreeFont( flx->display, fs );
+                fs = NULL;
+            }
+        }
+
+        if ( locale_needs_reset )
+            setlocale( LC_CTYPE, old_locale );
+    }
 
     /* If that didn't work try to find a replacement font, i.e. an already
        loaded font with the nearest size or, if there's none, the very most
@@ -430,18 +420,14 @@ try_get_font_struct( int numb,
         if ( k != -1 )
         {
             fs = flf->fs[ k ];
-#if defined X_HAVE_UTF8_STRING
-            fset = flf->font_set[ k ];
-#endif
+            if ( fli_context->xic )
+                fset = flf->font_set[ k ];
         }
         else
         {
-#if defined X_HAVE_UTF8_STRING
-#endif
             fs = flx->fs ? flx->fs : defaultfs;
-#if defined X_HAVE_UTF8_STRING
-            fset = get_font_set_from_struct( fs );
-#endif
+            if ( fli_context->xic )
+                fset = get_font_set_from_struct( fs );
             is_subst = 1;
         }
     }
@@ -453,18 +439,16 @@ try_get_font_struct( int numb,
         if ( flf->size[ FL_MAX_FONTSIZES - 1 ] > 0 )
         {
             XFreeFont( flx->display, flf->fs[ FL_MAX_FONTSIZES - 1 ] );
-#if defined X_HAVE_UTF8_STRING
-            XFreeFontSet( flx->display,
-                          flf->font_set[ FL_MAX_FONTSIZES - 1 ] );
-#endif
+            if ( fli_context->xic )
+                XFreeFontSet( flx->display,
+                              flf->font_set[ FL_MAX_FONTSIZES - 1 ] );
         }
         flf->nsize--;
     }
 
     flf->fs[ flf->nsize ] = fs;
-#if defined X_HAVE_UTF8_STRING
-    flf->font_set[ flf->nsize ] = fset;
-#endif
+    if ( fli_context->xic )
+        flf->font_set[ flf->nsize ] = fset;
     flf->size[ flf->nsize++ ] = is_subst ? - size : size;
 
     /* Here we are guranteed a valid font handle although there is no
@@ -478,7 +462,6 @@ try_get_font_struct( int numb,
 /***************************************
  ***************************************/
 
-#if defined X_HAVE_UTF8_STRING
 XFontSet
 fl_get_font_set( int style,
                  int size )
@@ -510,7 +493,6 @@ fl_get_font_set( int style,
 
     return NULL;
 }
-#endif
 
 
 /***************************************
@@ -535,11 +517,15 @@ fli_get_string_width( XFontStruct * fs,
                       const char  * s,
                       int           len )
 {
+    if ( fli_context->xic )
+    {
 #if defined X_HAVE_UTF8_STRING
-     return Xutf8TextEscapement( get_font_set_from_struct( fs ), s, len );
+        return Xutf8TextEscapement( get_font_set_from_struct( fs ), s, len );
 #else
-    return XTextWidth( fs, s, len );
+        return XmbTextEscapement( get_font_set_from_struct( fs ), s, len );
 #endif
+    }
+    return XTextWidth( fs, s, len );
 }
 
 
@@ -574,35 +560,41 @@ fli_get_string_widthTABfs( XFontStruct * fs,
         tab;
     const char *p,
                *q;
-#if defined X_HAVE_UTF8_STRING
     XFontSet fset;
-#endif
 
     if ( fli_no_connection )
         return 12 * len;
 
     tab = fli_get_tabpixels( fs );
 
-#if defined X_HAVE_UTF8_STRING
-    fset = get_font_set_from_struct( fs );
-#endif
+    if ( fli_context->xic )
+        fset = get_font_set_from_struct( fs );
 
     for ( w = 0, q = s; *q && ( p = strchr( q, '\t' ) ) && ( p - s ) < len;
           q = p + 1 )
     {
+        if ( fli_context->xic )
+        {
 #if defined X_HAVE_UTF8_STRING
         w += Xutf8TextEscapement( fset, q, p - q );
 #else
-        w += XTextWidth( fs, q, p - q );
+        w += XmbTextEscapement( fset, q, p - q );
 #endif
+        }
+        else
+            w += XTextWidth( fs, q, p - q );
         w = ( ( w / tab ) + 1 ) * tab;
     }
 
+    if ( fli_context->xic )
+    {
 #if defined X_HAVE_UTF8_STRING
-    return w + Xutf8TextEscapement( fset, q, len - ( q - s ) );
+        return w + Xutf8TextEscapement( fset, q, len - ( q - s ) );
 #else
-    return w += XTextWidth( fs, q, len - ( q - s ) );
+        return w + XmbTextEscapement( fset, q, len - ( q - s ) );
 #endif
+    }
+    return w += XTextWidth( fs, q, len - ( q - s ) );
 }
 
 
@@ -773,15 +765,21 @@ fl_set_tabstop( const char *s )
 int
 fli_get_tabpixels( XFontStruct * fs )
 {
-#if defined X_HAVE_UTF8_STRING
-    XFontSet fset = get_font_set_from_struct( fs );
+    if ( fli_context->xic )
+    {
+        XFontSet fset = get_font_set_from_struct( fs );
 
-    return   Xutf8TextEscapement( fset, *tabstop, *tabstopNchar )
-           + Xutf8TextEscapement( fset, " ", 1 );
+#if defined X_HAVE_UTF8_STRING
+        return   Xutf8TextEscapement( fset, *tabstop, *tabstopNchar )
+               + Xutf8TextEscapement( fset, " ", 1 );
 #else
+        return   XmbTextEscapement( fset, *tabstop, *tabstopNchar )
+               + XmbTextEscapement( fset, " ", 1 );
+#endif
+    }
+
     return   XTextWidth( fs, *tabstop, *tabstopNchar )
            + XTextWidth( fs, " ", 1 );
-#endif
 }
 
 
@@ -827,18 +825,23 @@ int
 fli_get_text_width( const char * str,
                     size_t       len )
 {
+    if ( fli_context->xic )
+    {
 #if defined X_HAVE_UTF8_STRING
-    return Xutf8TextEscapement( get_font_set_from_struct( flx->fs) , str, len );
+        return Xutf8TextEscapement( get_font_set_from_struct( flx->fs) ,
+                                    str, len );
 #else
-    return XTextWidth( flx->fs, str, len );
+        return XmbTextEscapement( get_font_set_from_struct( flx->fs) ,
+                                  str, len );    
 #endif
+    }
+    return XTextWidth( flx->fs, str, len );
 }
 
 
 /***************************************
  ***************************************/
 
-#if defined X_HAVE_UTF8_STRING
 static XFontSet
 get_font_set_from_struct( const XFontStruct * fs )
 {
@@ -858,7 +861,6 @@ get_font_set_from_struct( const XFontStruct * fs )
 
     return NULL;
 }
-#endif
 
 
 /***************************************
