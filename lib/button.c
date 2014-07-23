@@ -447,7 +447,7 @@ handle_button( FL_OBJECT * obj,
                 cleanup( obj );
             free_pixmap( sp );
             fl_free( obj->spec );
-            break;
+            return FL_RETURN_NONE;
     }
 
     sp->event = event;
