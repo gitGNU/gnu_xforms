@@ -422,7 +422,7 @@ fl_set_xft_font_name( int              index,
 
     if ( strchr( name, ':' ) )
     {
-        slant = FL_SLANT_NONE;
+        slant  = FL_SLANT_NONE;
         weight = FL_WEIGHT_NONE;
     }
 

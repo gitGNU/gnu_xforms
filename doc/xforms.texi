@@ -1,8 +1,8 @@
 \input texinfo
 
 @setfilename xforms.info
-@settitle XForms (Forms Library) - Version 1.2 (Rev. 4)@*A Graphical User Interface Toolkit for X
-@set lastupdate July 6, 2014
+@settitle XForms (Forms Library) - Version 1.4@*A Graphical User Interface Toolkit for X
+@set lastupdate July 25, 2014
 @paragraphindent 0
 
 @titlepage

@@ -2344,7 +2344,6 @@ redraw( FL_FORM * form,
             fl_set_text_clipping( obj->x, obj->y, obj->w, obj->h );
         }
 
-        fprintf( stderr, "%p %s\n", obj, obj->label );
         fli_handle_object( obj, FL_DRAW, 0, 0, 0, NULL, 0 );
 
         if ( obj->objclass == FL_FREE )
