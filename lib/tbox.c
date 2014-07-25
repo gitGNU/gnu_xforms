@@ -1647,6 +1647,8 @@ draw_tbox( FL_OBJECT * obj )
 
         if ( tl->selected )
         {
+            fl_set_gc_clipping( sp->selectGC, obj->x + sp->x, obj->y + sp->y,
+                                sp->w + ( LEFT_MARGIN > 0 ), sp->h );
             XFillRectangle( flx->display, FL_ObjWin( obj ), sp->selectGC,
                             obj->x + sp->x,
                             obj->y + sp->y + tl->y - sp->yoffset,

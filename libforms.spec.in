@@ -19,12 +19,13 @@ Source0:         %{name}-%{version}.tar.gz
 License:         LGPLv2+
 Group:           Development/Libraries
 
-# To build the libraries we need the libXpm and libjpeg development
-# packages (which in turn depend on the corresponding library packages)
+# To build the libraries we need a number of development packages
+# (and what they in turn depend on)
 
 BuildRequires:   libXpm-devel
 BuildRequires:   libjpeg-devel
 BuildRequires:   mesa-libGL-devel
+BuildRequires:   libXft-devel
 
 BuildRoot:       %{_tmppath}/%{name}-buildroot
 Prefix:          %{_prefix}

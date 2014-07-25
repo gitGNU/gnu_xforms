@@ -1405,13 +1405,12 @@ draw_string( Display        * display,
     fli_textcolor( fg_color );
 
 #if defined X_HAVE_UTF8_STRING
-        if ( fli_context->xic )
-            XftDrawStringUtf8( flx->textdraw, &flx->textcolor, font,
-                               x, y, str, len );
-        else
+    if ( fli_context->xic )
+        XftDrawStringUtf8( flx->textdraw, &flx->textcolor, font, x, y,
+                           str, len );
+    else
 #endif
-            XftDrawString8( flx->textdraw, &flx->textcolor, font,
-                            x, y, str, len );
+        XftDrawString8( flx->textdraw, &flx->textcolor, font, x, y, str, len );
 }
 #endif
 

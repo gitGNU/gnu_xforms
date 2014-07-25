@@ -2129,7 +2129,8 @@ fli_find_last( FL_FORM * form,
 
 
 /***************************************
- * Returns if an object only parially or not at all visible due to clipping
+ * Returns if an object is outside the currently set (global) clipping
+ * region - objects for which 1 is returned don't need redrawing
  ***************************************/
 
 static int
@@ -2139,8 +2140,6 @@ is_object_clipped( FL_OBJECT * obj )
 
     if ( ! fl_is_global_clipped( ) )
         return 0;
-
-    fli_calc_object_bbox( obj );
 
     xc = fli_intersect_rects( &obj->bbox, fli_get_global_clip_rect( ) );
 
@@ -2345,6 +2344,7 @@ redraw( FL_FORM * form,
             fl_set_text_clipping( obj->x, obj->y, obj->w, obj->h );
         }
 
+        fprintf( stderr, "%p %s\n", obj, obj->label );
         fli_handle_object( obj, FL_DRAW, 0, 0, 0, NULL, 0 );
 
         if ( obj->objclass == FL_FREE )
@@ -2912,10 +2912,10 @@ fli_intersect_rects( const FL_RECT * r1,
 
     p->x      = FL_max( r1->x, r2->x );
     p->y      = FL_max( r1->y, r2->y );
-    p->width  = x - p->x;
-    p->height = y - p->y;
+    p->width  = x - p->x > 0 ? x - p->x : 0;
+    p->height = y - p->y > 0 ? y - p->y : 0;
 
-    if ( p->width <= 0 || p->height <= 0 )
+    if ( p->width == 0 || p->height == 0 )
         fli_safe_free( p );
 
     return p;
@@ -2931,14 +2931,14 @@ static void
 fli_combine_rectangles( FL_RECT       * r1,
                         const FL_RECT * r2 )
 {
-    int xf = FL_max( r1->x + r1->width,  r2->x + r2->width  ),
-        yf = FL_max( r1->y + r1->height, r2->y + r2->height );
+    int x = FL_max( r1->x + r1->width,  r2->x + r2->width  ),
+        y = FL_max( r1->y + r1->height, r2->y + r2->height );
 
     r1->x = FL_min( r1->x, r2->x );
     r1->y = FL_min( r1->y, r2->y );
 
-    r1->width  = xf - r1->x;
-    r1->height = yf - r1->y;
+    r1->width  = x - r1->x;
+    r1->height = y - r1->y;
 }
 
 

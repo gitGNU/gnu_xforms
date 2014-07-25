@@ -42,6 +42,7 @@ libforms_la_SOURCES = \
 	child.c \
 	choice.c \
 	clipboard.c \
+	clipping.c \
 	clock.c \
 	cmd_br.c \
 	colsel.c \
