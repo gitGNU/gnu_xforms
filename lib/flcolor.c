@@ -741,7 +741,8 @@ fli_create_gc( Drawable drawable )
 
     if ( ! flx->gc )
     {
-        flx->gc = XCreateGC( flx->display, drawable, 0, NULL );
+        fl_state[ fl_vmode ].gc = flx->gc =
+                                  XCreateGC( flx->display, drawable, 0, NULL );
         XSetStipple( flx->display, flx->gc, FLI_INACTIVE_PATTERN );
         XSetGraphicsExposures( flx->display, flx->gc, 0 );
     }
@@ -751,7 +752,8 @@ fli_create_gc( Drawable drawable )
 
     if ( ! flx->textgc )
     {
-        flx->textgc = XCreateGC( flx->display, drawable, 0, NULL );
+        fl_state[ fl_vmode ].textgc = flx->textgc =
+                                  XCreateGC( flx->display, drawable, 0, NULL );
         XSetStipple( flx->display, flx->textgc, FLI_INACTIVE_PATTERN );
         XSetGraphicsExposures( flx->display, flx->textgc, 0 );
     }
@@ -798,7 +800,6 @@ fli_create_gc( Drawable drawable )
                   fl_state[ fl_vmode ].cur_fnt->fid );
 #endif
 }
-
 
 
 /***************************************
@@ -986,14 +987,11 @@ fl_set_background( GC       gc,
 void
 fl_color( FL_COLOR col )
 {
-    static int vmode = -1;
-
-    if ( flx->color != col || vmode != fl_vmode )
+    if ( flx->color != col )
     {
         unsigned long p = fl_get_pixel( col );
 
         flx->color = col;
-        vmode = fl_vmode;
         XSetForeground( flx->display, flx->gc, p );
         fli_free_newpixel( p );
     }
@@ -1108,11 +1106,9 @@ fli_textcolor( FL_COLOR col )
         last_allocated = col;
     }
 #else
-    static int vmode = -1;
     static GC textgc;
 
     if (    flx->textcolor != col
-         || vmode != fl_vmode
          || flx->textcolor == lastmapped )
     {
         unsigned long p;

@@ -1249,13 +1249,17 @@ flimage_sdisplay( FL_IMAGE * im,
     if ( ! Compatible( xwa, im ) )
     {
         if ( im->gc )
+        {
             XFreeGC( im->xdisplay, im->gc );
+            im->gc =  None;
+        }
 
 #if ! FL_ENABLE_XFT
         if ( im->textgc )
+        {
             XFreeGC( im->xdisplay, im->textgc );
-
-        im->gc = im->textgc = None;
+            im->textgc = None;
+        }
 #endif
     }
 

@@ -746,20 +746,21 @@ fli_scale_form( FL_FORM * form,
         obj->y = FL_crnd( obj->ft1 );
         obj->w = FL_crnd( obj->fl2 - obj->fl1 );
         obj->h = FL_crnd( obj->ft2 - obj->ft1 );
-
-        /* Recalculate th ebounding box (including the label) */
-
-        fli_calc_object_bbox( obj );
     }
 
     /* Only notify objects now - parent objects might have to adjust
-       sizes and positions of child objects and when objects get the
+       sizes and positions of child objects and if objects would get the
        resize notice immediately after resizing above then the parent
-       object gets it first, sets a different size for the child, which
-       then is overwritten */
+       object would it first, set a different size for the child, which
+       then would be overwritten. When the objects finally know about
+       their new sizes we can also recalculate their bounding boxes
+       and, afterwards, if they now overlap. */
 
     for ( obj = form->first; obj; obj = obj->next )
+    {
         fli_handle_object( obj, FL_RESIZED, 0, 0, 0, NULL, 0 );
+        fli_calc_object_bbox( obj );
+    }
 
     fli_recalc_intersections( form );
 }

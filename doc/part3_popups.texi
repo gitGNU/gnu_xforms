@@ -1068,11 +1068,11 @@ void fl_popup_get_title_font(FL_POPUP *popup, int *size, int *style);
 void fl_popup_set_title_font(FL_POPUP *popup, int size, int style);
 @end example
 @noindent
-@xref{Label Attributes and Fonts}, for details about the sizes and
-styles that should be used. The default size and style are
-@code{@ref{FL_NORMAL_SIZE}} and @code{@ref{FL_EMBOSSED_STYLE}}. This
-setting also applies to sub-popups of the popup, thus setting a title
-font for sub-popups is useless.
+@xref{Fonts}, for details about the sizes and styles that should be
+used. The default size and style are @code{@ref{FL_NORMAL_SIZE}} and
+@code{@ref{FL_EMBOSSED_STYLE}}. This setting also applies to
+sub-popups of the popup, thus setting a title font for sub-popups is
+useless.
 
 When called with the @code{popup} argument set to @code{NULL} the
 default settings for popups generated later are returned or set.

@@ -1548,8 +1548,7 @@ To set the font style used inside the browser use
 void fl_set_browser_fontstyle(FL_OBJECT *obj, int style);
 @end example
 @noindent
-@xref{Label Attributes and Fonts}, for details on font sizes and
-styles.
+@xref{Fonts}, for details on font sizes and styles.
 
 It is possible to change the appearance of individual lines in the
 browser. Whenever a line starts with the symbol @code{'@@'} the next

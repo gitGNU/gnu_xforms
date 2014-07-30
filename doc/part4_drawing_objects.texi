@@ -898,9 +898,9 @@ where @code{align} is the alignment, namely, @code{FL ALIGN LEFT},
 @code{FL ALIGN CENTER} etc. @code{x}, @code{y}, @code{w} and @code{h}
 indicate the bounding box, @code{col} is the color of the text,
 @code{size} is the size of the font to use (in points) and
-@code{style} is the font style to be used (see @ref{Label Attributes
-and Fonts}, for valid styles). Finally, @code{str} is the string
-itself, possibly containing embedded newline characters.
+@code{style} is the font style to be used (see @ref{Fonts}, for valid
+styles). Finally, @code{str} is the string itself, possibly containing
+embedded newline characters.
 
 @code{@ref{fl_draw_text()}} draws the text inside the bounding box
 according to the alignment requested while

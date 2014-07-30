@@ -1653,6 +1653,7 @@ draw_tbox( FL_OBJECT * obj )
                             obj->x + sp->x,
                             obj->y + sp->y + tl->y - sp->yoffset,
                             obj->w, tl->h );
+            fl_unset_gc_clipping( sp->selectGC );
         }
 
         /* If there's no text or the text isn't visible within the textbox

@@ -213,6 +213,7 @@ draw_box( FL_OBJECT * ob,
         fli_box_vert( ob->x, ob->y, p, p );
         fli_endpolygon( );
     }
+
     fl_linewidth( 2 );
     fl_color( FL_BLACK );
     fli_reset_vertex( );

@@ -310,8 +310,8 @@ object, not the font used in the popup. To change the font used in the
 popup, use the XPopup functions
 @code{@ref{fl_setpup_default_fontsize()}} and
 @code{@ref{fl_setpup_default_fontstyle()}}. Note that these functions
-influence the font settings of all popups! @xref{Label Attributes and
-Fonts}, for details on font sizes and styles.
+influence the font settings of all popups! @xref{Fonts}, for details
+on font sizes and styles.
 
 Normally the pop-up shown for the choice objects will be displayed at
 the current mouse position or, for those of type

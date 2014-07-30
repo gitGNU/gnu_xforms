@@ -1609,13 +1609,18 @@ fli_internal_init( void )
     {
         default_flx = fl_calloc( 1, sizeof *default_flx );
 
-        default_flx->display = NULL;;
-        default_flx->win = None;
-        default_flx->gc = None;
+        default_flx->display   = NULL;;
+        default_flx->win       = None;
+        default_flx->gc        = None;
 #if ! FL_ENABLE_XFT
-        default_flx->textgc = None;
+        default_flx->textgc    = None;
 #endif
-        default_flx->fs = NULL;
+        default_flx->fs        = NULL;
+        default_flx->color     = FL_NOCOLOR;
+        default_flx->bkcolor   = FL_NOCOLOR;
+#if ! FL_ENABLE_XFT
+        default_flx->textcolor = FL_NOCOLOR;
+#endif
     }
 
     return flx = default_flx;

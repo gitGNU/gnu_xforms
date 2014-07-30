@@ -30,6 +30,7 @@
  * form browser.
  */
 
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -126,18 +127,19 @@ fl_create_formbrowser( int          type,
 
     sp->hsl = fl_create_scrollbar( FL_HOR_THIN_SCROLLBAR, ob->x,
                                    y + h - D, w - D, D, "" );
+    fl_set_object_boxtype( sp->hsl, ob->boxtype );
     fl_set_scrollbar_value( sp->hsl, sp->old_hval = 0.0 );
     fl_set_object_boxtype( sp->hsl, ob->boxtype );
     sp->hsl->visible = sp->h_pref == FL_ON;
-    sp->hsl->resize = FL_RESIZE_X;
+    fl_set_object_resize( sp->hsl, FL_RESIZE_X );
     fl_set_object_callback( sp->hsl, hcb, 0 );
 
     sp->vsl = fl_create_scrollbar( FL_VERT_THIN_SCROLLBAR,
                                    x + w - D, y, D, h - D, "" );
     fl_set_object_boxtype( sp->vsl, ob->boxtype );
-    sp->vsl->visible = sp->v_pref == FL_ON;
     fl_set_scrollbar_value( sp->vsl, sp->old_hval = 0.0 );
-    sp->vsl->resize = FL_RESIZE_Y;
+    sp->vsl->visible = sp->v_pref == FL_ON;
+    fl_set_object_resize( sp->vsl, FL_RESIZE_Y );
     fl_set_object_callback( sp->vsl, vcb, 0 );
 
     fl_add_child( ob, sp->canvas );
@@ -776,10 +778,6 @@ display_forms( FLI_FORMBROWSER_SPEC * sp )
 
     fli_inherit_attributes( sp->parent, sp->vsl );
     fli_inherit_attributes( sp->parent, sp->hsl );
-
-    /* I prefer to keep scrollbar unresizable */
-
-    sp->vsl->resize = sp->hsl->resize = FL_RESIZE_NONE;
 
     y_pos = sp->scroll == FL_JUMP_SCROLL ? 0 : -sp->top_edge;
 

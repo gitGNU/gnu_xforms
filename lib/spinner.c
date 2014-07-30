@@ -34,6 +34,7 @@ set_spinner_return( FL_OBJECT *,
                     unsigned int );
 
 
+
 /***************************************
  * This function got to be called before a redraw, at least if
  * the form the spinner belongs to has been resized or proper-
@@ -64,9 +65,9 @@ set_geom( FL_OBJECT * obj )
         sp->down->y = obj->y + bwh;
         sp->up->w = sp->up->h = sp->down->w = sp->down->h = bwh;
 
-        if ( sp->orient == 1 )
+        if ( sp->orient == SPINNER_HORIZONTAL )
         {
-            sp->orient = 0;
+            sp->orient = SPINNER_VERTICAL;
             fl_set_object_label( sp->up,   "@8>" );
             fl_set_object_label( sp->down, "@2>" );
         }
@@ -87,9 +88,9 @@ set_geom( FL_OBJECT * obj )
         sp->down->x = obj->x;
         sp->up->w = sp->up->h = sp->down->w = sp->down->h = bwh;
 
-        if ( sp->orient == 0 )
+        if ( sp->orient == SPINNER_VERTICAL )
         {
-            sp->orient = 1;
+            sp->orient = SPINNER_HORIZONTAL;
             fl_set_object_label( sp->up,   "@6>" );
             fl_set_object_label( sp->down, "@4>" );
         }
@@ -307,7 +308,7 @@ fl_create_spinner( int          type,
 {
     FL_OBJECT *obj;
     FLI_SPINNER_SPEC *sp;
-    int orient = ( w < h );
+    int orient = ( w < h ) ? SPINNER_HORIZONTAL : SPINNER_VERTICAL;
 
     obj = fl_make_object( FL_SPINNER, type, x, y, w, h, label, handle_spinner );
     obj->boxtype    = FL_NO_BOX;
@@ -319,9 +320,9 @@ fl_create_spinner( int          type,
                                  FL_INT_INPUT : FL_FLOAT_INPUT,
                                  0, 0, 0, 0, NULL );
     sp->up = fl_create_button( FL_TOUCH_BUTTON, 0, 0, 0, 0,
-                               orient == 0 ? "@8>" : "@6>" );
+                               orient == SPINNER_VERTICAL ? "@8>" : "@6>" );
     sp->down = fl_create_button( FL_TOUCH_BUTTON, 0, 0, 0, 0,
-                                 orient == 0 ? "@2>" : "@4>" );
+                                 orient == SPINNER_VERTICAL ? "@2>" : "@4>" );
 
     fl_set_object_callback( sp->input, spinner_callback,  0 );
     fl_set_object_callback( sp->up,    spinner_callback,  1 );
@@ -349,6 +350,8 @@ fl_create_spinner( int          type,
     sp->orient = orient;
     sp->prec   = DEFAULT_SPINNER_PRECISION;
     sp->attrib = 1;
+
+    set_geom( obj );
 
     fl_add_child( obj, sp->input );
     fl_add_child( obj, sp->up );

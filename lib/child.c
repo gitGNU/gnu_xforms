@@ -256,6 +256,8 @@ fli_set_composite_gravity( FL_OBJECT *  obj,
 
 
 /***************************************
+ * Called when an object with sub-objects has been resized to inform
+ * the sub-objects about it.
  ***************************************/
 
 void
@@ -265,8 +267,9 @@ fli_composite_has_been_resized( FL_OBJECT * obj )
     {
         if ( obj->child )
             fli_composite_has_been_resized( obj );
-        fli_calc_object_bbox( obj );
+
         fli_handle_object( obj, FL_RESIZED, 0, 0, 0, NULL, 0 );
+        fli_calc_object_bbox( obj );
     }
 }
 
@@ -348,8 +351,8 @@ fl_get_object_component( FL_OBJECT * composite,
 
 
 /***************************************
- * copy the parent attributes. gravity stuff is taken care of by
- * fl_add_child()
+ * copy the parent attributes. Gravity stuff is taken care of by
+ * fl_add_child().
  ***************************************/
 
 void

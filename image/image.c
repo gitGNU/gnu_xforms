@@ -616,10 +616,10 @@ flimage_free( FL_IMAGE * image )
 
     for ( im = image; im; im = imnext)
     {
+        imnext = im->next;
         flimage_freemem( im );
         if ( im == image )
             flimage_close( im );
-        imnext = im->next;
         fli_safe_free( im->infile );
         fli_safe_free( im->outfile );
         im->next = NULL;
@@ -896,7 +896,7 @@ flimage_invalidate_pixels( FL_IMAGE * im )
 
 
 /***************************************
- * free all allocated memory associated with the image
+ * Free all allocated memory associated with the image
  ***************************************/
 
 void
@@ -1435,8 +1435,9 @@ flimage_dup_( FL_IMAGE * sim,
     im->ximage = NULL;
     im->info = 0;
     im->win = None;
+    im->gc = None;
 #if ! FL_ENABLE_XFT
-    im->gc = im->textgc = None;
+    im->textgc = None;
 #endif
     im->markergc = None;
     im->text = NULL;
@@ -1463,7 +1464,7 @@ error_message( FL_IMAGE   * im  FL_UNUSED_ARG,
 
 
 /***************************************
- * A short cut for error message generating
+ * A short cut for error message generation
  ***************************************/
 
 void

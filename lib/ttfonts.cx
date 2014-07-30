@@ -480,6 +480,25 @@ fl_set_xft_font_name( int              index,
 
 
 /***************************************
+ * Add a new TTF/OTF font or replace an existing font.
+ ***************************************/
+
+int
+fl_set_xft_font_name_f( int          index,
+                        const char * fmt,
+                        ... )
+{
+    char *buf;
+    int ret;
+
+    EXPAND_FORMAT_STRING( buf, fmt );
+    ret = fl_set_xft_font_name( index, buf, FL_SLANT_NONE, FL_WEIGHT_NONE );
+    fl_free( buf );
+    return ret;
+}
+
+
+/***************************************
  * Function for unloading a custom loaded font (at all sizes)
  ***************************************/
 

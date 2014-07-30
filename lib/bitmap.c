@@ -117,8 +117,8 @@ drawit( Window   win,
     fl_color( fcol );
     fl_bk_color( bcol );
 
-    XCopyPlane( flx->display, bitmap, win, flx->gc, src_x, src_y,
-                w, h, x, y, 1 );
+    XCopyPlane( flx->display, bitmap, win, flx->gc, src_x, src_y, w, h,
+                x, y, 1 );
 }
 
 
@@ -186,7 +186,7 @@ handle_bitmap( FL_OBJECT * obj,
 
 
 /***************************************
- * Creates an object
+ * Creates a bitmap object
  ***************************************/
 
 FL_OBJECT *
@@ -218,7 +218,7 @@ fl_create_bitmap( int          type,
 
 
 /***************************************
- * Adds an object
+ * Creates and adds a bitmap object
  ***************************************/
 
 FL_OBJECT *
@@ -238,7 +238,7 @@ fl_add_bitmap( int          type,
 
 
 /***************************************
- * Fills the bitmap with a bitmap.
+ * Sets the bitmap with the object from data
  ***************************************/
 
 void

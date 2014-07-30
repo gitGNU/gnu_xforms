@@ -148,8 +148,6 @@ windowlevel_callback( FL_OBJECT * ob    FL_UNUSED_ARG,
 }
 
 
-/*** callbacks and freeobj handles for form is_mainform ***/
-
 /***************************************
  ***************************************/
 

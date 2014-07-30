@@ -46,6 +46,9 @@ typedef struct {
 
 #define DEFAULT_SPINNER_PRECISION  6
 
+#define SPINNER_VERTICAL           0
+#define SPINNER_HORIZONTAL         1
+
 
 #endif /* PSPINNER_H_ */
 

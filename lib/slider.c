@@ -133,6 +133,7 @@ draw_motion( FL_OBJECT * ob )
         XSetClipRectangles( flx->display, flx->gc, 0, 0, xrec, 2, Unsorted );
         fl_draw_box( FL_FLAT_BOX, ob->x + sp->x + abbw, ob->y + sp->y + abbw,
                      sp->w - 2 * abbw, sp->h - 2 * abbw, ob->col1, 0 );
+        XSetClipMask( flx->display, flx->gc, None );
     }
     else if (    ob->type == FL_HOR_THIN_SLIDER
               || ob->type == FL_VERT_THIN_SLIDER

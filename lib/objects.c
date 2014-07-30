@@ -2985,8 +2985,8 @@ fli_scale_object( FL_OBJECT * obj,
         obj->w    = FL_crnd( new_w );
         obj->h    = FL_crnd( new_h );
 
-        fli_calc_object_bbox( obj );
         fli_handle_object( obj, FL_RESIZED, 0, 0, 0, NULL, 0 );
+        fli_calc_object_bbox( obj );
 
         /* If there are child objects also inform them about the size change */
 

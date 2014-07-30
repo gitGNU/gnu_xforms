@@ -66,12 +66,11 @@ handle_background( FL_OBJECT * obj,
                    int         clear_pms )
 {
     FLI_POSITIONER_SPEC *sp = obj->spec;
-    
     FL_COORD absbw = FL_abs( obj->bw );
     FL_COORD x0 = obj->x + absbw + 1,
              y0 = obj->y + absbw + 1;
-    FL_COORD w = obj->w - 2 * absbw - 2,
-             h = obj->h - 2 * absbw - 2;
+    FL_COORD w = obj->w - 2 * ( absbw + 1 ),
+             h = obj->h - 2 * ( absbw + 1 );
     FL_COORD xo = FL_crnd( flinear( sp->lxval, sp->xmin, sp->xmax,
                                     x0, x0 + w - 1 ) ),
              yo = FL_crnd( flinear( sp->lyval, sp->ymin, sp->ymax,
@@ -81,24 +80,54 @@ handle_background( FL_OBJECT * obj,
              yn = FL_crnd( flinear( sp->yval, sp->ymin, sp->ymax,
                                     y0 + h - 1, y0 ) );
 
-    /* Return immediatel if we're called for an invisible positioner or
+    /* Return immediately if we're called for an invisible positioner or
        there's no window yet. */
 
-    if ( obj->type == FL_INVISIBLE_POSITIONER || FL_ObjWin( obj ) == None )
+    if ( obj->type == FL_INVISIBLE_POSITIONER || ! FL_ObjWin( obj ) )
         return;
 
-    /* If no GC has been created do it now. */
+    /* For normal positioners things are simple: just draw over the
+       positioner lines with the background color. */
+
+    if ( obj->type != FL_OVERLAY_POSITIONER )
+    {
+        fl_diagline( x0, yo, w, 1, obj->col1 );
+        fl_diagline( xo, y0, 1, h, obj->col1 );
+        return;
+    }
+
+    /* For overlay positioners things are a bit more difficult: we need to
+       store the background to be able to redraw it once the positioner
+       lines get moved elsewhere. The original approach was to draw in
+       XOR mode over the background when drawing the positioner lines
+       and doing the same again to remove them (XOR-ing a number twice
+       with the same value gives you the number you started with). This
+       had the drawback that the lines often were hardly visible (since
+       they weren't drawn in the requested color but instead the XOR of
+       the requested color and that of the background which often didn't
+       even resemble the requested color remotely.
+
+       Thus a different approach is used here: the background of were the
+       positioner lines are going to be drawn are copied to pixmaps and
+       later restored by copying back. But there's one potential problem:
+       if parts of the positioner are obscured XCopyArea() won't correctly
+       copy the obscured areas and this will lead to artifacts when copying
+       back to parts of the positioner that have become unobscured in the
+       mean time. E.g. with an overlat positioner in a formbrowser this
+       problem may become visible. */
+
+    /* If no GC for copying has been created do so now */
 
     if ( sp->copy_gc == None )
-        sp->copy_gc = XCreateGC( flx->display, FL_ObjWin( obj ), 0, NULL );
+        sp->copy_gc = XCreateGC( flx->display, flx->win, 0, NULL );
 
     /* If there's a pixmap with what was under the horizontal line copy from
-       it to the window to restore what's under the line. If we're asked to
-       delete the pixmap also do so. */
+       it to the window to erase the positioner line. If we're asked to
+       delete the pixmap also do that. */
 
-    if ( sp->xpm != None )
+    if ( sp->xpm )
     {
-        XCopyArea( flx->display, sp->xpm, FL_ObjWin( obj ), sp->copy_gc,
+        XCopyArea( flx->display, sp->xpm, flx->win, sp->copy_gc,
                    0, 0, w, 1, x0, yo );
 
         if ( clear_pms )
@@ -108,11 +137,11 @@ handle_background( FL_OBJECT * obj,
         }
     }
 
-    /* Same for vertical line... */
+    /* Same for vertical positioner line... */
 
-    if ( sp->ypm != None )
+    if ( sp->ypm )
     {
-        XCopyArea( flx->display, sp->ypm, FL_ObjWin( obj ), sp->copy_gc,
+        XCopyArea( flx->display, sp->ypm, flx->win, sp->copy_gc,
                    0, 0, 1, h, xo, y0 );
 
         if ( clear_pms )
@@ -122,32 +151,29 @@ handle_background( FL_OBJECT * obj,
         }
     }
 
-    /* If we're not asked to delete the pixmap for storing what's under the
-       horizontal line to be drawn safe the background, if necessary first
-       creating new pixmaps for that. */
+    /* If we're not asked to delete the pixmaps for storing what's under the
+       positioner lines safe the background, if necessary first creating new
+       pixmaps for that. */
 
     if ( ! clear_pms )
     {
-        if ( sp->xpm == None )
-            sp->xpm = XCreatePixmap( flx->display, FL_ObjWin( obj ),
+        if ( ! sp->xpm )
+            sp->xpm = XCreatePixmap( flx->display, flx->win,
                                      w, 1, fl_get_visual_depth( ) );
-
-        if ( sp->ypm == None )
-            sp->ypm = XCreatePixmap( flx->display, FL_ObjWin( obj ),
-                                         1, h, fl_get_visual_depth( ) );
-
-        XCopyArea( flx->display, FL_ObjWin( obj ), sp->xpm, sp->copy_gc,
+        XCopyArea( flx->display, flx->win, sp->xpm, sp->copy_gc,
                    x0, yn, w, 1, 0, 0 );
-        XCopyArea( flx->display, FL_ObjWin( obj ), sp->ypm, sp->copy_gc,
-                   xn, y0, 1, h, 0, 0 );
 
-        sp->lxval = sp->xval;
-        sp->lyval = sp->yval;
+        if ( ! sp->ypm )
+            sp->ypm = XCreatePixmap( flx->display, flx->win,
+                                         1, h, fl_get_visual_depth( ) );
+        XCopyArea( flx->display, flx->win, sp->ypm, sp->copy_gc,
+                   xn, y0, 1, h, 0, 0 );
     }
 }
 
 
 /***************************************
+ * (Re)draw the positioner
  ***************************************/
 
 static void
@@ -157,23 +183,21 @@ draw_positioner( FL_OBJECT * obj )
     FL_COORD absbw = FL_abs( obj->bw );
     FL_COORD x0 = obj->x + absbw + 1,
              y0 = obj->y + absbw + 1;
-    FL_COORD w = obj->w - 2 * absbw - 2,
-             h = obj->h - 2 * absbw - 2;
+    FL_COORD w = obj->w - 2 * ( absbw + 1 ),
+             h = obj->h - 2 * ( absbw + 1 );
     FL_COORD x = FL_crnd( flinear( sp->xval, sp->xmin, sp->xmax,
                                    x0, x0 + w - 1 ) ),
              y = FL_crnd( flinear( sp->yval, sp->ymin, sp->ymax,
                                    y0 + h - 1, y0 ) );
 
-    if ( FL_ObjWin( obj ) == None )
+    if ( ! FL_ObjWin( obj ) )
         return;
 
-    if ( ! sp->partial )
-    {
-        if ( obj->type != FL_OVERLAY_POSITIONER )
-            fl_draw_box( obj->boxtype, obj->x, obj->y, obj->w, obj->h,
-                         obj->col1, obj->bw );
-        fl_draw_object_label_outside( obj );
-    }
+    /* If sp->partial is set we only need to move the positioner lines */
+
+    if ( ! sp->partial && obj->type != FL_OVERLAY_POSITIONER )
+        fl_draw_box( obj->boxtype, obj->x, obj->y, obj->w, obj->h,
+                     obj->col1, obj->bw );
 
     handle_background( obj, 0 );
 
@@ -186,6 +210,9 @@ draw_positioner( FL_OBJECT * obj )
         fl_diagline( x, y0, 1, y - y0 - 1, obj->col2 );
     if ( h > y - y0 + 2 )
         fl_diagline( x, y + 2, 1, h - y + y0 - 2, obj->col2 );
+
+    sp->lxval = sp->xval;
+    sp->lyval = sp->yval;
 }
 
 
@@ -202,8 +229,8 @@ handle_mouse( FL_OBJECT * obj,
     FL_COORD absbw = FL_abs( obj->bw );
     FL_COORD x1 = obj->x + absbw + 1,
              y1 = obj->y + absbw + 1;
-    FL_COORD w1 = obj->w - 2 * absbw - 2,
-             h1 = obj->h - 2 * absbw - 2;
+    FL_COORD w1 = obj->w - 2 * ( absbw + 1 ),
+             h1 = obj->h - 2 * ( absbw + 1 );
     double oldx = sp->xval,
            oldy = sp->yval;
     double x, y;
@@ -255,7 +282,7 @@ handle_mouse( FL_OBJECT * obj,
 
 
 /***************************************
- * Handles an event
+ * Handles all events
  ***************************************/
 
 static int
@@ -274,7 +301,9 @@ handle_positioner( FL_OBJECT * obj,
     {
         case FL_ATTRIB :
             obj->align = fl_to_outside_lalign( obj->align );
-            handle_background( obj, 1 );
+            if ( obj->type != FL_INVISIBLE_POSITIONER )
+                handle_background( obj, 1 );
+            sp->partial = 0;
             break;
 
         case FL_DRAW:
@@ -341,7 +370,7 @@ handle_positioner( FL_OBJECT * obj,
         case FL_FREEMEM:
             if ( sp->copy_gc != None )
             {
-                if ( obj->form )
+                if ( obj->form && obj->type != FL_INVISIBLE_POSITIONER )
                     handle_background( obj, 1 );
                 else
                 {
@@ -395,15 +424,18 @@ fl_create_positioner( int          type,
 
     obj->spec = sp = fl_calloc( 1, sizeof *sp );
 
-    sp->xmin = 0.0;
-    sp->ymin = 0.0;
-    sp->xmax = 1.0;
-    sp->ymax = 1.0;
-    sp->xval = 0.5;
-    sp->yval = 0.5;
-    sp->xpm = sp->ypm = None;
-    sp->copy_gc = None;
-    sp->validator = NULL;
+    sp->xmin        = 0.0;
+    sp->ymin        = 0.0;
+    sp->xmax        = 1.0;
+    sp->ymax        = 1.0;
+    sp->xval        = 0.5;
+    sp->yval        = 0.5;
+    sp->lxval       = -1;
+    sp->lyval       = -1;
+    sp->xpm         = sp->ypm = None;
+    sp->copy_gc     = None;
+    sp->validator   = NULL;
+    sp->partial     = 0;
 
     /* Per default a positioner reacts to the left mouse button only */
 
@@ -477,9 +509,11 @@ fl_set_positioner_values( FL_OBJECT * obj,
     {
         sp->xval = x;
         sp->yval = y;
-        sp->partial = 1;
-
-        fl_redraw_object( obj );
+        if ( FL_ObjWin( obj ) )
+        {
+            sp->partial = 1;
+            fl_redraw_object( obj );
+        }
     }
 
     return ret;

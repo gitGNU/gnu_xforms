@@ -44,7 +44,7 @@ typedef struct
 } FD_alert;
 
 
-static FD_alert *fd_alert;
+static FD_alert * fd_alert;
 
 
 /***************************************
@@ -54,7 +54,7 @@ static FD_alert *
 create_alert( const char * title,
               const char * msg )
 {
-    FD_alert *fdui = fl_calloc( 1, sizeof *fdui );
+    FD_alert * fdui = fl_calloc( 1, sizeof *fdui );
     int oldy = fli_inverted_y;
     int oldu = fl_get_coordunit( );
     int style,
@@ -142,20 +142,13 @@ create_alert( const char * title,
 static void
 show_it( const char * title,
          const char * msg,
-         int          c )
+         int          centered )
 {
-    if ( fd_alert )
-    {
-        fl_hide_form( fd_alert->form );
-        fl_free_form( fd_alert->form );
-        fd_alert = NULL;
-    }
-
     fl_deactivate_all_forms( );
 
     fd_alert = create_alert( title, msg );
 
-    fl_show_form( fd_alert->form, c ? FL_PLACE_CENTER : FL_PLACE_HOTSPOT,
+    fl_show_form( fd_alert->form, centered ? FL_PLACE_CENTER : FL_PLACE_HOTSPOT,
                   FL_TRANSIENT, fd_alert->form->label );
 
     fl_update_display( 1 );
@@ -166,6 +159,7 @@ show_it( const char * title,
     fl_hide_form( fd_alert->form );
     fl_free_form( fd_alert->form );
     fli_safe_free( fd_alert );
+
     fl_activate_all_forms( );
 }
 
@@ -178,14 +172,14 @@ void
 fl_show_alert( const char * title,
                const char * str1,
                const char * str2,
-               int          c )
+               int          centered )
 {
-    char *buf;
+    char * buf;
 
     buf = fl_malloc(   ( str1 ? strlen( str1 ) : 0 ) + 1
                      + ( str2 ? strlen( str2 ) : 0 ) + 1 );
     sprintf( buf, "%s\n%s", str1 ? str1 : "", str2 ? str2 : "" );
-    show_it( title, buf, c );
+    show_it( title, buf, centered );
     fl_free( buf );
 }
 
@@ -235,6 +229,8 @@ fl_hide_alert( void )
 void
 fli_alert_cleanup( void )
 {
+    if ( fd_alert && fd_alert->form )
+        fl_free_form( fd_alert->form );
     fli_safe_free( fd_alert );
 }
 

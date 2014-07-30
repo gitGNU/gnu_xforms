@@ -476,10 +476,10 @@ void fl_set_pixmapbutton_align(FL_OBJECT *obj, int align,
 @end example
 @noindent
 where @code{align} is the same as that used for labels. @xref{Label
-Attributes and Fonts}, for a list. @code{xmargin} and @code{ymargin}
-are extra margins to leave in addition to the object border width.
-Note that although you can place a pixmap outside of the bounding box,
-it probably is not a good idea.
+Attributes}, for a list. @code{xmargin} and @code{ymargin} are extra
+margins to leave in addition to the object border width. Note that
+although you can place a pixmap outside of the bounding box, it
+probably is not a good idea.
 
 When the mouse enters a pixmap button an outline of the button is
 shown. If required, a different pixmap (the focus pixmap) can also be

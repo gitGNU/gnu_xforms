@@ -76,11 +76,10 @@ fl_rectangle( int      fill,
         set_current_gc( dithered_gc );
     }
 
-
     fl_color( bw ? FL_BLACK : col );
     draw_as( flx->display, flx->win, flx->gc, x, y, w, h );
 
-    if ( bw )
+    if ( bw && fill )
         set_current_gc( gc );
 }
 
@@ -661,8 +660,9 @@ set_current_gc( GC gc )
     if ( flx->gc == gc )
         return;
 
-    flx->gc    = gc;
-    flx->color = FL_NoColor;
+    flx->gc      = gc;
+    flx->color   = FL_NoColor;
+    flx->bkcolor = FL_NoColor;
 
     fli_apply_clipping_to_gc( gc );
 }
