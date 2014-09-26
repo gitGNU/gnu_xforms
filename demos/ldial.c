@@ -51,13 +51,11 @@ dial_callback( FL_OBJECT * obj  FL_UNUSED_ARG,
 {
     int clr[ 3 ];
     size_t i;
-    char str[ 60 ];
 
     for ( i = RED; i <= BLUE; i++ )
         clr[ i ] = fl_get_dial_value( dial[ i ] );
 
-    sprintf( str, "%d", clr[ arg ] );
-    fl_set_object_label( text[ arg ], str );
+    fl_set_object_label_f( text[ arg ], "%d", clr[ arg ] );
 
     fl_mapcolor( FL_FREE_COL1, clr[ 0 ], clr[ 1 ], clr[ 2 ] );
     fl_redraw_object( result );

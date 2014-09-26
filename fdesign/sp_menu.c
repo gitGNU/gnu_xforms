@@ -367,7 +367,7 @@ get_pupentry_name( FL_OBJECT * obj )
  */
 
 /***************************************
- * callbacks and freeobj handles for form choiceattrib
+ * Callbacks and freeobj handles for form choiceattrib
  ***************************************/
 
 void
@@ -378,10 +378,10 @@ add_menu_item_cb( FL_OBJECT * obj   FL_UNUSED_ARG,
         int i,
             k;
 
-    const char *s = fl_get_input( menu_attrib->input );
-    const char *sc = fl_get_input( menu_attrib->shortcut );
-    const char *mode = fl_get_choice_text( menu_attrib->mode );
-    const char *item_cb = fl_get_input( menu_attrib->item_cb );
+    const char * s = fl_get_input( menu_attrib->input );
+    const char * sc = fl_get_input( menu_attrib->shortcut );
+    const char * mode = fl_get_choice_text( menu_attrib->mode );
+    const char * item_cb = fl_get_input( menu_attrib->item_cb );
     int mval = fl_get_counter_value( menu_attrib->id );
 
     if ( ! s || ! *s )
@@ -418,12 +418,12 @@ void
 replace_menu_item_cb( FL_OBJECT * obj   FL_UNUSED_ARG,
                       long        data  FL_UNUSED_ARG )
 {
-    FLI_MENU_SPEC *sp = curobj->spec;
+    FLI_MENU_SPEC * sp = curobj->spec;
     int i = fl_get_browser( menu_attrib->content_br );
-    const char *s = fl_get_input( menu_attrib->input );
-    const char *sc = fl_get_input( menu_attrib->shortcut );
-    const char *mode = fl_get_choice_text( menu_attrib->mode );
-    const char *item_cb = fl_get_input( menu_attrib->item_cb );
+    const char * s = fl_get_input( menu_attrib->input );
+    const char * sc = fl_get_input( menu_attrib->shortcut );
+    const char * mode = fl_get_choice_text( menu_attrib->mode );
+    const char * item_cb = fl_get_input( menu_attrib->item_cb );
     int mval = fl_get_counter_value( menu_attrib->id );
     int k;
 
@@ -436,7 +436,7 @@ replace_menu_item_cb( FL_OBJECT * obj   FL_UNUSED_ARG,
 
     fl_replace_menu_item( curobj, k, s );
 
-    fl_set_menu_item_shortcut( menu_attrib->vdata, k, sc );
+    fl_set_menu_item_shortcut( curobj, k, sc );
 
     fl_set_menu_item_mode( curobj, k, get_pupmode_value( mode ) );
 

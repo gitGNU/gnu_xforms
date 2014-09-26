@@ -65,7 +65,7 @@ makeform( void )
     green = fl_add_dial( FL_FILL_DIAL, 30, 155, 60, 60, "Green" );
     fl_set_dial_bounds( green, 0.0, 255.0 );
     fl_set_dial_value( green, 128.0 );
-    fl_set_dial_angles( green, 45.0, 360 - 45.0 );
+//    fl_set_dial_angles( green, 45.0, 360 - 45.0 );
     fl_set_object_color( green, FL_COL1, FL_GREEN );
     fl_set_object_return( green, FL_RETURN_CHANGED );
 
@@ -75,12 +75,13 @@ makeform( void )
     fl_set_dial_bounds( blue, 0.0, 255.0 );
     fl_set_dial_value( blue, 128.0 );
     fl_set_object_color( blue, FL_COL1, FL_BLUE );
-    fl_set_dial_direction( blue, FL_DIAL_CCW );
+//    fl_set_dial_direction( blue, FL_DIAL_CCW );
     fl_set_object_return( blue, FL_RETURN_CHANGED );
 
     bluetext = fl_add_box( FL_DOWN_BOX, 105, 90, 50, 25, "" );
 
     result = fl_add_box( FL_DOWN_BOX, 180, 70, 90, 245, "" );
+    fl_mapcolor( FL_FREE_COL1, 128, 128, 128 );
     fl_set_object_color( result, FL_FREE_COL1, FL_FREE_COL1 );
     fl_set_object_dblbuffer( result, 1 );
 
@@ -95,38 +96,32 @@ int
 main( int    argc,
       char * argv[ ] )
 {
-    FL_OBJECT *ret;
     int r,
         g,
         b;
-    char str[ 100 ];
 
     fl_initialize( &argc, argv, "FormDemo", NULL, 0 );
     makeform( );
 
     fl_show_form( form, FL_PLACE_MOUSE, FL_TRANSIENT, "A Form" );
 
-    do
+    while ( fl_do_forms( ) != button )
     {
-        r =  fl_get_dial_value( red   ) + 0.001;
-        g =  fl_get_dial_value( green ) + 0.001;
-        b =  fl_get_dial_value( blue  ) + 0.001;
+        r =  fl_get_dial_value( red   );
+        g =  fl_get_dial_value( green );
+        b =  fl_get_dial_value( blue  );
 
         fl_freeze_form( form );
 
         fl_mapcolor( FL_FREE_COL1, r, g, b );
+        fl_redraw_object( result );
 
-        sprintf( str, "%d", r );
-        fl_set_object_label( redtext, str );
-        sprintf( str, "%d", g );
-        fl_set_object_label( greentext, str );
-        sprintf( str, "%d", b );
-        fl_set_object_label( bluetext, str );
+        fl_set_object_label_f( redtext,   "%d", r );
+        fl_set_object_label_f( greentext, "%d", g );
+        fl_set_object_label_f( bluetext,  "%d", b );
 
         fl_unfreeze_form( form );
-
-        ret = fl_do_forms( );
-    }  while ( ret != button );
+    }
 
     fl_hide_form( form );
     fl_finish( );

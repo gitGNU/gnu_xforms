@@ -26,7 +26,8 @@
 enum {
     FT_REG,
     FT_DIR,
-    FT_LINK,
+    FT_LNK,
+    FT_LINK = FT_LNK,
     FT_SOCK,
     FT_FIFO,
     FT_BLK,
