@@ -25,7 +25,7 @@
 
 /* These default X11 bitmap fonts may not be the most beautiful X11 fonts
    available on the system but they are part of X11 distributions since at
-   least 20 years, so cahnces are relatively hight that they're available.
+   least 20 years, so chances are relatively hight that they're available.
    (And, remember, these fonts must be available on the machine where the X
    server is running on, which is not necessarily the machine where the
    program using XForms is executed.) */

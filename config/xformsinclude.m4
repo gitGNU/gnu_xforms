@@ -270,7 +270,7 @@ if test x$GCC = xyes; then
 	fi
     fi
     if test x$enable_warnings = xyes ; then
-	CFLAGS="$CFLAGS -W -Wall"
+	CFLAGS="$CFLAGS -W -Wall -Wextra"
     fi
 fi
 ])
