@@ -489,7 +489,7 @@ delete_char( FLI_INPUT_SPEC * sp,
 {
     if ( dir == 1 )
     {
-        char * new_pos = utf8_next_char_pos( sp->str + sp->position );
+        char * new_pos = utf8_next_char_pos( sp->str + sp->position, 1 );
 
         if ( sp->str[ sp->position ] == '\n' )
             sp->lines--;
@@ -498,7 +498,7 @@ delete_char( FLI_INPUT_SPEC * sp,
     }
     else
     {
-        char * new_pos = utf8_prev_char_pos( sp->str + sp->position );
+        char * new_pos = utf8_prev_char_pos( sp->str + sp->position, 1 );
 
         if ( *new_pos == '\n' )
         {
@@ -611,7 +611,8 @@ handle_movement( FL_OBJECT * obj,
             sp->position = startpos;
         else if ( sp->position > 0 )
         {
-            sp->position -= utf8_get_prev_byte_count( sp->str + sp->position );
+            sp->position =
+                     utf8_prev_char_pos( sp->str + sp->position, 1 ) - sp->str;
             if ( sp->position < 0 )
             {
                 M_err( "handle_movement", "Something's wrong here!" );
@@ -642,7 +643,8 @@ handle_movement( FL_OBJECT * obj,
                 startpos = ++sp->position;
             }
             else
-                sp->position += utf8_get_byte_count( sp->str + sp->position );
+                sp->position =
+                  utf8_next_char_pos( sp->str +  + sp->position, 1 ) - sp->str;
         }
     }
     else if ( IsUp( key ) )     /* Up key */
@@ -990,7 +992,6 @@ handle_normal_key( FL_OBJECT    * obj,
     int len;
     int ret = FL_RETURN_CHANGED;
 
-
     /* We might receive a '\n' even for non-mulitline inputs (when the
        input comes via cut-and-paste), don't accept it */
 
@@ -1281,6 +1282,12 @@ paste_it( FL_OBJECT  * obj,
 {
     int ret = FL_RETURN_NONE;
     int len;
+
+    if ( ! utf8_is_valid( buf ) )
+    {
+        M_err( "paste_it", "Invalid UTF-8" );
+        return ret;
+    }
 
     while ( nb > 0 )
     {

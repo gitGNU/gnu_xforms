@@ -23,11 +23,16 @@
 #include <string.h>
 
 
-ssize_t utf8_length( const char * str );
+int utf8_is_valid( const char * str );
+
+ssize_t utf8_length( const char * str,
+                     int          skip_diacritics );
 
 int utf8_get_char_bytes( FL_VAL c );
 
 FL_VAL utf8_to_num( const char * str );
+
+FL_VAL utf8_to_cp( const char * str );
 
 int utf8_insert( FL_VAL   key,
                  char   * str );
@@ -36,13 +41,11 @@ int utf8_get_byte_count( const char * str );
 
 int utf8_get_prev_byte_count( const char * str );
 
-char * utf8_next_char_pos( char * str );
+char * utf8_next_char_pos( char * str,
+                           int    skip_diacritics );
 
-char * utf8_prev_char_pos( char * str );
-
-char * utf8_reverse( const char * str );
-
-char * utf8_reverse_in_place( char * str );
+char * utf8_prev_char_pos( char * str,
+                           int    skip_diacritics );
 
 
 #endif

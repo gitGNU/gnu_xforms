@@ -1079,6 +1079,12 @@ fl_set_object_label( FL_OBJECT  * obj,
     if ( ! strcmp( obj->label, label )  )
         return;
 
+    if ( ! utf8_is_valid( label ) )
+    {
+        M_err( "fl_set_object_label", "Invalid UTF-8" );
+        return;
+    }
+
     if ( OL( obj ) && obj->visible )
     {
         need_show = 1; 
@@ -1737,7 +1743,7 @@ fli_convert_shortcut( const char * str,
     long offset = 0;
     const char *c;
 
-    if ( utf8_length( str ) != ( ssize_t ) strlen( str ) )
+    if ( utf8_length( str, 0 ) != ( ssize_t ) strlen( str ) )
     {
         M_err( "fli_convert_shortcut",
                "Shortcuts may only contain ASCII characters" );

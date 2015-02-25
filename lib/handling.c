@@ -406,7 +406,7 @@ handle_keyboard( FL_FORM  * form,
 
     /* Space is an exception for browser */
 
-    if (    (    ( utf8_get_char_bytes( key ) == - 1|| key == ' ' )
+    if (    (    ( utf8_get_char_bytes( key ) == - 1 || key == ' ' )
               && special->wantkey & FL_KEY_SPECIAL )
          || (    utf8_get_char_bytes( key ) != -1
               && special->wantkey & FL_KEY_NORMAL )
@@ -989,10 +989,13 @@ handle_keyboard_event( XEvent * xev,
         if ( len >= 0 )
             break;
 
+        // If 'len' is negative not enough memory was available and the
+        // negative of 'len' tells us how much is needed
+
         len *= -1;
 
         M_warn( "handle_keyboard_event",
-                "Key with lenght longger than 4 (%d) encountered", len );
+                "Key with length longer than 4 (%d) encountered", len );
 
         keybuf = fl_realloc( keybuf, len + 1 );
         keybuflen = len + 1;
@@ -1005,7 +1008,7 @@ handle_keyboard_event( XEvent * xev,
         /* empty */ ;
     else if ( IsTab( keysym ) )
     {
-        /* Fake a tab key, on some systems shift+tab do not generate a tab */
+        /* Fake a tab key, on some systems shift+tab does not generate a tab */
 
         fli_handle_form( fli_int.keyform, formevent, '\t', xev );
     }
@@ -1022,9 +1025,9 @@ handle_keyboard_event( XEvent * xev,
         do
         {
             fli_handle_form( fli_int.keyform, formevent,
-                             utf8_to_num( p + cl ), xev );
-            cl = utf8_get_byte_count( p );
-            cl *= cl >= 0 ? 1 : -1;
+                             utf8_to_num( p ), xev );
+            cl = abs( utf8_get_byte_count( p ) );
+            p += cl;
         } while ( ( len -= cl ) > 0 );
     }
 }
