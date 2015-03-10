@@ -175,8 +175,8 @@ fl_winicon( Window win,
 
 
 /***************************************
- * Open window with this size and KEEP it this size if window manager
- * coorporates
+ * Open window with this size and KEEP it this size (if window manager
+ * cooperates)
  ***************************************/
 
 void
