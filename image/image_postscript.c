@@ -88,11 +88,11 @@ static int
 PS_identify( FILE * fp )
 {
     char buf[ 2 ];
-    size_t c;
 
-    c = fread( buf, 1, 2, fp );
+    if ( fread( buf, 1, 2, fp ) != 2 )
+        return 0;
     rewind( fp );
-    return c == 2 && buf[ 0 ] == '%' && buf[ 1 ] == '!';
+    return ! strncmp( buf, "%!", 2 );
 }
 
 
@@ -114,6 +114,17 @@ PS_description( FL_IMAGE * im )
 #define GS_DEVICE   "ppmraw"
 #define FL_FILE     "ppm"
 #define GS_OPTION   "-q -DNOPAUSE"
+
+
+/***************************************
+ ***************************************/
+
+static const char *
+file_tail( char *s )
+{
+    char *p = strrchr( s, '/' );
+    return p ? ( p + 1 ) : s;
+}
 
 
 /***************************************
@@ -194,18 +205,7 @@ PS_cleanup( FL_IMAGE * im )
 
     fl_free( sp->prefix );
     fl_free( sp );
-    im->extra_io_info = 0;
-}
-
-
-/***************************************
- ***************************************/
-
-static const char *
-file_tail( char *s )
-{
-    char *p = strrchr( s, '/' );
-    return p ? ( p + 1 ) : s;
+    im->extra_io_info = NULL;
 }
 
 
@@ -219,8 +219,8 @@ PS_read_pixels( FL_IMAGE * im )
     int npages,
         status;
     SPEC *sp = im->extra_io_info;
-    FL_Dirlist *dirlist;
-    const FL_Dirlist *dls,
+    const FL_Dirlist *dirlist,
+                     *dls,
                      *dl;
     char prefix[ 1024 ];
     int old_sort;
@@ -254,8 +254,7 @@ PS_read_pixels( FL_IMAGE * im )
     {
         M_err( "ReadPS", " status=%d", status );
         flimage_error( im, "ReadPS failed. Status=%d", status );
-
-        /* return -1; */
+        return -1;
     }
 
     im->completed = 1;
@@ -268,10 +267,10 @@ PS_read_pixels( FL_IMAGE * im )
     /* find out how many pages we have. Turn off sorting, much faster */
 
     old_sort = fl_set_dirlist_sort( FL_NONE );
-    dl = fl_get_dirlist( sp->tmpdir, strcat( prefix, "*" ), &npages, 1 );
+    dl = fl_get_dirlist( sp->tmpdir, strcat( prefix, "_*" ), &npages, 1 );
     fl_set_dirlist_sort( old_sort );
 
-    if ( ! ( dirlist = ( FL_Dirlist * ) dl ) )
+    if ( ! ( dirlist = dl ) )
     {
         PS_cleanup( im );
         return -1;
@@ -292,6 +291,7 @@ PS_read_pixels( FL_IMAGE * im )
     {
         PS_cleanup( im );
         flimage_error( im, "LoadPS: no page written!" );
+        im->more = 0;
         return -1;
     }
 
@@ -318,6 +318,7 @@ PS_read_pixels( FL_IMAGE * im )
 
     return status;
 }
+
 
 /***************************************************************************
  * Output routine
