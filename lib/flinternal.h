@@ -1176,6 +1176,10 @@ void * fli_remove_and_resize( void   * arr,
 
 #include "utf8.h"
 
+FL_EXPORT int fli_is_valid_dir(const char * name );
+
+FL_EXPORT char * fli_fix_dirname( char * dir );
+
 #endif /* ! defined FL_INTERNAL_H */
 
 

@@ -658,7 +658,7 @@ static void add_one( char *,
                      char * );
 
 char *
-fl_fix_dirname( char * dir )
+fli_fix_dirname( char * dir )
 {
     static char ldir[ FL_PATH_MAX ],
                 one[ FL_PATH_MAX ];
